@@ -4719,6 +4719,13 @@ function drawSFHint(g){
    file. Walk up to a storefront, push into it and press the button: the camera eases back and the board opens over the mall.
    New pictures wait in this browser (PH.pending) until Publish uploads them. */
 var PH={photos:[],pending:[],live:false},GAL=null,CAMPULL=0;
+/* the Apps Script web app that takes other people's pictures for review (apps-script/Code.gs). Empty: pictures stay in this browser. */
+var PH_SUBMIT="";
+/* the latest published list from the site; the page's own copy is the fallback when opened from a file */
+function phRefresh(){if(location.protocol==="file:")return Promise.resolve(false);
+  return fetch("photos.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j||!j.photos)return false;PH.photos=j.photos;PH.live=true;
+    PH.pending=PH.pending.filter(function(p){return !PH.photos.some(function(q){return q.id===p.id;});});phSavePending();return true;}).catch(function(){return false;});}
 var PH_MON=["january","february","march","april","may","june","july","august","september","october","november","december"];
 function phSlug(n){return String(n||"").toUpperCase().replace(/&/g," AND ").replace(/[^A-Z0-9]+/g,"").toLowerCase()||"store";}
 function phEligible(s){return !!((s.name||"").trim())&&!s.plain&&!s.timeDoor;}
@@ -4727,10 +4734,7 @@ function phSavePending(){try{if(PH.pending.length)localStorage.setItem("southlan
 function phSeed(){
   try{var el=document.getElementById("photo-data"),j=el?JSON.parse(el.textContent||"{}"):null;if(j&&j.photos)PH.photos=j.photos;}catch(e){}
   try{var pd=JSON.parse(localStorage.getItem("southland-ph-pending")||"[]");if(pd&&pd.length)PH.pending=pd;}catch(e){}
-  if(location.protocol!=="file:"){fetch("photos.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(j){
-    if(!j||!j.photos)return;PH.photos=j.photos;PH.live=true;
-    PH.pending=PH.pending.filter(function(p){return !PH.photos.some(function(q){return q.id===p.id;});});phSavePending();
-    if(GAL)galOpenList();}).catch(function(){});}
+  phRefresh().then(function(ok){if(ok&&GAL)galOpenList();});
   if(PH.pending.length)setTimeout(function(){toast(PH.pending.length+" photo"+(PH.pending.length>1?"s":"")+" waiting to publish. Open a store's board, or the editor's Publish.");},2500);
 }
 function phFor(s){var k=phSlug(s.name),L=[];
@@ -4771,7 +4775,8 @@ function phShrink(file){return new Promise(function(res,rej){
 function galEl(){var el=document.getElementById("gal");if(!el){el=document.createElement("div");el.id="gal";el.className="gal";el.hidden=true;el.innerHTML='<div class="gal-box plank" role="dialog" aria-modal="true" tabindex="-1"></div>';document.body.appendChild(el);
   el.addEventListener("click",function(e){if(e.target===el&&GAL&&GAL.mode==="view")closeGallery();});}return el;}
 function openGallery(s){if(GAL)return;GAL={s:s,list:phFor(s),i:0,mode:"view",held:true,hx:0,t:0};P.moving=false;P.frame=0;P.anim=0;
-  galRender();var el=galEl();el.hidden=false;try{el.firstChild.focus({preventScroll:true});}catch(e){}}
+  galRender();var el=galEl();el.hidden=false;try{el.firstChild.focus({preventScroll:true});}catch(e){}
+  var g=GAL;phRefresh().then(function(ok){if(ok&&GAL===g&&GAL.mode==="view"){var n=GAL.list.length;galOpenList();if(GAL.list.length!==n)GAL.i=0;galRender();}});}
 function galOpenList(){if(!GAL)return;GAL.list=phFor(GAL.s);GAL.i=Math.max(0,Math.min(GAL.i,GAL.list.length-1));if(GAL.mode==="view")galRender();}
 function closeGallery(){if(!GAL)return;GAL=null;
   /* stay at the pulled-back vantage: the player steps back to where the camera is and the pull is dropped in the same frame */
@@ -4820,8 +4825,19 @@ function galForm(){if(!GAL)return;GAL.mode="form";GAL.img=null;var box=galEl().f
     var d=phParseDate(box.querySelector("#gfDate").value);if(d===null){say("I couldn't read that date. Try 1995, July 1995, or 7/4/1995.",true);return;}
     var id=Date.now().toString(36)+Math.random().toString(36).slice(2,6),slug=phSlug(GAL.s.name);
     var p={id:id,store:slug,name:GAL.s.name,file:"photos/"+slug+"/"+id+".jpg",date:d,desc:box.querySelector("#gfDesc").value.trim(),by:box.querySelector("#gfBy").value.trim(),email:box.querySelector("#gfMail").value.trim(),w:GAL.img.w,h:GAL.img.h,added:Date.now(),data:GAL.img.data,pending:true};
-    PH.pending.push(p);galDone(p,phSavePending());};
+    if(EDIT_OK||!PH_SUBMIT){PH.pending.push(p);galDone(p,phSavePending());return;}
+    var btn=this;btn.disabled=true;say("Sending it in…");
+    fetch(PH_SUBMIT,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:"submit",store:p.store,name:p.name,date:p.date,desc:p.desc,by:p.by,email:p.email,w:p.w,h:p.h,data:p.data.split(",")[1]||""})})
+    .then(function(r){return r.json();}).then(function(j){if(!j||!j.ok)throw (j&&j.error)||"";galSent(p);})
+    .catch(function(e){btn.disabled=false;say(typeof e==="string"&&e?e:"Couldn't send it. Check your connection and try again.",true);});};
 }
+/* a visitor's picture went in for review */
+function galSent(p){GAL.mode="done";var box=galEl().firstChild,nm=GAL.s.name||"";
+  box.innerHTML='<div class="gal-top"><span class="gal-name">THANKS!</span><span class="gal-date">'+esc(nm.toUpperCase())+'</span></div>'+
+  '<div class="gal-done"><b>Your picture is in the review pile.</b>Steven takes a look at everything that comes in. Once he gives it the nod it shows up right here on the '+esc(nm)+' board.</div>'+
+  '<div class="gal-foot"><span class="gal-count"></span><span class="gal-btns"><button class="gbtn gold" id="gsMore" type="button">Add another</button><button class="gbtn" id="gsView" type="button">Back to the board</button></span></div>';
+  box.querySelector("#gsMore").onclick=galForm;
+  box.querySelector("#gsView").onclick=function(){GAL.mode="view";galOpenList();galRender();};}
 function galDone(p,kept){GAL.mode="done";var box=galEl().firstChild,n=PH.pending.length;
   box.innerHTML='<div class="gal-top"><span class="gal-name">POSTED!</span><span class="gal-date">'+esc((GAL.s.name||"").toUpperCase())+'</span></div>'+
   '<div class="gal-done"><b>It\'s on the '+esc(GAL.s.name)+' board.</b>'+(kept?'It is kept in this browser until you publish. ':'It will be lost if this page is closed before you publish. ')+'Publish puts it on the live site for everyone; you can add more first.</div>'+
@@ -5998,7 +6014,7 @@ function openPublishGitHub(){
         }).then(function(cur){var body={message:m,content:b64,branch:br};if(cur&&cur.sha)body.sha=cur.sha;
           return fetch(u,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify(body)});
         }).then(function(r){if(r.ok)return r;throw {status:r.status,path:path};});}
-      var pend=PH.pending.slice(),chain=Promise.resolve();
+      var pend=PH.pending.slice(),chain=phRefresh().then(function(){pend=PH.pending.slice();});
       pend.forEach(function(p,i){chain=chain.then(function(){msg.textContent="Uploading photo "+(i+1)+" of "+pend.length+"…";return putFile(p.file,(p.data||"").split(",")[1]||"","Add a photo of "+(p.name||p.store));})
         .then(function(){PH.pending=PH.pending.filter(function(q){return q!==p;});var q={};for(var k in p)if(k!=="data"&&k!=="pending"&&k!=="email")q[k]=p[k];PH.photos.push(q);phSavePending();});});
       if(pend.length)chain=chain.then(function(){msg.textContent="Updating the photo list…";return putFile("photos.json",b64utf8(JSON.stringify(phManifest(),null,1)),"Update the photo list");});

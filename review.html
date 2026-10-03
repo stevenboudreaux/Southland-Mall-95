@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Southland Mall photo review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#2e4a36;--parch:#f8e3ac;--parch-3:#fbeec9;--ink:#4a2a18;--ink-soft:#7a5230;--wood-d:#5a3218;--wood-m:#a8672f;--wood-l:#dc9a4e;--plum:#3b2230;--gold:#f2c94c;--purple:#5b2a86;--red:#c8202c;--ok:#2e7d4f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:#f6e7c0;font-family:"Pixelify Sans","Trebuchet MS",Verdana,system-ui,sans-serif;font-size:17px;line-height:1.45;padding:18px 14px 60px}
+h1{margin:0 0 4px;font-size:clamp(22px,4vw,34px);letter-spacing:.04em;text-transform:uppercase;text-shadow:3px 3px 0 rgba(0,0,0,.35)}
+.sub{margin:0 0 18px;color:#c4d3b0}
+.sub a{color:var(--gold)}
+.plank{background:var(--parch);color:var(--ink);border:4px solid var(--wood-d);box-shadow:inset 0 0 0 3px var(--wood-l),inset 0 0 0 6px var(--wood-m),inset 0 0 0 8px var(--wood-d),5px 5px 0 rgba(0,0,0,.35);padding:16px 18px}
+.key{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-bottom:18px;max-width:720px}
+.key label{flex:1;min-width:220px;font-weight:700;text-transform:uppercase;font-size:13px;letter-spacing:.05em;color:var(--purple)}
+input{display:block;width:100%;margin-top:4px;background:#fffaf0;color:#2a1a10;border:3px solid var(--wood-d);box-shadow:inset 0 0 0 2px var(--wood-l);padding:7px 9px;font:inherit;font-size:16px}
+.gbtn{font:inherit;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:15px;background:var(--wood-m);color:#fff3d6;border:3px solid var(--wood-d);box-shadow:inset 0 3px 0 var(--wood-l),inset 0 -3px 0 #4a2812,3px 3px 0 rgba(0,0,0,.3);padding:8px 16px;cursor:pointer;line-height:1}
+.gbtn.gold{background:var(--gold);color:var(--plum);box-shadow:inset 0 3px 0 #fff0a8,inset 0 -3px 0 #c9962a,3px 3px 0 rgba(0,0,0,.3)}
+.gbtn.red{background:var(--red);box-shadow:inset 0 3px 0 #ef6a5a,inset 0 -3px 0 #7a1010,3px 3px 0 rgba(0,0,0,.3)}
+.gbtn:active{transform:translate(2px,2px);box-shadow:none}
+.gbtn[disabled]{opacity:.5;cursor:default}
+.cards{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(340px,1fr))}
+.card{display:flex;flex-direction:column;gap:10px;scroll-margin-top:12px}
+.card.hot{outline:4px solid var(--gold);outline-offset:4px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;border-bottom:3px solid var(--wood-m);padding-bottom:6px}
+.name{font-weight:700;font-size:22px;color:var(--purple);text-transform:uppercase;letter-spacing:.04em}
+.date{font-weight:700;background:var(--parch-3);border:3px solid var(--wood-d);box-shadow:inset 0 0 0 2px var(--wood-l);padding:2px 9px;white-space:nowrap;text-transform:uppercase;font-size:14px}
+.well{background:#1d1d24;border:4px solid var(--plum);box-shadow:inset 0 0 0 3px #3a3a44;display:flex;align-items:center;justify-content:center;min-height:220px}
+.well img{max-width:100%;max-height:60vh;display:block}
+.desc{background:var(--parch-3);border:3px solid var(--wood-d);box-shadow:inset 0 0 0 2px var(--wood-l);padding:8px 12px}
+.meta{color:var(--ink-soft);font-size:15px}
+.meta b{color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+.msg{font-weight:700;min-height:1.4em}
+.msg.bad{color:var(--red)}.msg.good{color:var(--ok)}
+.empty{max-width:720px;text-align:center;font-size:20px}
+</style></head><body>
+<h1>Photo review</h1>
+<p class="sub">Pictures people posted to the <a href="./">Southland Mall</a> boards, waiting for your say-so. Approve puts one on the live site within a minute or two; Deny throws it away.</p>
+<div class="plank key"><label>Your passphrase (kept in this browser)<input id="key" type="password" autocomplete="current-password"></label><button class="gbtn" id="reload" type="button">Refresh the pile</button></div>
+<div id="list" class="cards"></div>
+<script>
+var SUBMIT="";   /* the Apps Script web app URL, ending in /exec */
+var keyEl=document.getElementById("key"),list=document.getElementById("list");
+try{keyEl.value=localStorage.getItem("southland-review-key")||"";}catch(e){}
+keyEl.addEventListener("change",function(){try{localStorage.setItem("southland-review-key",keyEl.value);}catch(e){}});
+document.getElementById("reload").onclick=load;
+var MON=["JANUARY","FEBRUARY","MARCH","APRIL","MAY","JUNE","JULY","AUGUST","SEPTEMBER","OCTOBER","NOVEMBER","DECEMBER"];
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c];});}
+function dateText(d){if(!d)return "DATE UNKNOWN";var m=String(d).match(/^(\d{4})(?:-(\d\d))?(?:-(\d\d))?$/);if(!m){var w=String(d).match(/^(\d{4}) (.+)$/);return (w?w[2]+" "+w[1]:d).toUpperCase();}
+  if(!m[2])return m[1];return m[3]?MON[+m[2]-1]+" "+(+m[3])+", "+m[1]:MON[+m[2]-1]+" "+m[1];}
+function load(){
+  list.innerHTML='<p class="empty plank">Loading the pile…</p>';
+  fetch("pending.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.json():{pending:[]};}).then(function(j){
+    var L=(j&&j.pending||[]).slice().sort(function(a,b){return (b.added||0)-(a.added||0);});
+    if(!L.length){list.innerHTML='<p class="empty plank">Nothing waiting. The pile is empty.</p>';return;}
+    list.innerHTML=L.map(function(p){
+      return '<div class="plank card" id="c-'+esc(p.id)+'"><div class="top"><span class="name">'+esc(p.name||p.store)+'</span><span class="date">'+esc(dateText(p.date))+'</span></div>'+
+      '<div class="well"><img src="pending/'+esc(p.id)+'.jpg" alt=""></div>'+
+      (p.desc?'<div class="desc">'+esc(p.desc)+'</div>':'')+
+      '<div class="meta">'+(p.by?'Shared by <b>'+esc(p.by)+'</b>':'No name given')+(p.email?' &middot; '+esc(p.email):'')+(p.added?' &middot; '+new Date(p.added).toLocaleString():'')+(p.w?' &middot; '+p.w+' × '+p.h:'')+'</div>'+
+      '<div class="row"><span class="msg" data-msg></span><span><button class="gbtn red" data-act="deny" data-id="'+esc(p.id)+'" type="button">Deny</button> <button class="gbtn gold" data-act="approve" data-id="'+esc(p.id)+'" type="button">Approve</button></span></div></div>';
+    }).join("");
+    var hot=location.hash.slice(1);if(hot){var c=document.getElementById("c-"+hot);if(c){c.classList.add("hot");c.scrollIntoView();}}
+    list.querySelectorAll("button[data-act]").forEach(function(b){b.onclick=function(){decide(b.dataset.act,b.dataset.id,b.closest(".card"));};});
+  }).catch(function(){list.innerHTML='<p class="empty plank">Couldn\'t load pending.json.</p>';});
+}
+function decide(act,id,card){
+  var key=keyEl.value.trim(),msg=card.querySelector("[data-msg]"),btns=card.querySelectorAll("button");
+  if(!SUBMIT){msg.textContent="The script URL isn't set in this page yet.";msg.className="msg bad";return;}
+  if(!key){msg.textContent="Type your passphrase first.";msg.className="msg bad";keyEl.focus();return;}
+  if(act==="deny"&&!confirm("Throw this picture away?"))return;
+  btns.forEach(function(b){b.disabled=true;});msg.className="msg";msg.textContent=act==="approve"?"Publishing…":"Removing…";
+  fetch(SUBMIT,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify({action:act,id:id,key:key})})
+  .then(function(r){return r.json();}).then(function(j){
+    if(!j.ok)throw j.error||"Something went wrong.";
+    msg.className="msg good";msg.textContent=act==="approve"?"Published. It shows in the mall within a minute or two.":"Removed.";
+    setTimeout(function(){card.style.transition="opacity .5s";card.style.opacity=0;setTimeout(function(){card.remove();if(!list.children.length)list.innerHTML='<p class="empty plank">Nothing waiting. The pile is empty.</p>';},500);},1600);
+  }).catch(function(e){btns.forEach(function(b){b.disabled=false;});msg.className="msg bad";msg.textContent=typeof e==="string"?e:"Couldn't reach the script. Try again.";});
+}
+load();
+</script>
+</body></html>
