@@ -10410,12 +10410,29 @@ var SS=(function(){
       else if(kind===2){ /* payphone */
         R(g,OUT,cx0-11,B-92,22,40);R(g,METAL[1],cx0-10,B-91,20,38);R(g,METAL[2],cx0-10,B-91,3,38);R(g,"#243a6b",cx0-10,B-91,20,7);text(g,"PHONE",cx0-9,B-90,"#ffffff");R(g,"#1f1f24",cx0-6,B-80,5,18);R(g,"#3a3d42",cx0+1,B-80,7,9);for(var b2=0;b2<9;b2++)R(g,"#c9ccd0",cx0+2+(b2%3)*2,B-79+((b2/3)|0)*3,1,2);R(g,"#1f1f24",cx0-4,B-62,1,10);}
       else if(kind===3){ /* mall directory */
-        R(g,OUT,cx0-19,B-104,38,56);R(g,"#2e4a36",cx0-18,B-103,36,54);R(g,"#f6e7c0",cx0-15,B-92,30,40);text(g,"MALL MAP",cx0-15,B-100,"#f2c94c");
-        R(g,"#c9b98a",cx0-3,B-88,5,32);R(g,"#c9b98a",cx0-12,B-66,22,4);R(g,"#c9b98a",cx0-2,B-78,14,4);R(g,"#c8202c",cx0-1,B-74,3,3);}
+        hallPoster(g,cx0,B-112,!!(((sg.i0+c)>>1)&1));}
 
     }
     (sg.ads||[]).forEach(function(a){newsAd(g,x+a.px,B-150+a.v,a.w,a.h,a.k);});
     R(g,"rgba(40,26,58,.10)",x,yC+16,w,134);
+  }
+  /* where the mall map used to hang: a seasonal photo-board poster, Santa on some walls and the Easter Bunny on the others */
+  function hallPoster(g,cx,y,santa){
+    var fr=santa?"#a3222a":"#8a5cc4",pn=santa?"#fdf7ee":"#fff6c8",ink=santa?"#8e1b1f":"#5b2a86",W="#ffffff",x=cx-22,i;
+    R(g,OUT,x,y,44,64);R(g,fr,x+1,y+1,42,62);R(g,lt(fr,.25),x+1,y+1,42,1);R(g,pn,x+3,y+3,38,58);
+    function ln(t,yy){text(g,t,cx-(textW(t)>>1),yy,ink);}
+    ln("POST YOUR",y+5);var t=y+12;
+    if(santa){ /* Santa: red hat with a white bobble and brim, rosy face, big white beard */
+      R(g,W,cx-1,t,3,2);for(i=0;i<6;i++)R(g,"#c8202c",cx-1-i,t+2+i,3+2*i,1);R(g,W,cx-7,t+8,15,2);
+      R(g,"#f2c29b",cx-5,t+10,11,3);R(g,"#2a1a10",cx-3,t+10,1,1);R(g,"#2a1a10",cx+3,t+10,1,1);R(g,"#e98a8a",cx-5,t+11,1,1);R(g,"#e98a8a",cx+5,t+11,1,1);
+      R(g,W,cx-6,t+13,13,3);R(g,W,cx-4,t+16,9,2);R(g,"#c8202c",cx-1,t+13,3,1);
+      ln("PICTURES",y+33);ln("WITH",y+40);ln("SANTA!",y+48);
+      R(g,"#2e7d3a",x+5,y+56,3,3);R(g,"#c8202c",x+36,y+56,3,3);}
+    else{ /* the Easter Bunny: tall ears with pink insides, round face, pink nose */
+      R(g,OUT,cx-6,t-1,5,10);R(g,OUT,cx+2,t-1,5,10);R(g,W,cx-5,t,3,9);R(g,W,cx+3,t,3,9);R(g,"#f4a6c0",cx-4,t+2,1,6);R(g,"#f4a6c0",cx+4,t+2,1,6);
+      R(g,OUT,cx-7,t+8,15,10);R(g,W,cx-6,t+9,13,8);R(g,"#2a1a10",cx-3,t+11,1,2);R(g,"#2a1a10",cx+3,t+11,1,2);R(g,"#f4a6c0",cx-1,t+13,3,1);R(g,"#f4a6c0",cx-5,t+14,1,1);R(g,"#f4a6c0",cx+5,t+14,1,1);
+      ln("PICTURES",y+33);ln("WITH THE",y+40);ln("EASTER",y+47);ln("BUNNY!",y+54);
+      R(g,"#7fc8f8",x+5,y+55,2,3);R(g,"#f7d23a",x+37,y+55,2,3);}
   }
   /* a newspaper ad pasted straight onto the wall, no frame: the picture stretched to its rectangle, with the newsprint tone */
   function newsAd(g,cx,y,w,h,k){
