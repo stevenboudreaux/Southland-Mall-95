@@ -4782,7 +4782,7 @@ function lookTagSync(){
     var ne=el.querySelector(".lt-name");ne.textContent=s.timeDoor?"":nm;ne.hidden=!!s.timeDoor||!nm;el.style.setProperty("--u",u+"px");el._u=u;
     el.setAttribute("aria-label",(s.timeDoor?"Change year":"Look inside "+nm));
     if(el._s!==s){el.classList.remove("lt-pop");void el.offsetWidth;el.classList.add("lt-pop");}el._s=s;}
-  var x=cv.offsetLeft+HINT_AT.x*kx,y=cv.offsetTop+HINT_AT.y*ky,h=el.offsetHeight||60,hw=(el.offsetWidth||160)/2;
+  var h=el.offsetHeight||60,hw=(el.offsetWidth||160)/2,x=cv.offsetLeft+HINT_AT.x*kx,y=cv.offsetTop+HINT_AT.y*ky+(HINT_AT.top?h:0);
   x=Math.max(cv.offsetLeft+hw+4,Math.min(cv.offsetLeft+cv.clientWidth-hw-4,x));y=Math.max(cv.offsetTop+h+4,y);
   el.style.left=Math.round(x)+"px";el.style.top=Math.round(y)+"px";if(el.hidden)el.hidden=false;}
 function hintHit(x,y){return !!(HINT_BOX&&tick-HINT_BOX.t<4&&x>=HINT_BOX.x&&x<=HINT_BOX.x+HINT_BOX.w&&y>=HINT_BOX.y&&y<=HINT_BOX.y+HINT_BOX.h);}
@@ -11238,7 +11238,8 @@ var SS=(function(){
       else{var r=it.r,rp=Object.create(r);rp.x=0;rp.y=0;rp.dir=rdir(r.dir);var fd=(r.state==="enter"||r.state==="exit")&&r.alpha<1;g.translate(Math.round(q.x),Math.round(q.y));g.scale(q.s,q.s);g.globalAlpha=Math.max(0,Math.min(1,fd?r.alpha:1));drawNPCBody(g,it.n,rp,0,0);}
       g.restore();g.globalAlpha=1;});
     CXU=U;g.setTransform(1,0,0,1,0,0);g.imageSmoothingEnabled=false;W=VW;H=VH;hw=W/2;pyy/=U;ps/=U;
-    if(!SV&&!YP&&!GAL&&(P.hint||P.tdHint))HINT_AT={x:hw,y:pyy-68*ps};
+    if(!SV&&!YP&&!GAL&&(P.hint||P.tdHint)){ /* just under the store's sign: the wall straight ahead, at the top of the shop opening (68 of its 150 rows down) */
+      var tz=z[(VW*U/2)|0];HINT_AT=(tz>.3&&tz<9)?{x:hw,y:(hor-f*(WALLH-EYE)/tz+f*WALLH*68/150/tz)/U,top:true}:{x:hw,y:pyy-68*ps};}
     if(mapOn){var mc=mini(),k2=Math.max(.34,Math.min(1,Math.min(76/mc.width,52/mc.height))),mw=Math.round(mc.width*k2),mh=Math.round(mc.height*k2),mx=W-mw-7,my=6;
       R(g,"rgba(28,18,28,.82)",mx-3,my-3,mw+6,mh+6);R(g,"#f2c94c",mx-3,my-3,mw+6,1);g.drawImage(mc,mx,my,mw,mh);
       var ddx=mx+(px-mc.x0)*k2,ddy=my+(py-mc.y0)*k2;R(g,"#ffffff",ddx+dx*4-1,ddy+dy*4-1,2,2);R(g,OUT,ddx-3,ddy-3,5,5);R(g,((tick>>4)&1)?"#ff2fa0":"#ffe14d",ddx-2,ddy-2,3,3);}
