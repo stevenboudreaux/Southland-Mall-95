@@ -5,7 +5,6 @@
 .gal-box::before{left:5px}.gal-box::after{right:5px}
 .gal-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 6px 8px;border-bottom:3px solid var(--wood-m);margin-bottom:10px}
 .gal-name{font-weight:700;font-size:clamp(18px,3.2vw,30px);letter-spacing:.04em;color:var(--purple);text-transform:uppercase;text-shadow:2px 2px 0 rgba(90,50,24,.22);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.gal-date:has(button){padding:0;border:0;box-shadow:none;background:none}
 .gal-date{font-weight:700;font-size:clamp(13px,2vw,18px);color:var(--ink);background:var(--parch-3);border:3px solid var(--wood-d);box-shadow:inset 0 0 0 2px var(--wood-l);padding:3px 10px;white-space:nowrap;text-transform:uppercase;flex:none}
 .gal-mid{display:flex;align-items:stretch;gap:10px;min-height:0}
 .gal-arr{flex:0 0 46px;background:var(--wood-m);color:#fff3d6;border:3px solid var(--wood-d);box-shadow:inset 0 3px 0 var(--wood-l),inset 0 -3px 0 #4a2812,3px 3px 0 rgba(0,0,0,.3);font-size:26px;font-weight:700;cursor:pointer;padding:0;line-height:1}
@@ -4779,7 +4778,7 @@ function closeGallery(){if(!GAL)return;GAL=null;
   if(SIDE&&SS.m3&&CAMPULL>0){CAMPULL=Math.max(0,CAMPULL-SS.stepBack(CAMPULL));}var el=galEl();el.hidden=true;el.firstChild.innerHTML="";P.actHeld=true;P.jumpHeld=true;P.hintT=-999;P.tdT=-999;P.galCool=24;keys={};try{cv.focus({preventScroll:true});}catch(e){}}
 function galGo(d){if(!GAL||GAL.mode!=="view"||GAL.list.length<2)return;GAL.i=(GAL.i+d+GAL.list.length)%GAL.list.length;galRender();}
 function galRender(){var box=galEl().firstChild,L=GAL.list,n=L.length,p=n?L[GAL.i]:null,nm=(GAL.s.name||"").toUpperCase();
-  var h='<div class="gal-top"><span class="gal-name">'+esc(nm)+'</span><span class="gal-date">'+(p?esc(phDateText(p.date)):'<button class="gbtn gold" id="galAdd2" type="button">Add picture</button>')+'</span></div>';
+  var h='<div class="gal-top"><span class="gal-name">'+esc(nm)+'</span>'+(p?'<span class="gal-date">'+esc(phDateText(p.date))+'</span>':'')+'</div>';
   h+='<div class="gal-mid"><button class="gal-arr" id="galPrev" type="button" aria-label="Previous picture"'+(n>1?"":" disabled")+'>&#9664;</button><div class="gal-well'+(p?" has":"")+'" id="galWell">';
   if(p)h+='<img src="'+esc(phSrc(p))+'" alt="">';else h+='<div class="gal-empty">NO PICTURES OF '+esc(nm)+' YET<small>Got one from back in the day? Hit ADD PICTURE.</small></div>';
   h+='</div><button class="gal-arr" id="galNext" type="button" aria-label="Next picture"'+(n>1?"":" disabled")+'>&#9654;</button></div>';
@@ -4789,7 +4788,7 @@ function galRender(){var box=galEl().firstChild,L=GAL.list,n=L.length,p=n?L[GAL.
   h+='<div class="gal-foot"><span class="gal-count">'+(n?(GAL.i+1)+" OF "+n:"")+' <i>'+(n>1?'&#9664; &#9654; browse &middot; ':'')+'B or Esc closes</i></span><span class="gal-btns"><button class="gbtn gold" id="galAdd" type="button">Add picture</button><button class="gbtn" id="galClose" type="button">Close</button></span></div>';
   box.innerHTML=h;
   box.querySelector("#galPrev").onclick=function(){galGo(-1);};box.querySelector("#galNext").onclick=function(){galGo(1);};
-  box.querySelector("#galClose").onclick=closeGallery;box.querySelectorAll("#galAdd,#galAdd2").forEach(function(b){b.onclick=galForm;});
+  box.querySelector("#galClose").onclick=closeGallery;box.querySelector("#galAdd").onclick=galForm;
   var w=box.querySelector("#galWell"),sx=null;w.addEventListener("pointerdown",function(e){sx=e.clientX;});w.addEventListener("pointerup",function(e){if(sx==null)return;var d=e.clientX-sx;sx=null;if(Math.abs(d)>40)galGo(d<0?1:-1);});
 }
 function stepGAL(){GAL.t++;if(GAL.mode!=="view")return;var inp=readInput();
