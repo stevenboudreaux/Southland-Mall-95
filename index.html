@@ -3127,9 +3127,10 @@ function normalize(m){
   m.start=m.start||{x:61,y:39};
   m.title=m.title||"SOUTHLAND MALL";
   /* pictures added in the editor: the cinema's four now-showing posters and ten newspaper ads on bare walls */
-  m.media=m.media||{};m.media.posters=(m.media.posters||[]).slice(0,4);m.media.ads=(m.media.ads||[]).slice(0,10);
-  while(m.media.posters.length<4)m.media.posters.push(null);while(m.media.ads.length<10)m.media.ads.push(null);
-  m.adSlots=(m.adSlots||[]).slice(0,10);while(m.adSlots.length<10)m.adSlots.push(null);
+  m.media=m.media||{};m.media.posters=(m.media.posters||[]).slice(0,4);m.media.ads=m.media.ads||[];
+  while(m.media.posters.length<4)m.media.posters.push(null);
+  /* as many ad frames as the editor wants: the two lists stay the same length */
+  m.adSlots=m.adSlots||[];while(m.adSlots.length<m.media.ads.length)m.adSlots.push(null);while(m.media.ads.length<m.adSlots.length)m.media.ads.push(null);
   m.media.lion=m.media.lion||null;
   var rows=m.floor||[];m.grid=new Uint8Array(m.w*m.h);
   for(var y=0;y<m.h;y++){var r=rows[y]||"";for(var x=0;x<m.w;x++){var v=CH.indexOf(r[x]||"0");m.grid[y*m.w+x]=v<0?0:v;}}
@@ -4529,6 +4530,14 @@ function facingStore(inp,test){
 function tdTarget(inp){return facingStore(inp,function(s){return !!s.timeDoor;});}
 
 var YP=null;   /* the year picker: {i, ph: open|pick|close|out|hold|in, t, to} */
+/* where the year slider sits on the screen (VW units), shared by the drawing and the mouse */
+function ypGeom(){var L=eraList(),pw=Math.min(VW-24,560),ph2=Math.min(VH-24,236),px=((VW-pw)/2)|0,py=((VH-ph2)/2)|0;return {L:L,pw:pw,ph:ph2,px:px,py:py,tx0:px+56,tx1:px+pw-56,ty:py+ph2-92,y0:+L[0],y1:+L[L.length-1]===+L[0]?+L[0]+1:+L[L.length-1]};}
+function ypNearest(mx){var G=ypGeom(),yr=G.y0+(mx-G.tx0)/(G.tx1-G.tx0)*(G.y1-G.y0),bi=0,bd=1e9;G.L.forEach(function(y,i){var d=Math.abs(+y-yr);if(d<bd){bd=d;bi=i;}});return bi;}
+function ypMouse(kind,mx,my){ /* mx,my in VW units */
+  if(!YP||YP.ph!=="pick")return;var G=ypGeom(),inPanel=mx>=G.px&&mx<=G.px+G.pw&&my>=G.py&&my<=G.py+G.ph,onBar=inPanel&&my>G.ty-28&&my<G.ty+30;
+  if(kind==="down"){if(!inPanel){YP.ph="close";YP.t=0;return;}if(onBar){YP.i=ypNearest(mx);YP.mdrag=true;}}
+  else if(kind==="move"){if(YP.mdrag)YP.i=ypNearest(mx);}
+  else if(kind==="up"){if(!YP.mdrag)return;YP.mdrag=false;var L=G.L;if(L[YP.i]===M._era){YP.ph="close";YP.t=0;}else{YP.to=L[YP.i];YP.ph="out";YP.t=0;}}}
 function openYP(){var L=eraList();if(L.length<2)return false;YP={i:Math.max(0,L.indexOf(M._era)),ph:"open",t:0,held:true,hx:0};P.moving=false;P.frame=0;P.anim=0;P.tdPush=0;return true;}
 function endYP(){YP=null;P.tdLock=true;P.actHeld=true;P.jumpHeld=true;}
 function stepYP(){
@@ -4560,7 +4569,7 @@ function drawYP(g){
     R(g,"#f8e3ac",px+8,py+8,pw-16,ph2-16);R(g,"#efd08a",px+8,py+ph2-11,pw-16,3);
     var ttl="PICK A YEAR",tk=pw>=440?3:2,tw=ttl.length*6*tk;arcadeText(g,ttl,px+((pw-tw)/2|0),py+18,tk);
     var now="NOW SHOWING "+M._era,nw=textW(now)*sk;g.setTransform(sk,0,0,sk,px+((pw-nw)/2|0),py+18+8*tk+6);text(g,now,0,0,"#7a5230");g.setTransform(1,0,0,1,0,0);
-    var y0=+L[0],y1=+L[L.length-1],tx0=px+56,tx1=px+pw-56,ty=py+ph2-92;if(y1===y0)y1=y0+1;
+    var Gy=ypGeom(),y0=Gy.y0,y1=Gy.y1,tx0=Gy.tx0,tx1=Gy.tx1,ty=Gy.ty;
     function X(y){return Math.round(tx0+(y-y0)/(y1-y0)*(tx1-tx0));}
     R(g,OUT,tx0-3,ty-3,tx1-tx0+6,8);R(g,WOOD_D,tx0-2,ty-2,tx1-tx0+4,6);R(g,"#c99a5a",tx0-2,ty-2,tx1-tx0+4,2);
     for(var y=+L[0];y<=+L[L.length-1];y++){var has=L.indexOf(String(y))>=0,x=X(y);
@@ -4573,7 +4582,7 @@ function drawYP(g){
     var kx=X(+L[YP.i]),bob=(ph==="pick"&&((tick>>4)&1))?1:0;
     R(g,SHADOW,kx-7,ty-21-bob+3,16,22);R(g,OUT,kx-8,ty-22-bob,16,22);R(g,GOLD,kx-7,ty-21-bob,14,20);R(g,"#fff3b0",kx-7,ty-21-bob,14,2);R(g,"#c9962a",kx-7,ty-3-bob,14,2);
     R(g,OUT,kx-3,ty-13-bob,6,1);R(g,OUT,kx-3,ty-10-bob,6,1);
-    var hint="LEFT / RIGHT TO PICK  -  A OR ENTER TO GO  -  ESC TO STAY",hw=textW(hint)*sk;if(hw>pw-24){sk=1;hw=textW(hint);}
+    var hint="LEFT / RIGHT OR DRAG TO PICK  -  A, ENTER OR RELEASE TO GO  -  ESC TO STAY",hw=textW(hint)*sk;if(hw>pw-24){sk=1;hw=textW(hint);}
     g.setTransform(sk,0,0,sk,px+((pw-hw)/2|0),py+ph2-28);text(g,hint,0,0,"#5b2a86");g.setTransform(1,0,0,1,0,0);
   }
   if(black>0){g.globalAlpha=Math.max(0,Math.min(1,black));g.fillStyle="#0c0810";g.fillRect(0,0,VW,VH);
@@ -5393,16 +5402,17 @@ function mediaHTML(){
   var h='<div class="media"><h3>Posters &amp; ads</h3>';
   var md=readMediaDraft();if(md&&JSON.stringify({media:md.media,adSlots:md.adSlots})!==mediaKey())h+='<div class="banner plank" style="margin:6px 0"><p><b>Unpublished pictures from last time</b>They were kept in this browser.</p><button class="btn small teal" type="button" data-m="restore">Restore them</button><button class="btn small ghost" type="button" data-m="forget">Forget them</button></div>';
   h+='<p class="hint">Every picture is made 8-bit (shrunk, toned, cut to a few colors) and saved inside the mall, so it publishes with it. <b>Pixel look</b> opens the sliders for one picture. Ads start out black and white like newsprint.</p>';
-  h+='<p class="meter">Pictures: <b>'+kbOf(tot).toLocaleString()+' KB</b> of a suggested 1,500 KB'+(tot>1536000?' <b style="color:var(--red)">· getting heavy, try Small</b>':'')+'</p>';
+  h+='<p class="meter">Pictures: <b>'+kbOf(tot).toLocaleString()+' KB</b>'+(tot>2500000?' <b style="color:var(--red)">· getting heavy: the page loads slower; lower some pictures\u2019 Detail</b>':'')+'</p>';
   var ln=M.media.lion;
   h+='<h4>The Lion\u2019s Share lions</h4><p class="hint">The gold lion from the photograph, cut out and made 8-bit, stands either side of the door (the right one mirrored).</p>';
   h+='<div class="mcards"><div class="mcard"><div class="th">'+(ln&&ln.src?'<img src="'+ln.src+'" alt="" style="image-rendering:pixelated;height:90px;width:auto">':'Hidden')+'</div><div class="cap"><b>Lion</b>'+(ln&&ln.src?'<br>'+ln.w+' × '+ln.h+' px · '+ln.o.colors+' colors':'')+'</div><div class="row"><button class="btn small teal" type="button" data-ed="lion" data-k="">Pixel look</button><label class="btn small">Replace photo<input type="file" accept="image/*" data-up="lion" data-k="" hidden></label>'+(ln&&ln.src?'<button class="btn small ghost" type="button" data-rm="lion" data-k="">Hide</button>':'')+'</div></div></div>';
   h+='<h4>Now-showing posters (Southland Cinema)</h4><p class="hint">The four cases beside the cinema doors. The only movie posters in the mall.</p><div class="mcards">';
   for(var i=0;i<4;i++){var o=M.media.posters[i];h+='<div class="mcard"><div class="th">'+(o?'<img src="'+o.src+'" alt="" style="image-rendering:pixelated">':'Built-in art')+'</div><div class="cap"><b>'+POSTER_NAMES[i]+'</b>'+(o?'<br>'+esc(o.name||"")+' · '+kbOf(o.src.length*.75)+' KB':'')+'</div><div class="row"><label class="btn small teal">Upload<input type="file" accept="image/*" data-up="posters" data-k="'+i+'" hidden></label>'+(o?'<button class="btn small" type="button" data-ed="posters" data-k="'+i+'">Pixel look</button><button class="btn small ghost" type="button" data-rm="posters" data-k="'+i+'">Remove</button>':'')+'</div></div>';}
-  h+='</div><h4>Newspaper ads (10 wall spots)</h4><p class="hint">Each spot is a framed ad on a bare wall. To move one: walk to a bare wall, face it, enter the code, then press <b>Hang here</b>.</p>';
+  h+='</div><h4>Newspaper ads</h4><p class="hint">Ads are pasted on bare walls, as many as you like. Place and shape them from inside the mall with <b>Place ads</b> (bottom left while walking). Here you can swap or re-tune each picture.</p>';
   if(EDIT_FACE)h+='<p class="hint">You last faced: '+(EDIT_FACE.front?'a storefront ('+esc(EDIT_FACE.store)+'), which can\u2019t take an ad':'a bare wall at '+EDIT_FACE.x+', '+EDIT_FACE.y)+'.</p>';
   h+='<div class="mcards">';
-  for(var j=0;j<10;j++){var a=M.media.ads[j],A=M.adSlots[j];h+='<div class="mcard"><div class="th">'+(a?'<img src="'+a.src+'" alt="" style="image-rendering:pixelated">':'Empty')+'</div><div class="cap"><b>Ad '+(j+1)+'</b><br>'+esc(slotPlace(A))+(a?'<br>'+esc(a.name||"")+' · '+kbOf(a.src.length*.75)+' KB':'')+'</div><div class="row"><label class="btn small teal">Upload<input type="file" accept="image/*" data-up="ads" data-k="'+j+'" hidden></label>'+(a?'<button class="btn small" type="button" data-ed="ads" data-k="'+j+'">Pixel look</button><button class="btn small ghost" type="button" data-rm="ads" data-k="'+j+'">Remove</button>':'')+((EDIT_FACE&&!EDIT_FACE.front)?'<button class="btn small" type="button" data-hang="'+j+'">Hang here</button>':'')+'</div></div>';}
+  var nAds=Math.max(M.media.ads.length,M.adSlots.length);if(!nAds)h+='<p class="hint">No ads yet.</p>';
+  for(var j=0;j<nAds;j++){var a=M.media.ads[j],A=M.adSlots[j];if(!a&&!A)continue;h+='<div class="mcard"><div class="th">'+(a?'<img src="'+a.src+'" alt="" style="image-rendering:pixelated">':'Empty')+'</div><div class="cap"><b>Ad '+(j+1)+'</b><br>'+esc(slotPlace(A))+(a?'<br>'+esc(a.name||"")+' · '+kbOf(a.src.length*.75)+' KB':'')+'</div><div class="row"><label class="btn small teal">Upload<input type="file" accept="image/*" data-up="ads" data-k="'+j+'" hidden></label>'+(a?'<button class="btn small" type="button" data-ed="ads" data-k="'+j+'">Pixel look</button><button class="btn small ghost" type="button" data-rm="ads" data-k="'+j+'">Remove</button>':'')+((EDIT_FACE&&!EDIT_FACE.front)?'<button class="btn small" type="button" data-hang="'+j+'">Hang here</button>':'')+'</div></div>';}
   h+='</div></div>';
   return h;
 }
@@ -5474,7 +5484,7 @@ function wedPickAt(p){var best=null;if(WED.sel!=null){var c0=wedCorners(WED.sel)
   for(var k=M.adSlots.length-1;k>=0;k--){if(!M.adSlots[k])continue;var c=wedCorners(k);if(!c)continue;for(var j=0;j<4;j++)if(Math.hypot(c[j].x-p.x,c[j].y-p.y)<12*PLU)return {k:k,corner:j};if(wedInside(c,p))return {k:k,corner:-1};}return null;}
 function wedChanged(){SS.texDirty=true;saveMediaDraft();}
 function wedAddHere(){var pk=SS.wallPick(VW*PLU/2,VH*PLU/2);if(!pk){toast("Look at a wall first");return;}if(pk.front){toast("That is a storefront ("+pk.store+"). Ads go on bare walls.");return;}
-  var k=-1;for(var i=0;i<10;i++)if(!M.adSlots[i]){k=i;break;}if(k<0){toast("All 10 ad frames are placed. Remove one to add another.");return;}
+  var k=-1;for(var i=0;i<M.adSlots.length;i++)if(!M.adSlots[i]&&!M.media.ads[i]){k=i;break;}if(k<0){k=M.adSlots.length;M.adSlots.push(null);M.media.ads.push(null);}
   var w=40,h=52;M.adSlots[k]={x:pk.x,y:pk.y,F:pk.F,u:pk.u,v:Math.max(4,Math.min(150-10-h,Math.round(pk.v-h/2))),w:w,h:h};WED.sel=k;wedChanged();wedBar();toast("Ad frame "+(k+1)+" placed. Drag its corners to size it, then Upload.");}
 function wedBind(){
   var up=document.createElement("input");up.type="file";up.accept="image/*";up.hidden=true;document.body.appendChild(up);
@@ -5487,6 +5497,17 @@ function wedBind(){
   $("#wbLook").onclick=function(){this.blur();if(WED.sel!=null&&mediaOf("ads",WED.sel))openPic("ads",WED.sel);};
   $("#wbDel").onclick=function(){this.blur();if(WED.sel==null)return;M.adSlots[WED.sel]=null;WED.sel=null;wedChanged();wedBar();toast("Frame removed (its picture is kept in the Posters & ads tab)");};
   $("#wbDone").onclick=function(){wedSet(false);};
+  /* the mouse in ordinary play: hold the main button and drag, and the view follows the cursor, as if pulling the world round;
+     on the year picker, click or drag the slider */
+  var look=null;
+  cv.addEventListener("pointerdown",function(e){if(WED.on||mode!=="play"||e.button!==0||!SS.m3)return;e.preventDefault();var p=wedCanvasPt(e);
+    if(YP){ypMouse("down",p.x/PLU,p.y/PLU);return;}if(SV)return;
+    look={id:e.pointerId,x:p.x,y:p.y};try{cv.setPointerCapture(e.pointerId);}catch(x){}});
+  cv.addEventListener("pointermove",function(e){if(mode!=="play")return;var p=wedCanvasPt(e);if(YP&&YP.mdrag){ypMouse("move",p.x/PLU,p.y/PLU);return;}
+    if(!look||e.pointerId!==look.id)return;var W=VW*PLU,H=VH*PLU,r3=SS.r3;
+    r3.a-=(p.x-look.x)/(W*.45);r3.pitch=Math.max(-.42,Math.min(.42,(r3.pitch||0)+(p.y-look.y)/H));look.x=p.x;look.y=p.y;});
+  function lookEnd(e){if(YP&&YP.mdrag){var p=wedCanvasPt(e);ypMouse("up",p.x/PLU,p.y/PLU);}if(look&&e.pointerId===look.id)look=null;}
+  cv.addEventListener("pointerup",lookEnd);cv.addEventListener("pointercancel",lookEnd);
   cv.addEventListener("pointerdown",function(e){if(!WED.on||mode!=="play")return;e.preventDefault();var p=wedCanvasPt(e),hit=wedPickAt(p);
     if(!hit){WED.sel=null;wedBar();return;}WED.sel=hit.k;var A=M.adSlots[hit.k],G=SS.adGeom(A);Object.assign(A,G);A.sized=true;
     WED.drag={k:hit.k,corner:hit.corner,u0:A.u,v0:A.v,w0:A.w,h0:A.h,pu:null};var pk=SS.wallPick(p.x,p.y);if(pk&&pk.x===A.x&&pk.y===A.y&&pk.F===A.F)WED.drag.pu=pk;try{cv.setPointerCapture(e.pointerId);}catch(x){}wedBar();});
