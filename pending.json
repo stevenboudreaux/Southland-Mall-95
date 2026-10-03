@@ -1,18 +1,4 @@
 {
  "v": 1,
- "pending": [
-  {
-   "id": "20261003171045hkhb",
-   "store": "gumballs",
-   "name": "GUMBALLS",
-   "file": "photos/gumballs/20261003171045hkhb.jpg",
-   "date": "",
-   "desc": "",
-   "by": "",
-   "email": "",
-   "w": 1200,
-   "h": 1600,
-   "added": 1791047445130
-  }
- ]
+ "pending": []
 }
