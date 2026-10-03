@@ -4539,13 +4539,15 @@ function lookCand(inp){
       if(fr.d>10&&!lookClear(P.x,P.y,P.x+L[0]*(t-6/c),P.y+L[1]*(t-6/c)))continue;
       if(t<bt){bt=t;best=s;}}}
   return best;}
-function lookAway(s,inp){ /* true once he has clearly stopped looking at s */
+function lookAway(s,inp){ /* true once he has clearly stopped looking at s: turned so his view no longer lands on its
+   frontage (with a little slack past the edges, and up to about 60 degrees off square), or walked well away from it */
   if(M.stores.indexOf(s)<0||!lookEligible(s))return true;
-  var L=lookVec(inp),bd=1e9,fs=[s.face,s.face2];
-  for(var k=0;k<2;k++){var f=fs[k];if(!f||!FACEN[f])continue;var fr=lookFront(s,f),n=FACEN[f],
-      along=Math.max(0,fr.a0-fr.u,fr.u-fr.a1),dist=Math.hypot(Math.max(0,fr.d),along),c=-(L[0]*n[0]+L[1]*n[1]);
-    if(c<-.7&&dist>LOOK_ON*T)continue;bd=Math.min(bd,dist);}
-  return bd>LOOK_OFF*T;}
+  var L=lookVec(inp),fs=[s.face,s.face2];
+  for(var k=0;k<2;k++){var f=fs[k];if(!f||!FACEN[f])continue;var fr=lookFront(s,f),n=FACEN[f],c=-(L[0]*n[0]+L[1]*n[1]);
+    if(c<.5||fr.d<-24||fr.d>LOOK_OFF*T)continue;
+    var t=Math.max(0,fr.d)/c,u=fr.u+(n[0]?L[1]:L[0])*t,sl=T*.3;
+    if(u>=fr.a0-sl&&u<=fr.a1+sl)return false;}
+  return true;}
 function lookUpdate(inp){
   var c=P.air?null:lookCand(inp);
   if(P.lookSup&&c!==P.lookSup&&!P.air)P.lookSup=null;
