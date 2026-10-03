@@ -8206,7 +8206,7 @@ var SS=(function(){
     /* the name lives on a plain shield centred on the brick to the right of the door: The / Lion's / Share in gold
        blackletter on oxblood, one gold rule round the edge and nothing else */
     if(s.noSign)return;
-    var cxR=Math.round((X0+dw+4+x+w-3)/2),shW=Math.min(50,x+w-8-(X0+dw+8)),shH=Math.round(shW*1.16),shX=cxR-shW/2,shY=top+6;
+    var cxR=Math.round((X0+dw+4+x+w-3)/2),shW=Math.min(40,(x+w-8-(X0+dw+8))*.8),shH=Math.round(shW*1.16),shX=cxR-shW/2,shY=top+76-shH;
     if(shW<24)return;
     function shield(o){g.beginPath();g.moveTo(shX+o,shY+o);g.lineTo(shX+shW-o,shY+o);g.lineTo(shX+shW-o,shY+shH*.56);
       g.quadraticCurveTo(shX+shW-o,shY+shH*.86,cxR,shY+shH-o*1.2);g.quadraticCurveTo(shX+o,shY+shH*.86,shX+o,shY+shH*.56);g.closePath();}
