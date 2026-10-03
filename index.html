@@ -4720,7 +4720,7 @@ function drawSFHint(g){
    New pictures wait in this browser (PH.pending) until Publish uploads them. */
 var PH={photos:[],pending:[],live:false},GAL=null,CAMPULL=0;
 /* the Apps Script web app that takes other people's pictures for review (apps-script/Code.gs). Empty: pictures stay in this browser. */
-var PH_SUBMIT="";
+var PH_SUBMIT="https://script.google.com/macros/s/AKfycbyMNQ2PnP6NQMLuRfPEmcHIqJ-sIC9mzrt0AGHekrdywl6xyy3Fl2kD8FPjU7cQXfRwuw/exec";
 /* the latest published list from the site; the page's own copy is the fallback when opened from a file */
 function phRefresh(){if(location.protocol==="file:")return Promise.resolve(false);
   return fetch("photos.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.json():null;}).then(function(j){

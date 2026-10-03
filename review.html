@@ -40,7 +40,7 @@ input{display:block;width:100%;margin-top:4px;background:#fffaf0;color:#2a1a10;b
 <div class="plank key"><label>Your passphrase (kept in this browser)<input id="key" type="password" autocomplete="current-password"></label><button class="gbtn" id="reload" type="button">Refresh the pile</button></div>
 <div id="list" class="cards"></div>
 <script>
-var SUBMIT="";   /* the Apps Script web app URL, ending in /exec */
+var SUBMIT="https://script.google.com/macros/s/AKfycbyMNQ2PnP6NQMLuRfPEmcHIqJ-sIC9mzrt0AGHekrdywl6xyy3Fl2kD8FPjU7cQXfRwuw/exec";   /* the Apps Script web app URL, ending in /exec */
 var keyEl=document.getElementById("key"),list=document.getElementById("list");
 try{keyEl.value=localStorage.getItem("southland-review-key")||"";}catch(e){}
 keyEl.addEventListener("change",function(){try{localStorage.setItem("southland-review-key",keyEl.value);}catch(e){}});
