@@ -4774,7 +4774,9 @@ function galEl(){var el=document.getElementById("gal");if(!el){el=document.creat
 function openGallery(s){if(GAL)return;GAL={s:s,list:phFor(s),i:0,mode:"view",held:true,hx:0,t:0};P.moving=false;P.frame=0;P.anim=0;
   galRender();var el=galEl();el.hidden=false;try{el.firstChild.focus({preventScroll:true});}catch(e){}}
 function galOpenList(){if(!GAL)return;GAL.list=phFor(GAL.s);GAL.i=Math.max(0,Math.min(GAL.i,GAL.list.length-1));if(GAL.mode==="view")galRender();}
-function closeGallery(){if(!GAL)return;GAL=null;var el=galEl();el.hidden=true;el.firstChild.innerHTML="";P.actHeld=true;P.jumpHeld=true;P.hintT=-999;P.tdT=-999;P.galCool=24;keys={};try{cv.focus({preventScroll:true});}catch(e){}}
+function closeGallery(){if(!GAL)return;GAL=null;
+  /* stay at the pulled-back vantage: the player steps back to where the camera is and the pull is dropped in the same frame */
+  if(SIDE&&SS.m3&&CAMPULL>0){CAMPULL=Math.max(0,CAMPULL-SS.stepBack(CAMPULL));}var el=galEl();el.hidden=true;el.firstChild.innerHTML="";P.actHeld=true;P.jumpHeld=true;P.hintT=-999;P.tdT=-999;P.galCool=24;keys={};try{cv.focus({preventScroll:true});}catch(e){}}
 function galGo(d){if(!GAL||GAL.mode!=="view"||GAL.list.length<2)return;GAL.i=(GAL.i+d+GAL.list.length)%GAL.list.length;galRender();}
 function galRender(){var box=galEl().firstChild,L=GAL.list,n=L.length,p=n?L[GAL.i]:null,nm=(GAL.s.name||"").toUpperCase();
   var h='<div class="gal-top"><span class="gal-name">'+esc(nm)+'</span><span class="gal-date">'+(p?esc(phDateText(p.date)):'<button class="gbtn gold" id="galAdd2" type="button">Add picture</button>')+'</span></div>';
@@ -11221,6 +11223,8 @@ var SS=(function(){
     if(fade>0){g.globalAlpha=Math.min(1,fade/7);g.fillStyle="#1c121c";g.fillRect(0,0,VW,VH);g.globalAlpha=1;}
   };
   api.info=function(){return SC?{F:SC.F,qB:SC.qB,dMax:SC.dMax,r0:SC.r0,r1:SC.r1,c0:SC.c0,c1:SC.c1,W:SC.W,segs:SC.segs.map(function(s){return s.t+":"+(s.s?s.s.name:"")+":"+s.n;})}:null;};
+  /* walk the player straight back (tiles), stopping at anything solid: used when the photo board closes so he keeps the pulled-back view */
+  api.stepBack=function(tiles){var dx=Math.cos(R3.a),dy=Math.sin(R3.a),n=Math.round(tiles*T),i=0;for(;i<n;i++){var nx=P.x-dx,ny=P.y-dy;if(blocked(nx,ny,false))break;P.x=nx;P.y=ny;}return i/T;};
   api.towardWall=function(){if(api.m3)return lastRaw.dy<0;return lastRaw.dy<0&&!lastRaw.dx&&!V.hold;};
   api.face=function(F,m){setF(F,false,m!==false);};
   return api;
