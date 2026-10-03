@@ -1,4 +1,18 @@
 {
  "v": 1,
- "pending": []
+ "pending": [
+  {
+   "id": "2026100317175509tz",
+   "store": "bdaltonbookseller",
+   "name": "B. DALTON BOOKSELLER",
+   "file": "photos/bdaltonbookseller/2026100317175509tz.jpg",
+   "date": "",
+   "desc": "",
+   "by": "",
+   "email": "",
+   "w": 921,
+   "h": 723,
+   "added": 1791047875349
+  }
+ ]
 }
