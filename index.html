@@ -11361,7 +11361,7 @@ if(FPONLY)(function(){
   spot();
   fpWait=true;
   var o=document.createElement("div");o.id="fpStart";
-  o.innerHTML='<div id="fpHero"><canvas id="fpLogo" role="img" aria-label="Southland Mall"></canvas><canvas id="fpBadge" role="img" aria-label="1995"></canvas></div><button type="button" id="fpGo">START</button><p id="fpHint">Press Enter, click, or press A on a controller</p>';
+  o.innerHTML='<div id="fpHero"><canvas id="fpLogo" role="img" aria-label="Southland Mall"></canvas><canvas id="fpBadge" role="img" aria-label="Retro"></canvas></div><button type="button" id="fpGo">START</button><p id="fpHint">Press Enter, click, or press A on a controller</p>';
   document.body.appendChild(o);
   /* ---- the Southland Mall logo, drawn as vectors from the mall's own letterhead (design units: 1160 x 900) ---- */
   function drawLogo(cv){
@@ -11385,7 +11385,7 @@ if(FPONLY)(function(){
     g.fillRect(255,798,650,4);g.fillRect(255,880,650,4);
     g.font="300 74px "+SANS;g.textAlign="center";["M","A","L","L"].forEach(function(c,n){g.save();g.translate([305,510,680,840][n],868);g.scale(1,53/(g.measureText(c).actualBoundingBoxAscent||53));g.fillText(c,0,0);g.restore();});
   }
-  /* ---- the '95 badge: an upside-down triangle in hot 90s purple on a grid, a black drop shadow, a pink stripe and a boombox ---- */
+  /* ---- the Retro badge (once the '95 badge): an upside-down triangle in hot 90s purple on a grid, a black drop shadow, a pink stripe and a boombox ---- */
   function rr(g,x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
   function boombox(g,cx,cy){
     g.save();g.translate(cx,cy);g.lineJoin="round";g.strokeStyle="#111";
@@ -11417,8 +11417,9 @@ if(FPONLY)(function(){
     g.restore();
     /* the pink stripe, then the year */
     g.save();g.translate(300,262);g.rotate(-.05);g.fillStyle="#111";g.fillRect(-118,8,252,30);g.fillStyle="#ff4fa8";g.fillRect(-126,0,252,30);g.restore();
-    var F="italic 900 178px 'Montserrat','Arial Black','Helvetica Neue',Arial,sans-serif",str="’95";
-    g.font=F;g.textAlign="center";g.textBaseline="alphabetic";g.lineJoin="round";
+    /* the word is shrunk to fit inside the triangle */
+    var str="Retro",fs=178,FF="'Montserrat','Arial Black','Helvetica Neue',Arial,sans-serif";g.font="italic 900 "+fs+"px "+FF;
+    var tw=g.measureText(str).width;if(tw>380){fs=Math.floor(fs*380/tw);g.font="italic 900 "+fs+"px "+FF;}g.textAlign="center";g.textBaseline="alphabetic";g.lineJoin="round";
     g.fillStyle="#111";g.fillText(str,318,250);
     g.lineWidth=14;g.strokeStyle="#111";g.strokeText(str,306,238);g.fillStyle="#ffffff";g.fillText(str,306,238);
     g.save();g.translate(300,384);g.scale(.8,.8);boombox(g,0,0);g.restore();
