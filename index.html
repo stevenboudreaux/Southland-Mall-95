@@ -4518,6 +4518,13 @@ function readInput(){
    the tag stays until it's used, another store takes its place, or he backs off: past LOOK_OFF tiles, or past LOOK_ON while
    facing away. After a board closes, that store waits until he looks away and back before it offers itself again. */
 var LOOK_ON=4,LOOK_OFF=6,FACEN={N:[0,-1],S:[0,1],W:[-1,0],E:[1,0]};
+/* the Santa and Easter Bunny posters on the hall walls each carry a photo board too. The walls are drawn by the 3D and side
+   views, so each poster is noted here (as a thin pretend storefront on its wall) the first time it is drawn */
+var POSTERS={};
+function posterNote(santa,wx,wy,f){var k=(santa?"santa":"bunny")+":"+Math.floor(wx)+","+Math.floor(wy);if(POSTERS[k])return;
+  var r=f==="N"?{x:wx-.7,y:wy,w:1.4,h:1}:f==="S"?{x:wx-.7,y:wy-1,w:1.4,h:1}:f==="W"?{x:wx,y:wy-.7,w:1,h:1.4}:{x:wx-1,y:wy-.7,w:1,h:1.4};
+  r.face=f;r.poster=true;r.id="poster-"+k;r.name=santa?"Photos with Santa":"Photos with the Easter Bunny";POSTERS[k]=r;}
+function posterList(){return Object.keys(POSTERS).map(function(k){return POSTERS[k];});}
 function lookEligible(s){return phEligible(s)||(!!s.timeDoor&&eraList().length>1);}
 function lookVec(inp){
   if(SIDE&&SS.m3&&SS.r3)return [Math.cos(SS.r3.a),Math.sin(SS.r3.a)];
@@ -4529,8 +4536,8 @@ function lookFront(s,f){var x0=s.x*T,x1=(s.x+s.w)*T,y0=s.y*T,y1=(s.y+s.h)*T;
 function lookClear(x0,y0,x1,y1){var dx=x1-x0,dy=y1-y0,n=Math.ceil(Math.hypot(dx,dy)/5);
   for(var i=1;i<n;i++){var x=x0+dx*i/n,y=y0+dy*i/n;if(!isFloor(Math.floor(x/T),Math.floor(y/T)))return false;}return true;}
 function lookCand(inp){
-  var L=lookVec(inp),hide=(SIDE&&!SS.m3&&SS.viewF)?SS.viewF():null,best=null,bt=1e9;
-  for(var i=0;i<M.stores.length;i++){var s=M.stores[i];if(!lookEligible(s))continue;var fs=[s.face,s.face2];
+  var L=lookVec(inp),hide=(SIDE&&!SS.m3&&SS.viewF)?SS.viewF():null,best=null,bt=1e9,all=M.stores.concat(posterList());
+  for(var i=0;i<all.length;i++){var s=all[i];if(!lookEligible(s))continue;var fs=[s.face,s.face2];
     for(var k=0;k<2;k++){var f=fs[k];if(!f||f===hide)continue;var n=FACEN[f];if(!n)continue;
       var c=-(L[0]*n[0]+L[1]*n[1]);if(c<.64)continue;                 /* facing it, within about 50 degrees */
       var fr=lookFront(s,f);if(fr.d<-24||fr.d>LOOK_ON*T)continue;      /* in front (or in its doorway) and close enough */
@@ -4541,7 +4548,7 @@ function lookCand(inp){
   return best;}
 function lookAway(s,inp){ /* true once he has clearly stopped looking at s: turned so his view no longer lands on its
    frontage (with a little slack past the edges, and up to about 60 degrees off square), or walked well away from it */
-  if(M.stores.indexOf(s)<0||!lookEligible(s))return true;
+  if((!s.poster&&M.stores.indexOf(s)<0)||!lookEligible(s))return true;
   var L=lookVec(inp),fs=[s.face,s.face2];
   for(var k=0;k<2;k++){var f=fs[k];if(!f||!FACEN[f])continue;var fr=lookFront(s,f),n=FACEN[f],c=-(L[0]*n[0]+L[1]*n[1]);
     if(c<.5||fr.d<-24||fr.d>LOOK_OFF*T)continue;
@@ -4757,6 +4764,7 @@ function lookTagEl(){if(LTAG)return LTAG;
     '.ltag{position:absolute;z-index:35;left:0;top:0;transform:translate(-50%,-100%);pointer-events:auto;cursor:pointer;-webkit-tap-highlight-color:transparent;'+
       'display:flex;flex-direction:column;align-items:center;background:none;border:0;padding:0;margin:0;font:inherit;--u:3px}'+
     '.ltag[hidden]{display:none}'+
+    '.ltag.lt-up .lt-bob{flex-direction:column-reverse}.ltag.lt-up .lt-tip{transform:rotate(180deg);margin:0 0 calc(var(--u)*-1.6)}'+
     '.ltag .lt-bob{display:flex;flex-direction:column;align-items:center;animation:ltBob .9s steps(1) infinite}'+
     '.ltag.lt-pop .lt-bob{animation:ltPop .16s cubic-bezier(.3,1.6,.6,1),ltBob .9s steps(1) .16s infinite}'+
     '.ltag .lt-box{border-style:solid;border-width:calc(var(--u)*6);border-image:url("data:image/svg+xml,'+encodeURIComponent(svg)+'") 6 fill / calc(var(--u)*6) stretch;'+
@@ -4778,11 +4786,11 @@ function lookTagEl(){if(LTAG)return LTAG;
 function lookTagSync(){
   var s=P.hint||P.tdHint,show=!!(mode==="play"&&HINT_AT&&s&&cv&&cv.parentNode),el=LTAG;
   if(!show){if(el&&!el.hidden){el.hidden=true;el._s=null;}return;}
-  el=lookTagEl();var host=cv.parentNode;if(el.parentNode!==host){if(getComputedStyle(host).position==="static")host.style.position="relative";host.appendChild(el);}
+  el=lookTagEl();el.classList.toggle("lt-up",!!HINT_AT.up);var host=cv.parentNode;if(el.parentNode!==host){if(getComputedStyle(host).position==="static")host.style.position="relative";host.appendChild(el);}
   var kx=cv.clientWidth/VW,ky=cv.clientHeight/VH,u=Math.max(2,Math.min(3.5,Math.round(cv.clientWidth/300*2)/2));
-  if(el._s!==s||el._u!==u){var nm=(s.name||"").trim();el.querySelector(".lt-act").textContent=s.timeDoor?"CHANGE YEAR":"LOOK INSIDE";
+  if(el._s!==s||el._u!==u){var nm=(s.name||"").trim();el.querySelector(".lt-act").textContent=s.timeDoor?"CHANGE YEAR":s.poster?"POST":"LOOK INSIDE";
     var ne=el.querySelector(".lt-name");ne.textContent=s.timeDoor?"":nm;ne.hidden=!!s.timeDoor||!nm;el.style.setProperty("--u",u+"px");el._u=u;
-    el.setAttribute("aria-label",(s.timeDoor?"Change year":"Look inside "+nm));
+    el.setAttribute("aria-label",(s.timeDoor?"Change year":s.poster?"Post to "+nm:"Look inside "+nm));
     if(el._s!==s){el.classList.remove("lt-pop");void el.offsetWidth;el.classList.add("lt-pop");}el._s=s;}
   var h=el.offsetHeight||60,hw=(el.offsetWidth||160)/2,x=cv.offsetLeft+HINT_AT.x*kx,y=cv.offsetTop+HINT_AT.y*ky+(HINT_AT.top?h:0);
   x=Math.max(cv.offsetLeft+hw+4,Math.min(cv.offsetLeft+cv.clientWidth-hw-4,x));y=Math.max(cv.offsetTop+h+4,y);
@@ -4865,7 +4873,7 @@ function galGo(d){if(!GAL||GAL.mode!=="view"||GAL.list.length<2)return;GAL.i=(GA
 function galRender(){var box=galEl().firstChild,L=GAL.list,n=L.length,p=n?L[GAL.i]:null,nm=(GAL.s.name||"").toUpperCase();
   var h='<div class="gal-top"><span class="gal-name">'+esc(nm)+'</span>'+(p?'<span class="gal-date">'+esc(phDateText(p.date))+'</span>':'')+'</div>';
   h+='<div class="gal-mid"><button class="gal-arr" id="galPrev" type="button" aria-label="Previous picture"'+(n>1?"":" disabled")+'>&#9664;</button><div class="gal-well'+(p?" has":"")+'" id="galWell">';
-  if(p)h+='<img src="'+esc(phSrc(p))+'" alt="">';else h+='<div class="gal-empty">NO PICTURES OF '+esc(nm)+' YET<small>Got one from back in the day? Hit ADD PICTURE.</small></div>';
+  if(p)h+='<img src="'+esc(phSrc(p))+'" alt="">';else h+='<div class="gal-empty">'+(GAL.s.poster?'NO '+esc(nm)+' YET':'NO PICTURES OF '+esc(nm)+' YET')+'<small>Got one from back in the day? Hit ADD PICTURE.</small></div>';
   h+='</div><button class="gal-arr" id="galNext" type="button" aria-label="Next picture"'+(n>1?"":" disabled")+'>&#9654;</button></div>';
   /* the description box only when there is one; the name, when given, on its own line above the footer */
   if(p&&p.desc)h+='<div class="gal-desc">'+esc(p.desc)+'</div>';
@@ -10410,7 +10418,7 @@ var SS=(function(){
       else if(kind===2){ /* payphone */
         R(g,OUT,cx0-11,B-92,22,40);R(g,METAL[1],cx0-10,B-91,20,38);R(g,METAL[2],cx0-10,B-91,3,38);R(g,"#243a6b",cx0-10,B-91,20,7);text(g,"PHONE",cx0-9,B-90,"#ffffff");R(g,"#1f1f24",cx0-6,B-80,5,18);R(g,"#3a3d42",cx0+1,B-80,7,9);for(var b2=0;b2<9;b2++)R(g,"#c9ccd0",cx0+2+(b2%3)*2,B-79+((b2/3)|0)*3,1,2);R(g,"#1f1f24",cx0-4,B-62,1,10);}
       else if(kind===3){ /* mall directory */
-        hallPoster(g,cx0,B-112,!!(((sg.i0+c)>>1)&1));}
+        var sn=!!(((sg.i0+c)>>1)&1),pw=wxy(sc.F,sg.i0+(cx0-x)/TW,sc.qB);hallPoster(g,cx0,B-112,sn);posterNote(sn,pw[0],pw[1],OPPF[sc.F]);}
 
     }
     (sg.ads||[]).forEach(function(a){newsAd(g,x+a.px,B-150+a.v,a.w,a.h,a.k);});
@@ -11258,7 +11266,8 @@ var SS=(function(){
       g.restore();g.globalAlpha=1;});
     CXU=U;g.setTransform(1,0,0,1,0,0);g.imageSmoothingEnabled=false;W=VW;H=VH;hw=W/2;pyy/=U;ps/=U;
     if(!SV&&!YP&&!GAL&&(P.hint||P.tdHint)){ /* just under the store's sign: the wall straight ahead, at the top of the shop opening (68 of its 150 rows down) */
-      var tz=z[(VW*U/2)|0];HINT_AT=(tz>.3&&tz<9)?{x:hw,y:(hor-f*(WALLH-EYE)/tz+f*WALLH*68/150/tz)/U,top:true}:{x:hw,y:pyy-68*ps};}
+      var tz=z[(VW*U/2)|0],pst=!!(P.hint&&P.hint.poster),vr=pst?104:68; /* a poster gets the tag just under it, pointing up at it */
+      HINT_AT=(tz>.3&&tz<9)?{x:hw,y:(hor-f*(WALLH-EYE)/tz+f*WALLH*vr/150/tz)/U,top:true,up:pst}:{x:hw,y:pyy-68*ps};}
     if(mapOn){var mc=mini(),k2=Math.max(.34,Math.min(1,Math.min(76/mc.width,52/mc.height))),mw=Math.round(mc.width*k2),mh=Math.round(mc.height*k2),mx=W-mw-7,my=6;
       R(g,"rgba(28,18,28,.82)",mx-3,my-3,mw+6,mh+6);R(g,"#f2c94c",mx-3,my-3,mw+6,1);g.drawImage(mc,mx,my,mw,mh);
       var ddx=mx+(px-mc.x0)*k2,ddy=my+(py-mc.y0)*k2;R(g,"#ffffff",ddx+dx*4-1,ddy+dy*4-1,2,2);R(g,OUT,ddx-3,ddy-3,5,5);R(g,((tick>>4)&1)?"#ff2fa0":"#ffe14d",ddx-2,ddy-2,3,3);}
