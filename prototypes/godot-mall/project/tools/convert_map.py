@@ -55,8 +55,8 @@ SCRIPT = {"CLAIRE'S BOUTIQUES", "JEAN NICOLE", "ORANGE JULIUS", "THE AVENUE", "A
 
 
 def title(n):
-    if n in SIGN_TEXT:
-        return SIGN_TEXT[n]
+    if n.upper() in SIGN_TEXT:
+        return SIGN_TEXT[n.upper()]
     small = {"of", "and", "the", "'n'", "&"}
     out = []
     for i, w in enumerate(n.lower().split(" ")):
@@ -251,7 +251,7 @@ def main(src, out):
             disp = ""
         font = "serif" if nm in SERIF else "script" if nm in SCRIPT else "sans"
         stores_out[st["id"]] = dict(
-            name=nm, sign=title(disp) if disp and disp != disp.lower() else disp,
+            name=nm, sign=title(disp) if disp else disp,
             bg=st.get("signBg", "#333333"), fg=st.get("signFg", "#ffffff"),
             merch=st.get("merch") or ["#cccccc"], anchor=bool(st.get("anchor")),
             vacant=bool(st.get("vacant")), unit=st.get("unit"), open=bool(st.get("open")),
@@ -260,10 +260,22 @@ def main(src, out):
             carpet=st.get("carpet"), font=font, has_front_image=bool(st.get("front")),
         )
 
+    # ---- hall skylights (map props "skylight"): only those inside a hall zone
+    skylights = []
+    for pr in d.get("props", []):
+        if pr.get("t") != "skylight":
+            continue
+        zid = zone_of.get((pr["x"], pr["y"]))
+        if not zid or zmap[zid]["type"] != "hall":
+            continue
+        hz = zmap[zid]
+        along = wz(pr["y"] + 0.5) if hz["axis"] == "z" else wx(pr["x"] + 0.5)
+        skylights.append(dict(zone=zid, at=along))
+
     walk_rows = ["".join("1" if walk(x, y) else "0" for x in range(W)) for y in range(H)]
     out_d = dict(scale=S, origin=[OX, OY], zones=zones_out, leftovers=leftovers,
                  court_walls=court_walls, hall_ends=hall_ends, edges=edges, stores=stores_out,
-                 walk=walk_rows, era=d.get("era"))
+                 walk=walk_rows, era=d.get("era"), skylights=skylights)
     json.dump(out_d, open(out, "w"), indent=1)
     kinds = {}
     for e in edges:
@@ -272,6 +284,7 @@ def main(src, out):
     missing = [st["name"] for st in stores if st["id"] not in fronted and st.get("face") != "none"]
     print("zones", len(zones_out), "leftover rects", len(leftovers), "edges", len(edges), kinds)
     print("stores with a frontage:", len(fronted), "of", len(stores), "; missing:", missing)
+    print("hall skylights:", len(skylights))
     print("closed hall ends:", [(h["zone"], h["end"]) for h in hall_ends if h["closed"]])
     print("court sides with halls:", [(c["zone"], c["side"], c["halls"]) for c in court_walls if c["halls"]])
 

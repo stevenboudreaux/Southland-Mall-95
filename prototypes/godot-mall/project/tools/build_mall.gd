@@ -35,6 +35,30 @@ func mat(name):
 	match name:
 		"plaster":
 			m.albedo_texture = tex("plaster.png"); m.roughness = 0.92
+		"plaster_white":
+			m.albedo_texture = tex("plaster.png"); m.roughness = 0.9
+			m.albedo_color = Color(1.25, 1.27, 1.32)
+		"pink_stripe":
+			m.albedo_color = Color("#e48aa0"); m.roughness = 0.6
+		"crystal":
+			m.albedo_color = Color("#f4f8ff"); m.metallic = 0.3; m.roughness = 0.05
+			m.emission_enabled = true; m.emission = Color("#fff6e8"); m.emission_energy_multiplier = 2.5
+		"cove":
+			m.albedo_color = Color.WHITE
+			m.emission_enabled = true; m.emission = Color("#ffc98a"); m.emission_energy_multiplier = 5.0
+		"ring_glow":
+			m.albedo_color = Color.WHITE
+			m.emission_enabled = true; m.emission = Color("#fff2dc"); m.emission_energy_multiplier = 3.5
+		"black":
+			m.albedo_color = Color("#151313"); m.roughness = 0.35
+		"velvet":
+			m.albedo_color = Color("#2a1a24"); m.roughness = 1.0
+		"bulbs":
+			m.albedo_color = Color("#fff3c4")
+			m.emission_enabled = true; m.emission = Color("#ffe39a"); m.emission_energy_multiplier = 4.0
+		"poster":
+			m.vertex_color_use_as_albedo = true
+			m.emission_enabled = true; m.emission = Color("#ffffff"); m.emission_energy_multiplier = 0.6
 		"trim_tan":
 			m.albedo_color = Color("#a98a62"); m.roughness = 0.8
 		"cream":
@@ -307,12 +331,35 @@ func build_hall(z):
 	var pts = arch_pts(vh, VAULT_SPRING, rise, 16)
 	var R = arch_R(vh, rise)
 	var cy = VAULT_SPRING + rise - R
+	var skies = []
+	for sk in L.get("skylights", []):
+		if sk.zone == z.id:
+			skies.append(float(sk.at))
+	var sku = vh * 0.55
+	var skl = 1.3
 	for i in pts.size() - 1:
 		var a2 = pts[i]
 		var b2 = pts[i + 1]
 		var mid = (a2 + b2) * 0.5
 		var nn = (hall_P(z, 0, cy, 0) - hall_P(z, mid.x, mid.y, 0)).normalized()
-		quad(g, "vault_glow", [hall_P(z, a2.x, a2.y, lo), hall_P(z, b2.x, b2.y, lo), hall_P(z, b2.x, b2.y, hi), hall_P(z, a2.x, a2.y, hi)], nn, [Vector2(a2.x, lo), Vector2(b2.x, lo), Vector2(b2.x, hi), Vector2(a2.x, hi)])
+		var spans = [[lo, hi]]
+		if abs(mid.x) < sku:
+			spans = []
+			var cur = lo
+			var sorted_sk = skies.duplicate()
+			sorted_sk.sort()
+			for at in sorted_sk:
+				spans.append([cur, at - skl])
+				cur = at + skl
+			spans.append([cur, hi])
+		for sp2 in spans:
+			var q0 = sp2[0]
+			var q1 = sp2[1]
+			if q1 - q0 < 0.01:
+				continue
+			quad(g, "vault_glow", [hall_P(z, a2.x, a2.y, q0), hall_P(z, b2.x, b2.y, q0), hall_P(z, b2.x, b2.y, q1), hall_P(z, a2.x, a2.y, q1)], nn, [Vector2(a2.x, q0), Vector2(b2.x, q0), Vector2(b2.x, q1), Vector2(a2.x, q1)])
+	for at in skies:
+		hall_skylight(z, at, sku, skl, vh, rise)
 	var r = lo + RIB_STEP * 0.5
 	while r < hi:
 		rib(z, r, pts, vh, rise, ax)
@@ -320,6 +367,36 @@ func build_hall(z):
 	for he in L.hall_ends:
 		if he.zone == z.id and he.closed:
 			hall_end(z, lo if he.end == "lo" else hi, 1.0 if he.end == "lo" else -1.0, vh, rise)
+
+## A skylight in the hall vault crown between two ribs: a short light well
+## with a muntin frame; the opening is real, so the bake gets daylight.
+func hall_skylight(z, at, sku, skl, vh, rise):
+	var g = z.id
+	var crown = VAULT_SPRING + rise
+	var top = crown + 0.7
+	# side walls (u = +/- sku), bottom edge on the vault surface
+	for sgn in [-1.0, 1.0]:
+		var yb = arch_y(sku, vh, VAULT_SPRING, rise) - 0.03
+		var nrm = (hall_P(z, -sgn, 0, 0) - hall_P(z, 0, 0, 0)).normalized()
+		quad(g, "lane_ceiling", [hall_P(z, sgn * sku, yb, at - skl), hall_P(z, sgn * sku, yb, at + skl), hall_P(z, sgn * sku, top, at + skl), hall_P(z, sgn * sku, top, at - skl)], nrm)
+	for sgn in [-1.0, 1.0]:
+		var o = PackedVector2Array()
+		for i in 7:
+			var u = -sku + 2.0 * sku * i / 6
+			o.append(Vector2(u, arch_y(u, vh, VAULT_SPRING, rise) - 0.03))
+		o.append(Vector2(sku, top)); o.append(Vector2(-sku, top))
+		var org = hall_P(z, 0, 0, at + sgn * skl)
+		var axu = hall_P(z, 1, 0, 0) - hall_P(z, 0, 0, 0)
+		var nrm2 = (hall_P(z, 0, 0, -sgn) - hall_P(z, 0, 0, 0)).normalized()
+		poly(g, "lane_ceiling", o, org, axu, Vector3.UP, nrm2)
+	var axs = hall_P(z, 0, 0, 1) - hall_P(z, 0, 0, 0)
+	var axu2 = hall_P(z, 1, 0, 0) - hall_P(z, 0, 0, 0)
+	for k in 4:
+		var u = -sku + k * sku * 2.0 / 3.0
+		box("glass_frames", "metal_dark", hall_P(z, u, top - 0.05, at), abs_size(axs, skl * 2, 0.08, 0.05, axu2), Transform3D.IDENTITY, [], true)
+	for k in 3:
+		var s2 = at - skl + k * skl
+		box("glass_frames", "metal_dark", hall_P(z, 0, top - 0.05, s2), abs_size(axu2, sku * 2, 0.08, 0.05, axs), Transform3D.IDENTITY, [], true)
 
 func rib(z, at, pts, vh, rise, ax):
 	var g = z.id
@@ -366,7 +443,11 @@ func hall_end(z, at, facing, vh, rise):
 ## height up to the springing with notches where hall vaults come in, a
 ## square skylight, and a clerestory on long sides no hall enters.
 func build_court(z):
+	if z.style == "dillards":
+		build_court_flat(z)
+		return
 	var g = z.id
+	var vmat = "plaster_white" if z.style == "sears" else "plaster"
 	var r = z.rect
 	var sx = r[2] - r[0]
 	var sz = r[3] - r[1]
@@ -398,7 +479,7 @@ func build_court(z):
 			var s1 = -length * 0.5 + length * (k + 1) / steps
 			if abs(mid.x) < sky and abs((s0 + s1) * 0.5) < sky:
 				continue
-			quad(g, "plaster", [P.call(a.x, a.y, s0), P.call(b.x, b.y, s0), P.call(b.x, b.y, s1), P.call(a.x, a.y, s1)], nn,
+			quad(g, vmat, [P.call(a.x, a.y, s0), P.call(b.x, b.y, s0), P.call(b.x, b.y, s1), P.call(a.x, a.y, s1)], nn,
 				[Vector2(arc_a, s0) * 0.22, Vector2(arc_b, s0) * 0.22, Vector2(arc_b, s1) * 0.22, Vector2(arc_a, s1) * 0.22])
 	# skylight well
 	var top = COURT_SPRING + rise + 0.9
@@ -484,7 +565,7 @@ func build_court(z):
 				for p in ap:
 					o.append(Vector2(c + p.x, p.y))
 				o.append(Vector2(c - vh, LANE_H))
-		poly(g, "plaster", o, o2, axw, Vector3.UP, nrm)
+		poly(g, vmat, o, o2, axw, Vector3.UP, nrm)
 		# trim: cornice at the springing on long sides, arch band on the ends
 		if along_vault:
 			box(g, "trim_tan", o2 + Vector3.UP * 6.28 + nrm * 0.12, abs_size(axw, u1 - u0, 0.12, 0.24, nrm))
@@ -504,6 +585,44 @@ func build_court(z):
 			cyl(g, "stone", Vector3(qx, 0, qz), 0.4, 0.4, 0.35, 24, true)
 			cyl(g, "column", Vector3(qx, COURT_SPRING - 0.25, qz), 0.3, 0.42, 0.25, 24, true, true)
 			obstacles.append([qx, qz, 0.55])
+	if z.style == "sears":
+		# white arch beam across the court, outlined with a pink stripe (1:34),
+		# and a small crystal pendant under the crown
+		var axs = P.call(0, 0, 1) - P.call(0, 0, 0)
+		for sbeam in [-length * 0.25, length * 0.25]:
+			for i in pts.size() - 1:
+				var a = pts[i]
+				var b = pts[i + 1]
+				if abs(a.x) > half - 0.05 and abs(b.x) > half - 0.05:
+					continue
+				var ia = a + (Vector2(0, cy) - a).normalized() * 0.45
+				var ib = b + (Vector2(0, cy) - b).normalized() * 0.45
+				var mid2 = (ia + ib) * 0.5
+				var nn2 = (P.call(0, cy, 0) - P.call(mid2.x, mid2.y, 0)).normalized()
+				quad(g, "rib", [P.call(ia.x, ia.y, sbeam - 0.35), P.call(ib.x, ib.y, sbeam - 0.35), P.call(ib.x, ib.y, sbeam + 0.35), P.call(ia.x, ia.y, sbeam + 0.35)], nn2)
+				for sg in [-1.0, 1.0]:
+					quad(g, "rib", [P.call(a.x, a.y, sbeam + sg * 0.35), P.call(b.x, b.y, sbeam + sg * 0.35), P.call(ib.x, ib.y, sbeam + sg * 0.35), P.call(ia.x, ia.y, sbeam + sg * 0.35)], axs * sg)
+					var ja = ia + (a - ia) * 0.12
+					var jb = ib + (b - ib) * 0.12
+					var ka = ia + (a - ia) * 0.3
+					var kb = ib + (b - ib) * 0.3
+					quad(g, "pink_stripe", [P.call(ja.x, ja.y, sbeam + sg * 0.36), P.call(jb.x, jb.y, sbeam + sg * 0.36), P.call(kb.x, kb.y, sbeam + sg * 0.36), P.call(ka.x, ka.y, sbeam + sg * 0.36)], axs * sg)
+		var crown = COURT_SPRING + rise
+		cyl("lanterns", "brass", P.call(0, 5.9, 0), 0.012, 0.012, crown - 5.9, 6, false)
+		# small tiered crystal pendant: rings of drops around a centre drop
+		var pc = P.call(0, 5.6, 0)
+		cyl("lanterns", "brass", pc + Vector3(0, 0.25, 0), 0.32, 0.32, 0.03, 16, true, true)
+		for tier in 3:
+			var rr = 0.3 - tier * 0.09
+			var cnt = 10 - tier * 3
+			for k in cnt:
+				var a3 = TAU * k / cnt + tier * 0.3
+				var dc = pc + Vector3(cos(a3) * rr, 0.15 - tier * 0.16, sin(a3) * rr)
+				cyl("lanterns", "crystal", dc - Vector3(0, 0.08, 0), 0.0, 0.035, 0.08, 6, false)
+				cyl("lanterns", "crystal", dc, 0.035, 0.0, 0.06, 6, false)
+		cyl("lanterns", "crystal", pc - Vector3(0, 0.55, 0), 0.0, 0.07, 0.2, 8, false)
+		cyl("lanterns", "crystal", pc - Vector3(0, 0.35, 0), 0.07, 0.0, 0.12, 8, false)
+		add_omni(P.call(0, 5.5, 0), 1.0, 7.0, Color(1.0, 0.95, 0.85))
 	if z.style == "shoe":
 		palm_bed(g + "_props", Vector3(cx, 0, cz), 2.4, 5.0)
 		for b in [[-1.75, -1.2, PI * 0.5], [-1.75, 1.2, PI * 0.5], [1.75, -1.2, -PI * 0.5], [1.75, 1.2, -PI * 0.5]]:
@@ -511,6 +630,87 @@ func build_court(z):
 		for p in [Vector3(-3.8, 4.3, -4.2), Vector3(3.8, 4.3, -4.2), Vector3(-3.8, 4.3, 4.2), Vector3(3.8, 4.3, 4.2)]:
 			var lp = Vector3(cx, 0, cz) + p
 			lantern(lp, arch_y(p.x, half, COURT_SPRING, rise))
+
+## Dillard's court (3:34): a higher flat ceiling ringed by a soffit whose
+## hidden cove glows warm onto it, with a rectangular skylight well.
+func build_court_flat(z):
+	var g = z.id
+	var r = z.rect
+	var cx = (r[0] + r[2]) * 0.5
+	var cz = (r[1] + r[3]) * 0.5
+	var CH = 7.6
+	var SOF = 6.9
+	var ring = 1.4
+	# soffit ring (underside), its inner face, and the cove strip on top
+	var inner = [r[0] + ring, r[1] + ring, r[2] - ring, r[3] - ring]
+	var outer_pts = [Vector3(r[0], SOF, r[1]), Vector3(r[2], SOF, r[1]), Vector3(r[2], SOF, r[3]), Vector3(r[0], SOF, r[3])]
+	var inner_pts = [Vector3(inner[0], SOF, inner[1]), Vector3(inner[2], SOF, inner[1]), Vector3(inner[2], SOF, inner[3]), Vector3(inner[0], SOF, inner[3])]
+	for i in 4:
+		var j = (i + 1) % 4
+		quad(g, "lane_ceiling", [outer_pts[i], outer_pts[j], inner_pts[j], inner_pts[i]], Vector3.DOWN)
+		var lip = Vector3(0, 0.35, 0)
+		var inward = (Vector3(cx, SOF, cz) - (inner_pts[i] + inner_pts[j]) * 0.5)
+		inward = Vector3(sign(inward.x) if abs(inward.x) > abs(inward.z) else 0, 0, sign(inward.z) if abs(inward.z) >= abs(inward.x) else 0)
+		quad(g, "bulkhead", [inner_pts[i], inner_pts[j], inner_pts[j] + lip, inner_pts[i] + lip], inward)
+		quad(g, "bulkhead", [inner_pts[i] + lip, inner_pts[j] + lip, inner_pts[j] + lip - inward * 0.08, inner_pts[i] + lip - inward * 0.08], Vector3.UP)
+		var cv0 = inner_pts[i] - inward * 0.3 + Vector3(0, 0.02, 0)
+		var cv1 = inner_pts[j] - inward * 0.3 + Vector3(0, 0.02, 0)
+		quad(g, "cove", [cv0, cv1, cv1 - inward * 0.25, cv0 - inward * 0.25], Vector3.UP)
+	# upper ceiling with a rectangular skylight well
+	var swx = min(6.0, (r[2] - r[0]) * 0.3)
+	var swz = min(4.0, (r[3] - r[1]) * 0.2)
+	var hx0 = cx - swx * 0.5
+	var hx1 = cx + swx * 0.5
+	var hz0 = cz - swz * 0.5
+	var hz1 = cz + swz * 0.5
+	for rr in [[r[0], r[1], r[2], hz0], [r[0], hz1, r[2], r[3]], [r[0], hz0, hx0, hz1], [hx1, hz0, r[2], hz1]]:
+		quad(g, "lane_ceiling", [Vector3(rr[0], CH, rr[1]), Vector3(rr[2], CH, rr[1]), Vector3(rr[2], CH, rr[3]), Vector3(rr[0], CH, rr[3])], Vector3.DOWN)
+	var top = CH + 1.2
+	for wall in [[Vector3(hx0, CH, hz0), Vector3(hx1, CH, hz0), Vector3(0, 0, 1)], [Vector3(hx1, CH, hz1), Vector3(hx0, CH, hz1), Vector3(0, 0, -1)], [Vector3(hx0, CH, hz1), Vector3(hx0, CH, hz0), Vector3(1, 0, 0)], [Vector3(hx1, CH, hz0), Vector3(hx1, CH, hz1), Vector3(-1, 0, 0)]]:
+		quad(g, "lane_ceiling", [wall[0], wall[1], wall[1] + Vector3(0, top - CH, 0), wall[0] + Vector3(0, top - CH, 0)], wall[2])
+	for k in 5:
+		var u = hx0 + (hx1 - hx0) * k / 4.0
+		box("glass_frames", "metal_dark", Vector3(u, top - 0.05, cz), Vector3(0.05, 0.1, swz), Transform3D.IDENTITY, [], true)
+	add_omni(Vector3(cx, 6.0, cz), 1.2, 16.0, Color(1.0, 0.88, 0.72))
+	# perimeter walls from the lane ceiling up to the soffit, notched for hall vaults
+	var sides = {}
+	for cw in L.court_walls:
+		if cw.zone == z.id:
+			sides[cw.side] = cw.halls
+	for side in ["n", "s", "w", "e"]:
+		var horiz = side in ["n", "s"]
+		var o2 = Vector3(cx, 0, r[1] if side == "n" else r[3]) if horiz else Vector3(r[0] if side == "w" else r[2], 0, cz)
+		var axw = Vector3(1, 0, 0) if horiz else Vector3(0, 0, 1)
+		var nrm = Vector3(0, 0, 1 if side == "n" else -1) if horiz else Vector3(1 if side == "w" else -1, 0, 0)
+		var u0 = (r[0] - cx) if horiz else (r[1] - cz)
+		var u1 = (r[2] - cx) if horiz else (r[3] - cz)
+		var o = PackedVector2Array([Vector2(u0, LANE_H), Vector2(u0, SOF), Vector2(u1, SOF), Vector2(u1, LANE_H)])
+		var notches = []
+		for hid in sides.get(side, []):
+			var hz = zones[hid]
+			var hr = hz.rect
+			notches.append([((hr[0] + hr[2]) * 0.5 - cx) if horiz else ((hr[1] + hr[3]) * 0.5 - cz), float(hz.vault_half)])
+		notches.sort_custom(func(p, q): return p[0] > q[0])
+		for nt in notches:
+			if nt[1] <= 0.0:
+				continue
+			var hrise = hall_rise(nt[1])
+			o.append(Vector2(nt[0] + nt[1], LANE_H))
+			var ap = arch_pts(nt[1], VAULT_SPRING, hrise, 16)
+			ap.reverse()
+			for p in ap:
+				o.append(Vector2(nt[0] + p.x, p.y))
+			o.append(Vector2(nt[0] - nt[1], LANE_H))
+		poly(g, "cream", o, o2, axw, Vector3.UP, nrm)
+		# wall between soffit and upper ceiling, behind the cove
+		quad(g, "cream", [o2 + axw * u0 + Vector3.UP * SOF, o2 + axw * u1 + Vector3.UP * SOF, o2 + axw * u1 + Vector3.UP * CH, o2 + axw * u0 + Vector3.UP * CH], nrm)
+		box(g, "trim_tan", o2 + Vector3.UP * (LANE_H + 0.06) + nrm * 0.1, abs_size(axw, u1 - u0, 0.12, 0.2, nrm))
+	var inset = 1.3
+	for qx in [r[0] + inset, r[2] - inset]:
+		for qz in [r[1] + inset, r[3] - inset]:
+			cyl(g, "column", Vector3(qx, 0.35, qz), 0.3, 0.3, SOF - 0.35, 24, false)
+			cyl(g, "stone", Vector3(qx, 0, qz), 0.4, 0.4, 0.35, 24, true)
+			obstacles.append([qx, qz, 0.55])
 
 # ------------------------------------------------------------------ lights
 func disc_down(group, c, rad):
@@ -612,8 +812,17 @@ func build_edge(e):
 
 ## A storefront along one frontage: pilasters with a stone base, bulkhead with
 ## the sign, bronze-framed glass (or an open front), the lit interior behind.
-func storefront(g, e, a, b, n, t, Ln):
+func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 	var sd = L.stores[e.store]
+	if sd.name == "K&B" and not inner_call and Ln > 12.0:
+		# K&B's frontage was a pink wall with plum stripes (decision 6), with
+		# the store entrance in the middle
+		var ew = 8.0
+		var m0 = Ln * 0.5 - ew * 0.5
+		kb_wall(g, a, a + t * m0, n, t)
+		kb_wall(g, a + t * (m0 + ew), b, n, t)
+		storefront(g, e, a + t * m0, a + t * (m0 + ew), n, t, ew, true)
+		return
 	var pil = 0.4 if Ln > 2.5 else 0.25
 	var anchor = sd.anchor
 	var deep = clamp(float(e.depth), 3.0, 14.0 if anchor else 9.0)
@@ -687,8 +896,12 @@ func storefront(g, e, a, b, n, t, Ln):
 		var q1 = p0 + t * (width * (k + 1) / reps)
 		quad(g, "int_back", [q0 + back, q1 + back, q1 + back + Vector3(0, OPEN_H, 0), q0 + back + Vector3(0, OPEN_H, 0)], n,
 			[Vector2(cu, cv + dv), Vector2(cu + du, cv + dv), Vector2(cu + du, cv), Vector2(cu, cv)])
-	quad(g, "int_wall", [p0, p0 + back, p0 + back + Vector3(0, OPEN_H, 0), p0 + Vector3(0, OPEN_H, 0)], t)
-	quad(g, "int_wall", [p1 + back, p1, p1 + Vector3(0, OPEN_H, 0), p1 + back + Vector3(0, OPEN_H, 0)], -t)
+	# side walls carry the same store picture, so the glass shows the right kind of store at an angle
+	var su = du * clamp(deep / 6.0, 0.3, 1.0)
+	quad(g, "int_back", [p0, p0 + back, p0 + back + Vector3(0, OPEN_H, 0), p0 + Vector3(0, OPEN_H, 0)], t,
+		[Vector2(cu, cv + dv), Vector2(cu + su, cv + dv), Vector2(cu + su, cv), Vector2(cu, cv)])
+	quad(g, "int_back", [p1 + back, p1, p1 + Vector3(0, OPEN_H, 0), p1 + back + Vector3(0, OPEN_H, 0)], -t,
+		[Vector2(cu + du - su, cv + dv), Vector2(cu + du, cv + dv), Vector2(cu + du, cv), Vector2(cu + du - su, cv)])
 	cur_color = Color(sd.carpet) if sd.carpet != null else Color("#d8d2c6")
 	quad(g, "int_floor", [p0, p1, p1 + back, p0 + back], Vector3.UP)
 	cur_color = Color.WHITE
@@ -709,6 +922,141 @@ func storefront(g, e, a, b, n, t, Ln):
 		k2 += 1
 	cur_color = Color.WHITE
 	add_omni(a + t * Ln * 0.5 - n * deep * 0.5 + Vector3(0, OPEN_H - 0.4, 0), 0.45 if not anchor else 0.8, deep + 1.0, Color(1.0, 0.96, 0.88))
+	if sd.name.contains("CINEMA"):
+		cinema_front(g, a, n, t, Ln)
+
+func kb_wall(g, a, b, n, t):
+	var Lw = a.distance_to(b)
+	quad(g, "pink", [a, b, b + Vector3(0, LANE_H, 0), a + Vector3(0, LANE_H, 0)], n)
+	for y in [1.0, 2.35]:
+		box(g, "plum", (a + b) * 0.5 + Vector3(0, y, 0) + n * 0.015, abs_size(t, Lw, 0.16, 0.03, n))
+	var k = 0.3
+	while k < Lw:
+		var c = a + t * k
+		box(g, "white_pilaster", c + Vector3(0, LANE_H * 0.5, 0) + n * 0.15, abs_size(t, 0.6, LANE_H, 0.3, n))
+		for y in [1.0, 2.35]:
+			box(g, "plum", c + Vector3(0, y, 0) + n * 0.31, abs_size(t, 0.62, 0.16, 0.02, n))
+		k += 4.0
+
+## Southland Cinema: a marquee with bulbs over the entrance and lit poster cases.
+func cinema_front(g, a, n, t, Ln):
+	var mid = a + t * Ln * 0.5
+	var mw = min(Ln * 0.7, 10.0)
+	var mc = mid + Vector3(0, 3.75, 0) + n * 0.9
+	cur_color = Color("#1d1a2e")
+	box(g, "vcolor", mc, abs_size(t, mw, 0.95, 1.6, n))
+	cur_color = Color.WHITE
+	box(g, "bulbs", mc + Vector3(0, -0.49, 0), abs_size(t, mw - 0.2, 0.03, 1.4, n))
+	box(g, "bulbs", mc + Vector3(0, 0.43, 0) + n * 0.81, abs_size(t, mw, 0.06, 0.02, n))
+	box(g, "bulbs", mc + Vector3(0, -0.43, 0) + n * 0.81, abs_size(t, mw, 0.06, 0.02, n))
+	cur_color = Color("#f4f0e2")
+	box(g, "poster", mc + n * 0.81, abs_size(t, mw - 0.4, 0.6, 0.02, n))
+	cur_color = Color.WHITE
+	label("Southland Cinema", "serif", "#1d1a2e", mc + n * 0.84, n, mw * 0.8, 0.42)
+	for side in [-1.0, 1.0]:
+		var pc = mid + t * side * (Ln * 0.5 - 1.6) + Vector3(0, 1.6, 0) + n * 0.12
+		cur_color = Color("#c8202c") if side < 0 else Color("#2451c4")
+		box(g, "poster", pc, abs_size(t, 1.0, 1.45, 0.06, n))
+		cur_color = Color.WHITE
+		box(g, "brass", pc + n * 0.035, abs_size(t, 1.1, 1.55, 0.02, n))
+	add_omni(mc + Vector3(0, -0.8, 0) + n * 0.6, 0.8, 6.0, Color(1.0, 0.9, 0.7))
+
+## Jewelry kiosks (decision 1: both there since 1991) under lit rings (decision 7).
+func kiosks():
+	for e in L.edges:
+		if e.kind == "store" and L.stores[e.store].name.begins_with("GREAT AMERICAN COOKIE"):
+			var eb = edge_basics(e)
+			var a = eb[0]; var b = eb[1]; var n = eb[2]; var t = eb[3]
+			var corner = (a + b) * 0.5 + t * 3.2 + n * 2.7
+			gold_kiosk("kiosks", corner, t, n)
+			lit_ring("kiosks", corner + t * 1.0 + n * 0.7)
+			break
+	# Mr. Silverman island: position is a guess (concourse, west of the cookie shop)
+	var ms = Vector3(-52.0, 0, 54.0)
+	island_kiosk("kiosks", ms)
+	lit_ring("kiosks", ms)
+
+func gold_kiosk(g, c, t, n):
+	# two runs of waist-high cases at a right angle: one along the stores, one out into the hall
+	var runs = [[c + t * 1.3, t, 2.6], [c + n * 0.9, n, 1.8]]
+	for rr in runs:
+		var mid = rr[0]
+		var dirv = rr[1]
+		var Lr = rr[2]
+		var other = Vector3(-dirv.z, 0, dirv.x)
+		box(g, "black", mid + Vector3(0, 0.38, 0), abs_size(dirv, Lr, 0.76, 0.62, other))
+		box(g, "velvet", mid + Vector3(0, 0.77, 0), abs_size(dirv, Lr - 0.08, 0.02, 0.54, other))
+		box(g, "brass", mid + Vector3(0, 1.0, 0), abs_size(dirv, Lr, 0.035, 0.64, other))
+		box("glass", "glass", mid + Vector3(0, 0.88, 0), abs_size(dirv, Lr, 0.22, 0.6, other), Transform3D.IDENTITY, ["-y"], true)
+		for k in 6:
+			cur_color = Color("#e8c766")
+			box(g, "vcolor", mid + dirv * (-Lr * 0.4 + k * Lr * 0.16) + Vector3(0, 0.8, 0), Vector3(0.08, 0.03, 0.08))
+		cur_color = Color.WHITE
+	# black track-light gantry
+	var p0 = c - n * 0.3 - t * 0.3
+	var corners = [p0, p0 + t * 3.2, p0 + n * 2.4, p0 + t * 3.2 + n * 2.4]
+	for q in corners:
+		box(g, "black", q + Vector3(0, 1.25, 0), Vector3(0.06, 2.5, 0.06))
+	for pr in [[corners[0], corners[1]], [corners[2], corners[3]], [corners[0], corners[2]], [corners[1], corners[3]]]:
+		var mm = (pr[0] + pr[1]) * 0.5 + Vector3(0, 2.5, 0)
+		var dv = (pr[1] - pr[0])
+		box(g, "black", mm, abs_size(dv.normalized(), dv.length(), 0.06, 0.06, Vector3(-dv.normalized().z, 0, dv.normalized().x)))
+	for k in 4:
+		var lp = p0 + t * (0.5 + k * 0.75) + n * 1.2 + Vector3(0, 2.4, 0)
+		box(g, "downlight", lp, Vector3(0.1, 0.1, 0.1))
+	add_omni(c + t * 1.2 + n * 0.9 + Vector3(0, 2.2, 0), 0.7, 4.0, Color(1.0, 0.93, 0.8))
+	obstacles.append(["rect", min(corners[0].x, corners[3].x) - 0.3, min(corners[0].z, corners[3].z) - 0.3, max(corners[0].x, corners[3].x) + 0.3, max(corners[0].z, corners[3].z) + 0.3])
+
+func island_kiosk(g, c):
+	var sx = 3.4
+	var sz = 1.8
+	for side in [[Vector3(0, 0, -sz * 0.5), Vector3(1, 0, 0), sx], [Vector3(0, 0, sz * 0.5), Vector3(1, 0, 0), sx], [Vector3(-sx * 0.5, 0, 0), Vector3(0, 0, 1), sz], [Vector3(sx * 0.5, 0, 0), Vector3(0, 0, 1), sz]]:
+		var mid = c + side[0]
+		var dv = side[1]
+		var ov = Vector3(-dv.z, 0, dv.x)
+		box(g, "column", mid + Vector3(0, 0.38, 0), abs_size(dv, side[2], 0.76, 0.5, ov))
+		box(g, "velvet", mid + Vector3(0, 0.77, 0), abs_size(dv, side[2] - 0.08, 0.02, 0.42, ov))
+		box("glass", "glass", mid + Vector3(0, 0.9, 0), abs_size(dv, side[2], 0.26, 0.5, ov), Transform3D.IDENTITY, ["-y"], true)
+	for qx in [-1.0, 1.0]:
+		for qz in [-1.0, 1.0]:
+			var q = c + Vector3(qx * (sx * 0.5 + 0.1), 0, qz * (sz * 0.5 + 0.1))
+			box(g, "column", q + Vector3(0, 0.4, 0), Vector3(0.6, 0.8, 0.6))
+			box("glass", "glass", q + Vector3(0, 1.3, 0), Vector3(0.58, 1.0, 0.58), Transform3D.IDENTITY, [], true)
+			box(g, "lane_ceiling", q + Vector3(0, 1.82, 0), Vector3(0.62, 0.04, 0.62))
+			box(g, "velvet", q + Vector3(0, 0.82, 0), Vector3(0.54, 0.02, 0.54))
+	cur_color = Color("#20242e")
+	box(g, "vcolor", c + Vector3(0, 1.95, 0), Vector3(1.8, 0.35, 0.06))
+	cur_color = Color.WHITE
+	label("Mr. Silverman", "serif", "#e8dcc0", c + Vector3(0, 1.95, 0.04), Vector3(0, 0, 1), 1.6, 0.2)
+	label("Mr. Silverman", "serif", "#e8dcc0", c + Vector3(0, 1.95, -0.04), Vector3(0, 0, -1), 1.6, 0.2)
+	obstacles.append(["rect", c.x - sx * 0.5 - 0.6, c.z - sz * 0.5 - 0.6, c.x + sx * 0.5 + 0.6, c.z + sz * 0.5 + 0.6])
+
+## A floating white ring lit from inside, hung on cables, with small spots.
+func lit_ring(g, c):
+	var R = 2.6
+	var y = 4.25
+	var seg = 32
+	for i in seg:
+		var a0 = TAU * i / seg
+		var a1 = TAU * (i + 1) / seg
+		var o0 = Vector3(cos(a0), 0, sin(a0))
+		var o1 = Vector3(cos(a1), 0, sin(a1))
+		var top = Vector3(0, y + 0.14, 0)
+		var bot = Vector3(0, y - 0.14, 0)
+		var ro = R + 0.12
+		var ri = R - 0.12
+		quad(g, "rib", [c + o0 * ro + bot, c + o1 * ro + bot, c + o1 * ro + top, c + o0 * ro + top], (o0 + o1).normalized())
+		quad(g, "ring_glow", [c + o0 * ri + bot, c + o1 * ri + bot, c + o1 * ri + top, c + o0 * ri + top], -(o0 + o1).normalized())
+		quad(g, "rib", [c + o0 * ri + bot, c + o1 * ri + bot, c + o1 * ro + bot, c + o0 * ro + bot], Vector3.DOWN)
+		quad(g, "rib", [c + o0 * ri + top, c + o1 * ri + top, c + o1 * ro + top, c + o0 * ro + top], Vector3.UP)
+	for k in 3:
+		var a = TAU * k / 3.0
+		var p = c + Vector3(cos(a), 0, sin(a)) * R + Vector3(0, y + 0.14, 0)
+		cyl(g, "metal_dark", p, 0.008, 0.008, 6.5 - p.y, 4, false)
+	for k in 6:
+		var a = TAU * k / 6.0 + 0.3
+		box(g, "black", c + Vector3(cos(a), 0, sin(a)) * R + Vector3(0, y - 0.22, 0), Vector3(0.12, 0.16, 0.12))
+	add_omni(c + Vector3(0, y - 0.3, 0), 0.9, 6.0, Color(1.0, 0.95, 0.88))
 
 ## Glass doors to the outside (exits and the main entrance), with daylight beyond.
 func doors_out(g, e, a, b, n, t, Ln):
@@ -876,6 +1224,7 @@ func build():
 		quad("misc", "lane_ceiling", [Vector3(r[0], LANE_H, r[1]), Vector3(r[2], LANE_H, r[1]), Vector3(r[2], LANE_H, r[3]), Vector3(r[0], LANE_H, r[3])], Vector3.DOWN)
 	for e in L.edges:
 		build_edge(e)
+	kiosks()
 	# K&B's mall-facing wall: pink with plum stripes instead of a full storefront
 	# is a per-store look we add in Phase 2 (decision 6); its storefront is generic for now.
 
@@ -971,8 +1320,8 @@ func build():
 
 	var lmg = LightmapGI.new()
 	lmg.name = "LightmapGI"
-	lmg.quality = LightmapGI.BAKE_QUALITY_LOW
-	lmg.bounces = 2
+	lmg.quality = LightmapGI.BAKE_QUALITY_MEDIUM
+	lmg.bounces = 3
 	lmg.use_denoiser = true
 	lmg.environment_mode = LightmapGI.ENVIRONMENT_MODE_SCENE
 	lmg.max_texture_size = 4096

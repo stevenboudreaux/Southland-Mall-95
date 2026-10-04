@@ -22,6 +22,7 @@ var move_vec := Vector2.ZERO
 var dragging := false
 var last_pos := {}   # touch index -> last position
 var hud: Label
+var refl_btn: Button
 var hint: Label
 var stick: Control
 var fps_t := 0.0
@@ -59,6 +60,23 @@ func _build_hud() -> void:
 	hud.add_theme_constant_override("shadow_offset_y", 1)
 	hud.add_theme_font_size_override("font_size", 14)
 	cl.add_child(hud)
+	var btn := Button.new()
+	refl_btn = btn
+	btn.text = "Reflections: on"
+	btn.toggle_mode = true
+	btn.button_pressed = true
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.add_theme_font_size_override("font_size", 14)
+	btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	btn.offset_left = -170
+	btn.offset_right = -10
+	btn.offset_top = 8
+	btn.toggled.connect(func(on: bool):
+		btn.text = "Reflections: " + ("on" if on else "off")
+		var rt := get_tree().current_scene.get_node_or_null("Runtime")
+		if rt:
+			rt.set_reflections(on))
+	cl.add_child(btn)
 	hint = Label.new()
 	hint.text = "Drag left side to walk · drag right side to look"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -83,6 +101,11 @@ func _build_hud() -> void:
 func _input(e: InputEvent) -> void:
 	var half := get_viewport().get_visible_rect().size.x * 0.5
 	if e is InputEventScreenTouch:
+		# touches don't reach buttons (mouse emulation is off), so tap it here
+		if e.pressed and refl_btn and refl_btn.get_global_rect().has_point(e.position):
+			refl_btn.button_pressed = not refl_btn.button_pressed
+			get_viewport().set_input_as_handled()
+			return
 		if e.pressed:
 			last_pos[e.index] = e.position
 			hint.visible = false

@@ -196,6 +196,12 @@ func _meshes(n: Node) -> Array:
 		out += _meshes(c)
 	return out
 
+## Turn the floor reflection on or off (it costs a second render of the scene).
+func set_reflections(on: bool) -> void:
+	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS if on else SubViewport.UPDATE_DISABLED
+	for m in floor_mats:
+		m.set_shader_parameter("strength", strength if on else 0.0)
+
 func _resize() -> void:
 	var s := get_viewport().get_visible_rect().size
 	vp.size = Vector2i(max(64, int(s.x * scale)), max(64, int(s.y * scale)))
