@@ -40,6 +40,14 @@ Grep and read only the region you need. Key names: `render3`, `stepPlayer`,
 
 - **Publish** (owner, editor-unlocked browser) re-reads the live `photos.json`
   before writing, so approvals made in `review.html` are never overwritten. Keep it.
+- **The editor's Publish rebuilds `index.html` from a template** (`buildDocument`):
+  it keeps only the `RESET` string, `<style id="mall-css">`, the `lk-*` blocks, the
+  data blocks and `<script id="mall-engine">`. Anything placed elsewhere in the file
+  is silently dropped by the next editor Publish. All CSS goes in `mall-css`; all
+  game code goes in `mall-engine`. (On Oct 4 this dropped every photo-board style.)
+- **Publish refuses to run from an out-of-date tab**: it compares this page's
+  `mall-engine`, `mall-css` and `lk-engine` with the live file first. Keep it, or an
+  old open tab can roll back newer code.
 - **Photos are keyed by store-name slug** and appear in every year map. Renaming a
   store changes its slug and orphans its photos.
 - **Visitor flow**: POST → Apps Script → `pending/` + `pending.json` → email → `review.html` → Approve

@@ -276,6 +276,50 @@ body.lk-open{overflow:hidden}
 .sf-size{font-family:var(--plain);font-size:.85rem;color:var(--ink-soft);min-height:1.3em}
 .sf-note{font-family:var(--plain);font-size:.8rem;color:var(--ink-soft);align-self:center;overflow-wrap:anywhere}
 @media (max-width:520px){.sf-sl{grid-template-columns:96px minmax(0,1fr) 40px}}
+
+/* photo boards (moved here from the head on Oct 4: the editor's Publish keeps only this stylesheet) */
+.gal{position:fixed;inset:0;z-index:55;display:flex;align-items:center;justify-content:center;padding:10px;background:rgba(14,8,18,.42)}
+.gal-box{width:min(880px,100%);max-height:calc(100vh - 20px);display:flex;flex-direction:column;padding:14px 16px 12px;position:relative;outline:none}
+.gal-box::before,.gal-box::after{content:"";position:absolute;width:10px;height:10px;background:var(--gold);box-shadow:inset -2px -2px 0 #c9962a,inset 2px 2px 0 #fff3b0;top:5px}
+.gal-box::before{left:5px}.gal-box::after{right:5px}
+.gal-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 6px 8px;border-bottom:3px solid var(--wood-m);margin-bottom:10px}
+.gal-name{font-weight:700;font-size:clamp(18px,3.2vw,30px);letter-spacing:.04em;color:var(--purple);text-transform:uppercase;text-shadow:2px 2px 0 rgba(90,50,24,.22);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gal-date{font-weight:700;font-size:clamp(13px,2vw,18px);color:var(--ink);background:var(--parch-3);border:3px solid var(--wood-d);box-shadow:inset 0 0 0 2px var(--wood-l);padding:3px 10px;white-space:nowrap;text-transform:uppercase;flex:none}
+.gal-mid{display:flex;align-items:stretch;gap:10px;min-height:0}
+.gal-arr{flex:0 0 46px;background:var(--wood-m);color:#fff3d6;border:3px solid var(--wood-d);box-shadow:inset 0 3px 0 var(--wood-l),inset 0 -3px 0 #4a2812,3px 3px 0 rgba(0,0,0,.3);font-size:26px;font-weight:700;cursor:pointer;padding:0;line-height:1}
+.gal-arr:active{transform:translate(2px,2px);box-shadow:inset 0 3px 0 var(--wood-l),inset 0 -3px 0 #4a2812}
+.gal-arr[disabled]{opacity:.35;cursor:default}
+.gal-well{flex:1;min-width:0;height:min(56vh,520px);background:#8a8f98;border:4px solid var(--plum);box-shadow:inset 0 0 0 3px #b5b9c0,inset 0 0 0 5px #5f646b;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.gal-well img{max-width:100%;max-height:100%;object-fit:contain;display:block;pointer-events:none}
+.gal-well.has{background:#1d1d24;box-shadow:inset 0 0 0 3px #3a3a44}
+.gal-empty{text-align:center;color:#2b2b32;font-weight:700;font-size:clamp(15px,2.4vw,22px);padding:20px;line-height:1.5}
+.gal-empty small{display:block;font-weight:500;font-size:.75em;color:#44454f;margin-top:6px}
+.gal-desc{margin:10px 6px 0;padding:8px 12px;background:var(--parch-3);border:3px solid var(--wood-d);box-shadow:inset 0 0 0 2px var(--wood-l);min-height:44px;max-height:92px;overflow:auto;font-size:clamp(14px,1.9vw,18px);line-height:1.4;color:var(--ink)}
+.gal-by{margin:8px 6px 0;font-weight:700;color:var(--ink-soft);font-size:clamp(13px,1.7vw,16px);letter-spacing:.04em}
+.gal-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 6px 0;flex-wrap:wrap}
+.gal-count{font-weight:700;color:var(--ink-soft);letter-spacing:.08em;font-size:14px}
+.gal-count i{font-style:normal;font-weight:500;opacity:.8}
+.gal-btns{display:flex;gap:8px;flex-wrap:wrap}
+.gbtn{font-family:var(--pix);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:15px;background:var(--wood-m);color:#fff3d6;border:3px solid var(--wood-d);box-shadow:inset 0 3px 0 var(--wood-l),inset 0 -3px 0 #4a2812,3px 3px 0 rgba(0,0,0,.3);padding:7px 14px;cursor:pointer;line-height:1}
+.gbtn.gold{background:var(--gold);color:var(--plum);box-shadow:inset 0 3px 0 #fff0a8,inset 0 -3px 0 #c9962a,3px 3px 0 rgba(0,0,0,.3)}
+.gbtn:active{transform:translate(2px,2px);box-shadow:none}
+.gbtn[disabled]{opacity:.5;cursor:default}
+.gal-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 14px;margin:0 6px;min-height:0;overflow:auto;padding:2px}
+.gal-form label{display:block;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:13px;color:var(--purple)}
+.gal-form input,.gal-form textarea{display:block;width:100%;margin-top:4px;background:#fffaf0;color:#2a1a10;border:3px solid var(--wood-d);box-shadow:inset 0 0 0 2px var(--wood-l);padding:6px 8px;font-size:16px;font-family:var(--pix)}
+.gal-form textarea{height:84px;resize:vertical}
+.gal-drop{grid-row:span 4;height:min(52vh,460px);min-height:200px;background:#8a8f98;border:4px dashed var(--plum);display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;position:relative;overflow:hidden;font-weight:700;color:#2b2b32;padding:10px;line-height:1.4}
+.gal-drop small{display:block;font-weight:500;font-size:.78em;color:#44454f;margin-top:6px}
+.gal-drop.has{border-style:solid;background:#1d1d24;padding:0}
+.gal-drop img{width:100%;height:100%;object-fit:contain;display:block}
+.gal-drop input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;margin:0}
+.gal-drop.over{background:#a9aed0}
+.gal-note{grid-column:1/-1;font-size:14px;color:var(--ink-soft);margin:0}
+.gal-err{color:var(--red)!important;font-weight:700}
+.gal-done{text-align:center;padding:22px 10px;font-size:clamp(16px,2.4vw,21px);line-height:1.5}
+.gal-done b{display:block;font-size:1.3em;color:var(--purple);margin-bottom:8px}
+@media (max-width:640px),(max-height:520px){.gal{padding:4px}.gal-box{padding:8px 8px 6px}.gal-top{margin-bottom:6px;padding-bottom:4px}.gal-arr{flex-basis:34px;font-size:20px}.gal-well{height:min(46vh,520px)}.gal-desc{max-height:56px;margin-top:6px;padding:4px 8px;min-height:30px}.gal-foot{margin-top:6px}.gbtn{font-size:13px;padding:6px 10px}.gal-form{grid-template-columns:1fr;max-height:60vh}.gal-drop{grid-row:auto;height:min(40vh,320px);min-height:110px}.gal-done{padding:10px}}
+.ph .gal-well{height:min(44vh,520px)}
 </style>
 <div id="app"></div>
 <template id="lk-tpl"><style>/* Character creator (formerly 8-Bit Lookalike), drawn inside a shadow root so its styles never touch the mall's. Tokens follow the mall's wood-and-parchment kit. */
@@ -6170,10 +6214,39 @@ function openPublishGitHub(){
         }).then(function(cur){var body={message:m,content:b64,branch:br};if(cur&&cur.sha)body.sha=cur.sha;
           return fetch(u,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify(body)});
         }).then(function(r){if(r.ok)return r;throw {status:r.status,path:path};});}
-      var pend=PH.pending.slice(),chain=phRefresh().then(function(){pend=PH.pending.slice();});
-      pend.forEach(function(p,i){chain=chain.then(function(){msg.textContent="Uploading photo "+(i+1)+" of "+pend.length+"…";return putFile(p.file,(p.data||"").split(",")[1]||"","Add a photo of "+(p.name||p.store));})
-        .then(function(){PH.pending=PH.pending.filter(function(q){return q!==p;});var q={};for(var k in p)if(k!=="data"&&k!=="pending"&&k!=="email")q[k]=p[k];PH.photos.push(q);phSavePending();});});
-      if(pend.length)chain=chain.then(function(){msg.textContent="Updating the photo list…";return putFile("photos.json",b64utf8(JSON.stringify(phManifest(),null,1)),"Update the photo list");});
+      /* The photo list is rebuilt from the live photos.json read through GitHub itself (not the slower Pages copy) right
+         before it is written, and written against that exact version, so a review.html approval is never overwritten.
+         If the live list can't be read, Publish stops and the list is left as it is. */
+      function putPhotoList(added){var u="https://api.github.com/repos/"+repo+"/contents/photos.json",stop="Couldn't read the live photo list, so it was left unchanged. Your uploaded photos are safe; publish again in a minute.";
+        return fetch(u+"?ref="+encodeURIComponent(br),{headers:H,cache:"no-store"}).then(function(r){
+          if(r.status===404)return {sha:null,photos:[]};if(r.status===401)throw "The token was not accepted. Check it and try again.";if(!r.ok)throw stop;
+          return r.json().then(function(f){var j=null;
+            try{j=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(String(f.content||"").replace(/\s/g,"")),function(c){return c.charCodeAt(0);})));}catch(e){}
+            if(!j||!Array.isArray(j.photos)||!f.sha)throw stop;return {sha:f.sha,photos:j.photos};});
+        },function(){throw stop;}).then(function(live){
+          var L=live.photos.slice();added.forEach(function(q){if(!L.some(function(x){return x.id===q.id;}))L.push(q);});
+          PH.photos=L;PH.live=true;
+          var body={message:"Update the photo list",content:b64utf8(JSON.stringify(phManifest(),null,1)),branch:br};if(live.sha)body.sha=live.sha;
+          return fetch(u,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify(body)});
+        }).then(function(r){if(r.ok)return r;throw {status:r.status,path:"photos.json"};});}
+      /* Photos leave the browser's queue only once the photo list that names them is written, so a Publish that stops
+         partway loses nothing: publishing again re-sends them and finishes the list. */
+      /* Publish rewrites the whole page from this tab's copy of the game. If the game on GitHub changed after this tab
+         was opened, publishing would roll those changes back, so compare first and stop if this tab is behind. */
+      function pageCurrent(){var stale="The game on the site was updated after you opened this page, so publishing from it would undo those updates. Reload the page and publish again; your unpublished edits are saved in this browser and are offered back after reloading.";
+        return fetch(api+"?ref="+encodeURIComponent(br),{headers:Object.assign({},H,{"Accept":"application/vnd.github.raw+json"}),cache:"no-store"}).then(function(r){
+          if(r.status===404)return;if(r.status===401)throw "The token was not accepted. Check it and try again.";if(!r.ok)throw "Couldn't check the live page on GitHub ("+r.status+"), so nothing was published. Try again in a minute.";
+          return r.text().then(function(t){["mall-engine","mall-css","lk-engine"].forEach(function(id){var el=document.getElementById(id);if(!el)return;
+            var m=new RegExp('id="'+id+'">([\\s\\S]*?)</'+(id==="mall-css"?"style":"script")+'>').exec(t);if(!m||m[1]!==el.textContent)throw stale;});});
+        },function(e){throw typeof e==="string"?e:"Couldn't reach GitHub. Check your connection and try again.";});}
+      msg.textContent="Checking this page is up to date…";
+      var pend=[],added=[],chain=pageCurrent().then(phRefresh).then(function(){
+        pend=PH.pending.slice();added=[];var c=Promise.resolve();
+        pend.forEach(function(p,i){c=c.then(function(){msg.textContent="Uploading photo "+(i+1)+" of "+pend.length+"…";return putFile(p.file,(p.data||"").split(",")[1]||"","Add a photo of "+(p.name||p.store));})
+          .then(function(){var q={};for(var k in p)if(k!=="data"&&k!=="pending"&&k!=="email")q[k]=p[k];added.push(q);});});
+        if(pend.length)c=c.then(function(){msg.textContent="Updating the photo list…";return putPhotoList(added);})
+          .then(function(){PH.pending=PH.pending.filter(function(q){return pend.indexOf(q)<0;});phSavePending();});
+        return c;});
       chain.then(function(){msg.textContent="Uploading the mall…";return putFile("index.html",b64utf8(buildDocument()),"Publish mall edits from the in-game editor");})
       .then(function(){msg.innerHTML="<b>Published.</b> GitHub Pages usually shows it within a minute or two. Your edits stay saved in this browser until the new version loads.";btn.disabled=false;if(GAL)galOpenList();})
       .catch(function(e){btn.disabled=false;
@@ -6184,7 +6257,7 @@ function openPublishGitHub(){
         else if(st===413||st===422)msg.textContent="GitHub turned a file down ("+st+pth+"). Try smaller pictures, or Download instead.";
         else if(st)msg.textContent="GitHub answered "+st+pth+". Try again, or use Download instead.";
         else msg.textContent="Couldn't reach GitHub. Check your connection and try again.";
-        if(PH.pending.length<pend.length)msg.textContent+=" The photos already uploaded are safe; publish again to finish.";});
+        if(added.length&&!/left unchanged/.test(msg.textContent))msg.textContent+=" The photos already uploaded are safe and still queued; publish again to finish.";});
     };
   });
 }
