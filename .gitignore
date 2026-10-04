@@ -1,0 +1,25 @@
+# === Claude Code local (from Claude Code Game Studios) ===
+.claude/settings.local.json
+.claude/agent-memory/
+CLAUDE.local.md
+project.local.yaml
+production/session-logs/
+production/session-state/
+.scratch/
+docs/consistency-failures.md
+
+# === OS / editor ===
+.DS_Store
+Thumbs.db
+Desktop.ini
+.vscode/settings.json
+.idea/
+*.swp
+
+# === Secrets (the GitHub token and ADMIN_KEY must never be committed) ===
+.env
+.env.*
+*.pem
+*.key
+credentials.json
+secrets.json
