@@ -30,7 +30,7 @@ verified-by: Steven Boudreaux (intent questions answered Oct 4)
 - **Steven's editor browser is "god mode"**: posts skip review and go out with Publish. *Confirmed.*
 - **Publish stops** if it cannot re-read the live `photos.json`. *Confirmed.*
 - **One Santa board** (center court, food court area) and **one Easter Bunny board** (wall beside Franks). Posters anywhere else are a bug. *Confirmed.* Later the gazebo becomes the Easter Bunny photo spot.
-- **Old editor storefront photos are not community photos**: some are stand-ins from other locations of the same brand. They should not appear first on a board or count toward the orb. *Confirmed; not yet changed in code.*
+- **Old editor storefront photos are not community photos**: some are stand-ins from other locations of the same brand. They do not appear on boards or count toward the orb. *Confirmed; done Oct 4.*
 
 ## How it works today (code facts)
 - Boards keyed by store-name slug (`phSlug`), so a store's photos show in every year map. Slug = name uppercased, `&` → AND, non-alphanumerics removed, lowercased.
@@ -48,8 +48,8 @@ verified-by: Steven Boudreaux (intent questions answered Oct 4)
 4. Submit endpoint has no rate limit; a bot could flood commits and emails. Fine at beta size.
 5. Renaming a store orphans its photos (slug changes).
 6. ~~Deny rewrote `pending.json` before deleting the file~~ → **Fixed Oct 4**: the file is deleted first.
-7. Old storefront photo counted and shown first (see MVP).
-8. Extra Santa/Easter Bunny posters in other places, e.g. by the movie theater (see MVP).
+7. ~~Old storefront photo counted and shown first~~ → **Fixed Oct 4**: community photos only on boards and in counts.
+8. ~~Extra Santa/Easter Bunny posters~~ → **Fixed Oct 4**: the old mall-map panels were random on any blank wall (7 found); now only the two pinned spots (`POSTER_SPOTS` in index.html) get a poster. Evidence: `production/qa/evidence/2026-10-04-posters.md`.
 
 ## Still open
 - Where submitter emails live once "Part 3" emails people when their photo is approved or denied. `INTENT UNKNOWN`

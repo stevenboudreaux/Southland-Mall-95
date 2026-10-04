@@ -31,8 +31,8 @@
 - Likes, follower feeds or ranking algorithms. *(Inferred from the vision; confirm or cut.)*
 
 ## Build order
-1. Trust fixes before more beta testers: submitter emails private, Publish stops if it can't re-read the live list, Approve retryable.
-2. Board correctness: only one Santa and one Easter Bunny poster; old editor storefront photos (stand-in reference art, sometimes from other locations of the same brand) off the boards and out of the counts.
+1. ✅ (Oct 4) Trust fixes before more beta testers: submitter emails private, Publish stops if it can't re-read the live list, Approve retryable.
+2. ✅ (Oct 4) Board correctness: only one Santa and one Easter Bunny poster; old editor storefront photos (stand-in reference art, sometimes from other locations of the same brand) off the boards and out of the counts.
 3. Directory kiosks: 3D three-sided kiosks. Side 1: map, year slider and store list that jumps you to a store; posting allowed from here. Side 2: post photos of the mall itself. Side 3: a feedback "mall survey" for beta testers (what they liked, what's wrong, what to add).
 4. Module split, toward a full 3D engine.
 5. Geometric 3D storefronts, refined from submitted photos taken at different angles.

@@ -4495,6 +4495,9 @@ var LOOK_ON=4,LOOK_OFF=6,FACEN={N:[0,-1],S:[0,1],W:[-1,0],E:[1,0]};
 /* the Santa and Easter Bunny posters on the hall walls each carry a photo board too. The walls are drawn by the 3D and side
    views, so each poster is noted here (as a thin pretend storefront on its wall) the first time it is drawn */
 var POSTERS={};
+/* the only two seasonal photo-board posters, by world tile: Santa on the brick side wall of Orange Julius and the
+   Easter Bunny on the wall beside Franks, at the Franks corner by the main entrance and center court */
+var POSTER_SPOTS={"153,104":"santa","149,106":"bunny"};
 function posterNote(santa,wx,wy,f){var k=(santa?"santa":"bunny")+":"+Math.floor(wx)+","+Math.floor(wy);if(POSTERS[k])return;
   var r=f==="N"?{x:wx-.7,y:wy,w:1.4,h:1}:f==="S"?{x:wx-.7,y:wy-1,w:1.4,h:1}:f==="W"?{x:wx,y:wy-.7,w:1,h:1.4}:{x:wx-1,y:wy-.7,w:1,h:1.4};
   r.face=f;r.poster=true;r.id="poster-"+k;r.name=santa?"Photos with Santa":"Photos with the Easter Bunny";POSTERS[k]=r;}
@@ -4785,7 +4788,8 @@ function drawSFHint(g){
 var BADGE_FAR=26,BADGE_AT=[],BADGE_EL=[],BADGE_HOST=null,PHC={key:"",m:{}};
 function phCountMap(){var k=PH.photos.length+"|"+PH.pending.length+"|"+(PH.photos[0]&&PH.photos[0].id)+"|"+(PH.photos.length&&PH.photos[PH.photos.length-1].id);
   if(PHC.key!==k){var m={};PH.photos.concat(PH.pending).forEach(function(p){if(p&&p.store)m[p.store]=(m[p.store]||0)+1;});PHC={key:k,m:m};}return PHC.m;}
-function phCount(s){if(!phEligible(s))return 0;return (phCountMap()[phSlug(s.name)]||0)+(s.front&&s.front.src?1:0);}
+/* community photos only: the editor's storefront photo is reference art for the sign and front (sometimes from another location of the same chain), not a memory */
+function phCount(s){if(!phEligible(s))return 0;return phCountMap()[phSlug(s.name)]||0;}
 function badgeStores(){var L=[],all=M.stores.concat(posterList());for(var i=0;i<all.length;i++){var n=phCount(all[i]);if(n>0)L.push({s:all[i],n:n});}return L;}
 /* the middle of a store's frontage for one of its faces, nudged a little out into the hall (tiles) */
 function badgeFront(s,f,out){var n=FACEN[f];if(!n)return null;var x=s.x+s.w/2,y=s.y+s.h/2;
@@ -4888,10 +4892,9 @@ function phSeed(){
   if(PH.pending.length)setTimeout(function(){toast(PH.pending.length+" photo"+(PH.pending.length>1?"s":"")+" waiting to publish. Open a store's board, or the editor's Publish.");},2500);
 }
 function phFor(s){var k=phSlug(s.name),L=[];
-  if(s.front&&s.front.src)L.push({legacy:true,src:s.front.src,desc:"The storefront photo from the mall editor",date:""});
   PH.photos.forEach(function(p){if(p.store===k)L.push(p);});
   PH.pending.forEach(function(p){if(p.store===k)L.push(p);});
-  return L.sort(function(a,b){if(a.legacy)return -1;if(b.legacy)return 1;var x=a.date||"9999",y=b.date||"9999";return x<y?-1:x>y?1:(a.added||0)-(b.added||0);});}
+  return L.sort(function(a,b){var x=a.date||"9999",y=b.date||"9999";return x<y?-1:x>y?1:(a.added||0)-(b.added||0);});}
 function phSrc(p){return p.src||p.data||p.file;}
 function phMonth(w){w=w.toLowerCase().replace(/\./g,"");for(var i=0;i<12;i++)if(w.length>=3&&PH_MON[i].indexOf(w)===0)return i+1;return 0;}
 /* a date typed any common way, kept as 1995, 1995-07 or 1995-07-04 (or "1995 summer"); null when it can't be read */
@@ -10482,8 +10485,9 @@ var SS=(function(){
       else if(kind===1){ /* posters on plain walls are gone: movie posters only hang at the cinema, and the walls carry the newspaper ads */ }
       else if(kind===2){ /* payphone */
         R(g,OUT,cx0-11,B-92,22,40);R(g,METAL[1],cx0-10,B-91,20,38);R(g,METAL[2],cx0-10,B-91,3,38);R(g,"#243a6b",cx0-10,B-91,20,7);text(g,"PHONE",cx0-9,B-90,"#ffffff");R(g,"#1f1f24",cx0-6,B-80,5,18);R(g,"#3a3d42",cx0+1,B-80,7,9);for(var b2=0;b2<9;b2++)R(g,"#c9ccd0",cx0+2+(b2%3)*2,B-79+((b2/3)|0)*3,1,2);R(g,"#1f1f24",cx0-4,B-62,1,10);}
-      else if(kind===3){ /* mall directory */
-        var sn=!!(((sg.i0+c)>>1)&1),pw=wxy(sc.F,sg.i0+(cx0-x)/TW,sc.qB);hallPoster(g,cx0,B-112,sn);posterNote(sn,pw[0],pw[1],OPPF[sc.F]);}
+      else if(kind===3){ /* where an old mall map panel hung: only the two pinned seasonal posters remain (POSTER_SPOTS); everywhere else is plain wall */
+        var pw=wxy(sc.F,sg.i0+(cx0-x)/TW,sc.qB),spot=POSTER_SPOTS[Math.floor(pw[0])+","+Math.floor(pw[1])];
+        if(spot){hallPoster(g,cx0,B-112,spot==="santa");posterNote(spot==="santa",pw[0],pw[1],OPPF[sc.F]);}}
 
     }
     (sg.ads||[]).forEach(function(a){newsAd(g,x+a.px,B-150+a.v,a.w,a.h,a.k);});
