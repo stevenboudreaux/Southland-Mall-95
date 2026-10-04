@@ -4808,7 +4808,7 @@ function drawSFHint(g){
    Each view works out where the bubbles go (BADGE_AT, in game-screen units, with how far away they are) and badgeSync()
    moves a handful of page elements there, so the number stays sharp at any size. They are hidden behind walls, fade with
    distance, and the store whose LOOK INSIDE tag is up shows its count on the tag's corner instead. */
-var BADGE_AT=[],BADGE_EL=[],BADGE_HOST=null,PHC={key:"",m:{}};
+var BADGE_FAR=26,BADGE_AT=[],BADGE_EL=[],BADGE_HOST=null,PHC={key:"",m:{}};
 function phCountMap(){var k=PH.photos.length+"|"+PH.pending.length+"|"+(PH.photos[0]&&PH.photos[0].id)+"|"+(PH.photos.length&&PH.photos[PH.photos.length-1].id);
   if(PHC.key!==k){var m={};PH.photos.concat(PH.pending).forEach(function(p){if(p&&p.store)m[p.store]=(m[p.store]||0)+1;});PHC={key:k,m:m};}return PHC.m;}
 function phCount(s){if(!phEligible(s))return 0;return (phCountMap()[phSlug(s.name)]||0)+(s.front&&s.front.src?1:0);}
@@ -4875,7 +4875,7 @@ function badgeSync(){
     if(getComputedStyle(host).position==="static")host.style.position="relative";
     BADGE_AT.sort(function(a,b){return b.d-a.d;});
     for(var i=0;i<BADGE_AT.length&&used<40;i++){var b=BADGE_AT[i];if(b.s===tagged)continue;
-      var al=Math.max(0,Math.min(1,(11-b.d)/3));if(al<=0)continue;
+      var al=Math.max(0,Math.min(1,(BADGE_FAR-b.d)/5));if(al<=0)continue;
       var el=BADGE_EL[used];if(!el){el=document.createElement("div");el.className="pbadge";el.setAttribute("aria-hidden","true");el.innerHTML='<span class="pb-f">'+orbHTML()+'</span>';el.hidden=true;BADGE_EL[used]=el;}
       if(el.parentNode!==host)host.appendChild(el);
       var dia=Math.round(Math.max(27,Math.max(28,Math.min(42,64/Math.sqrt(Math.max(1,b.d))))*sm));
@@ -11356,10 +11356,15 @@ var SS=(function(){
     if(!SV&&!YP&&!GAL)badgeStores().forEach(function(b){var s=b.s,fs=[s.face,s.face2],best=null;
       for(var k=0;k<2;k++){var fp=fs[k]&&badgeFront(s,fs[k],.14);if(!fp)continue;
         if((ox-fp.x)*fp.n[0]+(oy-fp.y)*fp.n[1]<=0)continue;                 /* only from the hall side */
-        var ax=fp.x-ox,ay=fp.y-oy,d=ax*dx+ay*dy;if(d<.6||d>11)continue;
+        var ax=fp.x-ox,ay=fp.y-oy,d=ax*dx+ay*dy;if(d<.6||d>BADGE_FAR)continue;
         var sx2=hw+f*(ax*plx+ay*ply)/d;if(sx2<-20||sx2>W+20)continue;
-        var rr=Math.round(14*U),hid=false;for(var q=-rr;q<=rr;q+=rr){var zi=Math.max(0,Math.min(W-1,(sx2+q)|0));if(z[zi]<d-.12)hid=true;}
-        if(hid)continue;                                                       /* a wall stands in front, even partly */
+        /* hidden when anything stands in front of it, even partly: under each of three columns across the marker, the wall the
+           view hits must be no nearer than the store's own front (so a storefront seen at a slant down a long hall still counts) */
+        var rr=Math.round(14*U),hid=false,wx0=fp.x-fp.n[0]*.14,wy0=fp.y-fp.n[1]*.14;
+        for(var q=-rr;q<=rr&&!hid;q+=rr){var zi=Math.max(0,Math.min(W-1,(sx2+q)|0)),cq=(zi+.5-hw)/f,rx2=dx+plx*cq,ry2=dy+ply*cq,
+            tp=fp.n[0]?(Math.abs(rx2)>1e-4?(wx0-ox)/rx2:1e9):(Math.abs(ry2)>1e-4?(wy0-oy)/ry2:1e9);
+          if(!(tp>0&&tp<1e8))tp=d;if(z[zi]<Math.min(tp,d+1)-.15)hid=true;}
+        if(hid)continue;
         var sy2=hor-f*(WALLH*(1-(s.poster?126:92)/150)-EYE)/d;
         if(!best||d<best.d)best={s:s,n:b.n,x:sx2/U,y:sy2/U,d:d};}
       if(best)BADGE_AT.push(best);});
