@@ -1,0 +1,1008 @@
+## Builds res://main.tscn: the whole mall (1995 map) from layout_mall.json.
+## Run: godot --headless --path . --script res://tools/build_mall.gd
+## Units are metres. +x east, +z south, +y up. Map tile (148, 100) is the origin.
+extends SceneTree
+
+const LANE_H = 4.6         # flat ceiling over the store lanes
+const VAULT_SPRING = 4.9   # hall vault springing
+const COURT_SPRING = 6.6
+const RIB_STEP = 1.8
+const OPEN_H = 3.2         # storefront opening height
+var TEXEL = 0.16           # lightmap texel size (metres); fast bake for demos
+
+var mall: Node3D
+var light_root: Node3D
+var mats = {}
+var acc = {}               # group -> {material -> SurfaceTool}
+var dyn_acc = {}
+var L: Dictionary          # layout
+var zones = {}             # id -> zone dict
+var obstacles = []
+var cur_color = Color.WHITE
+var atlas_index = {}       # store id -> atlas cell
+const ATLAS_COLS = 8
+const ATLAS_ROWS = 12
+
+# ------------------------------------------------------------------ materials
+func tex(p):
+	return load("res://tex/" + p)
+
+func mat(name):
+	if mats.has(name):
+		return mats[name]
+	var m = StandardMaterial3D.new()
+	m.resource_name = name
+	match name:
+		"plaster":
+			m.albedo_texture = tex("plaster.png"); m.roughness = 0.92
+		"trim_tan":
+			m.albedo_color = Color("#a98a62"); m.roughness = 0.8
+		"cream":
+			m.albedo_color = Color("#ece2cf"); m.roughness = 0.85
+		"bulkhead":
+			m.albedo_color = Color("#efe6d3"); m.roughness = 0.8
+		"lane_ceiling":
+			m.albedo_color = Color("#f0e9da"); m.roughness = 0.9
+		"rib":
+			m.albedo_color = Color("#fbf8f2"); m.roughness = 0.6
+		"vault_glow":
+			m.albedo_color = Color("#f3ead8"); m.roughness = 0.9
+			m.emission_enabled = true; m.emission = Color("#fff1d6"); m.emission_energy_multiplier = 0.55
+		"downlight":
+			m.albedo_color = Color.WHITE
+			m.emission_enabled = true; m.emission = Color("#fff3df"); m.emission_energy_multiplier = 8.0
+		"stone":
+			m.albedo_texture = tex("stone.png"); m.roughness = 0.55
+		"bronze":
+			m.albedo_color = Color("#3a2f27"); m.metallic = 0.6; m.roughness = 0.4
+		"int_wall":
+			m.albedo_color = Color("#ece6da"); m.roughness = 0.9
+		"int_floor":
+			m.vertex_color_use_as_albedo = true; m.roughness = 0.6
+		"int_back":
+			m.albedo_texture = tex("int_atlas.png")
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture
+			m.emission = Color.WHITE; m.emission_energy_multiplier = 0.3
+			m.roughness = 0.8
+		"int_panel":
+			m.albedo_color = Color.WHITE
+			m.emission_enabled = true; m.emission = Color("#fffaf2"); m.emission_energy_multiplier = 2.2
+		"vcolor":
+			m.vertex_color_use_as_albedo = true; m.roughness = 0.5
+		"vcolor_matte":
+			m.vertex_color_use_as_albedo = true; m.roughness = 0.85
+		"pink":
+			m.albedo_color = Color("#dba9a0"); m.roughness = 0.8
+		"plum":
+			m.albedo_color = Color("#5a2340"); m.roughness = 0.6
+		"white_pilaster":
+			m.albedo_color = Color("#f5f0e8"); m.roughness = 0.7
+		"column":
+			m.albedo_color = Color("#f6f2ea"); m.roughness = 0.45
+		"wood":
+			m.albedo_texture = tex("wood_dark.png"); m.roughness = 0.45
+		"door_wood":
+			m.albedo_texture = tex("wood_dark.png"); m.roughness = 0.5
+			m.albedo_color = Color(1.4, 1.2, 1.0)
+		"metal_dark":
+			m.albedo_color = Color("#262220"); m.metallic = 0.5; m.roughness = 0.45
+		"grille":
+			m.albedo_color = Color("#8d8a84"); m.metallic = 0.7; m.roughness = 0.5
+		"planter":
+			m.albedo_color = Color("#efe8da"); m.roughness = 0.35
+		"soil":
+			m.albedo_color = Color("#3a2a1f"); m.roughness = 1.0
+		"bed_wood":
+			m.albedo_texture = tex("wood_dark.png"); m.roughness = 0.6
+			m.albedo_color = Color(1.25, 1.1, 1.0)
+		"brass":
+			m.albedo_color = Color("#b88d3e"); m.metallic = 1.0; m.roughness = 0.3
+		"lantern_glass":
+			m.albedo_color = Color("#ffe2b0")
+			m.emission_enabled = true; m.emission = Color("#ffc977"); m.emission_energy_multiplier = 3.0
+		"glass":
+			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			m.albedo_color = Color(0.78, 0.86, 0.86, 0.10)
+			m.roughness = 0.04; m.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
+			m.cull_mode = BaseMaterial3D.CULL_DISABLED
+		"palm", "poinsettia", "leafy":
+			m.albedo_texture = tex({"palm": "palm_frond.png", "poinsettia": "poinsettia.png", "leafy": "leafy.png"}[name])
+			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
+			m.alpha_scissor_threshold = 0.5
+			m.cull_mode = BaseMaterial3D.CULL_DISABLED
+			m.roughness = 0.7
+		"trunk":
+			m.albedo_color = Color("#6d5a3e"); m.roughness = 0.95
+		"outside_ground":
+			m.albedo_color = Color("#7c7a74"); m.roughness = 0.95
+		"exit_sign":
+			m.albedo_color = Color("#2e7d4f")
+			m.emission_enabled = true; m.emission = Color("#3fae6a"); m.emission_energy_multiplier = 0.8
+		_:
+			if name.begins_with("floorz_"):
+				# bake-time stand-in; the runtime swaps in the procedural floor shader
+				m.albedo_color = Color("#d4c4aa"); m.roughness = 0.14; m.metallic_specular = 0.6
+			else:
+				push_error("unknown material " + name)
+	mats[name] = m
+	return m
+
+# ------------------------------------------------------------- mesh helpers
+func st(group, mname, dynamic = false):
+	var A = dyn_acc if dynamic else acc
+	if not A.has(group):
+		A[group] = {}
+	if not A[group].has(mname):
+		var s = SurfaceTool.new()
+		s.begin(Mesh.PRIMITIVE_TRIANGLES)
+		A[group][mname] = s
+	return A[group][mname]
+
+func tri(s, a, b, c, ua, ub, uc, n):
+	if (b - a).cross(c - a).dot(n) > 0.0:
+		var t = b; b = c; c = t
+		var tu = ub; ub = uc; uc = tu
+	for p in [[a, ua], [b, ub], [c, uc]]:
+		s.set_color(cur_color)
+		s.set_normal(n)
+		s.set_uv(p[1])
+		s.add_vertex(p[0])
+
+func quad(group, mname, p, n, uvs = [], dynamic = false, uvscale = 1.0):
+	var s = st(group, mname, dynamic)
+	if uvs.is_empty():
+		for v in p:
+			uvs.append(proj_uv(v, n) * uvscale)
+	tri(s, p[0], p[1], p[2], uvs[0], uvs[1], uvs[2], n)
+	tri(s, p[0], p[2], p[3], uvs[0], uvs[2], uvs[3], n)
+
+func proj_uv(v, n):
+	var an = n.abs()
+	if an.y >= an.x and an.y >= an.z:
+		return Vector2(v.x, v.z)
+	elif an.x >= an.z:
+		return Vector2(v.z, -v.y)
+	return Vector2(v.x, -v.y)
+
+func box(group, mname, c, size, xf = Transform3D.IDENTITY, skip = [], dynamic = false):
+	var h = size * 0.5
+	var faces = {
+		"+x": [Vector3(1, 0, 0), [Vector3(h.x, -h.y, -h.z), Vector3(h.x, h.y, -h.z), Vector3(h.x, h.y, h.z), Vector3(h.x, -h.y, h.z)]],
+		"-x": [Vector3(-1, 0, 0), [Vector3(-h.x, -h.y, h.z), Vector3(-h.x, h.y, h.z), Vector3(-h.x, h.y, -h.z), Vector3(-h.x, -h.y, -h.z)]],
+		"+y": [Vector3(0, 1, 0), [Vector3(-h.x, h.y, -h.z), Vector3(-h.x, h.y, h.z), Vector3(h.x, h.y, h.z), Vector3(h.x, h.y, -h.z)]],
+		"-y": [Vector3(0, -1, 0), [Vector3(-h.x, -h.y, h.z), Vector3(-h.x, -h.y, -h.z), Vector3(h.x, -h.y, -h.z), Vector3(h.x, -h.y, h.z)]],
+		"+z": [Vector3(0, 0, 1), [Vector3(h.x, -h.y, h.z), Vector3(h.x, h.y, h.z), Vector3(-h.x, h.y, h.z), Vector3(-h.x, -h.y, h.z)]],
+		"-z": [Vector3(0, 0, -1), [Vector3(-h.x, -h.y, -h.z), Vector3(-h.x, h.y, -h.z), Vector3(h.x, h.y, -h.z), Vector3(h.x, -h.y, -h.z)]],
+	}
+	for k in faces:
+		if k in skip:
+			continue
+		var n = (xf.basis * faces[k][0]).normalized()
+		var pts = []
+		for q in faces[k][1]:
+			pts.append(xf * (c + q))
+		quad(group, mname, pts, n, [], dynamic)
+
+func cyl(group, mname, base, r0, r1, hgt, seg = 20, top = true, bottom = false, dynamic = false):
+	var s = st(group, mname, dynamic)
+	for i in seg:
+		var a0 = TAU * i / seg
+		var a1 = TAU * (i + 1) / seg
+		var d0 = Vector3(cos(a0), 0, sin(a0))
+		var d1 = Vector3(cos(a1), 0, sin(a1))
+		var p0 = base + d0 * r0
+		var p1 = base + d1 * r0
+		var p2 = base + d1 * r1 + Vector3(0, hgt, 0)
+		var p3 = base + d0 * r1 + Vector3(0, hgt, 0)
+		var slope = (r0 - r1) / max(hgt, 0.001)
+		var n0 = (d0 + Vector3(0, slope, 0)).normalized()
+		var n1 = (d1 + Vector3(0, slope, 0)).normalized()
+		var u0 = float(i) / seg * 2.0
+		var u1 = float(i + 1) / seg * 2.0
+		_tri_n(s, [p0, p1, p2], [n0, n1, n1], [Vector2(u0, 1), Vector2(u1, 1), Vector2(u1, 0)], (n0 + n1).normalized())
+		_tri_n(s, [p0, p2, p3], [n0, n1, n0], [Vector2(u0, 1), Vector2(u1, 0), Vector2(u0, 0)], (n0 + n1).normalized())
+		if top:
+			var c = base + Vector3(0, hgt, 0)
+			tri(s, c, p3, p2, Vector2(0.5, 0.5), Vector2(0.5 + d0.x * 0.5, 0.5 + d0.z * 0.5), Vector2(0.5 + d1.x * 0.5, 0.5 + d1.z * 0.5), Vector3.UP)
+		if bottom:
+			tri(s, base, p0, p1, Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector3.DOWN)
+
+func _tri_n(s, p, n, uv, face_n):
+	var order = [0, 1, 2]
+	if (p[1] - p[0]).cross(p[2] - p[0]).dot(face_n) > 0.0:
+		order = [0, 2, 1]
+	for i in order:
+		s.set_color(cur_color); s.set_normal(n[i]); s.set_uv(uv[i]); s.add_vertex(p[i])
+
+func poly(group, mname, outline, o, ax, ay, n):
+	var idx = Geometry2D.triangulate_polygon(outline)
+	if idx.is_empty():
+		push_error("triangulation failed in " + group)
+		return
+	var s = st(group, mname)
+	for i in range(0, idx.size(), 3):
+		var pts = []
+		var uvs = []
+		for j in 3:
+			var q = outline[idx[i + j]]
+			pts.append(o + ax * q.x + ay * q.y)
+			uvs.append(Vector2(q.x, -q.y) * 0.25)
+		tri(s, pts[0], pts[1], pts[2], uvs[0], uvs[1], uvs[2], n)
+
+func abs_size(t, along, hgt, depth, n):
+	var v = t.abs() * along + n.abs() * depth
+	return Vector3(max(v.x, 0.001), hgt, max(v.z, 0.001))
+
+# --------------------------------------------------------------- arch math
+func arch_R(half, rise):
+	return (half * half + rise * rise) / (2.0 * rise)
+
+func arch_pts(half, spring, rise, seg):
+	var R = arch_R(half, rise)
+	var cy = spring + rise - R
+	var th = asin(half / R)
+	var out = []
+	for i in seg + 1:
+		var a = -th + 2.0 * th * i / seg
+		out.append(Vector2(R * sin(a), cy + R * cos(a)))
+	return out
+
+func arch_y(u, half, spring, rise):
+	var R = arch_R(half, rise)
+	var cy = spring + rise - R
+	return cy + sqrt(max(R * R - u * u, 0.0))
+
+func hall_rise(vh):
+	return vh * 0.47   # 3 m half-span -> 1.4 m rise, as in the proof
+
+# --------------------------------------------------------------- zones
+func rect_of(z):
+	return z.rect   # [x0, z0, x1, z1]
+
+## Hall geometry: frame helpers map (u across from centre, y, s along) to world.
+func hall_P(z, u, y, s):
+	var r = z.rect
+	if z.axis == "z":
+		return Vector3((r[0] + r[2]) * 0.5 + u, y, s)
+	return Vector3(s, y, (r[1] + r[3]) * 0.5 + u)
+
+func hall_span(z):
+	var r = z.rect
+	if z.axis == "z":
+		return [r[1], r[3], (r[2] - r[0]) * 0.5]
+	return [r[0], r[2], (r[3] - r[1]) * 0.5]
+
+func build_hall(z):
+	var g = z.id
+	var sp = hall_span(z)
+	var lo = sp[0]
+	var hi = sp[1]
+	var hw = sp[2]
+	var vh = float(z.vault_half)
+	var ax = (hall_P(z, 0, 0, 1) - hall_P(z, 0, 0, 0))
+	if vh <= 0.0:
+		# narrow corridor: flat ceiling, a line of downlights
+		quad(g, "lane_ceiling", [hall_P(z, -hw, LANE_H, lo), hall_P(z, hw, LANE_H, lo), hall_P(z, hw, LANE_H, hi), hall_P(z, -hw, LANE_H, hi)], Vector3.DOWN)
+		var s0 = lo + 2.0
+		while s0 < hi - 1.0:
+			var c = hall_P(z, 0, LANE_H - 0.01, s0)
+			disc_down(g, c, 0.16)
+			add_downlight(c)
+			s0 += 4.0
+		return
+	var rise = hall_rise(vh)
+	for side in [-1.0, 1.0]:
+		var a = side * vh
+		var b = side * hw
+		quad(g, "lane_ceiling", [hall_P(z, a, LANE_H, lo), hall_P(z, b, LANE_H, lo), hall_P(z, b, LANE_H, hi), hall_P(z, a, LANE_H, hi)], Vector3.DOWN)
+		var nf = (hall_P(z, -side, 0, 0) - hall_P(z, 0, 0, 0)).normalized()
+		quad(g, "bulkhead", [hall_P(z, a, LANE_H, lo), hall_P(z, a, VAULT_SPRING, lo), hall_P(z, a, VAULT_SPRING, hi), hall_P(z, a, LANE_H, hi)], nf)
+		if hw - vh >= 1.4:
+			var s1 = lo + 2.25
+			while s1 < hi - 0.8:
+				var c2 = hall_P(z, side * (vh + hw) * 0.5, LANE_H - 0.01, s1)
+				disc_down(g, c2, 0.17)
+				add_downlight(c2)
+				s1 += 4.5
+	var pts = arch_pts(vh, VAULT_SPRING, rise, 16)
+	var R = arch_R(vh, rise)
+	var cy = VAULT_SPRING + rise - R
+	for i in pts.size() - 1:
+		var a2 = pts[i]
+		var b2 = pts[i + 1]
+		var mid = (a2 + b2) * 0.5
+		var nn = (hall_P(z, 0, cy, 0) - hall_P(z, mid.x, mid.y, 0)).normalized()
+		quad(g, "vault_glow", [hall_P(z, a2.x, a2.y, lo), hall_P(z, b2.x, b2.y, lo), hall_P(z, b2.x, b2.y, hi), hall_P(z, a2.x, a2.y, hi)], nn, [Vector2(a2.x, lo), Vector2(b2.x, lo), Vector2(b2.x, hi), Vector2(a2.x, hi)])
+	var r = lo + RIB_STEP * 0.5
+	while r < hi:
+		rib(z, r, pts, vh, rise, ax)
+		r += RIB_STEP
+	for he in L.hall_ends:
+		if he.zone == z.id and he.closed:
+			hall_end(z, lo if he.end == "lo" else hi, 1.0 if he.end == "lo" else -1.0, vh, rise)
+
+func rib(z, at, pts, vh, rise, ax):
+	var g = z.id
+	var w = 0.07
+	var depth = 0.22
+	var R = arch_R(vh, rise)
+	var cy = VAULT_SPRING + rise - R
+	for i in pts.size() - 1:
+		var a = pts[i]
+		var b = pts[i + 1]
+		var ia = a + (Vector2(0, cy) - a).normalized() * depth
+		var ib = b + (Vector2(0, cy) - b).normalized() * depth
+		var mid = (ia + ib) * 0.5
+		var nn = (hall_P(z, 0, cy, 0) - hall_P(z, mid.x, mid.y, 0)).normalized()
+		quad(g, "rib", [hall_P(z, ia.x, ia.y, at - w), hall_P(z, ib.x, ib.y, at - w), hall_P(z, ib.x, ib.y, at + w), hall_P(z, ia.x, ia.y, at + w)], nn)
+		for sg in [-1.0, 1.0]:
+			quad(g, "rib", [hall_P(z, a.x, a.y, at + sg * w), hall_P(z, b.x, b.y, at + sg * w), hall_P(z, ib.x, ib.y, at + sg * w), hall_P(z, ia.x, ia.y, at + sg * w)], ax * sg)
+
+## Closed end of a hall: arched wall above the lane ceiling, plus a white arch trim.
+func hall_end(z, at, facing, vh, rise):
+	var g = z.id
+	var o = PackedVector2Array()
+	o.append(Vector2(-vh, LANE_H))
+	for p in arch_pts(vh, VAULT_SPRING, rise, 16):
+		o.append(p)
+	o.append(Vector2(vh, LANE_H))
+	var origin = hall_P(z, 0, 0, at)
+	var ax = (hall_P(z, 1, 0, 0) - hall_P(z, 0, 0, 0))
+	var n = (hall_P(z, 0, 0, 1) - hall_P(z, 0, 0, 0)) * facing
+	poly(g, "cream", o, origin, ax, Vector3.UP, n)
+	var pts = arch_pts(vh, VAULT_SPRING, rise, 16)
+	var R = arch_R(vh, rise)
+	var cy = VAULT_SPRING + rise - R
+	for i in pts.size() - 1:
+		var a = pts[i]
+		var b = pts[i + 1]
+		var off = n * 0.12
+		var ia = a + (Vector2(0, cy) - a).normalized() * 0.3
+		var ib = b + (Vector2(0, cy) - b).normalized() * 0.3
+		quad(g, "rib", [origin + ax * a.x + Vector3.UP * a.y + off, origin + ax * b.x + Vector3.UP * b.y + off, origin + ax * ib.x + Vector3.UP * ib.y + off, origin + ax * ia.x + Vector3.UP * ia.y + off], n)
+
+# --------------------------------------------------------------- courts
+## A court: segmental plaster vault over the shorter span, walls from lane
+## height up to the springing with notches where hall vaults come in, a
+## square skylight, and a clerestory on long sides no hall enters.
+func build_court(z):
+	var g = z.id
+	var r = z.rect
+	var sx = r[2] - r[0]
+	var sz = r[3] - r[1]
+	var cx = (r[0] + r[2]) * 0.5
+	var cz = (r[1] + r[3]) * 0.5
+	var axis = "z" if sz >= sx else "x"   # vault runs along the longer side
+	if z.style == "shoe":
+		axis = "z"
+	var half = (sx if axis == "z" else sz) * 0.5
+	var length = sz if axis == "z" else sx
+	var rise = clamp(half * 2.0 * 0.19, 1.6, 4.2)
+	var R = arch_R(half, rise)
+	var cy = COURT_SPRING + rise - R
+	var sky = clamp(min(half, length * 0.5) * 0.28, 1.2, 2.2)
+	# frame: u across the span (from centre), s along the vault (from centre)
+	var P = func(u, y, s):
+		return Vector3(cx + u, y, cz + s) if axis == "z" else Vector3(cx + s, y, cz + u)
+	var pts = arch_pts(half, COURT_SPRING, rise, 40)
+	var steps = int(ceil(length / 1.0))
+	for i in pts.size() - 1:
+		var a = pts[i]
+		var b = pts[i + 1]
+		var mid = (a + b) * 0.5
+		var nn = (P.call(0, cy, 0) - P.call(mid.x, mid.y, 0)).normalized()
+		var arc_a = R * asin(a.x / R)
+		var arc_b = R * asin(b.x / R)
+		for k in steps:
+			var s0 = -length * 0.5 + length * k / steps
+			var s1 = -length * 0.5 + length * (k + 1) / steps
+			if abs(mid.x) < sky and abs((s0 + s1) * 0.5) < sky:
+				continue
+			quad(g, "plaster", [P.call(a.x, a.y, s0), P.call(b.x, b.y, s0), P.call(b.x, b.y, s1), P.call(a.x, a.y, s1)], nn,
+				[Vector2(arc_a, s0) * 0.22, Vector2(arc_b, s0) * 0.22, Vector2(arc_b, s1) * 0.22, Vector2(arc_a, s1) * 0.22])
+	# skylight well
+	var top = COURT_SPRING + rise + 0.9
+	var ys = arch_y(sky, half, COURT_SPRING, rise)
+	for sgn in [-1.0, 1.0]:
+		quad(g, "lane_ceiling", [P.call(sgn * sky, ys - 0.05, -sky), P.call(sgn * sky, ys - 0.05, sky), P.call(sgn * sky, top, sky), P.call(sgn * sky, top, -sky)], (P.call(-sgn, 0, 0) - P.call(0, 0, 0)).normalized())
+		var o = PackedVector2Array()
+		for i in 9:
+			var u = -sky + 2.0 * sky * i / 8
+			o.append(Vector2(u, arch_y(u, half, COURT_SPRING, rise) - 0.05))
+		o.append(Vector2(sky, top)); o.append(Vector2(-sky, top))
+		var org = P.call(0, 0, sgn * sky)
+		var axu = P.call(1, 0, 0) - P.call(0, 0, 0)
+		poly(g, "lane_ceiling", o, org, axu, Vector3.UP, (P.call(0, 0, -sgn) - P.call(0, 0, 0)).normalized())
+	for i in 5:
+		var u = -sky + i * sky * 0.5
+		var c1 = P.call(u, top - 0.05, 0)
+		var c2 = P.call(0, top - 0.05, u)
+		box("glass_frames", "metal_dark", c1, abs_size((P.call(0, 0, 1) - P.call(0, 0, 0)), sky * 2, 0.1, 0.05, (P.call(1, 0, 0) - P.call(0, 0, 0))), Transform3D.IDENTITY, [], true)
+		box("glass_frames", "metal_dark", c2, abs_size((P.call(1, 0, 0) - P.call(0, 0, 0)), sky * 2, 0.1, 0.05, (P.call(0, 0, 1) - P.call(0, 0, 0))), Transform3D.IDENTITY, [], true)
+	add_omni(P.call(0, COURT_SPRING, 0), 1.0, half * 2.5, Color(1.0, 0.95, 0.88))
+	# walls
+	var sides = {}
+	for cw in L.court_walls:
+		if cw.zone == z.id:
+			sides[cw.side] = cw.halls
+	for side in ["n", "s", "w", "e"]:
+		var halls = sides.get(side, [])
+		var horiz = side in ["n", "s"]   # wall runs along x
+		var along_vault = (horiz and axis == "x") or (not horiz and axis == "z")
+		# wall line and inward normal
+		var o2 = Vector3.ZERO
+		var axw = Vector3.ZERO
+		var nrm = Vector3.ZERO
+		var u0 = 0.0
+		var u1 = 0.0
+		if horiz:
+			o2 = Vector3(cx, 0, r[1] if side == "n" else r[3])
+			axw = Vector3(1, 0, 0); u0 = r[0] - cx; u1 = r[2] - cx
+			nrm = Vector3(0, 0, 1 if side == "n" else -1)
+		else:
+			o2 = Vector3(r[0] if side == "w" else r[2], 0, cz)
+			axw = Vector3(0, 0, 1); u0 = r[1] - cz; u1 = r[3] - cz
+			nrm = Vector3(1 if side == "w" else -1, 0, 0)
+		var notches = []
+		for hid in halls:
+			var hz = zones[hid]
+			var hr = hz.rect
+			var hc = ((hr[0] + hr[2]) * 0.5 - cx) if horiz else ((hr[1] + hr[3]) * 0.5 - cz)
+			notches.append([hc, float(hz.vault_half)])
+		notches.sort_custom(func(p, q): return p[0] > q[0])
+		var clerestory = along_vault and halls.is_empty()
+		var bottom = LANE_H
+		if clerestory:
+			bottom = 6.25
+			# band below the windows, the reveal, mullions and glass
+			quad(g, "plaster", [o2 + axw * u0 + Vector3.UP * LANE_H, o2 + axw * u1 + Vector3.UP * LANE_H, o2 + axw * u1 + Vector3.UP * 5.0, o2 + axw * u0 + Vector3.UP * 5.0], nrm, [], false, 0.25)
+			quad(g, "trim_tan", [o2 + axw * u0 + Vector3.UP * 5.0, o2 + axw * u1 + Vector3.UP * 5.0, o2 + axw * u1 + Vector3.UP * 5.0 - nrm * 0.3, o2 + axw * u0 + Vector3.UP * 5.0 - nrm * 0.3], Vector3.UP)
+			quad(g, "trim_tan", [o2 + axw * u0 + Vector3.UP * 6.25, o2 + axw * u1 + Vector3.UP * 6.25, o2 + axw * u1 + Vector3.UP * 6.25 - nrm * 0.3, o2 + axw * u0 + Vector3.UP * 6.25 - nrm * 0.3], Vector3.DOWN)
+			var u = u0
+			while u <= u1 + 0.01:
+				box(g, "trim_tan", o2 + axw * u + Vector3.UP * 5.62 - nrm * 0.15, abs_size(axw, 0.14, 1.25, 0.3, nrm))
+				u += 2.0
+			quad("glass", "glass", [o2 + axw * u0 + Vector3.UP * 5.0 - nrm * 0.3, o2 + axw * u1 + Vector3.UP * 5.0 - nrm * 0.3, o2 + axw * u1 + Vector3.UP * 6.25 - nrm * 0.3, o2 + axw * u0 + Vector3.UP * 6.25 - nrm * 0.3], nrm, [], true)
+		var o = PackedVector2Array()
+		o.append(Vector2(u0, bottom))
+		if along_vault:
+			o.append(Vector2(u0, COURT_SPRING)); o.append(Vector2(u1, COURT_SPRING))
+		else:
+			for p in pts:
+				o.append(Vector2(p.x, p.y))
+		o.append(Vector2(u1, bottom))
+		if not clerestory:
+			for nt in notches:
+				var c = nt[0]
+				var vh = nt[1]
+				if vh <= 0.0:
+					continue
+				var hrise = hall_rise(vh)
+				o.append(Vector2(c + vh, LANE_H))
+				var ap = arch_pts(vh, VAULT_SPRING, hrise, 16)
+				ap.reverse()
+				for p in ap:
+					o.append(Vector2(c + p.x, p.y))
+				o.append(Vector2(c - vh, LANE_H))
+		poly(g, "plaster", o, o2, axw, Vector3.UP, nrm)
+		# trim: cornice at the springing on long sides, arch band on the ends
+		if along_vault:
+			box(g, "trim_tan", o2 + Vector3.UP * 6.28 + nrm * 0.12, abs_size(axw, u1 - u0, 0.12, 0.24, nrm))
+		else:
+			for i in pts.size() - 1:
+				var a = pts[i]
+				var b = pts[i + 1]
+				var ia = a + (Vector2(0, cy) - a).normalized() * 0.55
+				var ib = b + (Vector2(0, cy) - b).normalized() * 0.55
+				var off = nrm * 0.1
+				quad(g, "trim_tan", [o2 + axw * a.x + Vector3.UP * a.y + off, o2 + axw * b.x + Vector3.UP * b.y + off, o2 + axw * ib.x + Vector3.UP * ib.y + off, o2 + axw * ia.x + Vector3.UP * ia.y + off], nrm)
+	# columns at the inner corners
+	var inset = 1.3
+	for qx in [r[0] + inset, r[2] - inset]:
+		for qz in [r[1] + inset, r[3] - inset]:
+			cyl(g, "column", Vector3(qx, 0.35, qz), 0.3, 0.3, COURT_SPRING - 0.6, 24, false)
+			cyl(g, "stone", Vector3(qx, 0, qz), 0.4, 0.4, 0.35, 24, true)
+			cyl(g, "column", Vector3(qx, COURT_SPRING - 0.25, qz), 0.3, 0.42, 0.25, 24, true, true)
+			obstacles.append([qx, qz, 0.55])
+	if z.style == "shoe":
+		palm_bed(g + "_props", Vector3(cx, 0, cz), 2.4, 5.0)
+		for b in [[-1.75, -1.2, PI * 0.5], [-1.75, 1.2, PI * 0.5], [1.75, -1.2, -PI * 0.5], [1.75, 1.2, -PI * 0.5]]:
+			bench(g + "_props", Vector3(cx + b[0], 0, cz + b[1]), b[2])
+		for p in [Vector3(-3.8, 4.3, -4.2), Vector3(3.8, 4.3, -4.2), Vector3(-3.8, 4.3, 4.2), Vector3(3.8, 4.3, 4.2)]:
+			var lp = Vector3(cx, 0, cz) + p
+			lantern(lp, arch_y(p.x, half, COURT_SPRING, rise))
+
+# ------------------------------------------------------------------ lights
+func disc_down(group, c, rad):
+	var s = st(group, "downlight")
+	var seg = 12
+	for i in seg:
+		var a0 = TAU * i / seg
+		var a1 = TAU * (i + 1) / seg
+		tri(s, c, c + Vector3(cos(a0), 0, sin(a0)) * rad, c + Vector3(cos(a1), 0, sin(a1)) * rad, Vector2(0.5, 0.5), Vector2(0, 0), Vector2(1, 0), Vector3.DOWN)
+
+func add_downlight(c):
+	var l = SpotLight3D.new()
+	l.position = c + Vector3(0, -0.05, 0)
+	l.rotation = Vector3(-PI / 2, 0, 0)
+	l.spot_angle = 58.0
+	l.spot_attenuation = 0.8
+	l.spot_range = 7.0
+	l.light_energy = 1.5
+	l.light_color = Color(1.0, 0.92, 0.80)
+	l.light_bake_mode = Light3D.BAKE_STATIC
+	light_root.add_child(l)
+
+func add_omni(p, energy, rng, col, shadow = false):
+	var l = OmniLight3D.new()
+	l.position = p
+	l.omni_range = rng
+	l.light_energy = energy
+	l.light_color = col
+	l.light_bake_mode = Light3D.BAKE_STATIC
+	l.shadow_enabled = shadow
+	light_root.add_child(l)
+
+# ------------------------------------------------------------------ edges
+func zone_at(x, z):
+	for zid in zones:
+		var r = zones[zid].rect
+		if x >= r[0] and x <= r[2] and z >= r[1] and z <= r[3]:
+			return zid
+	return "misc"
+
+func label(text, fontname, fg, pos, n, max_w, cap_h = 0.56):
+	var lab = Label3D.new()
+	lab.text = text
+	var fnt = load("res://fonts/" + {"sans": "sans.otf", "serif": "serif.ttf", "script": "script.ttf"}[fontname])
+	lab.font = fnt
+	lab.font_size = 128
+	lab.modulate = Color(fg)
+	var est = text.length() * 128 * (0.6 if fontname == "serif" else 0.5)
+	var txt_w = max(fnt.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, 128).x, est)
+	var px = cap_h / 128.0
+	if txt_w * px > max_w:
+		px = max_w / txt_w
+	lab.pixel_size = px
+	lab.shaded = false
+	lab.double_sided = false
+	lab.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	lab.position = pos
+	lab.basis = Basis.looking_at(-n, Vector3.UP)
+	mall.add_child(lab)
+	return lab
+
+func edge_basics(e):
+	var a = Vector3(e.a[0], 0, e.a[1])
+	var b = Vector3(e.b[0], 0, e.b[1])
+	var n = Vector3(e.n[0], 0, e.n[1])
+	return [a, b, n, (b - a).normalized(), a.distance_to(b)]
+
+func plain_wall(g, a, b, n, top = LANE_H):
+	var t = (b - a).normalized()
+	quad(g, "cream", [a, b, b + Vector3(0, top, 0), a + Vector3(0, top, 0)], n)
+	box(g, "stone", (a + b) * 0.5 + Vector3(0, 0.3, 0) + n * 0.03, abs_size(t, a.distance_to(b), 0.6, 0.06, n))
+
+func build_edge(e):
+	var eb = edge_basics(e)
+	var a = eb[0]
+	var b = eb[1]
+	var n = eb[2]
+	var t = eb[3]
+	var Ln = eb[4]
+	var mid = (a + b) * 0.5
+	var g = zone_at(mid.x + n.x * 1.0, mid.z + n.z * 1.0)
+	match e.kind:
+		"wall":
+			plain_wall(g, a, b, n)
+		"store":
+			storefront(g, e, a, b, n, t, Ln)
+		"exit", "entrance":
+			doors_out(g, e, a, b, n, t, Ln)
+		"restroom":
+			plain_wall(g, a, b, n)
+			var sd = L.stores[e.store]
+			var dp = a + t * min(1.6, Ln * 0.3)
+			box(g, "door_wood", dp + Vector3(0, 1.05, 0) + n * 0.03, abs_size(t, 0.95, 2.1, 0.06, n))
+			box(g, "bronze", dp + Vector3(0, 2.15, 0) + n * 0.03, abs_size(t, 1.1, 0.1, 0.08, n))
+			label(sd.name.capitalize(), "sans", "#ffffff", dp + Vector3(0, 2.55, 0) + n * 0.06, n, 1.2, 0.22)
+			cur_color = Color("#2b4a8a")
+			box(g, "vcolor", dp + Vector3(0, 2.55, 0) + n * 0.03, abs_size(t, 1.3, 0.34, 0.04, n))
+			cur_color = Color.WHITE
+
+## A storefront along one frontage: pilasters with a stone base, bulkhead with
+## the sign, bronze-framed glass (or an open front), the lit interior behind.
+func storefront(g, e, a, b, n, t, Ln):
+	var sd = L.stores[e.store]
+	var pil = 0.4 if Ln > 2.5 else 0.25
+	var anchor = sd.anchor
+	var deep = clamp(float(e.depth), 3.0, 14.0 if anchor else 9.0)
+	for ee in [0.0, Ln - pil]:
+		var c0 = a + t * (ee + pil * 0.5)
+		box(g, "stone", c0 + Vector3(0, 0.45, 0) + n * 0.06, abs_size(t, pil, 0.9, 0.12, n))
+		box(g, "cream", c0 + Vector3(0, (OPEN_H + 0.9) * 0.5, 0) + n * 0.03, abs_size(t, pil, OPEN_H - 0.9, 0.06, n))
+	var mid = a + t * Ln * 0.5
+	box(g, "bulkhead", mid + Vector3(0, (OPEN_H + LANE_H) * 0.5, 0) + n * 0.08, abs_size(t, Ln, LANE_H - OPEN_H, 0.16, n))
+	# sign
+	var text = sd.sign
+	if sd.vacant:
+		text = "For Lease" + ((" · Space %d" % int(sd.unit)) if sd.unit != null else "")
+	if text != "" and not sd.noSign and Ln >= 1.5:
+		var sw = min(Ln - 0.8, max(1.6, min(Ln * 0.72, 9.0 if anchor else 6.5)))
+		var sh = 0.95 if anchor else 0.78
+		var sc = mid + Vector3(0, OPEN_H + (LANE_H - OPEN_H) * 0.5, 0) + n * 0.2
+		cur_color = Color("#3a3a3a") if sd.vacant else Color(sd.bg)
+		box(g, "vcolor", sc, abs_size(t, sw, sh, 0.08, n))
+		cur_color = Color.WHITE
+		label(text, "sans" if sd.vacant else sd.font, "#f2efe6" if sd.vacant else sd.fg, sc + n * 0.05, n, sw * 0.88, 0.62 if anchor else 0.56)
+	var inner0 = pil
+	var inner1 = Ln - pil
+	var p0 = a + t * inner0
+	var p1 = a + t * inner1
+	var width = inner1 - inner0
+	if sd.vacant:
+		# closed grille in front of a dark space
+		quad(g, "grille", [p0, p1, p1 + Vector3(0, OPEN_H, 0), p0 + Vector3(0, OPEN_H, 0)], n, [], false, 1.0)
+		var k = 0.0
+		while k < OPEN_H:
+			box(g, "metal_dark", (p0 + p1) * 0.5 + Vector3(0, k, 0) + n * 0.02, abs_size(t, width, 0.03, 0.03, n))
+			k += 0.18
+		return
+	if sd.awning and sd.awningColor != null:
+		cur_color = Color(sd.awningColor)
+		var aw0 = a + t * Ln * 0.5 + Vector3(0, OPEN_H + 0.05, 0)
+		var xf = Transform3D(Basis.looking_at(-n, Vector3.UP) * Basis(Vector3.RIGHT, 0.45), aw0 + n * 0.45)
+		box(g, "vcolor_matte", Vector3.ZERO, Vector3(Ln - 0.2, 0.06, 1.0), xf)
+		box(g, "vcolor_matte", aw0 + n * 0.9 + Vector3(0, -0.32, 0), abs_size(t, Ln - 0.2, 0.25, 0.04, n))
+		cur_color = Color.WHITE
+	var door_w = width if sd.open else min(3.0 if not anchor else 8.0, width * 0.45)
+	if sd.entry != null:
+		door_w = min(width, float(sd.entry) * 2.0)
+	var d0 = Ln * 0.5 - door_w * 0.5
+	var d1 = Ln * 0.5 + door_w * 0.5
+	if not sd.open:
+		for seg in [[inner0, d0], [d1, inner1]]:
+			var s0 = seg[0]
+			var s1 = seg[1]
+			if s1 - s0 < 0.1:
+				continue
+			var cc = a + t * (s0 + s1) * 0.5
+			box(g, "stone", cc + Vector3(0, 0.2, 0), abs_size(t, s1 - s0, 0.4, 0.2, n))
+			quad("glass", "glass", [a + t * s0 + Vector3(0, 0.4, 0), a + t * s1 + Vector3(0, 0.4, 0), a + t * s1 + Vector3(0, OPEN_H, 0), a + t * s0 + Vector3(0, OPEN_H, 0)], n, [Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
+			var cnt = max(1, int(round((s1 - s0) / 1.5)))
+			for k in cnt + 1:
+				var mp = a + t * (s0 + (s1 - s0) * k / cnt)
+				box(g, "bronze", mp + Vector3(0, (OPEN_H + 0.4) * 0.5, 0), abs_size(t, 0.06, OPEN_H - 0.4, 0.1, n))
+	box(g, "bronze", mid + Vector3(0, OPEN_H - 0.04, 0), abs_size(t, width, 0.08, 0.12, n))
+	# interior
+	var back = -n * deep
+	var cell = atlas_index.get(e.store, 0)
+	var cu = float(cell % ATLAS_COLS) / ATLAS_COLS
+	var cv = float(cell / ATLAS_COLS) / ATLAS_ROWS
+	var du = 1.0 / ATLAS_COLS
+	var dv = 1.0 / ATLAS_ROWS
+	var reps = max(1, int(round(width / 6.0)))
+	for k in reps:
+		var q0 = p0 + t * (width * k / reps)
+		var q1 = p0 + t * (width * (k + 1) / reps)
+		quad(g, "int_back", [q0 + back, q1 + back, q1 + back + Vector3(0, OPEN_H, 0), q0 + back + Vector3(0, OPEN_H, 0)], n,
+			[Vector2(cu, cv + dv), Vector2(cu + du, cv + dv), Vector2(cu + du, cv), Vector2(cu, cv)])
+	quad(g, "int_wall", [p0, p0 + back, p0 + back + Vector3(0, OPEN_H, 0), p0 + Vector3(0, OPEN_H, 0)], t)
+	quad(g, "int_wall", [p1 + back, p1, p1 + Vector3(0, OPEN_H, 0), p1 + back + Vector3(0, OPEN_H, 0)], -t)
+	cur_color = Color(sd.carpet) if sd.carpet != null else Color("#d8d2c6")
+	quad(g, "int_floor", [p0, p1, p1 + back, p0 + back], Vector3.UP)
+	cur_color = Color.WHITE
+	quad(g, "int_wall", [p0 + Vector3(0, OPEN_H, 0), p0 + back + Vector3(0, OPEN_H, 0), p1 + back + Vector3(0, OPEN_H, 0), p1 + Vector3(0, OPEN_H, 0)], Vector3.DOWN)
+	var rows = max(1, int(deep / 3.0))
+	var cols = max(1, int(width / 3.0))
+	for ri in rows:
+		for ci in cols:
+			var pc = p0 + t * (width * (ci + 0.5) / cols) - n * (deep * (ri + 0.5) / rows) + Vector3(0, OPEN_H - 0.01, 0)
+			quad(g, "int_panel", [pc - t * 0.5 - n * 0.3, pc + t * 0.5 - n * 0.3, pc + t * 0.5 + n * 0.3, pc - t * 0.5 + n * 0.3], Vector3.DOWN)
+	var mc = sd.merch
+	var k2 = 0
+	var pos = 1.4
+	while pos < width - 0.8:
+		cur_color = Color(mc[k2 % mc.size()])
+		box(g, "vcolor", p0 + t * pos - n * (deep * 0.45) + Vector3(0, 0.45, 0), abs_size(t, 1.2, 0.9, 0.8, n))
+		pos += 2.8
+		k2 += 1
+	cur_color = Color.WHITE
+	add_omni(a + t * Ln * 0.5 - n * deep * 0.5 + Vector3(0, OPEN_H - 0.4, 0), 0.45 if not anchor else 0.8, deep + 1.0, Color(1.0, 0.96, 0.88))
+
+## Glass doors to the outside (exits and the main entrance), with daylight beyond.
+func doors_out(g, e, a, b, n, t, Ln):
+	var sd = L.stores.get(e.store, {})
+	var dh = 3.0
+	var mid = a + t * Ln * 0.5
+	var dw = min(Ln - 1.0, 9.0)
+	var s0 = Ln * 0.5 - dw * 0.5
+	var s1 = Ln * 0.5 + dw * 0.5
+	var o = PackedVector2Array([Vector2(0, 0), Vector2(0, LANE_H), Vector2(Ln, LANE_H), Vector2(Ln, 0), Vector2(s1, 0), Vector2(s1, dh), Vector2(s0, dh), Vector2(s0, 0)])
+	poly(g, "cream", o, a, t, Vector3.UP, n)
+	box(g, "bronze", mid + Vector3(0, dh, 0), abs_size(t, dw + 0.2, 0.15, 0.2, n))
+	var k = 0
+	var cnt = max(2, int(round(dw / 1.6)))
+	for i in cnt + 1:
+		box(g, "bronze", a + t * (s0 + dw * i / cnt) + Vector3(0, dh * 0.5, 0), abs_size(t, 0.08, dh, 0.18, n))
+	quad("glass", "glass", [a + t * s0, a + t * s1, a + t * s1 + Vector3(0, dh, 0), a + t * s0 + Vector3(0, dh, 0)], n, [], true)
+	# a vestibule floor and canopy outside so the daylight has something to bounce off
+	var out = -n
+	var og = "outside"
+	cur_color = Color.WHITE
+	quad(og, "outside_ground", [a, b, b + out * 12.0, a + out * 12.0], Vector3.UP, [], false, 0.25)
+	quad(og, "cream", [a + Vector3(0, dh + 0.3, 0), b + Vector3(0, dh + 0.3, 0), b + out * 4.0 + Vector3(0, dh + 0.3, 0), a + out * 4.0 + Vector3(0, dh + 0.3, 0)], Vector3.DOWN)
+	if e.kind == "exit":
+		box(g, "exit_sign", mid + Vector3(0, dh + 0.55, 0) + n * 0.05, abs_size(t, 1.2, 0.36, 0.08, n))
+		label("EXIT", "sans", "#ffffff", mid + Vector3(0, dh + 0.55, 0) + n * 0.1, n, 1.0, 0.24)
+	else:
+		label("Main Entrance", "serif", "#5b4030", mid + Vector3(0, dh + 0.75, 0) + n * 0.05, n, dw * 0.6, 0.42)
+
+# ------------------------------------------------------------------ props
+func bench(group, at, yaw):
+	var xf = Transform3D(Basis(Vector3.UP, yaw), at)
+	var Lb = 1.7
+	for i in 5:
+		box(group, "wood", Vector3(0, 0.44, -0.2 + i * 0.105), Vector3(Lb, 0.035, 0.085), xf)
+	for i in 4:
+		var c = Vector3(0, 0.62 + i * 0.105, 0.29 + i * 0.012)
+		var bx = xf * Transform3D(Basis(Vector3.RIGHT, -0.25 - i * 0.06), c)
+		box(group, "wood", Vector3.ZERO, Vector3(Lb, 0.085, 0.03), bx)
+	for ee in [-Lb * 0.5 + 0.08, Lb * 0.5 - 0.08]:
+		box(group, "metal_dark", Vector3(ee, 0.22, -0.1), Vector3(0.05, 0.44, 0.05), xf)
+		box(group, "metal_dark", Vector3(ee, 0.4, 0.3), Vector3(0.05, 0.8, 0.05), xf)
+		box(group, "metal_dark", Vector3(ee, 0.62, 0.0), Vector3(0.06, 0.04, 0.5), xf)
+		box(group, "metal_dark", Vector3(ee, 0.05, 0.1), Vector3(0.06, 0.04, 0.55), xf)
+	obstacles.append([at.x, at.z, 0.85])
+
+func palm(base, hgt):
+	cyl("foliage", "trunk", base, 0.07, 0.05, hgt, 8, false, false, true)
+	var top = base + Vector3(0, hgt, 0)
+	for i in 14:
+		frond(top, TAU * i / 14 + randf() * 0.3, 1.5 + randf() * 0.6, deg_to_rad(35 + randf() * 25))
+
+func frond(top, yaw, Lf, up):
+	var s = st("foliage", "palm", true)
+	var dir = Vector3(cos(yaw), 0, sin(yaw))
+	var side = Vector3(-dir.z, 0, dir.x)
+	var segs = 6
+	var prev_l = Vector3.ZERO
+	var prev_r = Vector3.ZERO
+	var prev_c = top
+	for i in segs + 1:
+		var f = float(i) / segs
+		var ang = up - f * 1.6 * up - f * f * 0.9
+		var c = top
+		if i > 0:
+			c = prev_c + (dir * cos(ang) + Vector3.UP * sin(ang)) * (Lf / segs)
+		var w = 0.46 * sin(PI * (0.15 + 0.85 * f)) + 0.05
+		var lft = c + side * w + Vector3(0, -w * 0.35, 0)
+		var rgt = c - side * w + Vector3(0, -w * 0.35, 0)
+		if i > 0:
+			var nn = (dir * -sin(ang) + Vector3.UP * cos(ang)).normalized()
+			var v0 = float(i - 1) / segs
+			tri(s, prev_l, prev_r, rgt, Vector2(0, v0), Vector2(1, v0), Vector2(1, f), nn)
+			tri(s, prev_l, rgt, lft, Vector2(0, v0), Vector2(1, f), Vector2(0, f), nn)
+		prev_l = lft; prev_r = rgt; prev_c = c
+
+func bush(base, mname, size, cards):
+	var s = st("foliage", mname, true)
+	for i in cards:
+		var yaw = PI * i / cards
+		var d = Vector3(cos(yaw), 0, sin(yaw)) * size
+		var tilt = Vector3(0, size * 0.9, 0)
+		var p0 = base - d + Vector3(0, 0.02, 0)
+		var p1 = base + d + Vector3(0, 0.02, 0)
+		var nn = Vector3(-d.z, 0.3, d.x).normalized()
+		tri(s, p0, p1, p1 + tilt, Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), nn)
+		tri(s, p0, p1 + tilt, p0 + tilt, Vector2(0, 1), Vector2(1, 0), Vector2(0, 0), nn)
+	var c = base + Vector3(0, size * 0.75, 0)
+	tri(s, c + Vector3(-size, 0, -size), c + Vector3(size, 0, -size), c + Vector3(size, 0, size), Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector3.UP)
+	tri(s, c + Vector3(-size, 0, -size), c + Vector3(size, 0, size), c + Vector3(-size, 0, size), Vector2(0, 0), Vector2(1, 1), Vector2(0, 1), Vector3.UP)
+
+func palm_bed(group, at, sx, sz):
+	var h = 0.42
+	box(group, "bed_wood", at + Vector3(0, h * 0.5, 0), Vector3(sx, h, sz), Transform3D.IDENTITY, ["-y"])
+	box(group, "soil", at + Vector3(0, h + 0.005, 0), Vector3(sx - 0.1, 0.01, sz - 0.1), Transform3D.IDENTITY, ["-y"])
+	var nx = int(sx / 0.6)
+	var nz = int(sz / 0.6)
+	for i in nx:
+		for j in nz:
+			var p = at + Vector3(-sx * 0.5 + 0.3 + i * (sx - 0.6) / max(1, nx - 1), h, -sz * 0.5 + 0.3 + j * (sz - 0.6) / max(1, nz - 1))
+			if abs(p.x - at.x) < 0.6 and abs(p.z - at.z) < sz * 0.3:
+				continue
+			bush(p, "poinsettia", 0.28, 3)
+	palm(at + Vector3(0, h, -sz * 0.22), 2.4)
+	palm(at + Vector3(0, h, sz * 0.22), 1.9)
+	obstacles.append(["rect", at.x - sx * 0.5 - 0.3, at.z - sz * 0.5 - 0.3, at.x + sx * 0.5 + 0.3, at.z + sz * 0.5 + 0.3])
+
+func lantern(at, top_y):
+	var g = "lanterns"
+	cyl(g, "brass", Vector3(at.x, at.y + 0.55, at.z), 0.015, 0.015, top_y - at.y - 0.55, 6, false)
+	cyl(g, "lantern_glass", at + Vector3(0, -0.2, 0), 0.2, 0.24, 0.6, 8, false, false)
+	for i in 8:
+		var a = TAU * i / 8
+		box(g, "brass", at + Vector3(cos(a) * 0.245, 0.1, sin(a) * 0.245), Vector3(0.025, 0.66, 0.025))
+	cyl(g, "brass", at + Vector3(0, 0.4, 0), 0.27, 0.05, 0.18, 8, true)
+	cyl(g, "brass", at + Vector3(0, -0.24, 0), 0.24, 0.26, 0.05, 8, true, true)
+	cyl(g, "brass", at + Vector3(0, -0.36, 0), 0.02, 0.09, 0.12, 8, false, true)
+	add_omni(at + Vector3(0, -0.05, 0), 1.6, 9.0, Color(1.0, 0.82, 0.58))
+
+# ------------------------------------------------------------------ floors
+## Floor quads per zone; each zone gets its own material carrying the pattern
+## parameters as metadata, read by the runtime floor shader.
+func floor_zone(z):
+	var r = z.rect
+	var mname = "floorz_" + z.id
+	var m = mat(mname)
+	var meta = {}
+	if z.type == "hall":
+		var sp = hall_span(z)
+		meta = {"pattern": 1, "axis": 0 if z.axis == "x" else 1, "center": ((r[1] + r[3]) * 0.5) if z.axis == "x" else ((r[0] + r[2]) * 0.5), "half": sp[2], "medallions": 1 if z.id == "H3" else 0}
+		if sp[2] < 2.5:
+			meta = {"pattern": 0}
+	else:
+		meta = {"pattern": 2, "cx": (r[0] + r[2]) * 0.5, "cz": (r[1] + r[3]) * 0.5, "hx": (r[2] - r[0]) * 0.5, "hz": (r[3] - r[1]) * 0.5,
+			"palette": {"shoe": 1, "sears": 2}.get(z.style, 0)}
+	m.set_meta("floor", meta)
+	quad(z.id, mname, [Vector3(r[0], 0, r[1]), Vector3(r[2], 0, r[1]), Vector3(r[2], 0, r[3]), Vector3(r[0], 0, r[3])], Vector3.UP)
+
+# ------------------------------------------------------------------ build
+func build():
+	seed(1995)
+	L = JSON.parse_string(FileAccess.get_file_as_string("res://layout_mall.json"))
+	for z in L.zones:
+		zones[z.id] = z
+	var ids = L.stores.keys()
+	ids.sort()
+	var ci = 0
+	for sid in ids:
+		atlas_index[sid] = ci
+		ci += 1
+	mall = Node3D.new(); mall.name = "Mall"
+	light_root = Node3D.new(); light_root.name = "Lights"
+	mall.add_child(light_root); light_root.owner = mall
+
+	for z in L.zones:
+		floor_zone(z)
+		if z.type == "hall":
+			build_hall(z)
+		else:
+			build_court(z)
+	var lm = mat("floorz_left")
+	lm.set_meta("floor", {"pattern": 0})
+	for r in L.leftovers:
+		quad("misc", "floorz_left", [Vector3(r[0], 0, r[1]), Vector3(r[2], 0, r[1]), Vector3(r[2], 0, r[3]), Vector3(r[0], 0, r[3])], Vector3.UP)
+		quad("misc", "lane_ceiling", [Vector3(r[0], LANE_H, r[1]), Vector3(r[2], LANE_H, r[1]), Vector3(r[2], LANE_H, r[3]), Vector3(r[0], LANE_H, r[3])], Vector3.DOWN)
+	for e in L.edges:
+		build_edge(e)
+	# K&B's mall-facing wall: pink with plum stripes instead of a full storefront
+	# is a per-store look we add in Phase 2 (decision 6); its storefront is generic for now.
+
+	var sun = DirectionalLight3D.new()
+	sun.name = "Sun"
+	sun.light_bake_mode = Light3D.BAKE_STATIC
+	sun.shadow_enabled = true
+	sun.light_energy = 2.4
+	sun.light_color = Color(1.0, 0.95, 0.86)
+	sun.light_angular_distance = 1.2
+	mall.add_child(sun); sun.owner = mall
+	sun.look_at_from_position(Vector3.ZERO, Vector3(0.62, -0.62, 0.48), Vector3.UP)
+
+	var env = Environment.new()
+	var sky = Sky.new()
+	var psky = ProceduralSkyMaterial.new()
+	psky.sky_top_color = Color("#5d8fd1")
+	psky.sky_horizon_color = Color("#c9dbee")
+	psky.ground_horizon_color = Color("#c9c3b5")
+	psky.ground_bottom_color = Color("#7b766c")
+	psky.sky_energy_multiplier = 1.4
+	sky.sky_material = psky
+	env.background_mode = Environment.BG_SKY
+	env.sky = sky
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
+	env.ambient_light_energy = 0.35
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	env.tonemap_exposure = 1.05
+	env.tonemap_white = 6.0
+	env.glow_enabled = true
+	env.glow_intensity = 0.35
+	env.glow_bloom = 0.04
+	env.glow_hdr_threshold = 1.2
+	env.adjustment_enabled = true
+	env.adjustment_saturation = 1.08
+	env.adjustment_contrast = 1.04
+	var we = WorldEnvironment.new()
+	we.name = "Env"; we.environment = env
+	mall.add_child(we); we.owner = mall
+
+	var static_root = Node3D.new(); static_root.name = "Static"
+	mall.add_child(static_root); static_root.owner = mall
+	DirAccess.make_dir_recursive_absolute("res://gen")
+	for gname in acc:
+		var am = ArrayMesh.new()
+		for mname in acc[gname]:
+			var s = acc[gname][mname]
+			s.index()
+			s.commit(am)
+			am.surface_set_material(am.get_surface_count() - 1, mat(mname))
+		var texel = TEXEL
+		if gname.ends_with("props") or gname == "lanterns":
+			texel = TEXEL * 0.6
+		elif gname == "outside":
+			texel = TEXEL * 4.0
+		if am.lightmap_unwrap(Transform3D.IDENTITY, texel) != OK:
+			push_error("unwrap failed " + gname)
+		ResourceSaver.save(am, "res://gen/" + gname + ".res")
+		var mi = MeshInstance3D.new()
+		mi.name = gname
+		mi.mesh = load("res://gen/" + gname + ".res")
+		mi.gi_mode = GeometryInstance3D.GI_MODE_STATIC
+		static_root.add_child(mi); mi.owner = mall
+	var dyn_root = Node3D.new(); dyn_root.name = "Dynamic"
+	mall.add_child(dyn_root); dyn_root.owner = mall
+	for gname in dyn_acc:
+		var am = ArrayMesh.new()
+		for mname in dyn_acc[gname]:
+			var s = dyn_acc[gname][mname]
+			s.index()
+			s.commit(am)
+			am.surface_set_material(am.get_surface_count() - 1, mat(mname))
+		ResourceSaver.save(am, "res://gen/dyn_" + gname + ".res")
+		var mi = MeshInstance3D.new()
+		mi.name = "dyn_" + gname
+		mi.mesh = load("res://gen/dyn_" + gname + ".res")
+		mi.gi_mode = GeometryInstance3D.GI_MODE_DYNAMIC
+		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		dyn_root.add_child(mi); mi.owner = mall
+
+	for z in L.zones:
+		var r = z.rect
+		var rp = ReflectionProbe.new()
+		var hgt = 10.0 if z.type == "court" else 6.6
+		rp.position = Vector3((r[0] + r[2]) * 0.5, hgt * 0.5, (r[1] + r[3]) * 0.5)
+		rp.size = Vector3(r[2] - r[0] + 0.5, hgt, r[3] - r[1] + 0.5)
+		rp.box_projection = true
+		rp.interior = true
+		rp.update_mode = ReflectionProbe.UPDATE_ONCE
+		rp.intensity = 0.9
+		mall.add_child(rp); rp.owner = mall
+
+	var lmg = LightmapGI.new()
+	lmg.name = "LightmapGI"
+	lmg.quality = LightmapGI.BAKE_QUALITY_LOW
+	lmg.bounces = 2
+	lmg.use_denoiser = true
+	lmg.environment_mode = LightmapGI.ENVIRONMENT_MODE_SCENE
+	lmg.max_texture_size = 4096
+	lmg.generate_probes_subdiv = LightmapGI.GENERATE_PROBES_SUBDIV_4
+	mall.add_child(lmg); lmg.owner = mall
+
+	for c in light_root.get_children():
+		c.owner = mall
+	for c in mall.get_children():
+		if c is Label3D:
+			c.owner = mall
+
+	var player = load("res://scripts/player.gd").new()
+	player.name = "Player"
+	player.set("obstacles", obstacles)
+	player.set("walk_rows", L.walk)
+	player.set("map_origin", Vector2(L.origin[0], L.origin[1]))
+	player.set("map_scale", L.scale)
+	mall.add_child(player); player.owner = mall
+	var rt = Node.new()
+	rt.set_script(load("res://scripts/mall_runtime.gd"))
+	rt.name = "Runtime"
+	mall.add_child(rt); rt.owner = mall
+
+	var ps = PackedScene.new()
+	ps.pack(mall)
+	ResourceSaver.save(ps, "res://main.tscn")
+	var lights = light_root.get_child_count()
+	print("BUILD OK static groups=", acc.size(), " dynamic=", dyn_acc.size(), " lights=", lights, " labels=", mall.get_children().filter(func(c): return c is Label3D).size())
+
+func _initialize():
+	build()
+	quit()
