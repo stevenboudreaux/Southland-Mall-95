@@ -1,0 +1,537 @@
+{
+ "stores": [
+  {
+   "id": "woolworth",
+   "sign": "Woolworth",
+   "bg": "#b3131b",
+   "fg": "#f6d25a",
+   "merch": [
+    "#ffffff",
+    "#f6d25a",
+    "#2b4a8a",
+    "#d23c3c"
+   ],
+   "a": [
+    -8,
+    -7.6
+   ],
+   "b": [
+    -8,
+    7.6
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "font": "serif"
+  },
+  {
+   "id": "footaction_usa",
+   "sign": "Footaction USA",
+   "bg": "#c8102e",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#c8102e",
+    "#1d1d24"
+   ],
+   "a": [
+    -6,
+    -16
+   ],
+   "b": [
+    -6,
+    -8.4
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "kids_mart",
+   "sign": "Kids Mart",
+   "bg": "#2f8f86",
+   "fg": "#f2c94c",
+   "merch": [
+    "#f2c94c",
+    "#2f8f86",
+    "#ffffff"
+   ],
+   "a": [
+    -6,
+    -24
+   ],
+   "b": [
+    -6,
+    -16
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "jean_nicole",
+   "sign": "Jean Nicole",
+   "bg": "#1d1d24",
+   "fg": "#e9a6b8",
+   "merch": [
+    "#e9a6b8",
+    "#1d1d24",
+    "#ffffff"
+   ],
+   "a": [
+    -6,
+    -33
+   ],
+   "b": [
+    -6,
+    -24
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "font": "script"
+  },
+  {
+   "id": "kandb",
+   "sign": "K&B",
+   "bg": "#5b2a86",
+   "fg": "#ffffff",
+   "merch": [
+    "#5b2a86",
+    "#ffffff",
+    "#f2c744",
+    "#c8202c"
+   ],
+   "a": [
+    6,
+    -26
+   ],
+   "b": [
+    6,
+    -18
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "sears",
+   "sign": "SEARS",
+   "bg": "#1f4e9c",
+   "fg": "#ffffff",
+   "merch": [
+    "#c8202c",
+    "#ffffff",
+    "#1f4e9c",
+    "#f2c94c"
+   ],
+   "a": [
+    -6,
+    -40
+   ],
+   "b": [
+    6,
+    -40
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "gordons_jewelers",
+   "sign": "Gordon's Jewelers",
+   "bg": "#3b2f4a",
+   "fg": "#e5c96b",
+   "merch": [
+    "#d4af37",
+    "#ffffff",
+    "#d4af37"
+   ],
+   "a": [
+    8.4,
+    -6
+   ],
+   "b": [
+    12.5,
+    -6
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "font": "serif"
+  },
+  {
+   "id": "claires_boutiques",
+   "sign": "Claire's",
+   "bg": "#6a3d99",
+   "fg": "#ffffff",
+   "merch": [
+    "#e9a6b8",
+    "#6a3d99",
+    "#7fd3e6",
+    "#ffffff"
+   ],
+   "a": [
+    12.5,
+    -6
+   ],
+   "b": [
+    16.5,
+    -6
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "font": "script"
+  },
+  {
+   "id": "mitchells_formal_wear",
+   "sign": "Mitchell's Formal Wear",
+   "bg": "#1d1d24",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#1d1d24",
+    "#ffffff"
+   ],
+   "a": [
+    16.5,
+    -6
+   ],
+   "b": [
+    20.5,
+    -6
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "font": "serif"
+  },
+  {
+   "id": "laser_copies",
+   "sign": "Laser Copies",
+   "bg": "#2451c4",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#2451c4",
+    "#ffffff"
+   ],
+   "a": [
+    20.5,
+    -6
+   ],
+   "b": [
+    24,
+    -6
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "vision_plaza",
+   "sign": "Vision Plaza",
+   "bg": "#1f6f78",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#1f6f78",
+    "#7fd3e6"
+   ],
+   "a": [
+    24,
+    -6
+   ],
+   "b": [
+    29.6,
+    -6
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "franks",
+   "sign": "Franks",
+   "bg": "#243a6b",
+   "fg": "#f6e7c0",
+   "merch": [
+    "#c8202c",
+    "#ffffff",
+    "#f2c744"
+   ],
+   "a": [
+    8.4,
+    6
+   ],
+   "b": [
+    12,
+    6
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "orange_julius",
+   "sign": "Orange Julius",
+   "bg": "#e57b2b",
+   "fg": "#ffffff",
+   "merch": [
+    "#f2c744",
+    "#e57b2b",
+    "#ffffff"
+   ],
+   "a": [
+    12,
+    6
+   ],
+   "b": [
+    15.5,
+    6
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "font": "script"
+  },
+  {
+   "id": "tee_tais",
+   "sign": "Tee Tai's",
+   "bg": "#c8202c",
+   "fg": "#f6e7b8",
+   "merch": [
+    "#2e7d4f",
+    "#c8202c",
+    "#f2c744"
+   ],
+   "a": [
+    15.5,
+    6
+   ],
+   "b": [
+    19,
+    6
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "optical_outlet",
+   "sign": "Optical Outlet",
+   "bg": "#243a6b",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#243a6b",
+    "#7fd3e6"
+   ],
+   "a": [
+    19,
+    6
+   ],
+   "b": [
+    23,
+    6
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "tjs_one_hour_photo",
+   "sign": "T.J.'s 1 Hour Photo",
+   "bg": "#f2c94c",
+   "fg": "#1d1d24",
+   "merch": [
+    "#1d1d24",
+    "#f2c94c",
+    "#c8202c"
+   ],
+   "a": [
+    23,
+    6
+   ],
+   "b": [
+    26.5,
+    6
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "pups_and_pets",
+   "sign": "Pups & Pets",
+   "bg": "#2e7d4f",
+   "fg": "#ffffff",
+   "merch": [
+    "#8fb7d6",
+    "#f2c744",
+    "#7fd06a",
+    "#ffffff"
+   ],
+   "a": [
+    26.5,
+    6
+   ],
+   "b": [
+    29.6,
+    6
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "lerner_shop",
+   "sign": "Lerner Shop",
+   "bg": "#6e2a38",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#6e2a38",
+    "#ffffff"
+   ],
+   "a": [
+    -6,
+    8.4
+   ],
+   "b": [
+    -6,
+    18
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "font": "serif"
+  },
+  {
+   "id": "coach_house_gifts",
+   "sign": "Coach House Gifts",
+   "bg": "#6e2a38",
+   "fg": "#f6e7b8",
+   "merch": [
+    "#f6e7b8",
+    "#6e2a38",
+    "#c9932c"
+   ],
+   "a": [
+    6,
+    8.4
+   ],
+   "b": [
+    6,
+    14
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "font": "serif"
+  },
+  {
+   "id": "radio_shack",
+   "sign": "Radio Shack",
+   "bg": "#c8202c",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#c8202c",
+    "#1d1d24"
+   ],
+   "a": [
+    6,
+    14
+   ],
+   "b": [
+    6,
+    18
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "general_nutrition_center",
+   "sign": "GNC",
+   "bg": "#c8102e",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#c8102e",
+    "#e5d2a0"
+   ],
+   "a": [
+    6,
+    18
+   ],
+   "b": [
+    6,
+    21
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "font": "sans"
+  },
+  {
+   "id": "the_avenue",
+   "sign": "The Avenue",
+   "bg": "#5b2a86",
+   "fg": "#f6e7c0",
+   "merch": [
+    "#f6e7c0",
+    "#5b2a86",
+    "#ffffff"
+   ],
+   "a": [
+    6,
+    21
+   ],
+   "b": [
+    6,
+    27
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "font": "script"
+  }
+ ]
+}
