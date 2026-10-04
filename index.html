@@ -4779,7 +4779,7 @@ function lookTagEl(){if(LTAG)return LTAG;
     '@keyframes ltPop{0%{transform:scale(.55);opacity:0}100%{transform:scale(1);opacity:1}}';
   document.head.appendChild(st);
   var el=document.createElement("div");el.className="ltag";el.setAttribute("role","button");el.hidden=true;
-  el.innerHTML='<span class="lt-bob"><span class="lt-box"><span class="lt-act"></span><span class="lt-name"></span></span><span class="lt-tip"><i></i></span></span>';
+  el.innerHTML='<span class="lt-bob"><span class="lt-box"><span class="lt-act"></span><span class="lt-name"></span><span class="lt-badge" hidden></span></span><span class="lt-tip"><i></i></span></span>';
   el.addEventListener("pointerdown",function(e){e.preventDefault();e.stopPropagation();});
   el.addEventListener("click",function(e){e.preventDefault();e.stopPropagation();if(mode==="play"&&!GAL&&!SV&&!YP)lookOpen();try{cv.focus({preventScroll:true});}catch(x){}});
   LTAG=el;return el;}
@@ -4788,9 +4788,10 @@ function lookTagSync(){
   if(!show){if(el&&!el.hidden){el.hidden=true;el._s=null;}return;}
   el=lookTagEl();el.classList.toggle("lt-up",!!HINT_AT.up);var host=cv.parentNode;if(el.parentNode!==host){if(getComputedStyle(host).position==="static")host.style.position="relative";host.appendChild(el);}
   var kx=cv.clientWidth/VW,ky=cv.clientHeight/VH,u=Math.max(2,Math.min(3.5,Math.round(cv.clientWidth/300*2)/2));
-  if(el._s!==s||el._u!==u){var nm=(s.name||"").trim();el.querySelector(".lt-act").textContent=s.timeDoor?"CHANGE YEAR":s.poster?"POST":"LOOK INSIDE";
+  if(el._s!==s||el._u!==u||el._c!==PHC.key){el._c=PHC.key;badgeCss();var nm=(s.name||"").trim();el.querySelector(".lt-act").textContent=s.timeDoor?"CHANGE YEAR":s.poster?"POST":"LOOK INSIDE";
     var ne=el.querySelector(".lt-name");ne.textContent=s.timeDoor?"":nm;ne.hidden=!!s.timeDoor||!nm;el.style.setProperty("--u",u+"px");el._u=u;
     el.setAttribute("aria-label",(s.timeDoor?"Change year":s.poster?"Post to "+nm:"Look inside "+nm));
+    var bc=s.timeDoor?0:phCount(s),be=el.querySelector(".lt-badge");be.hidden=!bc;be.textContent=bc>99?"99+":bc;
     if(el._s!==s){el.classList.remove("lt-pop");void el.offsetWidth;el.classList.add("lt-pop");}el._s=s;}
   var h=el.offsetHeight||60,hw=(el.offsetWidth||160)/2,x=cv.offsetLeft+HINT_AT.x*kx,y=cv.offsetTop+HINT_AT.y*ky+(HINT_AT.top?h:0);
   x=Math.max(cv.offsetLeft+hw+4,Math.min(cv.offsetLeft+cv.clientWidth-hw-4,x));y=Math.max(cv.offsetTop+h+4,y);
@@ -4799,6 +4800,66 @@ function hintHit(x,y){return !!(HINT_BOX&&tick-HINT_BOX.t<4&&x>=HINT_BOX.x&&x<=H
 function drawSFHint(g){
   if(SV||YP||GAL||!(P.hint||P.tdHint))return;
   HINT_AT={x:P.x*RS-camX,y:P.y*RS-camY-50};
+}
+
+/* ---- photo count bubbles ----
+   Every storefront (and seasonal poster) whose board has pictures carries a small glowing bubble floating in the middle of
+   its frontage, with the number of pictures inside, like the action markers in Midnight Suns or an app's badge on a phone.
+   Each view works out where the bubbles go (BADGE_AT, in game-screen units, with how far away they are) and badgeSync()
+   moves a handful of page elements there, so the number stays sharp at any size. They are hidden behind walls, fade with
+   distance, and the store whose LOOK INSIDE tag is up shows its count on the tag's corner instead. */
+var BADGE_AT=[],BADGE_EL=[],BADGE_HOST=null,PHC={key:"",m:{}};
+function phCountMap(){var k=PH.photos.length+"|"+PH.pending.length+"|"+(PH.photos[0]&&PH.photos[0].id)+"|"+(PH.photos.length&&PH.photos[PH.photos.length-1].id);
+  if(PHC.key!==k){var m={};PH.photos.concat(PH.pending).forEach(function(p){if(p&&p.store)m[p.store]=(m[p.store]||0)+1;});PHC={key:k,m:m};}return PHC.m;}
+function phCount(s){if(!phEligible(s))return 0;return (phCountMap()[phSlug(s.name)]||0)+(s.front&&s.front.src?1:0);}
+function badgeStores(){var L=[],all=M.stores.concat(posterList());for(var i=0;i<all.length;i++){var n=phCount(all[i]);if(n>0)L.push({s:all[i],n:n});}return L;}
+/* the middle of a store's frontage for one of its faces, nudged a little out into the hall (tiles) */
+function badgeFront(s,f,out){var n=FACEN[f];if(!n)return null;var x=s.x+s.w/2,y=s.y+s.h/2;
+  if(f==="N")y=s.y;else if(f==="S")y=s.y+s.h;else if(f==="W")x=s.x;else x=s.x+s.w;return {x:x+n[0]*out,y:y+n[1]*out,n:n};}
+/* overhead view: over the middle of the shop */
+function badgesTop(){if(SV||YP||GAL)return;var L=badgeStores();
+  for(var i=0;i<L.length;i++){var s=L[i].s,x,y;
+    if(s.poster){var bf=badgeFront(s,s.face,.5);if(!bf)continue;x=bf.x;y=bf.y;}else{x=s.x+s.w/2;y=s.y+s.h/2;}
+    var sx=x*TT-camX,sy=y*TT-camY-8;if(sx<-20||sx>VW+20||sy<-20||sy>VH+20)continue;
+    BADGE_AT.push({s:s,n:L[i].n,x:sx,y:sy,d:3.4});}}
+function badgeCss(){if(BADGE_HOST)return;BADGE_HOST=true;
+  var st=document.createElement("style");st.textContent=
+    '.pbadge{position:absolute;z-index:30;left:0;top:0;pointer-events:none;transform:translate(-50%,-50%);transition:opacity .25s linear;--d:20px}'+
+    '.pbadge[hidden]{display:none}'+
+    '.pbadge .pb-f{display:block;animation:pbFloat 2.6s ease-in-out infinite}'+
+    '.pbadge .pb-o,.lt-badge{display:flex;align-items:center;justify-content:center;box-sizing:border-box;height:var(--d);min-width:var(--d);padding:0 calc(var(--d)*.22);border-radius:999px;'+
+      'font:800 calc(var(--d)*.62)/1 -apple-system,BlinkMacSystemFont,"Helvetica Neue","Segoe UI",Arial,sans-serif;font-variant-numeric:tabular-nums;color:#fff;letter-spacing:-.02em;'+
+      'text-shadow:0 1px 1px rgba(4,30,64,.65);'+
+      'background:radial-gradient(circle at 34% 28%,#e9fbff 0,#8fe1ff 14%,#2aa2e6 46%,#0d5fb0 82%,#0a4a8c 100%);'+
+      'border:1px solid rgba(225,248,255,.9);'+
+      'box-shadow:0 0 calc(var(--d)*.35) calc(var(--d)*.08) rgba(110,215,255,.55),0 calc(var(--d)*.08) calc(var(--d)*.16) rgba(8,20,40,.45),inset 0 calc(var(--d)*-.12) calc(var(--d)*.18) rgba(4,40,90,.45)}'+
+    '.pbadge .pb-o{animation:pbGlow 2.6s ease-in-out infinite}'+
+    '.lt-box{position:relative}'+
+    '.lt-badge{position:absolute;right:calc(var(--d)*-.55);top:calc(var(--d)*-.6);--d:max(18px,calc(var(--u)*7))}'+
+    '.lt-badge[hidden]{display:none}'+
+    '@keyframes pbFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(calc(var(--d)*-.16))}}'+
+    '@keyframes pbGlow{0%,100%{box-shadow:0 0 calc(var(--d)*.3) calc(var(--d)*.06) rgba(110,215,255,.45),0 calc(var(--d)*.08) calc(var(--d)*.16) rgba(8,20,40,.45),inset 0 calc(var(--d)*-.12) calc(var(--d)*.18) rgba(4,40,90,.45)}'+
+      '50%{box-shadow:0 0 calc(var(--d)*.55) calc(var(--d)*.12) rgba(140,225,255,.7),0 calc(var(--d)*.08) calc(var(--d)*.16) rgba(8,20,40,.45),inset 0 calc(var(--d)*-.12) calc(var(--d)*.18) rgba(4,40,90,.45)}}'+
+    '@media (prefers-reduced-motion:reduce){.pbadge .pb-f,.pbadge .pb-o{animation:none}}';
+  document.head.appendChild(st);}
+function badgeSync(){
+  var on=mode==="play"&&cv&&cv.parentNode&&!GAL&&!SV&&!YP,tagged=P.hint||null,used=0;
+  if(on){badgeCss();var host=cv.parentNode,kx=cv.clientWidth/VW,ky=cv.clientHeight/VH,sm=Math.max(.8,Math.min(1.3,cv.clientWidth/1000));
+    if(getComputedStyle(host).position==="static")host.style.position="relative";
+    BADGE_AT.sort(function(a,b){return b.d-a.d;});
+    for(var i=0;i<BADGE_AT.length&&used<40;i++){var b=BADGE_AT[i];if(b.s===tagged)continue;
+      var al=Math.max(0,Math.min(1,(11-b.d)/3));if(al<=0)continue;
+      var el=BADGE_EL[used];if(!el){el=document.createElement("div");el.className="pbadge";el.setAttribute("aria-hidden","true");el.innerHTML='<span class="pb-f"><span class="pb-o"></span></span>';el.hidden=true;BADGE_EL[used]=el;}
+      if(el.parentNode!==host)host.appendChild(el);
+      var dia=Math.round(Math.max(19,Math.min(30,50/Math.sqrt(Math.max(1,b.d))))*sm),txt=b.n>99?"99+":String(b.n);
+      if(el._t!==txt){el.firstChild.firstChild.textContent=txt;el._t=txt;}
+      if(el._d!==dia){el.style.setProperty("--d",dia+"px");el._d=dia;}
+      el.style.left=Math.round(cv.offsetLeft+b.x*kx)+"px";el.style.top=Math.round(cv.offsetTop+b.y*ky)+"px";el.style.zIndex=30+Math.max(0,Math.round(20-b.d));
+      var op=(al*.92).toFixed(2);if(el._o!==op){el.style.opacity=op;el._o=op;}
+      /* stagger the float so the bubbles don't bob in lockstep */
+      if(el._s!==b.s){el._s=b.s;var ph=((b.s.x||0)*7+(b.s.y||0)*13)%26/10;el.firstChild.style.animationDelay=el.firstChild.firstChild.style.animationDelay="-"+ph+"s";}
+      if(el.hidden)el.hidden=false;used++;}}
+  for(var j=used;j<BADGE_EL.length;j++)if(!BADGE_EL[j].hidden){BADGE_EL[j].hidden=true;BADGE_EL[j]._s=null;}
 }
 
 /* ================= photo board =================
@@ -11264,6 +11325,17 @@ var SS=(function(){
       else if(it.kid){var k=it.kid;if(!(k.alpha!=null&&k.alpha<=0)){var kp=Object.create(k);kp.x=0;kp.y=0;kp.dir=rdir(k.dir);var ride=k.state==="ride";g.translate(Math.round(q.x),Math.round(q.y));g.scale(q.s,q.s);g.globalAlpha=Math.max(0,Math.min(1,k.alpha!=null?k.alpha:1));drawKidBody(g,it.n,kp,0,0,ride,ride?((tick>>4)%2):0);}}
       else{var r=it.r,rp=Object.create(r);rp.x=0;rp.y=0;rp.dir=rdir(r.dir);var fd=(r.state==="enter"||r.state==="exit")&&r.alpha<1;g.translate(Math.round(q.x),Math.round(q.y));g.scale(q.s,q.s);g.globalAlpha=Math.max(0,Math.min(1,fd?r.alpha:1));drawNPCBody(g,it.n,rp,0,0);}
       g.restore();g.globalAlpha=1;});
+    /* photo count bubbles: in the middle of each frontage, floating at about head height in the shop opening, hidden behind walls */
+    if(!SV&&!YP&&!GAL)badgeStores().forEach(function(b){var s=b.s,fs=[s.face,s.face2],best=null;
+      for(var k=0;k<2;k++){var fp=fs[k]&&badgeFront(s,fs[k],.14);if(!fp)continue;
+        if((ox-fp.x)*fp.n[0]+(oy-fp.y)*fp.n[1]<=0)continue;                 /* only from the hall side */
+        var ax=fp.x-ox,ay=fp.y-oy,d=ax*dx+ay*dy;if(d<.6||d>11)continue;
+        var sx2=hw+f*(ax*plx+ay*ply)/d;if(sx2<-20||sx2>W+20)continue;
+        var rr=Math.round(14*U),hid=false;for(var q=-rr;q<=rr;q+=rr){var zi=Math.max(0,Math.min(W-1,(sx2+q)|0));if(z[zi]<d-.12)hid=true;}
+        if(hid)continue;                                                       /* a wall stands in front, even partly */
+        var sy2=hor-f*(WALLH*(1-(s.poster?126:92)/150)-EYE)/d;
+        if(!best||d<best.d)best={s:s,n:b.n,x:sx2/U,y:sy2/U,d:d};}
+      if(best)BADGE_AT.push(best);});
     CXU=U;g.setTransform(1,0,0,1,0,0);g.imageSmoothingEnabled=false;W=VW;H=VH;hw=W/2;pyy/=U;ps/=U;
     if(!SV&&!YP&&!GAL&&(P.hint||P.tdHint)){ /* just under the store's sign: the wall straight ahead, at the top of the shop opening (68 of its 150 rows down) */
       var tz=z[(VW*U/2)|0],pst=!!(P.hint&&P.hint.poster),vr=pst?104:68; /* a poster gets the tag just under it, pointing up at it */
@@ -11335,6 +11407,10 @@ var SS=(function(){
     g.setTransform(1,0,0,1,0,0);
     /* hint bubble over the player */
     if(!SV&&!YP&&!GAL&&(P.hint||P.tdHint))HINT_AT={x:pp.x-cam,y:pp.y-54};
+    /* photo count bubbles over the shop openings along the back wall */
+    if(!SV&&!YP&&!GAL&&!sc.pipe)badgeStores().forEach(function(b){var s=b.s,bk=OPPF[F];if(s.face!==bk&&s.face2!==bk)return;
+      var fp=badgeFront(s,bk,.4),q=fp&&place(sc,fp.x,fp.y,cam);if(!q||q.s!==1||Math.abs(q.d)>1.2)return;
+      var sx=q.x-cam;if(sx<-20||sx>VW+20)return;BADGE_AT.push({s:s,n:b.n,x:sx,y:sc.BASE-(s.poster?54:84),d:3.4});});
     /* you-are-here map */
     if(mapOn&&storeGrid){var mc=mini(),k2=Math.max(.34,Math.min(1,Math.min(76/mc.width,52/mc.height))),mw=Math.round(mc.width*k2),mh=Math.round(mc.height*k2),mx=VW-mw-7,my=6;
       R(g,"rgba(28,18,28,.82)",mx-3,my-3,mw+6,mh+6);R(g,"#f2c94c",mx-3,my-3,mw+6,1);g.drawImage(mc,mx,my,mw,mh);
@@ -11369,8 +11445,8 @@ function loop(ts){
   if(groundDirty)renderGround();
   if(PS.src!==playerCfg().src)loadPlayerSheet();
   while(acc>=1000/60){ if(mode==="play"){if(GAL)stepGAL();else if(SV)stepSV();else if(YP)stepYP();else{stepPlayer();if(SIDE)SS.step();}} stepNPCs(1/60); tick++; acc-=1000/60; CAMPULL+=((GAL?1.1:0)-CAMPULL)*.1;if(CAMPULL<.004)CAMPULL=0; }
-  if(mode==="play"){locate();HINT_AT=null;if(SIDE){SS.render();}else{renderPlay();drawSFHint(cx);}drawSV(cx);drawYP(cx);lookTagSync();}
-  else{renderEditor();lookTagSync();}
+  if(mode==="play"){locate();HINT_AT=null;BADGE_AT.length=0;if(SIDE){SS.render();}else{renderPlay();drawSFHint(cx);badgesTop();}drawSV(cx);drawYP(cx);lookTagSync();badgeSync();}
+  else{renderEditor();lookTagSync();badgeSync();}
   if(ts-npcLabelT>500){npcLabelT=ts;if(mode==="play")sizePlay();var yl=$("#yearLbl");if(yl&&yl.textContent!==M._era)yl.textContent=M._era;var ce=$("#clock");if(ce)ce.textContent=clockText();var nc=$("#npcCount");if(nc){if(M.sim.showNpcs===false){nc.textContent="shoppers hidden";}else{var sh=M.npcs.filter(function(n){return n.kind!=="walker";}).length,wk=M.npcs.length-sh;nc.textContent=sh+" shopper"+(sh===1?"":"s")+", "+wk+" mall walker"+(wk===1?"":"s");};}}
   requestAnimationFrame(loop);
 }
