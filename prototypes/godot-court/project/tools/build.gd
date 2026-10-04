@@ -66,13 +66,12 @@ func mat(name: String) -> StandardMaterial3D:
 		"bronze":
 			m.albedo_color = Color("#3a2f27"); m.metallic = 0.6; m.roughness = 0.4
 		"int_wall":
-			m.albedo_color = Color("#f4f0e8"); m.roughness = 0.9
-			m.emission_enabled = true; m.emission = Color("#fffaf0"); m.emission_energy_multiplier = 0.25
+			m.albedo_color = Color("#ece6da"); m.roughness = 0.9
 		"int_floor":
 			m.albedo_color = Color("#d8d2c6"); m.roughness = 0.5
 		"int_panel":
 			m.albedo_color = Color.WHITE
-			m.emission_enabled = true; m.emission = Color("#fffaf2"); m.emission_energy_multiplier = 4.0
+			m.emission_enabled = true; m.emission = Color("#fffaf2"); m.emission_energy_multiplier = 2.2
 		"pink":
 			m.albedo_color = Color("#dba9a0"); m.roughness = 0.8
 		"plum":
@@ -99,8 +98,9 @@ func mat(name: String) -> StandardMaterial3D:
 			m.emission_enabled = true; m.emission = Color("#ffc977"); m.emission_energy_multiplier = 3.0
 		"glass":
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-			m.albedo_color = Color(0.82, 0.9, 0.92, 0.07)
-			m.roughness = 0.04; m.metallic = 0.0; m.metallic_specular = 0.25
+			m.albedo_color = Color(0.78, 0.86, 0.86, 0.10)
+			m.roughness = 0.04; m.metallic = 0.0
+			m.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
 		"skyglass":
 			m.albedo_color = Color("#eef6ff")
@@ -126,7 +126,7 @@ func mat(name: String) -> StandardMaterial3D:
 			elif name.begins_with("int_"):
 				m.albedo_texture = tex(name + ".png")
 				m.emission_enabled = true; m.emission_texture = m.albedo_texture
-				m.emission = Color.WHITE; m.emission_energy_multiplier = 0.45
+				m.emission = Color.WHITE; m.emission_energy_multiplier = 0.3
 				m.roughness = 0.8
 			else:
 				push_error("unknown material " + name)
@@ -426,8 +426,8 @@ func store(sd: Dictionary) -> void:
 	lab.font_size = 128
 	lab.outline_size = 0
 	lab.modulate = Color(sd.fg)
-	var txt_w = max(fnt.get_string_size(sd.sign, HORIZONTAL_ALIGNMENT_LEFT, -1, 128).x, sd.sign.length() * 128 * (0.66 if sd.font == "serif" else 0.58))
-	var px = 0.42 / 128.0
+	var txt_w = max(fnt.get_string_size(sd.sign, HORIZONTAL_ALIGNMENT_LEFT, -1, 128).x, sd.sign.length() * 128 * (0.6 if sd.font == "serif" else 0.5))
+	var px = 0.56 / 128.0
 	if txt_w * px > sw * 0.88:
 		px = sw * 0.88 / txt_w
 	lab.pixel_size = px
@@ -483,7 +483,7 @@ func store(sd: Dictionary) -> void:
 		if t.dot(fc - p0) > inner1 - inner0 - 0.8:
 			break
 		box(g, "c" + String(mc[k % mc.size()]), fc + Vector3(0, 0.45, 0), abs_size(t, 1.2, 0.9, 0.8, n))
-	add_omni(a + t * L * 0.5 - n * deep * 0.5 + Vector3(0, open_h - 0.4, 0), 1.2, deep + 2.0, Color(1.0, 0.97, 0.9))
+	add_omni(a + t * L * 0.5 - n * deep * 0.5 + Vector3(0, open_h - 0.4, 0), 0.45, deep + 1.0, Color(1.0, 0.96, 0.88))
 	obstacles.append(["seg", [a.x, a.z], [b.x, b.z], [n.x, n.z]])
 
 ## Box size given an along-axis t, length, height, depth along n.
@@ -553,10 +553,10 @@ func palm(base: Vector3, hgt: float) -> void:
 	var g = "foliage"
 	cyl(g, "trunk", base, 0.07, 0.05, hgt, 8, false, false, true)
 	var top = base + Vector3(0, hgt, 0)
-	var n = 9
+	var n = 14
 	for i in n:
 		var yaw = TAU * i / n + randf() * 0.3
-		var lenf = 1.3 + randf() * 0.4
+		var lenf = 1.5 + randf() * 0.6
 		frond(top, yaw, lenf, deg_to_rad(35 + randf() * 25))
 
 func frond(top: Vector3, yaw: float, L: float, up: float) -> void:
@@ -574,7 +574,7 @@ func frond(top: Vector3, yaw: float, L: float, up: float) -> void:
 		if i > 0:
 			var step = L / segs
 			c = prev_c + (dir * cos(ang) + Vector3.UP * sin(ang)) * step
-		var w = 0.32 * sin(PI * (0.15 + 0.85 * f)) + 0.04
+		var w = 0.46 * sin(PI * (0.15 + 0.85 * f)) + 0.05
 		var lft = c + side * w + Vector3(0, -w * 0.35, 0)
 		var rgt = c - side * w + Vector3(0, -w * 0.35, 0)
 		if i > 0:

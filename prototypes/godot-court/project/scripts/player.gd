@@ -24,6 +24,7 @@ var look_touch := -1
 var move_origin := Vector2.ZERO
 var move_vec := Vector2.ZERO
 var dragging := false
+var last_pos := {}   # touch index -> last position
 var hud: Label
 var hint: Label
 var stick: Control
@@ -87,6 +88,7 @@ func _input(e: InputEvent) -> void:
 	var half := get_viewport().get_visible_rect().size.x * 0.5
 	if e is InputEventScreenTouch:
 		if e.pressed:
+			last_pos[e.index] = e.position
 			hint.visible = false
 			if e.position.x < half and move_touch == -1:
 				move_touch = e.index; move_origin = e.position; move_vec = Vector2.ZERO
@@ -94,16 +96,21 @@ func _input(e: InputEvent) -> void:
 			elif look_touch == -1:
 				look_touch = e.index
 		else:
+			last_pos.erase(e.index)
 			if e.index == move_touch:
 				move_touch = -1; move_vec = Vector2.ZERO; stick.visible = false
 			if e.index == look_touch:
 				look_touch = -1
 	elif e is InputEventScreenDrag:
+		var prev: Vector2 = last_pos.get(e.index, e.position)
+		last_pos[e.index] = e.position
 		if e.index == move_touch:
 			move_vec = ((e.position - move_origin) / 46.0).limit_length(1.0)
 			stick.queue_redraw()
 		elif e.index == look_touch:
-			_look(e.relative * 0.0045)
+			var d: Vector2 = e.position - prev
+			if d.length() < 120.0:   # ignore a jump if the browser swaps fingers
+				_look(d * 0.0045)
 	elif e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT:
 		dragging = e.pressed
 		hint.visible = false

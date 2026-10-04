@@ -65,6 +65,7 @@ func _ready() -> void:
 					s.set_shader_parameter("strength", strength)
 					mat_cache[sm.resource_name] = s
 				mi.set_surface_override_material(i, mat_cache[sm.resource_name])
+	_dress_interiors()
 	_resize()
 	get_viewport().size_changed.connect(_resize)
 
@@ -96,3 +97,39 @@ func _process(_dt: float) -> void:
 	mcam.fov = cam.fov
 	mcam.near = cam.near
 	mcam.far = cam.far
+
+## Store side walls: shelving with merchandise on the vertical faces (seen at an
+## angle through the glass), plain ceiling. Render-only, so the baked light stays.
+const INTERIOR := """
+shader_type spatial;
+uniform sampler2D shelf_tex : source_color, filter_linear_mipmap, repeat_enable;
+varying vec3 wpos;
+varying vec3 wnrm;
+void vertex() {
+	wpos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	wnrm = normalize((MODEL_MATRIX * vec4(NORMAL, 0.0)).xyz);
+}
+void fragment() {
+	vec3 base = vec3(0.925, 0.902, 0.855);
+	if (abs(wnrm.y) < 0.5) {
+		float u = abs(wnrm.x) > 0.5 ? wpos.z : wpos.x;
+		vec3 t = texture(shelf_tex, vec2(u / 3.4, 1.0 - wpos.y / 3.2)).rgb;
+		base = mix(t, vec3(dot(t, vec3(0.3, 0.59, 0.11))), 0.3) * 0.9;
+	}
+	ALBEDO = base;
+	ROUGHNESS = 0.9;
+}
+"""
+
+func _dress_interiors() -> void:
+	var sh := Shader.new()
+	sh.code = INTERIOR
+	var sm := ShaderMaterial.new()
+	sm.shader = sh
+	sm.set_shader_parameter("shelf_tex", load("res://tex/int_side.png"))
+	for mi in _meshes(get_tree().current_scene):
+		var m: Mesh = mi.mesh
+		for i in m.get_surface_count():
+			var mat := m.surface_get_material(i)
+			if mat and mat.resource_name == "int_wall":
+				mi.set_surface_override_material(i, sm)
