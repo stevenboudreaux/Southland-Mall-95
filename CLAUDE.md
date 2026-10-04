@@ -1,7 +1,11 @@
-# Southland Mall '95 — Claude Code Game Studios setup
+# Houma Mall Rewind — Claude Code Game Studios setup
 
-A walkable recreation of Southland Mall as it was in 1993–1996, with community
-photo boards for every store. The studio workflow comes from Claude Code Game
+Working title **Houma Mall Rewind** (repo still named Southland-Mall-95; the game's
+name avoids "Southland" because the real mall is still open). A walkable
+recreation of Southland Mall in Houma, Louisiana, across the years people remember
+(from its 1969 opening to roughly 2018, never stated as a hard range), with
+moderated community photo boards for every store. The design record is
+`design/game-brief.md`; the photo system is `design/photo-pipeline-brief.md`. The studio workflow comes from Claude Code Game
 Studios (CCGS, MIT, see `.claude/CCGS-LICENSE`): coordinated subagents, skills,
 hooks and rules, run at `modes.rigor: minimal`.
 
@@ -48,8 +52,9 @@ Grep and read only the region you need. Key names: `render3`, `stepPlayer`,
 
 ## Period authenticity
 
-The mall is shown as it was in 1993, 1995 and 1996. Store names, signs, logos,
-products, prices and decor must fit those years. When unsure, ask the
+Year maps exist today for 1993, 1995 and 1996; more years are added as photos
+arrive (anywhere from 1969 to roughly 2018). Store names, signs, logos, products,
+prices and decor must fit the year map they appear in. When unsure, ask the
 `mall-historian`; for anything visual, the `period-art-director` reviews it.
 Never invent a store that was not there; mark unknowns as unknown.
 
@@ -96,9 +101,9 @@ Read `.claude/docs/context-management.md` on demand. Two conventions matter:
 
 ## Next steps for this setup
 
-1. `/adopt` (or `/project-stage-detect`) to register the existing game.
-2. `/reverse-document`, one subsystem at a time: rendering, look/tags/orbs,
-   photo boards and pipeline, editor and Publish, character creator, year maps.
+1. Done Oct 4: `/adopt` (minimal tier: only the game brief was missing; now written).
+2. `/reverse-document`, one subsystem at a time. Done: photo boards and pipeline.
+   Next: rendering, look/tags/orbs, editor and Publish, character creator, year maps.
 3. Add `workflow_overrides.system_overrides` in `project.yaml` for the photo
    pipeline and renderer once those systems have names.
 4. Baseline screenshots of every view before any refactor.
