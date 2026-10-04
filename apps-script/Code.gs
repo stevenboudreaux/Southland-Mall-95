@@ -65,20 +65,26 @@ function submit(b){
   var store=clean(b.store,40).toLowerCase().replace(/[^a-z0-9]/g,"");if(!store)throw new Error("No store named.");
   var date=clean(b.date,24);if(date&&!/^\d{4}(-\d\d){0,2}( [a-z]+)?$/.test(date))date="";
   var id=Utilities.formatDate(new Date(),"UTC","yyyyMMddHHmmss")+Math.random().toString(36).slice(2,6);
-  var entry={id:id,store:store,name:clean(b.name,60),file:"photos/"+store+"/"+id+".jpg",date:date,desc:clean(b.desc,500),by:clean(b.by,60),email:clean(b.email,120),w:+b.w||0,h:+b.h||0,added:Date.now()};
+  var entry={id:id,store:store,name:clean(b.name,60),file:"photos/"+store+"/"+id+".jpg",date:date,desc:clean(b.desc,500),by:clean(b.by,60),w:+b.w||0,h:+b.h||0,added:Date.now()};
+  /* The submitter's email never goes in the repo: pending.json is a public file. It is kept in this script's private
+     properties (for telling them later whether the photo was approved) and shown only in the notification email. */
+  var email=clean(b.email,120);
   gh("PUT","pending/"+id+".jpg",{message:"Photo submitted for "+(entry.name||store),content:data,branch:CONFIG.BRANCH});
   var pj=readJson("pending.json",{v:1,pending:[]});pj.data.pending=pj.data.pending||[];pj.data.pending.push(entry);
   writeJson("pending.json",pj.data,pj.sha,"Queue a photo for review");
-  notify(entry,data);
+  if(email)PropertiesService.getScriptProperties().setProperty("email_"+id,email);
+  notify(entry,data,email);
   return {ok:true,id:id};
 }
-function notify(p,b64){
+/* The private email for a submission, removed once the decision is made. */
+function takeEmail(id){var P=PropertiesService.getScriptProperties(),k="email_"+id,e=P.getProperty(k);if(e!=null)P.deleteProperty(k);return e||"";}
+function notify(p,b64,email){
   try{
     var who=p.by||"Someone",link=CONFIG.SITE+"review.html#"+p.id;
     var html='<div style="font-family:system-ui,Arial,sans-serif;font-size:16px;line-height:1.5">'+
       '<p><b>'+esc(who)+'</b> posted a picture to the <b>'+esc(p.name||p.store)+'</b> board'+(p.date?', dated <b>'+esc(p.date)+'</b>':'')+'.</p>'+
       (p.desc?'<p style="padding:8px 12px;background:#f8e3ac;border-left:4px solid #a8672f">'+esc(p.desc)+'</p>':'')+
-      (p.email?'<p>Their email: '+esc(p.email)+'</p>':'')+
+      (email?'<p>Their email (private, not on the review page): '+esc(email)+'</p>':'')+
       '<p><img src="cid:photo" style="max-width:480px;border:4px solid #5a3218"></p>'+
       '<p><a href="'+link+'" style="display:inline-block;padding:10px 18px;background:#f2c94c;color:#3b2230;font-weight:bold;text-decoration:none;border:3px solid #5a3218">Review it: approve or deny</a></p></div>';
     MailApp.sendEmail({to:CONFIG.NOTIFY_EMAIL,subject:"Southland Mall: new photo for "+(p.name||p.store)+" from "+who,htmlBody:html,
@@ -91,19 +97,24 @@ function takePending(id){var pj=readJson("pending.json",{v:1,pending:[]});var L=
   L.forEach(function(p,k){if(p.id===id)i=k;});if(i<0)throw new Error("That picture isn't in the review pile any more.");
   var p=L.splice(i,1)[0];pj.data.pending=L;return {p:p,pj:pj};}
 function approve(id){
+  /* Each step can be repeated safely, so an approval that stopped partway (for example when the owner was publishing
+     at the same moment) can simply be pressed again. */
   var t=takePending(id),p=t.p,f=gh("GET","pending/"+id+".jpg");if(!f)throw new Error("The picture file is missing.");
-  gh("PUT",p.file,{message:"Approve a photo of "+(p.name||p.store),content:String(f.content||"").replace(/\n/g,""),branch:CONFIG.BRANCH});
+  if(!gh("GET",p.file))gh("PUT",p.file,{message:"Approve a photo of "+(p.name||p.store),content:String(f.content||"").replace(/\n/g,""),branch:CONFIG.BRANCH});
   var ph=readJson("photos.json",{v:1,photos:[]});ph.data.photos=ph.data.photos||[];
   var pub={};["id","store","name","file","date","desc","by","w","h","added"].forEach(function(k){if(p[k]!=null&&p[k]!=="")pub[k]=p[k];});
-  if(!ph.data.photos.some(function(q){return q.id===p.id;}))ph.data.photos.push(pub);
-  writeJson("photos.json",ph.data,ph.sha,"Publish an approved photo of "+(p.name||p.store));
+  if(!ph.data.photos.some(function(q){return q.id===p.id;})){ph.data.photos.push(pub);writeJson("photos.json",ph.data,ph.sha,"Publish an approved photo of "+(p.name||p.store));}
   writeJson("pending.json",t.pj.data,t.pj.sha,"Photo approved");
   gh("DELETE","pending/"+id+".jpg",{message:"Clear a reviewed photo",sha:f.sha,branch:CONFIG.BRANCH});
+  takeEmail(id);
   return {ok:true,photo:pub};
 }
 function deny(id){
-  var t=takePending(id);writeJson("pending.json",t.pj.data,t.pj.sha,"Photo denied");
-  var f=gh("GET","pending/"+id+".jpg");if(f)gh("DELETE","pending/"+id+".jpg",{message:"Remove a denied photo",sha:f.sha,branch:CONFIG.BRANCH});
+  /* Delete the picture before taking it off the list, so a failure leaves it on the list to deny again rather than an orphan file. */
+  var t=takePending(id),f=gh("GET","pending/"+id+".jpg");
+  if(f)gh("DELETE","pending/"+id+".jpg",{message:"Remove a denied photo",sha:f.sha,branch:CONFIG.BRANCH});
+  writeJson("pending.json",t.pj.data,t.pj.sha,"Photo denied");
+  takeEmail(id);
   return {ok:true};
 }
 

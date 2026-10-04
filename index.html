@@ -6210,10 +6210,30 @@ function openPublishGitHub(){
         }).then(function(cur){var body={message:m,content:b64,branch:br};if(cur&&cur.sha)body.sha=cur.sha;
           return fetch(u,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify(body)});
         }).then(function(r){if(r.ok)return r;throw {status:r.status,path:path};});}
-      var pend=PH.pending.slice(),chain=phRefresh().then(function(){pend=PH.pending.slice();});
-      pend.forEach(function(p,i){chain=chain.then(function(){msg.textContent="Uploading photo "+(i+1)+" of "+pend.length+"…";return putFile(p.file,(p.data||"").split(",")[1]||"","Add a photo of "+(p.name||p.store));})
-        .then(function(){PH.pending=PH.pending.filter(function(q){return q!==p;});var q={};for(var k in p)if(k!=="data"&&k!=="pending"&&k!=="email")q[k]=p[k];PH.photos.push(q);phSavePending();});});
-      if(pend.length)chain=chain.then(function(){msg.textContent="Updating the photo list…";return putFile("photos.json",b64utf8(JSON.stringify(phManifest(),null,1)),"Update the photo list");});
+      /* The photo list is rebuilt from the live photos.json read through GitHub itself (not the slower Pages copy) right
+         before it is written, and written against that exact version, so a review.html approval is never overwritten.
+         If the live list can't be read, Publish stops and the list is left as it is. */
+      function putPhotoList(added){var u="https://api.github.com/repos/"+repo+"/contents/photos.json",stop="Couldn't read the live photo list, so it was left unchanged. Your uploaded photos are safe; publish again in a minute.";
+        return fetch(u+"?ref="+encodeURIComponent(br),{headers:H,cache:"no-store"}).then(function(r){
+          if(r.status===404)return {sha:null,photos:[]};if(r.status===401)throw "The token was not accepted. Check it and try again.";if(!r.ok)throw stop;
+          return r.json().then(function(f){var j=null;
+            try{j=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(String(f.content||"").replace(/\s/g,"")),function(c){return c.charCodeAt(0);})));}catch(e){}
+            if(!j||!Array.isArray(j.photos)||!f.sha)throw stop;return {sha:f.sha,photos:j.photos};});
+        },function(){throw stop;}).then(function(live){
+          var L=live.photos.slice();added.forEach(function(q){if(!L.some(function(x){return x.id===q.id;}))L.push(q);});
+          PH.photos=L;PH.live=true;
+          var body={message:"Update the photo list",content:b64utf8(JSON.stringify(phManifest(),null,1)),branch:br};if(live.sha)body.sha=live.sha;
+          return fetch(u,{method:"PUT",headers:Object.assign({"Content-Type":"application/json"},H),body:JSON.stringify(body)});
+        }).then(function(r){if(r.ok)return r;throw {status:r.status,path:"photos.json"};});}
+      /* Photos leave the browser's queue only once the photo list that names them is written, so a Publish that stops
+         partway loses nothing: publishing again re-sends them and finishes the list. */
+      var pend=[],added=[],chain=phRefresh().then(function(){
+        pend=PH.pending.slice();added=[];var c=Promise.resolve();
+        pend.forEach(function(p,i){c=c.then(function(){msg.textContent="Uploading photo "+(i+1)+" of "+pend.length+"…";return putFile(p.file,(p.data||"").split(",")[1]||"","Add a photo of "+(p.name||p.store));})
+          .then(function(){var q={};for(var k in p)if(k!=="data"&&k!=="pending"&&k!=="email")q[k]=p[k];added.push(q);});});
+        if(pend.length)c=c.then(function(){msg.textContent="Updating the photo list…";return putPhotoList(added);})
+          .then(function(){PH.pending=PH.pending.filter(function(q){return pend.indexOf(q)<0;});phSavePending();});
+        return c;});
       chain.then(function(){msg.textContent="Uploading the mall…";return putFile("index.html",b64utf8(buildDocument()),"Publish mall edits from the in-game editor");})
       .then(function(){msg.innerHTML="<b>Published.</b> GitHub Pages usually shows it within a minute or two. Your edits stay saved in this browser until the new version loads.";btn.disabled=false;if(GAL)galOpenList();})
       .catch(function(e){btn.disabled=false;
@@ -6224,7 +6244,7 @@ function openPublishGitHub(){
         else if(st===413||st===422)msg.textContent="GitHub turned a file down ("+st+pth+"). Try smaller pictures, or Download instead.";
         else if(st)msg.textContent="GitHub answered "+st+pth+". Try again, or use Download instead.";
         else msg.textContent="Couldn't reach GitHub. Check your connection and try again.";
-        if(PH.pending.length<pend.length)msg.textContent+=" The photos already uploaded are safe; publish again to finish.";});
+        if(added.length&&!/left unchanged/.test(msg.textContent))msg.textContent+=" The photos already uploaded are safe and still queued; publish again to finish.";});
     };
   });
 }

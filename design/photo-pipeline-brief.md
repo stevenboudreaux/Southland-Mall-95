@@ -38,16 +38,16 @@ verified-by: Steven Boudreaux (intent questions answered Oct 4)
 - Order: legacy storefront photo first, then by date (undated last), then by time added.
 - Orb count = published + Steven's unpublished queue + 1 if a legacy storefront photo exists; "99+" cap; fades out 21–26 units away.
 - Visitor path: POST → Apps Script builds its own id and slug → `pending/<id>.jpg` + `pending.json` → email to Steven with inline photo → `review.html` (passphrase) → Approve copies to `photos/<slug>/<id>.jpg` and adds to `photos.json`; Deny deletes.
-- Formats: `photos.json` = `{v:1, photos:[{id, store, name, file, date?, desc?, by?, w, h, added}]}`; `pending.json` same shape (plus email until the privacy fix).
+- Formats: `photos.json` = `{v:1, photos:[{id, store, name, file, date?, desc?, by?, w, h, added}]}`; `pending.json` same shape (no email).
 - Limits: description 500, name 60, email 120 characters; server rejects images over ~675 KB decoded.
 
 ## Risks found (Oct 4)
-1. Submitter email was saved in public `pending.json` while the form says "never shown". (Nothing leaked; pending was empty.) → **Fixing now** (build order 1).
-2. An Approve that fails partway (e.g. colliding with a Publish) could never be retried. → **Fixing now.**
-3. Publish built `photos.json` from a snapshot taken before uploading; an approval landing mid-upload could be lost, and a failed re-read carried on with old data. → **Fixing now.**
+1. Submitter email was saved in public `pending.json` while the form says "never shown". (Nothing leaked; pending was empty.) → **Fixed Oct 4**: email kept in the script's private properties and shown only in the notification email; takes effect once the Apps Script is redeployed. The review page no longer shows it.
+2. An Approve that fails partway (e.g. colliding with a Publish) could never be retried. → **Fixed Oct 4**: every Approve step is now safe to repeat.
+3. Publish built `photos.json` from a snapshot taken before uploading; an approval landing mid-upload could be lost, and a failed re-read carried on with old data. → **Fixed Oct 4**: Publish re-reads `photos.json` from GitHub right before writing it and writes against that exact version; if it can't read it, Publish stops. Photos also stay in Steven's queue until the list naming them is written (before, a failed list write could drop them).
 4. Submit endpoint has no rate limit; a bot could flood commits and emails. Fine at beta size.
 5. Renaming a store orphans its photos (slug changes).
-6. Deny rewrites `pending.json` before deleting the file; a failed delete leaves an orphan image.
+6. ~~Deny rewrote `pending.json` before deleting the file~~ → **Fixed Oct 4**: the file is deleted first.
 7. Old storefront photo counted and shown first (see MVP).
 8. Extra Santa/Easter Bunny posters in other places, e.g. by the movie theater (see MVP).
 
