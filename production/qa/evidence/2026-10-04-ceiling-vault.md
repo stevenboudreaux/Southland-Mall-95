@@ -20,3 +20,19 @@ GPU path: no measurable change (software WebGL in testing; real devices use hard
 Not checked: side and overhead views (the live page is 3D-only; those views don't draw a ceiling); real iPhone.
 Not yet built (report items): distinct court ceilings (Shoe Dept. plaster vault with brass pendants, Dillard's
 cove light, Sears clerestory), half-round arched hall ends, lit rings over the kiosks.
+
+## Revision (same day, after Steven's iPhone check)
+
+Steven flagged "bad looking squares and rectangles over the skylights in the big connecting areas".
+Checked against the video: the courts have raised, smooth cream ceilings lit by a daylight strip along the top
+edge (0:36, 2:56); vaults end in an arch where they open onto a court (2:22, 2:56). No glass grid is visible
+anywhere, so the grid was invented and is removed. The torn slabs came from the court ceiling sitting at the same
+height as the vault crown.
+
+Now: courts (crossings and any open area wider than a walk, squared off to a clean rectangle) have a raised plain
+ceiling at 1.75 × wall height; each vault ends in a cream arched face with a white trim line along the arch and a
+daylight strip just under the court ceiling. Rays are marched over the ceiling height field and pinned to the exact
+edge where one kind of ceiling meets another.
+
+Evidence: `2026-10-04-ceiling-courts-before-after.jpg` (Steven's iPhone screenshots before; game after; video
+reference). CPU fallback: about 14 ms per frame headless (was 16 for the first version, 9 before any vault).

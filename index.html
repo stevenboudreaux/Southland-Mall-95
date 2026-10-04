@@ -11161,39 +11161,56 @@ var SS=(function(){
     R3.bord=rim;
     /* the ceiling plan (2018 walkthrough): over every walk, springing just above the storefronts, runs a shallow barrel vault of white ribs;
        where two walks cross, a raised skylit ceiling. vz per tile: kind<<6 | tiles from the band's near edge, kind 1 = a walk
-       running east-west, 2 = north-south, 3 = a crossing; vw: the band's width in tiles */
+       running east-west, 2 = north-south, 3 = a crossing or any open area wider than a walk; vw: the band's width in tiles */
     var vz=new Uint8Array(n),vw=new Uint8Array(n),inV=function(x2,y2){return x2>=0&&y2>=0&&x2<M.w&&y2<M.h&&o[y2*M.w+x2]===1&&rim[y2*M.w+x2]>=1;};
     for(y=0;y<M.h;y++)for(x=0;x<M.w;x++){if(!inV(x,y))continue;var x0=x,x1=x,y0=y,y1=y;
       while(inV(x0-1,y))x0--;while(inV(x1+1,y))x1++;while(inV(x,y0-1))y0--;while(inV(x,y1+1))y1++;
-      var rx=x1-x0+1,ry=y1-y0+1,kd=Math.min(rx,ry)>=14?3:rx>=ry?1:2;i=y*M.w+x;
+      var rx=x1-x0+1,ry=y1-y0+1,kd=Math.min(rx,ry)>=8?3:rx>=ry?1:2;i=y*M.w+x;
       vz[i]=(kd<<6)|(kd===1?Math.min(63,y-y0):kd===2?Math.min(63,x-x0):0);vw[i]=kd===1?Math.min(255,ry):kd===2?Math.min(255,rx):1;}
+    /* each crossing becomes the clean rectangle around it, so its edges and the arches opening onto it run straight */
+    var seen=new Uint8Array(n),st2=[];
+    for(i=0;i<n;i++){if(seen[i]||(vz[i]>>6)!==3)continue;var bx0=1e9,by0=1e9,bx1=-1,by1=-1;st2.length=0;st2.push(i);seen[i]=1;
+      while(st2.length){var c2=st2.pop(),cx2=c2%M.w,cy2=(c2/M.w)|0;bx0=Math.min(bx0,cx2);bx1=Math.max(bx1,cx2);by0=Math.min(by0,cy2);by1=Math.max(by1,cy2);
+        [c2-1,c2+1,c2-M.w,c2+M.w].forEach(function(n2){if(n2>=0&&n2<n&&!seen[n2]&&(vz[n2]>>6)===3&&Math.abs((n2%M.w)-cx2)<=1){seen[n2]=1;st2.push(n2);}});}
+      for(y=by0;y<=by1;y++)for(x=bx0;x<=bx1;x++){var j2=y*M.w+x;if(o[j2]===1&&rim[j2]>=1){vz[j2]=3<<6;vw[j2]=1;seen[j2]=1;}}}
     R3.vz=vz;R3.vw=vw;
   }
-  /* Following one ray from the eye up through a screen pixel to that ceiling: a few refining steps land it on the vault's
-     curve. Returns the colour (r,g,b, 0..1) and the distance. The GPU shader (GLSRC, ceilV) does the same sums. */
-  var V_SPR=.3,V_CH=1.45,V_RISE=1.8,V_PER=1.5;
+  /* Following one ray from the eye up through a screen pixel to that ceiling. The ceiling is a height field: the vault's arc
+     over a walk, a higher flat ceiling over a crossing, and the shops' solid tops at wall height. The ray is marched outward
+     until it rises above the ceiling there, then pinned down by halving. Where it stops between two different kinds it has
+     met an upright face: the arched end of a vault where it opens into a crossing (cream, white trim along the arch, a strip
+     of daylight just under the crossing's ceiling, as at 0:36 and 2:56 of the 2018 walkthrough), or the tan soffit over the
+     shops. Returns the colour (r,g,b, 0..1) and the distance. The GPU shader (GLSRC, ceilV) does the same sums. */
+  var V_SPR=.3,V_CT=1.75,V_RISE=1.8,V_PER=1.5;
   function vzIx(x,y){var jx=Math.floor(x),jy=Math.floor(y);return (jx>=0&&jy>=0&&jx<M.w&&jy<M.h)?jy*M.w+jx:-1;}
+  function vH(wx,wy){var i=vzIx(wx,wy),zb=i<0?0:R3.vz[i],kn=zb>>6;
+    if(!kn)return [0,WALLH,0];if(kn===3)return [3,WALLH*V_CT,0];
+    var lo=zb&63,wd=Math.max(1,R3.vw[i]),lat=kn===1?wy:wx,s=Math.min(1,Math.max(0,(lo+lat-Math.floor(lat))/wd)),e=2*s-1;
+    return [kn,WALLH+V_SPR+Math.min(wd*.32,V_RISE)*Math.sqrt(Math.max(0,1-e*e)),s];}
   function vaultCol(ox,oy,ux,uy,kk,rdL,night){
-    var WH=WALLH,rd=(WH*V_CH-EYE)*kk,kind=0,s=.5,face=false,i,wx,wy,rimv=0,it,c;
-    for(it=0;it<6;it++){wx=ox+rd*ux;wy=oy+rd*uy;i=vzIx(wx,wy);var zb=i<0?0:R3.vz[i],kn=zb>>6,Hh;
-      if(!kn){Hh=WH+V_SPR;face=true;}
-      else if(kn===3){Hh=WH*V_CH;face=false;kind=3;rimv=R3.bord[i];}
-      else{face=false;kind=kn;var lo=zb&63,wd=Math.max(1,R3.vw[i]),lat=kn===1?wy:wx,e;s=Math.min(1,Math.max(0,(lo+lat-Math.floor(lat))/wd));e=2*s-1;
-        Hh=WH+V_SPR+Math.min(wd*.32,V_RISE)*Math.sqrt(Math.max(0,1-e*e));}
-      rd+=((Hh-EYE)*kk-rd)*.7;}
-    wx=ox+rd*ux;wy=oy+rd*uy;
-    if(face){/* where the ray leaves the band: below the spring of the vault it meets the dark soffit over the shops, above it the cream end wall */
-      var a=rdL,b=rd;for(it=0;it<7;it++){var md=(a+b)/2,j=vzIx(ox+md*ux,oy+md*uy);if(j>=0&&(R3.vz[j]>>6))a=md;else b=md;}
-      c=(EYE+b/kk)<WH+V_SPR?[.72,.63,.50]:[.93,.90,.83];rd=b;}
-    else if(kind===3){var gx=wx*2-Math.floor(wx*2),gy=wy*2-Math.floor(wy*2);
-      c=rimv>=3?((gx<.08||gy<.08)?[.97,.96,.93]:[.80,.90,.97]):[.95,.92,.85];}
-    else{var ax=(kind===1?wx:wy)/V_PER,fr=ax-Math.floor(ax),e2=2*s-1,sh=.80+.20*Math.sqrt(Math.max(0,1-e2*e2)),rf=Math.min(1,Math.max(.35,1-rd/30));
-      var pan=[.90*sh,.84*sh,.72*sh];if(fr>=.12&&fr<.2)pan=[pan[0]*.85,pan[1]*.85,pan[2]*.85];
-      /* an oval light between each pair of ribs, along the crown */
-      var lt2=Math.abs(s-.5)<.12&&Math.abs(fr-.56)<.2?.6:0;pan=[pan[0]+(1-pan[0])*lt2,pan[1]+(.97-pan[1])*lt2,pan[2]+(.86-pan[2])*lt2];
-      c=fr<.12?[pan[0]+(.98*sh+.02-pan[0])*rf,pan[1]+(.97*sh+.02-pan[1])*rf,pan[2]+(.93*sh+.02-pan[2])*rf]:pan;}
+    var len=Math.max(1e-4,Math.hypot(ux,uy)),pd=rdL,d=rdL,h,it,c,hit=false,P,Pp=vH(ox+d*ux,oy+d*uy);
+    for(it=0;it<90&&d<70;it++){pd=d;d+=Math.max(.3,d*.07)/len;P=vH(ox+d*ux,oy+d*uy);if(EYE+d/kk>=P[1]){hit=true;break;}
+      /* crossing from one kind of ceiling to another: find the exact edge, and stop there if the ray has already risen past the
+         ceiling it is leaving (the end of a vault where it opens onto a crossing), so the arch's edge stays a clean curve */
+      if(P[0]!==Pp[0]){var a2=pd,b2=d;for(var q2=0;q2<7;q2++){var m2=(a2+b2)/2;if(vH(ox+m2*ux,oy+m2*uy)[0]===Pp[0])a2=m2;else b2=m2;}
+        if(EYE+a2/kk>=vH(ox+a2*ux,oy+a2*uy)[1]){d=a2;pd=a2-1e-4;hit=true;break;}}
+      Pp=P;}
+    if(!hit)return {c:night?[.25,.24,.32]:[.93,.90,.83],rd:d};
+    for(it=0;it<6&&d-pd>2e-4;it++){var md=(pd+d)/2;P=vH(ox+md*ux,oy+md*uy);if(EYE+md/kk>=P[1])d=md;else pd=md;}
+    var A=vH(ox+pd*ux,oy+pd*uy),B=vH(ox+d*ux,oy+d*uy),wx=ox+d*ux,wy=oy+d*uy;h=EYE+d/kk;
+    if(A[0]===B[0]&&B[0]){
+      if(B[0]===3)c=[.95,.92,.85];
+      else{var ax=(B[0]===1?wx:wy)/V_PER,fr=ax-Math.floor(ax),e2=2*B[2]-1,sh=.80+.20*Math.sqrt(Math.max(0,1-e2*e2)),rf=Math.min(1,Math.max(.35,1-d/30));
+        var pan=[.90*sh,.84*sh,.72*sh];if(fr>=.12&&fr<.2)pan=[pan[0]*.85,pan[1]*.85,pan[2]*.85];
+        /* an oval light between each pair of ribs, along the crown */
+        var lt2=Math.abs(B[2]-.5)<.12&&Math.abs(fr-.56)<.2?.6:0;pan=[pan[0]+(1-pan[0])*lt2,pan[1]+(.97-pan[1])*lt2,pan[2]+(.86-pan[2])*lt2];
+        c=fr<.12?[pan[0]+(.98*sh+.02-pan[0])*rf,pan[1]+(.97*sh+.02-pan[1])*rf,pan[2]+(.93*sh+.02-pan[2])*rf]:pan;}}
+    else if(!B[0])c=h<WALLH+V_SPR?[.72,.63,.50]:[.93,.90,.83];
+    else{/* an upright face between a walk's vault and a crossing */
+      var lo2=Math.min(A[1],B[1]),hi2=Math.max(A[1],B[1]);
+      c=h>hi2-.45?[1,.99,.95]:h<lo2+.16?[.99,.98,.95]:[.90,.86,.78];}
     if(night)c=[c[0]*.45+.05,c[1]*.42+.05,c[2]*.55+.08];
-    return {c:c,rd:rd};}
+    return {c:c,rd:d};}
   function vaultPx(v){var k=Math.min(15,v.rd*.55)/30,c=v.c,r=Math.round((c[0]*255)*(1-k)+42*k),g2=Math.round((c[1]*255)*(1-k)+32*k),b=Math.round((c[2]*255)*(1-k)+48*k);
     return (255<<24|b<<16|g2<<8|r)>>>0;}
   function op3(t){return t[0]>=0&&t[1]>=0&&t[0]<M.w&&t[1]<M.h&&R3.o3[t[1]*M.w+t[0]]===1;}
@@ -11331,7 +11348,7 @@ var SS=(function(){
   /* Floor and ceiling of the 3D release are drawn by the graphics card: every screen pixel works out which tile, grout line
      or ceiling lamp it shows and how much of each it covers, so edges are smooth up close and the far floor settles to an
      even tone instead of sparkling. Returns false (and the older drawing takes over) where that is not available. */
-  var GLSRC='precision highp float;\nuniform vec2 uRes,uO,uD,uP,uMapSize;uniform float uF,uHor,uEye,uTop;uniform sampler2D uMap,uPal;uniform vec3 uMF[4];uniform vec3 uCeil,uLamp,uRim;\nconst float K=2.6666667;\nfloat pin(float x,float per,float st,float wd){x-=st;float n=floor(x/per);return n*wd+clamp(x-n*per,0.,wd);}\nfloat pcov(float u,float w,float per,float st,float wd){w=max(w,1e-4);return clamp((pin(u+.5*w,per,st,wd)-pin(u-.5*w,per,st,wd))/w,0.,1.);}\nvec3 floorAt(vec2 w,vec2 fw){\n  vec2 t=floor(w);vec4 m=vec4(0.);\n  if(t.x>=0.&&t.y>=0.&&t.x<uMapSize.x&&t.y<uMapSize.y)m=texture2D(uMap,(t+.5)/uMapSize);\n  float gi=floor(m.r*255.+.5),rim=floor(m.g*255.+.5);\n  if(gi==1.){\n    if(rim<2.){float gc=1.-(1.-pcov(w.x*4.,fw.x*4.,1.,0.,.11))*(1.-pcov(w.y*4.,fw.y*4.,1.,0.,.11));return mix(uMF[0],uMF[1],gc);}\n    float a=(w.x+w.y)*K,b=(w.x-w.y)*K,fa=(fw.x+fw.y)*K*.7071;\n    float par=.5-.5*(1.-2.*pcov(a/3.,fa/3.,2.,1.,1.))*(1.-2.*pcov(b/3.,fa/3.,2.,1.,1.));\n    float cen=pcov(a,fa,3.,1.,1.)*pcov(b,fa,3.,1.,1.);\n    vec3 c=mix(mix(uMF[3],uMF[0],cen),uMF[2],par);\n    float g2=1.-(1.-pcov(a,fa,1.,0.,.085))*(1.-pcov(b,fa,1.,0.,.085));\n    return mix(c,uMF[1],g2);\n  }\n  float u=(gi+.5)/32.;vec3 base=texture2D(uPal,vec2(u,.25)).rgb,ln=texture2D(uPal,vec2(u,.75)).rgb;\n  float g3=1.-(1.-pcov(w.x*2.,fw.x*2.,1.,0.,.06))*(1.-pcov(w.y*2.,fw.y*2.,1.,0.,.06));\n  return mix(base,ln,g3);\n}\nvec3 ceilAt(vec2 w,vec2 fw){\n  float l=pcov(w.x,fw.x,3.,1.,1.)*pcov(w.y,fw.y,3.,1.,1.),i=pcov(w.x,fw.x,3.,1.12,.76)*pcov(w.y,fw.y,3.,1.12,.76);i=min(i,l);\n  return uCeil*(1.-l)+uRim*(l-i)+uLamp*i;\n}\nvec4 mapAt(vec2 w){vec2 t=floor(w);if(t.x<0.||t.y<0.||t.x>=uMapSize.x||t.y>=uMapSize.y)return vec4(0.);return texture2D(uMap,(t+.5)/uMapSize);}\nfloat vkind(vec4 m){return floor(floor(m.b*255.+.5)/64.);}\nvec4 ceilV(vec2 ray,float kk,float rdL,float fwk){\n  float WH=uTop+uEye,rd=(WH*1.45-uEye)*kk,kind=0.,s=.5,rimv=0.;bool face=false;vec2 w;\n  for(int it=0;it<6;it++){w=uO+rd*ray;vec4 m=mapAt(w);float zb=floor(m.b*255.+.5),kn=floor(zb/64.),H;\n    if(kn<.5){H=WH+.3;face=true;}\n    else if(kn>2.5){H=WH*1.45;face=false;kind=3.;rimv=floor(m.g*255.+.5);}\n    else{face=false;kind=kn;float lo=zb-kn*64.,wd=max(1.,floor(m.a*255.+.5)),lat=kn<1.5?w.y:w.x;s=clamp((lo+fract(lat))/wd,0.,1.);float e=2.*s-1.;H=WH+.3+min(wd*.32,1.8)*sqrt(max(0.,1.-e*e));}\n    rd+=((H-uEye)*kk-rd)*.7;}\n  w=uO+rd*ray;vec3 c;\n  if(face){float a=rdL,b=rd;for(int it=0;it<7;it++){float md=(a+b)*.5;if(vkind(mapAt(uO+md*ray))>.5)a=md;else b=md;}\n    c=(uEye+b/kk)<WH+.3?vec3(.72,.63,.50):vec3(.93,.90,.83);rd=b;}\n  else if(kind>2.5){float fw2=fwk*rd*2.,mul=1.-(1.-pcov(w.x*2.,fw2,1.,0.,.08))*(1.-pcov(w.y*2.,fw2,1.,0.,.08));\n    c=rimv>=3.?mix(vec3(.80,.90,.97),vec3(.97,.96,.93),mul):vec3(.95,.92,.85);}\n  else{float ax=(kind<1.5?w.x:w.y)/1.5,e2=2.*s-1.,sh=.80+.20*sqrt(max(0.,1.-e2*e2)),fw1=fwk*rd/1.5;\n    float rib=pcov(ax,fw1,1.,0.,.12)*clamp(1.-rd/30.,.35,1.),shd=pcov(ax,fw1,1.,.12,.08),fr=fract(ax);\n    float lt=(1.-smoothstep(.09,.13,abs(s-.5)))*(1.-smoothstep(.16,.22,abs(fr-.56)))*.6;\n    vec3 pan=vec3(.90,.84,.72)*sh*(1.-.15*shd);pan=pan+(vec3(1.,.97,.86)-pan)*lt;\n    c=mix(pan,vec3(.98,.97,.93)*sh+.02,rib);}\n  if(uCeil.r<.5)c=c*vec3(.45,.42,.55)+vec3(.05,.05,.08);\n  return vec4(c,rd);\n}\nvoid main(){\n  vec2 px=vec2(gl_FragCoord.x,uRes.y-gl_FragCoord.y);float dyy=px.y-uHor;bool fl=dyy>0.;\n  float ady=max(abs(dyy),.35),rd=uF*(fl?uEye:uTop)/ady;\n  vec2 ray=uD+uP*((px.x-uRes.x*.5)/uF),w=uO+rd*ray,dwx=rd*uP/uF,dwy=(rd/ady)*ray;\n  vec2 fw=(abs(dwx)+abs(dwy))*.6;vec3 c=vec3(0.);\n  for(int j=0;j<4;j++){vec2 o=j==0?vec2(-.375,-.125):j==1?vec2(.125,-.375):j==2?vec2(.375,.125):vec2(-.125,.375);vec2 ws=w+o.x*dwx+o.y*dwy;c+=fl?floorAt(ws,fw):ceilAt(ws,fw);}\n  c*=.25;\n  if(!fl&&vkind(mapAt(w))>.5){vec4 v=ceilV(ray,uF/ady,rd,1./uF);c=v.rgb;rd=v.a;}\n  float k=clamp(rd*.55,0.,15.)/30.,lk=clamp(rd*.55-3.,0.,15.)/30.;\n  gl_FragColor=vec4(mix(c,vec3(.1647,.1255,.1882),k),1.);\n}';
+  var GLSRC='precision highp float;\nuniform vec2 uRes,uO,uD,uP,uMapSize;uniform float uF,uHor,uEye,uTop;uniform sampler2D uMap,uPal;uniform vec3 uMF[4];uniform vec3 uCeil,uLamp,uRim;\nconst float K=2.6666667;\nfloat pin(float x,float per,float st,float wd){x-=st;float n=floor(x/per);return n*wd+clamp(x-n*per,0.,wd);}\nfloat pcov(float u,float w,float per,float st,float wd){w=max(w,1e-4);return clamp((pin(u+.5*w,per,st,wd)-pin(u-.5*w,per,st,wd))/w,0.,1.);}\nvec3 floorAt(vec2 w,vec2 fw){\n  vec2 t=floor(w);vec4 m=vec4(0.);\n  if(t.x>=0.&&t.y>=0.&&t.x<uMapSize.x&&t.y<uMapSize.y)m=texture2D(uMap,(t+.5)/uMapSize);\n  float gi=floor(m.r*255.+.5),rim=floor(m.g*255.+.5);\n  if(gi==1.){\n    if(rim<2.){float gc=1.-(1.-pcov(w.x*4.,fw.x*4.,1.,0.,.11))*(1.-pcov(w.y*4.,fw.y*4.,1.,0.,.11));return mix(uMF[0],uMF[1],gc);}\n    float a=(w.x+w.y)*K,b=(w.x-w.y)*K,fa=(fw.x+fw.y)*K*.7071;\n    float par=.5-.5*(1.-2.*pcov(a/3.,fa/3.,2.,1.,1.))*(1.-2.*pcov(b/3.,fa/3.,2.,1.,1.));\n    float cen=pcov(a,fa,3.,1.,1.)*pcov(b,fa,3.,1.,1.);\n    vec3 c=mix(mix(uMF[3],uMF[0],cen),uMF[2],par);\n    float g2=1.-(1.-pcov(a,fa,1.,0.,.085))*(1.-pcov(b,fa,1.,0.,.085));\n    return mix(c,uMF[1],g2);\n  }\n  float u=(gi+.5)/32.;vec3 base=texture2D(uPal,vec2(u,.25)).rgb,ln=texture2D(uPal,vec2(u,.75)).rgb;\n  float g3=1.-(1.-pcov(w.x*2.,fw.x*2.,1.,0.,.06))*(1.-pcov(w.y*2.,fw.y*2.,1.,0.,.06));\n  return mix(base,ln,g3);\n}\nvec3 ceilAt(vec2 w,vec2 fw){\n  float l=pcov(w.x,fw.x,3.,1.,1.)*pcov(w.y,fw.y,3.,1.,1.),i=pcov(w.x,fw.x,3.,1.12,.76)*pcov(w.y,fw.y,3.,1.12,.76);i=min(i,l);\n  return uCeil*(1.-l)+uRim*(l-i)+uLamp*i;\n}\nvec4 mapAt(vec2 w){vec2 t=floor(w);if(t.x<0.||t.y<0.||t.x>=uMapSize.x||t.y>=uMapSize.y)return vec4(0.);return texture2D(uMap,(t+.5)/uMapSize);}\nfloat vkind(vec4 m){return floor(floor(m.b*255.+.5)/64.);}\nvec3 vH(vec2 w){vec4 m=mapAt(w);float zb=floor(m.b*255.+.5),kn=floor(zb/64.),WH=uTop+uEye;\n  if(kn<.5)return vec3(0.,WH,0.);if(kn>2.5)return vec3(3.,WH*1.75,0.);\n  float lo=zb-kn*64.,wd=max(1.,floor(m.a*255.+.5)),lat=kn<1.5?w.y:w.x,s=clamp((lo+fract(lat))/wd,0.,1.),e=2.*s-1.;\n  return vec3(kn,WH+.3+min(wd*.32,1.8)*sqrt(max(0.,1.-e*e)),s);}\nvec4 ceilV(vec2 ray,float kk,float rdL,float fwk){\n  float WH=uTop+uEye,len=max(1e-4,length(ray)),pd=rdL,d=rdL;bool hit=false;vec3 P;\n  vec3 Pp=vH(uO+d*ray);\n  for(int it=0;it<90;it++){pd=d;d+=max(.12,d*.03)/len;P=vH(uO+d*ray);if(uEye+d/kk>=P.y){hit=true;break;}\n    if(abs(P.x-Pp.x)>.5){float a2=pd,b2=d;for(int q=0;q<7;q++){float m2=(a2+b2)*.5;if(abs(vH(uO+m2*ray).x-Pp.x)<.5)a2=m2;else b2=m2;}\n      if(uEye+a2/kk>=vH(uO+a2*ray).y){d=a2;pd=a2-1e-4;hit=true;break;}}\n    Pp=P;if(d>70.)break;}\n  vec3 c;\n  if(!hit){c=vec3(.93,.90,.83);}\n  else{\n    for(int it=0;it<6;it++){if(d-pd<2e-4)break;float md=(pd+d)*.5;P=vH(uO+md*ray);if(uEye+md/kk>=P.y)d=md;else pd=md;}\n    vec3 A=vH(uO+pd*ray),B=vH(uO+d*ray);vec2 w=uO+d*ray;float h=uEye+d/kk;\n    if(abs(A.x-B.x)<.5&&B.x>.5){\n      if(B.x>2.5)c=vec3(.95,.92,.85);\n      else{float ax=(B.x<1.5?w.x:w.y)/1.5,e2=2.*B.z-1.,sh=.80+.20*sqrt(max(0.,1.-e2*e2)),fw1=fwk*d/1.5;\n        float rib=pcov(ax,fw1,1.,0.,.12)*clamp(1.-d/30.,.35,1.),shd=pcov(ax,fw1,1.,.12,.08),fr=fract(ax);\n        float lt=(1.-smoothstep(.09,.13,abs(B.z-.5)))*(1.-smoothstep(.16,.22,abs(fr-.56)))*.6;\n        vec3 pan=vec3(.90,.84,.72)*sh*(1.-.15*shd);pan=pan+(vec3(1.,.97,.86)-pan)*lt;\n        c=mix(pan,vec3(.98,.97,.93)*sh+.02,rib);}}\n    else if(B.x<.5)c=h<WH+.3?vec3(.72,.63,.50):vec3(.93,.90,.83);\n    else{float lo2=min(A.y,B.y),hi2=max(A.y,B.y);c=h>hi2-.45?vec3(1.,.99,.95):h<lo2+.16?vec3(.99,.98,.95):vec3(.90,.86,.78);}\n  }\n  if(uCeil.r<.5)c=c*vec3(.45,.42,.55)+vec3(.05,.05,.08);\n  return vec4(c,d);\n}\nvoid main(){\n  vec2 px=vec2(gl_FragCoord.x,uRes.y-gl_FragCoord.y);float dyy=px.y-uHor;bool fl=dyy>0.;\n  float ady=max(abs(dyy),.35),rd=uF*(fl?uEye:uTop)/ady;\n  vec2 ray=uD+uP*((px.x-uRes.x*.5)/uF),w=uO+rd*ray,dwx=rd*uP/uF,dwy=(rd/ady)*ray;\n  vec2 fw=(abs(dwx)+abs(dwy))*.6;vec3 c=vec3(0.);\n  for(int j=0;j<4;j++){vec2 o=j==0?vec2(-.375,-.125):j==1?vec2(.125,-.375):j==2?vec2(.375,.125):vec2(-.125,.375);vec2 ws=w+o.x*dwx+o.y*dwy;c+=fl?floorAt(ws,fw):ceilAt(ws,fw);}\n  c*=.25;\n  if(!fl&&vkind(mapAt(w))>.5){vec4 v=ceilV(ray,uF/ady,rd,1./uF);c=v.rgb;rd=v.a;}\n  float k=clamp(rd*.55,0.,15.)/30.,lk=clamp(rd*.55-3.,0.,15.)/30.;\n  gl_FragColor=vec4(mix(c,vec3(.1647,.1255,.1882),k),1.);\n}';
   function v3(h){var n=parseInt(String(h||"#000000").slice(1),16);return [(n>>16&255)/255,(n>>8&255)/255,(n&255)/255];}
   function glFloor(g,W,H,f,hor,ox,oy,dx,dy,plx,ply,rn){
     var G=R3.G;if(G===false)return false;
