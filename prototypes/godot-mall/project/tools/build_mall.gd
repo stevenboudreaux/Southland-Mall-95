@@ -192,7 +192,34 @@ func mat(name):
 			m.albedo_color = Color("#2e7d4f")
 			m.emission_enabled = true; m.emission = Color("#3fae6a"); m.emission_energy_multiplier = 0.8
 		_:
-			if name.begins_with("floorz_"):
+			if name.begins_with("cd7_"):
+				# Corn Dog 7's painted textures (tools/stores/paint_corn_dog_7.py)
+				var key = name.substr(4)
+				if key == "soffit":
+					m.albedo_color = Color("#f4f2ec"); m.roughness = 0.9
+				else:
+					m.albedo_texture = tex("cd7/" + key + ".png")
+					m.roughness = 0.8
+				if key in ["tile_navy", "counter_front", "wall_yellow"]:
+					m.roughness = 0.25; m.metallic_specular = 0.6
+				elif key == "awning":
+					m.roughness = 0.3; m.metallic_specular = 0.7
+					m.emission_enabled = true; m.emission_texture = m.albedo_texture
+					m.emission = Color.WHITE; m.emission_energy_multiplier = 0.35
+					m.set_meta("e_day", 0.12); m.set_meta("e_night", 0.35)
+				elif key == "steel":
+					m.metallic = 0.85; m.roughness = 0.35
+				elif key == "troffer":
+					m.emission_enabled = true; m.emission_texture = m.albedo_texture
+					m.emission = Color.WHITE; m.emission_energy_multiplier = 2.5
+					m.set_meta("e_day", 2.5); m.set_meta("e_night", 3.0)
+				elif key == "menu":
+					m.emission_enabled = true; m.emission_texture = m.albedo_texture
+					m.emission = Color.WHITE; m.emission_energy_multiplier = 1.4
+					m.set_meta("e_day", 1.4); m.set_meta("e_night", 1.6)
+				elif key == "floor":
+					m.roughness = 0.45; m.metallic_specular = 0.5
+			elif name.begins_with("floorz_"):
 				# bake-time stand-in; the runtime swaps in the procedural floor shader
 				m.albedo_color = Color("#d4c4aa"); m.roughness = 0.14; m.metallic_specular = 0.6
 			else:
@@ -964,6 +991,10 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		return
 	if sd.anchor and ANCHOR_LOOK.has(sd.name):
 		anchor_front(g, e, a, b, n, t, Ln, sd, ANCHOR_LOOK[sd.name])
+		return
+	if sd.name == "CORN DOG 7" and not inner_call:
+		# built in full 3D from the photographs of the unchanged shop (Phase 4b)
+		preload("res://tools/stores/corn_dog_7.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	var fa = fronts.get(edge_key(e.a, e.b))
 	if fa != null and not inner_call:
