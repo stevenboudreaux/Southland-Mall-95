@@ -54,6 +54,10 @@ func _ready() -> void:
 	_build_hud()
 	if OS.has_feature("web"):
 		debug = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('debug') || ''")) == "1"
+		if str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('refl') || ''")) == "0":
+			buttons[0].button_pressed = false
+		if str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('time') || ''")) == "day":
+			buttons[2].button_pressed = false
 		var q = JavaScriptBridge.eval("new URLSearchParams(location.search).get('cam') || ''")
 		if q is String and q != "":
 			var v: PackedStringArray = q.split(",")
@@ -85,6 +89,13 @@ func _build_hud() -> void:
 		var fxn = get_tree().current_scene.get_node_or_null("Dynamic/dyn_fixtures")
 		if fxn:
 			fxn.visible = on)
+	_add_button("Lighting", true, 88, func(night: bool):
+		var rt = get_tree().current_scene.get_node_or_null("Runtime")
+		if rt:
+			rt.set_time("night" if night else "day"), ["day", "night"])
+	# the day lighting ships separately; hide the switch until it's baked
+	if not ResourceLoader.exists("res://main_day.lmbake"):
+		buttons[2].visible = false
 	_cl = cl
 	hint = Label.new()
 	hint.text = "Drag left side to walk · drag right side to look"
@@ -110,11 +121,11 @@ func _build_hud() -> void:
 var _cl: CanvasLayer
 
 ## A toggle button in the top-right corner: "<name>: on/off".
-func _add_button(name: String, on: bool, top: int, cb: Callable) -> void:
+func _add_button(name: String, on: bool, top: int, cb: Callable, words := ["off", "on"]) -> void:
 	var btn := Button.new()
 	btn.toggle_mode = true
 	btn.button_pressed = on
-	btn.text = "%s: %s" % [name, "on" if on else "off"]
+	btn.text = "%s: %s" % [name, words[1] if on else words[0]]
 	btn.focus_mode = Control.FOCUS_NONE
 	btn.add_theme_font_size_override("font_size", 14)
 	btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
@@ -123,7 +134,7 @@ func _add_button(name: String, on: bool, top: int, cb: Callable) -> void:
 	btn.offset_top = top
 	btn.offset_bottom = top + 32
 	btn.toggled.connect(func(v: bool):
-		btn.text = "%s: %s" % [name, "on" if v else "off"]
+		btn.text = "%s: %s" % [name, words[1] if v else words[0]]
 		cb.call(v))
 	hud.get_parent().add_child(btn)
 	buttons.append(btn)

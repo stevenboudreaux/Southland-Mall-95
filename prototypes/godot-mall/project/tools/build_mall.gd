@@ -82,7 +82,8 @@ func mat(name):
 			m.albedo_color = Color("#fbf8f2"); m.roughness = 0.6
 		"vault_glow":
 			m.albedo_color = Color("#f3ead8"); m.roughness = 0.9
-			m.emission_enabled = true; m.emission = Color("#fff1d6"); m.emission_energy_multiplier = 0.55
+			m.emission_enabled = true; m.emission = Color("#fff1d6"); m.emission_energy_multiplier = 1.0
+			m.set_meta("e_day", 0.55); m.set_meta("e_night", 1.0)
 		"downlight":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#fff3df"); m.emission_energy_multiplier = 8.0
@@ -148,6 +149,12 @@ func mat(name):
 			m.roughness = 0.7
 		"trunk":
 			m.albedo_color = Color("#6d5a3e"); m.roughness = 0.95
+		"cove_amber", "cove_cool", "cove_warm":
+			m.albedo_color = Color.WHITE
+			m.emission_enabled = true
+			m.emission = {"cove_amber": Color("#FFC98A"), "cove_cool": Color("#F4F0FF"), "cove_warm": Color("#FFD9A8")}[name]
+			m.emission_energy_multiplier = 3.0
+			m.set_meta("e_day", 0.0); m.set_meta("e_night", 3.0)
 		"buff_tile":
 			m.albedo_texture = tex("buff_tile.png"); m.roughness = 0.35
 		"grey_tile":
@@ -525,7 +532,14 @@ func build_court(z):
 		var c2 = P.call(0, top - 0.05, u)
 		box("glass_frames", "metal_dark", c1, abs_size((P.call(0, 0, 1) - P.call(0, 0, 0)), sky * 2, 0.1, 0.05, (P.call(1, 0, 0) - P.call(0, 0, 0))), Transform3D.IDENTITY, [], true)
 		box("glass_frames", "metal_dark", c2, abs_size((P.call(1, 0, 0) - P.call(0, 0, 0)), sky * 2, 0.1, 0.05, (P.call(0, 0, 1) - P.call(0, 0, 0))), Transform3D.IDENTITY, [], true)
-	add_omni(P.call(0, COURT_SPRING, 0), 1.0, half * 2.5, Color(1.0, 0.95, 0.88))
+	tag(add_omni(P.call(0, COURT_SPRING, 0), 1.0, half * 2.5, Color(1.0, 0.95, 0.88)), "day")
+	# night: four key spots at the springing line, aimed down, so the floor
+	# gets broad overlapping pools instead of one hot centre
+	for qu in [-0.5, 0.5]:
+		for qs in [-0.25, 0.25]:
+			tag(add_spot(P.call(qu * half, COURT_SPRING - 0.2, qs * length), Vector3.DOWN, 2.5, 10.0, 60.0, Color("#FFE9C8")), "night")
+	var cove_col = {"shoe": Color("#FFC98A"), "sears": Color("#F4F0FF")}.get(z.style, Color("#FFD9A8"))
+	var cove_mat = {"shoe": "cove_amber", "sears": "cove_cool"}.get(z.style, "cove_warm")
 	# walls
 	var sides = {}
 	for cw in L.court_walls:
@@ -594,6 +608,12 @@ func build_court(z):
 		# trim: cornice at the springing on long sides, arch band on the ends
 		if along_vault:
 			box(g, "trim_tan", o2 + Vector3.UP * 6.28 + nrm * 0.12, abs_size(axw, u1 - u0, 0.12, 0.24, nrm))
+			# hidden cove on top of the cornice: an emissive strip (night only)
+			# and three up-lights washing the vault
+			quad(g, cove_mat, [o2 + axw * u0 + Vector3.UP * 6.35 + nrm * 0.03, o2 + axw * u1 + Vector3.UP * 6.35 + nrm * 0.03, o2 + axw * u1 + Vector3.UP * 6.35 + nrm * 0.2, o2 + axw * u0 + Vector3.UP * 6.35 + nrm * 0.2], Vector3.UP)
+			for f in [0.2, 0.5, 0.8]:
+				var up = o2 + axw * lerp(u0, u1, f) + Vector3.UP * 6.45 + nrm * 0.15
+				tag(add_spot(up, (Vector3.UP * 1.0 + nrm * 0.55), 3.0, 14.0, 70.0, cove_col), "night")
 		else:
 			for i in pts.size() - 1:
 				var a = pts[i]
@@ -759,6 +779,7 @@ func add_downlight(c):
 	l.light_color = Color(1.0, 0.92, 0.80)
 	l.light_bake_mode = Light3D.BAKE_STATIC
 	light_root.add_child(l)
+	tag(l, "", 1.5, 2.0)
 
 func add_omni(p, energy, rng, col, shadow = false):
 	var l = OmniLight3D.new()
@@ -769,6 +790,31 @@ func add_omni(p, energy, rng, col, shadow = false):
 	l.light_bake_mode = Light3D.BAKE_STATIC
 	l.shadow_enabled = shadow
 	light_root.add_child(l)
+	return l
+
+## Time-of-day tags read by scripts/time_of_day.gd: "only" = "day"/"night"
+## (the light exists in that bake only); e_day / e_night = energy per bake.
+func tag(l, only = "", e_day = null, e_night = null):
+	if only != "":
+		l.set_meta("only", only)
+	if e_day != null:
+		l.set_meta("e_day", e_day)
+	if e_night != null:
+		l.set_meta("e_night", e_night)
+	return l
+
+func add_spot(p, dir, energy, rng, angle, col):
+	var l = SpotLight3D.new()
+	l.position = p
+	l.light_energy = energy
+	l.light_color = col
+	l.spot_range = rng
+	l.spot_angle = angle
+	l.spot_attenuation = 0.9
+	l.light_bake_mode = Light3D.BAKE_STATIC
+	light_root.add_child(l)
+	l.transform = Transform3D(Basis.looking_at(dir.normalized(), Vector3.UP if abs(dir.normalized().y) < 0.99 else Vector3.FORWARD), p)
+	return l
 
 # ------------------------------------------------------------------ edges
 func zone_at(x, z):
@@ -979,7 +1025,8 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		pos += 2.8
 		k2 += 1
 	cur_color = Color.WHITE
-	add_omni(a + t * Ln * 0.5 - n * deep * 0.5 + Vector3(0, OPEN_H - 0.4, 0), 0.45 if not anchor else 0.8, deep + 1.0, Color(1.0, 0.96, 0.88))
+	var sl = add_omni(a + t * Ln * 0.5 - n * min(1.5, deep * 0.4) + Vector3(0, OPEN_H - 0.4, 0), 0.45, max(deep + 1.0, 6.0), Color(1.0, 0.96, 0.9))
+	tag(sl, "", 0.45, 0.8)
 	if sd.name.contains("CINEMA"):
 		cinema_front(g, a, n, t, Ln)
 
@@ -1199,7 +1246,7 @@ func anchor_front(g, e, a, b, n, t, Ln, sd, lk):
 			k3 += 1
 	cur_color = Color.WHITE
 	for k4 in 3:
-		add_omni(p0 + t * (wd * (k4 + 0.5) / 3.0) - n * deep * 0.45 + Vector3(0, mouth_h - 0.4, 0), 0.9, deep + 2.0, Color(1.0, 0.97, 0.9))
+		tag(add_omni(p0 + t * (wd * (k4 + 0.5) / 3.0) - n * deep * 0.45 + Vector3(0, mouth_h - 0.4, 0), 0.9, deep + 2.0, Color(1.0, 0.97, 0.9)), "", 0.9, 1.4)
 
 ## Glass doors to the outside (exits and the main entrance), with daylight beyond.
 func doors_out(g, e, a, b, n, t, Ln):
@@ -1223,6 +1270,10 @@ func doors_out(g, e, a, b, n, t, Ln):
 	cur_color = Color.WHITE
 	quad(og, "outside_ground", [a, b, b + out * 12.0, a + out * 12.0], Vector3.UP, [], false, 0.25)
 	quad(og, "cream", [a + Vector3(0, dh + 0.3, 0), b + Vector3(0, dh + 0.3, 0), b + out * 4.0 + Vector3(0, dh + 0.3, 0), a + out * 4.0 + Vector3(0, dh + 0.3, 0)], Vector3.DOWN)
+	# night: sodium lot lights outside and a warm spot in the vestibule
+	for k5 in [-1.0, 0.0, 1.0]:
+		tag(add_omni(mid + out * 14.0 + t * k5 * 10.0 + Vector3(0, 9.0, 0), 4.0, 25.0, Color("#FF9F45")), "night")
+	tag(add_spot(mid + out * 2.0 + Vector3(0, dh + 0.2, 0), Vector3.DOWN, 1.5, 6.0, 60.0, Color("#FFE6C2")), "night")
 	if e.kind == "exit":
 		box(g, "exit_sign", mid + Vector3(0, dh + 0.55, 0) + n * 0.05, abs_size(t, 1.2, 0.36, 0.08, n))
 		label("EXIT", "sans", "#ffffff", mid + Vector3(0, dh + 0.55, 0) + n * 0.1, n, 1.0, 0.24)
@@ -1371,7 +1422,7 @@ func lantern(at, top_y):
 	cyl(g, "brass", at + Vector3(0, 0.4, 0), 0.27, 0.05, 0.18, 8, true)
 	cyl(g, "brass", at + Vector3(0, -0.24, 0), 0.24, 0.26, 0.05, 8, true, true)
 	cyl(g, "brass", at + Vector3(0, -0.36, 0), 0.02, 0.09, 0.12, 8, false, true)
-	add_omni(at + Vector3(0, -0.05, 0), 1.6, 9.0, Color(1.0, 0.82, 0.58))
+	add_omni(at + Vector3(0, -0.05, 0), 1.0, 4.0, Color(1.0, 0.85, 0.63))
 
 # ------------------------------------------------------------------ floors
 ## Floor quads per zone; each zone gets its own material carrying the pattern
@@ -1391,6 +1442,45 @@ func floor_zone(z):
 			"palette": {"shoe": 1, "sears": 2}.get(z.style, 0)}
 	m.set_meta("floor", meta)
 	quad(z.id, mname, [Vector3(r[0], 0, r[1]), Vector3(r[2], 0, r[1]), Vector3(r[2], 0, r[3]), Vector3(r[0], 0, r[3])], Vector3.UP)
+
+# ------------------------------------------------------------- environments
+## Day: soft high sun, bright sky through skylights and clerestories.
+## Night (the default): navy-black sky, the interior lit by its own lights.
+func make_env(mode):
+	var env = Environment.new()
+	var sky = Sky.new()
+	var psky = ProceduralSkyMaterial.new()
+	if mode == "day":
+		psky.sky_top_color = Color("#6FA3D8")
+		psky.sky_horizon_color = Color("#CFE0EE")
+		psky.ground_horizon_color = Color("#c9c3b5")
+		psky.ground_bottom_color = Color("#7b766c")
+		psky.sky_energy_multiplier = 1.3
+	else:
+		psky.sky_top_color = Color("#05070F")
+		psky.sky_horizon_color = Color("#141A2E")
+		psky.ground_horizon_color = Color("#141A2E")
+		psky.ground_bottom_color = Color("#0A0A0C")
+		psky.sky_energy_multiplier = 0.15
+		psky.sun_angle_max = 0.0
+	sky.sky_material = psky
+	env.background_mode = Environment.BG_SKY
+	env.sky = sky
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY if mode == "day" else Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color("#2A2620")
+	env.ambient_light_energy = 0.3 if mode == "day" else 0.12
+	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
+	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
+	env.tonemap_exposure = 1.05 if mode == "day" else 1.1
+	env.tonemap_white = 6.0 if mode == "day" else 4.0
+	env.glow_enabled = true
+	env.glow_intensity = 0.35
+	env.glow_bloom = 0.04 if mode == "day" else 0.0
+	env.glow_hdr_threshold = 1.2 if mode == "day" else 1.0
+	env.adjustment_enabled = true
+	env.adjustment_saturation = 1.08 if mode == "day" else 1.05
+	env.adjustment_contrast = 1.04 if mode == "day" else 1.05
+	return env
 
 # ------------------------------------------------------------------ build
 func build():
@@ -1430,38 +1520,19 @@ func build():
 	sun.name = "Sun"
 	sun.light_bake_mode = Light3D.BAKE_STATIC
 	sun.shadow_enabled = true
-	sun.light_energy = 2.4
+	sun.light_energy = 1.1
 	sun.light_color = Color(1.0, 0.95, 0.86)
-	sun.light_angular_distance = 1.2
+	sun.light_angular_distance = 3.5    # soft shadow edges, no hard bands
+	sun.set_meta("only", "day")
 	mall.add_child(sun); sun.owner = mall
-	sun.look_at_from_position(Vector3.ZERO, Vector3(0.62, -0.62, 0.48), Vector3.UP)
+	# high sun (about 65 degrees) so window patches land short and close to the walls
+	sun.transform = Transform3D(Basis.looking_at(Vector3(0.30, -0.906, 0.30), Vector3.UP), Vector3.ZERO)
 
-	var env = Environment.new()
-	var sky = Sky.new()
-	var psky = ProceduralSkyMaterial.new()
-	psky.sky_top_color = Color("#5d8fd1")
-	psky.sky_horizon_color = Color("#c9dbee")
-	psky.ground_horizon_color = Color("#c9c3b5")
-	psky.ground_bottom_color = Color("#7b766c")
-	psky.sky_energy_multiplier = 1.4
-	sky.sky_material = psky
-	env.background_mode = Environment.BG_SKY
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY
-	env.ambient_light_energy = 0.35
-	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.05
-	env.tonemap_white = 6.0
-	env.glow_enabled = true
-	env.glow_intensity = 0.35
-	env.glow_bloom = 0.04
-	env.glow_hdr_threshold = 1.2
-	env.adjustment_enabled = true
-	env.adjustment_saturation = 1.08
-	env.adjustment_contrast = 1.04
+	DirAccess.make_dir_recursive_absolute("res://gen")
+	ResourceSaver.save(make_env("day"), "res://gen/env_day.tres")
+	ResourceSaver.save(make_env("night"), "res://gen/env_night.tres")
 	var we = WorldEnvironment.new()
-	we.name = "Env"; we.environment = env
+	we.name = "Env"; we.environment = load("res://gen/env_night.tres")
 	mall.add_child(we); we.owner = mall
 
 	var static_root = Node3D.new(); static_root.name = "Static"

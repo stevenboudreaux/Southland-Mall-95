@@ -7,7 +7,7 @@
 extends Node
 
 @export var scale := 0.5          # reflection resolution vs. the screen
-@export var strength := 0.5
+@export var strength := 0.6
 var vp: SubViewport
 var mcam: Camera3D
 var floor_mats := []
@@ -24,6 +24,7 @@ uniform int medallions = 0;
 uniform vec4 court = vec4(0.0, 0.0, 8.0, 8.0);  // cx, cz, hx, hz
 uniform int palette = 0;       // court: 0 taupe, 1 blue-grey (Shoe Dept.), 2 charcoal/salmon (Sears)
 uniform float strength = 0.5;
+uniform float refl_clamp = 1.5;
 uniform vec2 px = vec2(0.002, 0.003);
 varying vec3 wpos;
 
@@ -104,21 +105,32 @@ void fragment() {
 		a = planks(wpos.x + 50.0, wpos.z);
 	}
 
+	// Polished-floor reflection (mirrored camera). Kept subtle on purpose:
+	// a 9-tap blur hides aliasing in the half-res mirror image, bright sources
+	// are clamped so windows and sky can't wash the floor out, and it fades
+	// with distance so far floor doesn't turn milky.
 	vec2 ruv = vec2(SCREEN_UV.x, 1.0 - SCREEN_UV.y);
-	vec3 r = texture(refl_tex, ruv).rgb * 0.36;
-	r += texture(refl_tex, ruv + vec2(0.0, px.y)).rgb * 0.22;
-	r += texture(refl_tex, ruv - vec2(0.0, px.y)).rgb * 0.22;
-	r += texture(refl_tex, ruv + vec2(px.x, px.y * 2.5)).rgb * 0.10;
-	r += texture(refl_tex, ruv - vec2(px.x, px.y * 2.5)).rgb * 0.10;
+	vec3 r = vec3(0.0);
+	float wsum = 0.0;
+	for (int i = -1; i <= 1; i++) {
+		for (int j = -1; j <= 1; j++) {
+			float w = (i == 0 ? 2.0 : 1.0) * (j == 0 ? 2.0 : 1.0);
+			r += min(texture(refl_tex, ruv + vec2(float(i) * px.x, float(j) * px.y * 1.6)).rgb, vec3(refl_clamp)) * w;
+			wsum += w;
+		}
+	}
+	r /= wsum;
 	float ndv = clamp(dot(NORMAL, VIEW), 0.0, 1.0);
-	float fres = 0.05 + 0.95 * pow(1.0 - ndv, 4.0);
-	float k = mix(0.22, 1.0, fres) * strength;
+	float fres = 0.04 + 0.96 * pow(1.0 - ndv, 5.0);
+	float k = mix(0.12, 0.55, fres) * strength;
+	float dist = length(VERTEX);
+	k *= clamp(1.0 - (dist - 14.0) / 30.0, 0.25, 1.0);
 	float lum = dot(a, vec3(0.3, 0.59, 0.11));
-	k *= mix(1.15, 0.7, lum);
-	ALBEDO = a * (1.0 - k * 0.45);
-	ROUGHNESS = 0.14;
-	SPECULAR = 0.5;
-	EMISSION = r * r * k * 1.1;
+	k *= mix(1.25, 0.55, lum);   // dark tiles mirror more, as real terrazzo does
+	ALBEDO = a * (1.0 - k * 0.35);
+	ROUGHNESS = 0.35;
+	SPECULAR = 0.25;
+	EMISSION = r * k;
 }
 """
 
@@ -196,11 +208,31 @@ func _meshes(n: Node) -> Array:
 		out += _meshes(c)
 	return out
 
+var refl_on := true
+var mode := "night"
+
+## Night (default) or day: swaps the baked lightmap, sky and light set.
+func set_time(m: String) -> void:
+	mode = m
+	load("res://scripts/time_of_day.gd").apply(get_tree().current_scene, m)
+	# the ribbed vaults glow softly at night instead of reading as a lit ceiling
+	_set_emission("vault_glow", 0.3 if m == "night" else 0.55)
+	set_reflections(refl_on)
+
+func _set_emission(mat_name: String, e: float) -> void:
+	for mi in _meshes(get_tree().current_scene):
+		for i in mi.mesh.get_surface_count():
+			var sm = mi.mesh.surface_get_material(i)
+			if sm is StandardMaterial3D and sm.resource_name == mat_name:
+				sm.emission_energy_multiplier = e
+
 ## Turn the floor reflection on or off (it costs a second render of the scene).
 func set_reflections(on: bool) -> void:
+	refl_on = on
 	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS if on else SubViewport.UPDATE_DISABLED
+	var st := strength if mode == "night" else strength * 0.7
 	for m in floor_mats:
-		m.set_shader_parameter("strength", strength if on else 0.0)
+		m.set_shader_parameter("strength", st if on else 0.0)
 
 func _resize() -> void:
 	var s := get_viewport().get_visible_rect().size

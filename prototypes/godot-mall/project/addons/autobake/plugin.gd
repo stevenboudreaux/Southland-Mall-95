@@ -24,6 +24,13 @@ func _run():
 		return
 	var root = EditorInterface.get_edited_scene_root()
 	var lm = root.find_child("LightmapGI", true, false)
+	# AUTOBAKE=day or night picks the lighting setup; anything else means night
+	var mode = OS.get_environment("AUTOBAKE")
+	if mode != "day":
+		mode = "night"
+	load("res://scripts/time_of_day.gd").apply(root, mode, false)
+	lm.light_data = null
+	print("MODE ", mode)
 	EditorInterface.get_selection().clear()
 	EditorInterface.get_selection().add_node(lm)
 	EditorInterface.edit_node(lm)
@@ -41,7 +48,7 @@ func _run():
 	_dump(EditorInterface.get_base_control().get_tree().root)
 	var fd = _find_fd(get_tree().root)
 	if fd:
-		var path = root.scene_file_path.get_basename() + ".lmbake"
+		var path = root.scene_file_path.get_basename() + "_" + mode + ".lmbake"
 		print("SELECT ", path)
 		fd.hide()
 		fd.file_selected.emit(path)
