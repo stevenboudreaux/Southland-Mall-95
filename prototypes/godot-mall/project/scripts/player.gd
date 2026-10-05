@@ -1,10 +1,12 @@
-## First-person walker for the court proof.
+## First-person walker for the Godot mall.
 ## Phone: drag on the left half to walk, drag on the right half to look.
 ## Desktop: WASD / arrow keys to walk, drag with the mouse to look.
 ## URL ?cam=x,z,yaw,pitch places the camera (used for test screenshots).
 extends Node3D
 
 @export var obstacles: Array = []
+var fx_obstacles: Array = []     # benches, planters, trash cans (only when shown)
+var fixtures_on := false
 ## Walkable map tiles (rows of "0"/"1"), and how map tiles map to metres.
 @export var walk_rows: PackedStringArray = []
 @export var map_origin := Vector2(148, 100)
@@ -22,7 +24,7 @@ var move_vec := Vector2.ZERO
 var dragging := false
 var last_pos := {}   # touch index -> last position
 var hud: Label
-var refl_btn: Button
+var buttons: Array = []   # HUD buttons, tapped by hand since touch skips mouse emulation
 var hint: Label
 var stick: Control
 var fps_t := 0.0
@@ -37,6 +39,11 @@ func _ready() -> void:
 			walk_rows = PackedStringArray(lay.get("walk", []))
 			map_origin = Vector2(lay.origin[0], lay.origin[1])
 			map_scale = float(lay.scale)
+	if FileAccess.file_exists("res://gen/collide.json"):
+		var col = JSON.parse_string(FileAccess.get_file_as_string("res://gen/collide.json"))
+		if col is Dictionary:
+			obstacles = col.get("static", obstacles)
+			fx_obstacles = col.get("fixtures", [])
 	cam = Camera3D.new()
 	cam.position = Vector3(0, EYE, 0)
 	cam.fov = 70.0
@@ -69,23 +76,16 @@ func _build_hud() -> void:
 	hud.add_theme_constant_override("shadow_offset_y", 1)
 	hud.add_theme_font_size_override("font_size", 14)
 	cl.add_child(hud)
-	var btn := Button.new()
-	refl_btn = btn
-	btn.text = "Reflections: on"
-	btn.toggle_mode = true
-	btn.button_pressed = true
-	btn.focus_mode = Control.FOCUS_NONE
-	btn.add_theme_font_size_override("font_size", 14)
-	btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
-	btn.offset_left = -170
-	btn.offset_right = -10
-	btn.offset_top = 8
-	btn.toggled.connect(func(on: bool):
-		btn.text = "Reflections: " + ("on" if on else "off")
-		var rt := get_tree().current_scene.get_node_or_null("Runtime")
+	_add_button("Reflections", true, 8, func(on: bool):
+		var rt = get_tree().current_scene.get_node_or_null("Runtime")
 		if rt:
 			rt.set_reflections(on))
-	cl.add_child(btn)
+	_add_button("Benches & plants", false, 48, func(on: bool):
+		fixtures_on = on
+		var fxn = get_tree().current_scene.get_node_or_null("Dynamic/dyn_fixtures")
+		if fxn:
+			fxn.visible = on)
+	_cl = cl
 	hint = Label.new()
 	hint.text = "Drag left side to walk · drag right side to look"
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
@@ -107,14 +107,38 @@ func _build_hud() -> void:
 		stick.draw_circle(move_vec * 46, 18, Color(1, 1, 1, 0.55)))
 	cl.add_child(stick)
 
+var _cl: CanvasLayer
+
+## A toggle button in the top-right corner: "<name>: on/off".
+func _add_button(name: String, on: bool, top: int, cb: Callable) -> void:
+	var btn := Button.new()
+	btn.toggle_mode = true
+	btn.button_pressed = on
+	btn.text = "%s: %s" % [name, "on" if on else "off"]
+	btn.focus_mode = Control.FOCUS_NONE
+	btn.add_theme_font_size_override("font_size", 14)
+	btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	btn.offset_left = -200
+	btn.offset_right = -10
+	btn.offset_top = top
+	btn.offset_bottom = top + 32
+	btn.toggled.connect(func(v: bool):
+		btn.text = "%s: %s" % [name, "on" if v else "off"]
+		cb.call(v))
+	hud.get_parent().add_child(btn)
+	buttons.append(btn)
+	cb.call.call_deferred(on)
+
 func _input(e: InputEvent) -> void:
 	var half := get_viewport().get_visible_rect().size.x * 0.5
 	if e is InputEventScreenTouch:
 		# touches don't reach buttons (mouse emulation is off), so tap it here
-		if e.pressed and refl_btn and refl_btn.get_global_rect().has_point(e.position):
-			refl_btn.button_pressed = not refl_btn.button_pressed
-			get_viewport().set_input_as_handled()
-			return
+		if e.pressed:
+			for b in buttons:
+				if b.get_global_rect().has_point(e.position):
+					b.button_pressed = not b.button_pressed
+					get_viewport().set_input_as_handled()
+					return
 		if e.pressed:
 			last_pos[e.index] = e.position
 			hint.visible = false
@@ -191,11 +215,18 @@ func _free(x: float, z: float) -> bool:
 	var r := RADIUS
 	if not (_walk(x - r, z - r) and _walk(x + r, z - r) and _walk(x - r, z + r) and _walk(x + r, z + r)):
 		return false
-	for o in obstacles:
-		if o.size() == 3 and o[0] is float:
+	if _hits(obstacles, x, z):
+		return false
+	if fixtures_on and _hits(fx_obstacles, x, z):
+		return false
+	return true
+
+func _hits(list: Array, x: float, z: float) -> bool:
+	for o in list:
+		if o.size() == 3 and not (o[0] is String):
 			if Vector2(x - o[0], z - o[1]).length() < o[2] + RADIUS * 0.5:
-				return false
+				return true
 		elif o[0] == "rect":
 			if x > o[1] and x < o[3] and z > o[2] and z < o[4]:
-				return false
-	return true
+				return true
+	return false

@@ -1,15 +1,15 @@
-[gd_scene load_steps=31 format=3 uid="uid://facxbnbbs0t3"]
+[gd_scene load_steps=31 format=3 uid="uid://4d36g6g7jln5"]
 
 [ext_resource type="FontFile" uid="uid://ben4k8s2bfllr" path="res://fonts/sans.otf" id="1_lswn8"]
-[ext_resource type="FontFile" uid="uid://dcnghf3fxs8al" path="res://fonts/serif.ttf" id="2_a6jrf"]
-[ext_resource type="FontFile" uid="uid://dtr3jom6wlm84" path="res://fonts/script.ttf" id="3_xuqvo"]
-[ext_resource type="ArrayMesh" path="res://gen/C1.res" id="4_qsp4k"]
-[ext_resource type="ArrayMesh" path="res://gen/lanterns.res" id="5_kq58d"]
-[ext_resource type="ArrayMesh" path="res://gen/H1a.res" id="6_seu75"]
-[ext_resource type="ArrayMesh" path="res://gen/H1b.res" id="7_htxhm"]
-[ext_resource type="ArrayMesh" path="res://gen/H2.res" id="8_jq2sk"]
-[ext_resource type="ArrayMesh" path="res://gen/C2.res" id="9_4k2k6"]
-[ext_resource type="ArrayMesh" path="res://gen/C2_props.res" id="10_0rl1p"]
+[ext_resource type="FontFile" uid="uid://2amxti7h5cy0" path="res://fonts/sans_italic.otf" id="2_a6jrf"]
+[ext_resource type="FontFile" uid="uid://dcnghf3fxs8al" path="res://fonts/serif.ttf" id="3_xuqvo"]
+[ext_resource type="FontFile" uid="uid://dtr3jom6wlm84" path="res://fonts/script.ttf" id="4_qsp4k"]
+[ext_resource type="ArrayMesh" path="res://gen/C1.res" id="5_kq58d"]
+[ext_resource type="ArrayMesh" path="res://gen/lanterns.res" id="6_seu75"]
+[ext_resource type="ArrayMesh" path="res://gen/H1a.res" id="7_htxhm"]
+[ext_resource type="ArrayMesh" path="res://gen/H1b.res" id="8_jq2sk"]
+[ext_resource type="ArrayMesh" path="res://gen/H2.res" id="9_4k2k6"]
+[ext_resource type="ArrayMesh" path="res://gen/C2.res" id="10_0rl1p"]
 [ext_resource type="ArrayMesh" path="res://gen/H3.res" id="11_ok6jj"]
 [ext_resource type="ArrayMesh" path="res://gen/H4.res" id="12_facbu"]
 [ext_resource type="ArrayMesh" path="res://gen/C3.res" id="13_b1qrp"]
@@ -23,7 +23,7 @@
 [ext_resource type="ArrayMesh" path="res://gen/kiosks.res" id="21_qnost"]
 [ext_resource type="ArrayMesh" path="res://gen/dyn_glass_frames.res" id="22_wnkbs"]
 [ext_resource type="ArrayMesh" path="res://gen/dyn_glass.res" id="23_f6a44"]
-[ext_resource type="ArrayMesh" path="res://gen/dyn_foliage.res" id="24_0cbny"]
+[ext_resource type="ArrayMesh" path="res://gen/dyn_fixtures.res" id="24_0cbny"]
 [ext_resource type="LightmapGIData" uid="uid://dc3suve4py2ar" path="res://main.lmbake" id="25_a6jrf"]
 [ext_resource type="Script" uid="uid://105g70usqyss" path="res://scripts/player.gd" id="25_hrvbo"]
 [ext_resource type="Script" uid="uid://ccw0jg6editjo" path="res://scripts/mall_runtime.gd" id="26_uypp3"]
@@ -1640,650 +1640,692 @@ spot_attenuation = 0.8
 spot_angle = 58.0
 
 [node name="@OmniLight3D@182" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2.8, -103)
-light_color = Color(1, 0.96, 0.88, 1)
-light_energy = 0.8
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.599999, 3, -103.2)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
 light_bake_mode = 1
-omni_range = 15.0
+omni_range = 18.0
 
-[node name="@OmniLight3D@185" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@183" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3, -103.2)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
+light_bake_mode = 1
+omni_range = 18.0
+
+[node name="@OmniLight3D@184" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.6000004, 3, -103.2)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
+light_bake_mode = 1
+omni_range = 18.0
+
+[node name="@OmniLight3D@187" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58, 2.8, -81.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@187" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@189" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -58, 2.95, -87.5)
 light_color = Color(1, 0.9, 0.7, 1)
 light_energy = 0.8
 light_bake_mode = 1
 omni_range = 6.0
 
-[node name="@OmniLight3D@189" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@191" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41, 2.8, -81.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@191" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@193" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 2.8, -81.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@193" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@195" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -83)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@195" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@197" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -83)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@197" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@199" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -76)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@199" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@201" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -76)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@201" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@203" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -68)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@203" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@205" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -69)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@205" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@207" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -64)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@207" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@209" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -61)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@210" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@212" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -55)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@212" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@214" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -51)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@214" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@216" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -46)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@216" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@218" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -46)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@218" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@220" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -41)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@220" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@222" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -35)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@222" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@224" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -28)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@224" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@226" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -26)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@226" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@228" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, -18)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@228" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@230" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, -14)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@230" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@232" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, 4)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@232" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@234" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.8, -14)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 9.0
 
-[node name="@OmniLight3D@234" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@236" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2.8, -8)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 9.0
 
-[node name="@OmniLight3D@236" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@238" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2.8, -10.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@238" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@240" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 2.8, -10.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@240" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@242" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 2.8, -10.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@242" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@244" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.8, -10.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@245" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@247" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19, 2.8, 10.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@247" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@249" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 26, 2.8, 10.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@249" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@251" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 2.8, 10.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@251" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@253" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.8, 13)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 7.0
 
-[node name="@OmniLight3D@253" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@255" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13, 2.8, 14.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@255" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@257" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, 21)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@257" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@259" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, 29)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@259" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@261" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, 30)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@261" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@263" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, 36)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@263" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@265" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, 42)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@265" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@267" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, 44)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@267" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@269" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -137, 2.8, 37.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@269" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@271" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -146, 2.8, 39.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@271" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161, 2.8, 56)
-light_color = Color(1, 0.96, 0.88, 1)
-light_energy = 0.8
-light_bake_mode = 1
-omni_range = 15.0
-
 [node name="@OmniLight3D@273" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161.2, 3, 48.399998)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
+light_bake_mode = 1
+omni_range = 18.0
+
+[node name="@OmniLight3D@274" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161.2, 3, 56)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
+light_bake_mode = 1
+omni_range = 18.0
+
+[node name="@OmniLight3D@275" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161.2, 3, 63.6)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
+light_bake_mode = 1
+omni_range = 18.0
+
+[node name="@OmniLight3D@277" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -135, 2.8, 39.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@275" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@279" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133, 2.8, 41.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@277" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@281" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -127, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@279" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@283" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@281" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@285" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -106, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@283" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@287" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -98, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@286" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@290" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -83, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@288" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@292" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@290" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@294" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -71, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@292" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@296" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@294" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@298" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@296" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@300" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@298" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@302" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@300" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@304" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@302" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@306" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@304" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@308" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.8, 43.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@306" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@310" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, 58)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@308" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@312" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -127, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@310" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@314" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -121, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@312" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@316" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@314" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@318" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -106, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@316" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@320" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -98, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@318" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@322" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@321" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@325" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -71, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@323" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@327" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -63, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@325" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@329" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -54, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@327" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@331" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@329" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@333" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -42, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@331" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@335" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@333" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@337" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -28, 2.8, 64.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@335" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@339" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131, 2.8, 66.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@337" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@341" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.5, 2.8, 65)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@339" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@343" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133, 2.8, 68)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 9.0
 
-[node name="@OmniLight3D@341" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@345" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -135, 2.8, 70)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 9.0
 
-[node name="@OmniLight3D@343" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@347" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131, 2.8, 65)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 7.0
 
-[node name="@OmniLight3D@345" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@349" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150, 2.8, 72.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@347" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@351" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133, 2.8, 67)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 7.0
 
-[node name="@OmniLight3D@349" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@353" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, 70)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@351" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@355" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150, 2.8, 73)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 9.0
 
-[node name="@OmniLight3D@353" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@357" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133.5, 2.8, 74)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@356" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@360" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.8, 78.5)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@358" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@362" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.5, 2.8, 77)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@360" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@364" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.5, 2.8, 77)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@362" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@366" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -150, 2.8, 83)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 9.0
 
-[node name="@OmniLight3D@364" type="OmniLight3D" parent="Lights"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.8, 87)
-light_color = Color(1, 0.96, 0.88, 1)
-light_energy = 0.8
+[node name="@OmniLight3D@368" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5999994, 3, 87.2)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
 light_bake_mode = 1
-omni_range = 15.0
+omni_range = 18.0
 
-[node name="@OmniLight3D@366" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@369" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9999995, 3, 87.2)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
+light_bake_mode = 1
+omni_range = 18.0
+
+[node name="@OmniLight3D@370" type="OmniLight3D" parent="Lights"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.39999962, 3, 87.2)
+light_color = Color(1, 0.97, 0.9, 1)
+light_energy = 0.9
+light_bake_mode = 1
+omni_range = 18.0
+
+[node name="@OmniLight3D@372" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133.5, 2.8, 84)
 light_color = Color(1, 0.96, 0.88, 1)
 light_energy = 0.45
 light_bake_mode = 1
 omni_range = 10.0
 
-[node name="@OmniLight3D@369" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@375" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.599998, 2.2, 51.600002)
 light_color = Color(1, 0.93, 0.8, 1)
 light_energy = 0.7
 light_bake_mode = 1
 omni_range = 4.0
 
-[node name="@OmniLight3D@370" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@376" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24.8, 3.95, 51.4)
 light_color = Color(1, 0.95, 0.88, 1)
 light_energy = 0.9
 light_bake_mode = 1
 omni_range = 6.0
 
-[node name="@OmniLight3D@373" type="OmniLight3D" parent="Lights"]
+[node name="@OmniLight3D@379" type="OmniLight3D" parent="Lights"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 3.95, 54)
 light_color = Color(1, 0.95, 0.88, 1)
 light_energy = 0.9
@@ -2299,14 +2341,15 @@ font = ExtResource("1_lswn8")
 font_size = 128
 
 [node name="@Label3D@181" type="Label3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 3.9, -95.75)
-pixel_size = 0.00484375
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 4, -95.670006)
+pixel_size = 0.009375
 double_sided = false
-text = "Sears"
-font = ExtResource("1_lswn8")
+modulate = Color(0.12156863, 0.24705882, 0.56078434, 1)
+text = "SEARS"
+font = ExtResource("2_a6jrf")
 font_size = 128
 
-[node name="@Label3D@183" type="Label3D" parent="."]
+[node name="@Label3D@185" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 35.9, 3.55, -91)
 pixel_size = 0.001875
 double_sided = false
@@ -2314,7 +2357,7 @@ text = "EXIT"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@184" type="Label3D" parent="."]
+[node name="@Label3D@186" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -58, 3.9, -86.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2323,24 +2366,24 @@ text = "southland cinema"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@186" type="Label3D" parent="."]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -58, 3.85, -87.74)
-pixel_size = 0.0042
+[node name="@Label3D@188" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -58, 3.75, -87.74)
+pixel_size = 0.00328125
 double_sided = false
 modulate = Color(0.11372549, 0.101960786, 0.18039216, 1)
 text = "Southland Cinema"
-font = ExtResource("1_lswn8")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@188" type="Label3D" parent="."]
+[node name="@Label3D@190" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -41, 3.9, -86.25)
 pixel_size = 0.004375
 double_sided = false
 text = "American Bank"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@190" type="Label3D" parent="."]
+[node name="@Label3D@192" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 29, 3.9, -86.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2348,7 +2391,7 @@ text = "Cucos"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@192" type="Label3D" parent="."]
+[node name="@Label3D@194" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -83)
 pixel_size = 0.004375
 double_sided = false
@@ -2357,7 +2400,7 @@ text = "Solarium"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@194" type="Label3D" parent="."]
+[node name="@Label3D@196" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -83)
 pixel_size = 0.004310204
 double_sided = false
@@ -2365,7 +2408,7 @@ text = "Duncan Sports"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@196" type="Label3D" parent="."]
+[node name="@Label3D@198" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -76)
 pixel_size = 0.004375
 double_sided = false
@@ -2374,7 +2417,7 @@ text = "Rave"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@198" type="Label3D" parent="."]
+[node name="@Label3D@200" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -76)
 pixel_size = 0.004375
 double_sided = false
@@ -2383,15 +2426,15 @@ text = "Footquarters"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@200" type="Label3D" parent="."]
+[node name="@Label3D@202" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -68)
 pixel_size = 0.004375
 double_sided = false
 text = "Lane Bryant"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@202" type="Label3D" parent="."]
+[node name="@Label3D@204" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -69)
 pixel_size = 0.0037125
 double_sided = false
@@ -2399,7 +2442,7 @@ text = "Lady Foot Locker"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@204" type="Label3D" parent="."]
+[node name="@Label3D@206" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -64)
 pixel_size = 0.0023294117
 double_sided = false
@@ -2408,7 +2451,7 @@ text = "Felger's Footwear"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@206" type="Label3D" parent="."]
+[node name="@Label3D@208" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -61)
 pixel_size = 0.004375
 double_sided = false
@@ -2417,7 +2460,7 @@ text = "Sound Shop"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@208" type="Label3D" parent="."]
+[node name="@Label3D@210" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -58)
 pixel_size = 0.00396
 double_sided = false
@@ -2426,7 +2469,7 @@ text = "For Lease · Space 42"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@209" type="Label3D" parent="."]
+[node name="@Label3D@211" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -55)
 pixel_size = 0.004375
 double_sided = false
@@ -2434,7 +2477,7 @@ text = "Kay-Bee Toys"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@211" type="Label3D" parent="."]
+[node name="@Label3D@213" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -51)
 pixel_size = 0.004242857
 double_sided = false
@@ -2443,7 +2486,7 @@ text = "Philly's Pizza"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@213" type="Label3D" parent="."]
+[node name="@Label3D@215" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -46)
 pixel_size = 0.004375
 double_sided = false
@@ -2452,7 +2495,7 @@ text = "Miller's Outpost"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@215" type="Label3D" parent="."]
+[node name="@Label3D@217" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -46)
 pixel_size = 0.0036205715
 double_sided = false
@@ -2461,7 +2504,7 @@ text = "MasterCuts"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@217" type="Label3D" parent="."]
+[node name="@Label3D@219" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -41)
 pixel_size = 0.004375
 double_sided = false
@@ -2470,16 +2513,16 @@ text = "Father & Son"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@219" type="Label3D" parent="."]
+[node name="@Label3D@221" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -35)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.9137255, 0.6509804, 0.72156864, 1)
 text = "Jean Nicole"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@221" type="Label3D" parent="."]
+[node name="@Label3D@223" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -28)
 pixel_size = 0.004375
 double_sided = false
@@ -2487,7 +2530,7 @@ text = "K&B"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@223" type="Label3D" parent="."]
+[node name="@Label3D@225" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -26)
 pixel_size = 0.004375
 double_sided = false
@@ -2496,7 +2539,7 @@ text = "Kids Mart"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@225" type="Label3D" parent="."]
+[node name="@Label3D@227" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, -18)
 pixel_size = 0.004375
 double_sided = false
@@ -2504,58 +2547,58 @@ text = "Footaction Usa"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@227" type="Label3D" parent="."]
+[node name="@Label3D@229" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, -14)
 pixel_size = 0.003882353
 double_sided = false
 modulate = Color(0.8980392, 0.7882353, 0.41960785, 1)
 text = "Gordon's Jewelers"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@229" type="Label3D" parent="."]
+[node name="@Label3D@231" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, 4)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.9647059, 0.8235294, 0.3529412, 1)
 text = "Woolworth"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@231" type="Label3D" parent="."]
+[node name="@Label3D@233" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 3.9, -9.75)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.8980392, 0.7882353, 0.41960785, 1)
 text = "Gordon's Jewelers"
-font = ExtResource("2_a6jrf")
-font_size = 128
-
-[node name="@Label3D@233" type="Label3D" parent="."]
-transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 11.75, 3.9, -8)
-pixel_size = 0.004375
-double_sided = false
-text = "Claire's"
 font = ExtResource("3_xuqvo")
 font_size = 128
 
 [node name="@Label3D@235" type="Label3D" parent="."]
+transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 11.75, 3.9, -8)
+pixel_size = 0.004375
+double_sided = false
+text = "Claire's"
+font = ExtResource("4_qsp4k")
+font_size = 128
+
+[node name="@Label3D@237" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 3.9, -5.75)
 pixel_size = 0.004375
 double_sided = false
 text = "Claire's"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@237" type="Label3D" parent="."]
+[node name="@Label3D@239" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 3.9, -5.75)
 pixel_size = 0.0015
 double_sided = false
 text = "Mitchell's Formal Wear"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@239" type="Label3D" parent="."]
+[node name="@Label3D@241" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 27, 3.9, -5.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2563,7 +2606,7 @@ text = "Laser Copies"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@241" type="Label3D" parent="."]
+[node name="@Label3D@243" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 33, 3.9, -5.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2571,16 +2614,16 @@ text = "Vision Plaza"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@243" type="Label3D" parent="."]
+[node name="@Label3D@245" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 35.95, 3.75, 0)
 pixel_size = 0.00328125
 double_sided = false
 modulate = Color(0.35686275, 0.2509804, 0.1882353, 1)
 text = "Main Entrance"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@244" type="Label3D" parent="."]
+[node name="@Label3D@246" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 19, 3.9, 5.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2589,7 +2632,7 @@ text = "Tee Tai's"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@246" type="Label3D" parent="."]
+[node name="@Label3D@248" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 26, 3.9, 5.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2597,7 +2640,7 @@ text = "Optical Outlet"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@248" type="Label3D" parent="."]
+[node name="@Label3D@250" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 33, 3.9, 5.75)
 pixel_size = 0.0031263158
 double_sided = false
@@ -2606,7 +2649,7 @@ text = "T.J.'s 1 Hour Photo"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@250" type="Label3D" parent="."]
+[node name="@Label3D@252" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 6, 3.9, 9.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2615,32 +2658,32 @@ text = "Franks"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@252" type="Label3D" parent="."]
+[node name="@Label3D@254" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 13, 3.9, 9.75)
 pixel_size = 0.004375
 double_sided = false
 text = "Orange Julius"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@254" type="Label3D" parent="."]
+[node name="@Label3D@256" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, 21)
 pixel_size = 0.0043104747
 double_sided = false
 modulate = Color(0.9647059, 0.90588236, 0.72156864, 1)
 text = "Coach House Gifts"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@256" type="Label3D" parent="."]
+[node name="@Label3D@258" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, 29)
 pixel_size = 0.004375
 double_sided = false
 text = "Lerner Shop"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@258" type="Label3D" parent="."]
+[node name="@Label3D@260" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, 30)
 pixel_size = 0.004375
 double_sided = false
@@ -2648,7 +2691,7 @@ text = "Radio Shack"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@260" type="Label3D" parent="."]
+[node name="@Label3D@262" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, 36)
 pixel_size = 0.004375
 double_sided = false
@@ -2656,7 +2699,7 @@ text = "GNC"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@262" type="Label3D" parent="."]
+[node name="@Label3D@264" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, 42)
 pixel_size = 0.004375
 double_sided = false
@@ -2664,16 +2707,16 @@ text = "Gumballs"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@264" type="Label3D" parent="."]
+[node name="@Label3D@266" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, 44)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.9647059, 0.90588236, 0.7529412, 1)
 text = "The Avenue"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@266" type="Label3D" parent="."]
+[node name="@Label3D@268" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -137, 3.9, 42.25)
 pixel_size = 0.0015
 double_sided = false
@@ -2681,7 +2724,7 @@ text = "The Limited"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@268" type="Label3D" parent="."]
+[node name="@Label3D@270" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -146, 3.9, 44.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2689,15 +2732,15 @@ text = "The Shoe Dept"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@270" type="Label3D" parent="."]
-transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -153.75, 3.9, 56)
-pixel_size = 0.00484375
+[node name="@Label3D@272" type="Label3D" parent="."]
+transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -153.67, 4, 56)
+pixel_size = 0.009375
 double_sided = false
-text = "Jc Penney"
+text = "JCPenney"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@272" type="Label3D" parent="."]
+[node name="@Label3D@276" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -135, 3.9, 44.25)
 pixel_size = 0.0015
 double_sided = false
@@ -2705,7 +2748,7 @@ text = "The Limited"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@274" type="Label3D" parent="."]
+[node name="@Label3D@278" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -133, 3.9, 46.25)
 pixel_size = 0.0015
 double_sided = false
@@ -2713,7 +2756,7 @@ text = "The Limited"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@276" type="Label3D" parent="."]
+[node name="@Label3D@280" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -127, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2721,7 +2764,7 @@ text = "The Limited"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@278" type="Label3D" parent="."]
+[node name="@Label3D@282" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2729,16 +2772,16 @@ text = "Champs Sports"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@280" type="Label3D" parent="."]
+[node name="@Label3D@284" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -106, 3.9, 48.25)
 pixel_size = 0.0033
 double_sided = false
 modulate = Color(0.9647059, 0.90588236, 0.72156864, 1)
 text = "B. Dalton Bookseller"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@282" type="Label3D" parent="."]
+[node name="@Label3D@286" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -98, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2747,7 +2790,7 @@ text = "Merry-go-round"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@284" type="Label3D" parent="."]
+[node name="@Label3D@288" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90, 3.9, 48.25)
 pixel_size = 0.004168421
 double_sided = false
@@ -2756,7 +2799,7 @@ text = "For Lease · Space 7"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@285" type="Label3D" parent="."]
+[node name="@Label3D@289" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -83, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2765,7 +2808,7 @@ text = "Bakers"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@287" type="Label3D" parent="."]
+[node name="@Label3D@291" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -77, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2773,7 +2816,7 @@ text = "JW"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@289" type="Label3D" parent="."]
+[node name="@Label3D@293" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -71, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2782,7 +2825,7 @@ text = "5-7-9"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@291" type="Label3D" parent="."]
+[node name="@Label3D@295" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2790,7 +2833,7 @@ text = "Foot Locker"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@293" type="Label3D" parent="."]
+[node name="@Label3D@297" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2799,7 +2842,7 @@ text = "Gadzooks"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@295" type="Label3D" parent="."]
+[node name="@Label3D@299" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -44, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2808,16 +2851,16 @@ text = "Lion's Share"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@297" type="Label3D" parent="."]
+[node name="@Label3D@301" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -35, 3.9, 48.25)
 pixel_size = 0.0037125
 double_sided = false
 modulate = Color(0.9490196, 0.7882353, 0.29803923, 1)
 text = "Wicks 'n' Sticks"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@299" type="Label3D" parent="."]
+[node name="@Label3D@303" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 3.9, 48.25)
 pixel_size = 0.0023730337
 double_sided = false
@@ -2826,7 +2869,7 @@ text = "Great American Cookie Co."
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@301" type="Label3D" parent="."]
+[node name="@Label3D@305" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 3.9, 48.25)
 pixel_size = 0.0043746834
 double_sided = false
@@ -2834,7 +2877,7 @@ text = "Sports Avenue"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@303" type="Label3D" parent="."]
+[node name="@Label3D@307" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 3.9, 48.25)
 pixel_size = 0.004375
 double_sided = false
@@ -2842,7 +2885,7 @@ text = "Gumballs"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@305" type="Label3D" parent="."]
+[node name="@Label3D@309" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, 58)
 pixel_size = 0.004375
 double_sided = false
@@ -2850,7 +2893,7 @@ text = "Payless Shoes"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@307" type="Label3D" parent="."]
+[node name="@Label3D@311" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -127, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2859,16 +2902,16 @@ text = "Babbage's"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@309" type="Label3D" parent="."]
+[node name="@Label3D@313" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -121, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.9647059, 0.90588236, 0.72156864, 1)
 text = "Country Fair"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@311" type="Label3D" parent="."]
+[node name="@Label3D@315" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -114, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2877,7 +2920,7 @@ text = "Blockbuster Music"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@313" type="Label3D" parent="."]
+[node name="@Label3D@317" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -106, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2886,7 +2929,7 @@ text = "Pocket Change"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@315" type="Label3D" parent="."]
+[node name="@Label3D@319" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -98, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2894,7 +2937,7 @@ text = "Chick-fil-A"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@317" type="Label3D" parent="."]
+[node name="@Label3D@321" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -90, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2903,7 +2946,7 @@ text = "County Seat"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@319" type="Label3D" parent="."]
+[node name="@Label3D@323" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -80, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2912,25 +2955,25 @@ text = "For Lease · Space 77"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@320" type="Label3D" parent="."]
+[node name="@Label3D@324" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -71, 3.9, 59.75)
 pixel_size = 0.002734964
 double_sided = false
 modulate = Color(0.9490196, 0.7882353, 0.29803923, 1)
 text = "Golden Chain Gang"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@322" type="Label3D" parent="."]
+[node name="@Label3D@326" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -63, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.9647059, 0.90588236, 0.7529412, 1)
 text = "Concepts"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@324" type="Label3D" parent="."]
+[node name="@Label3D@328" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -54, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2938,7 +2981,7 @@ text = "Regis Hairstylists"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@326" type="Label3D" parent="."]
+[node name="@Label3D@330" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -46, 3.9, 59.75)
 pixel_size = 0.0033
 double_sided = false
@@ -2947,25 +2990,25 @@ text = "Special Tees"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@328" type="Label3D" parent="."]
+[node name="@Label3D@332" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -42, 3.9, 59.75)
 pixel_size = 0.003
 double_sided = false
 modulate = Color(0.9647059, 0.90588236, 0.72156864, 1)
 text = "Naturalizer"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@330" type="Label3D" parent="."]
+[node name="@Label3D@334" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -38, 3.9, 59.75)
 pixel_size = 0.0030461538
 double_sided = false
 modulate = Color(0.35686275, 0.16470589, 0.5254902, 1)
 text = "Afterthoughts"
-font = ExtResource("3_xuqvo")
+font = ExtResource("4_qsp4k")
 font_size = 128
 
-[node name="@Label3D@332" type="Label3D" parent="."]
+[node name="@Label3D@336" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -28, 3.9, 59.75)
 pixel_size = 0.004375
 double_sided = false
@@ -2974,7 +3017,7 @@ text = "Karmelkorn"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@334" type="Label3D" parent="."]
+[node name="@Label3D@338" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -131, 3.9, 61.75)
 pixel_size = 0.0017059774
 double_sided = false
@@ -2983,7 +3026,7 @@ text = "Babbage's"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@336" type="Label3D" parent="."]
+[node name="@Label3D@340" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -19.75, 3.9, 65)
 pixel_size = 0.004375
 double_sided = false
@@ -2992,70 +3035,70 @@ text = "Karmelkorn"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@338" type="Label3D" parent="."]
+[node name="@Label3D@342" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -133, 3.9, 63.75)
 pixel_size = 0.0009821429
 double_sided = false
 modulate = Color(0.8980392, 0.7882353, 0.41960785, 1)
 text = "Gold 'n' Gifts"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@340" type="Label3D" parent="."]
+[node name="@Label3D@344" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -135, 3.9, 65.75)
 pixel_size = 0.0009821429
 double_sided = false
 modulate = Color(0.8980392, 0.7882353, 0.41960785, 1)
 text = "Gold 'n' Gifts"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@342" type="Label3D" parent="."]
+[node name="@Label3D@346" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -134.25, 3.9, 65)
 pixel_size = 0.0009821429
 double_sided = false
 modulate = Color(0.8980392, 0.7882353, 0.41960785, 1)
 text = "Gold 'n' Gifts"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@344" type="Label3D" parent="."]
+[node name="@Label3D@348" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -150, 3.9, 67.75)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.8980392, 0.7882353, 0.41960785, 1)
 text = "Zales"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@346" type="Label3D" parent="."]
+[node name="@Label3D@350" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -136.25, 3.9, 67)
 pixel_size = 0.0009821429
 double_sided = false
 modulate = Color(0.8980392, 0.7882353, 0.41960785, 1)
 text = "Gold 'n' Gifts"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@348" type="Label3D" parent="."]
+[node name="@Label3D@352" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, 70)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.7882353, 0.7882353, 0.7764706, 1)
 text = "Saadi's"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@350" type="Label3D" parent="."]
+[node name="@Label3D@354" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -145.75, 3.9, 73)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.8980392, 0.7882353, 0.41960785, 1)
 text = "Zales"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@352" type="Label3D" parent="."]
+[node name="@Label3D@356" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -138.25, 3.9, 74)
 pixel_size = 0.004375
 double_sided = false
@@ -3064,7 +3107,7 @@ text = "Corn Dog 7"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@354" type="Label3D" parent="."]
+[node name="@Label3D@358" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -48.06, 2.55, 73.6)
 pixel_size = 0.00171875
 double_sided = false
@@ -3072,7 +3115,7 @@ text = "Women"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@355" type="Label3D" parent="."]
+[node name="@Label3D@359" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -15, 3.9, 73.75)
 pixel_size = 0.004375
 double_sided = false
@@ -3081,7 +3124,7 @@ text = "Gryder's"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@357" type="Label3D" parent="."]
+[node name="@Label3D@361" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -9.75, 3.9, 77)
 pixel_size = 0.004375
 double_sided = false
@@ -3090,7 +3133,7 @@ text = "Gryder's"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@359" type="Label3D" parent="."]
+[node name="@Label3D@363" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 1.75, 3.9, 77)
 pixel_size = 0.004242857
 double_sided = false
@@ -3098,7 +3141,7 @@ text = "Athlete's Foot"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@361" type="Label3D" parent="."]
+[node name="@Label3D@365" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -145.75, 3.9, 83)
 pixel_size = 0.0032704403
 double_sided = false
@@ -3106,24 +3149,25 @@ text = "Terrebonne General Outreach"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@363" type="Label3D" parent="."]
-transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4, 3.9, 79.75)
-pixel_size = 0.00484375
+[node name="@Label3D@367" type="Label3D" parent="."]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -4, 4, 79.670006)
+pixel_size = 0.0065972223
 double_sided = false
+modulate = Color(1.3, 1.3, 1.3, 1)
 text = "Dillard's"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@365" type="Label3D" parent="."]
+[node name="@Label3D@371" type="Label3D" parent="."]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -138.25, 3.9, 84)
 pixel_size = 0.004375
 double_sided = false
 modulate = Color(0.43137255, 0.16470589, 0.21960784, 1)
 text = "Wesley Austin"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@367" type="Label3D" parent="."]
+[node name="@Label3D@373" type="Label3D" parent="."]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -49.94, 2.55, 85.6)
 pixel_size = 0.00171875
 double_sided = false
@@ -3131,7 +3175,7 @@ text = "Men"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@368" type="Label3D" parent="."]
+[node name="@Label3D@374" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -142, 3.55, 87.9)
 pixel_size = 0.001875
 double_sided = false
@@ -3139,22 +3183,22 @@ text = "EXIT"
 font = ExtResource("1_lswn8")
 font_size = 128
 
-[node name="@Label3D@371" type="Label3D" parent="."]
+[node name="@Label3D@377" type="Label3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -52, 1.95, 54.04)
 pixel_size = 0.0015625
 double_sided = false
 modulate = Color(0.9098039, 0.8627451, 0.7529412, 1)
 text = "Mr. Silverman"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
-[node name="@Label3D@372" type="Label3D" parent="."]
+[node name="@Label3D@378" type="Label3D" parent="."]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -52, 1.95, 53.96)
 pixel_size = 0.0015625
 double_sided = false
 modulate = Color(0.9098039, 0.8627451, 0.7529412, 1)
 text = "Mr. Silverman"
-font = ExtResource("2_a6jrf")
+font = ExtResource("3_xuqvo")
 font_size = 128
 
 [node name="Sun" type="DirectionalLight3D" parent="."]
@@ -3171,24 +3215,21 @@ environment = SubResource("Environment_6iyjs")
 [node name="Static" type="Node3D" parent="."]
 
 [node name="C1" type="MeshInstance3D" parent="Static"]
-mesh = ExtResource("4_qsp4k")
-
-[node name="lanterns" type="MeshInstance3D" parent="Static"]
 mesh = ExtResource("5_kq58d")
 
-[node name="H1a" type="MeshInstance3D" parent="Static"]
+[node name="lanterns" type="MeshInstance3D" parent="Static"]
 mesh = ExtResource("6_seu75")
 
-[node name="H1b" type="MeshInstance3D" parent="Static"]
+[node name="H1a" type="MeshInstance3D" parent="Static"]
 mesh = ExtResource("7_htxhm")
 
-[node name="H2" type="MeshInstance3D" parent="Static"]
+[node name="H1b" type="MeshInstance3D" parent="Static"]
 mesh = ExtResource("8_jq2sk")
 
-[node name="C2" type="MeshInstance3D" parent="Static"]
+[node name="H2" type="MeshInstance3D" parent="Static"]
 mesh = ExtResource("9_4k2k6")
 
-[node name="C2_props" type="MeshInstance3D" parent="Static"]
+[node name="C2" type="MeshInstance3D" parent="Static"]
 mesh = ExtResource("10_0rl1p")
 
 [node name="H3" type="MeshInstance3D" parent="Static"]
@@ -3236,96 +3277,96 @@ cast_shadow = 0
 gi_mode = 2
 mesh = ExtResource("23_f6a44")
 
-[node name="dyn_foliage" type="MeshInstance3D" parent="Dynamic"]
+[node name="dyn_fixtures" type="MeshInstance3D" parent="Dynamic"]
 cast_shadow = 0
 gi_mode = 2
 mesh = ExtResource("24_0cbny")
 
-[node name="@ReflectionProbe@374" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@380" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 5, -91)
 intensity = 0.9
 size = Vector3(24.5, 10, 10.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@375" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@381" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 3.3, -91)
 intensity = 0.9
 size = Vector3(60.5, 6.6, 10.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@376" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@382" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 3.3, -91)
 intensity = 0.9
 size = Vector3(28.5, 6.6, 10.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@377" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@383" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.3, -48)
 intensity = 0.9
 size = Vector3(12.5, 6.6, 76.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@378" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@384" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 5, 0)
 intensity = 0.9
 size = Vector3(22.5, 10, 20.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@379" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@385" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 3.3, 0)
 intensity = 0.9
 size = Vector3(24.5, 6.6, 12.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@380" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@386" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.3, 29)
 intensity = 0.9
 size = Vector3(12.5, 6.6, 38.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@381" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@387" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 5, 61)
 intensity = 0.9
 size = Vector3(22.5, 10, 26.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@382" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@388" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.3, 77)
 intensity = 0.9
 size = Vector3(12.5, 6.6, 6.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@383" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@389" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 3.3, 54)
 intensity = 0.9
 size = Vector3(116.5, 6.6, 12.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@384" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@390" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -145, 5, 56)
 intensity = 0.9
 size = Vector3(18.5, 10, 24.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@385" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@391" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 3.3, 78)
 intensity = 0.9
 size = Vector3(8.5, 6.6, 20.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@386" type="ReflectionProbe" parent="."]
+[node name="@ReflectionProbe@392" type="ReflectionProbe" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49, 3.3, 78)
 intensity = 0.9
 size = Vector3(2.5, 6.6, 36.5)
@@ -3339,8 +3380,7 @@ light_data = ExtResource("25_a6jrf")
 
 [node name="Player" type="Node3D" parent="."]
 script = ExtResource("25_hrvbo")
-walk_rows = PackedStringArray("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111110000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111111000000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000001111111110000000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000001111110000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")
-obstacles = [[-14.7, -94.7, 0.55], [-14.7, -87.3, 0.55], [6.7, -94.7, 0.55], [6.7, -87.3, 0.55], [-8.7, -8.7, 0.55], [-8.7, 8.7, 0.55], [10.7, -8.7, 0.55], [10.7, 8.7, 0.55], ["rect", -0.49999999999999994, -2.8, 2.5, 2.8], [-0.75, -1.2, 0.85], [-0.75, 1.2, 0.85], [2.75, -1.2, 0.85], [2.75, 1.2, 0.85], [-18.7, 49.3, 0.55], [-18.7, 72.7, 0.55], [0.7, 49.3, 0.55], [0.7, 72.7, 0.55], [-152.7, 45.3, 0.55], [-152.7, 66.7, 0.55], [-137.3, 45.3, 0.55], [-137.3, 66.7, 0.55], ["rect", -26.399998474121094, 50.10000152587891, -22.59999771118164, 53.10000305175781], ["rect", -54.3, 52.5, -49.7, 55.5]]
+obstacles = [[-14.7, -94.7, 0.55], [-14.7, -87.3, 0.55], [6.7, -94.7, 0.55], [6.7, -87.3, 0.55], [-8.7, -8.7, 0.55], [-8.7, 8.7, 0.55], [10.7, -8.7, 0.55], [10.7, 8.7, 0.55], [-18.7, 49.3, 0.55], [-18.7, 72.7, 0.55], [0.7, 49.3, 0.55], [0.7, 72.7, 0.55], [-152.7, 45.3, 0.55], [-152.7, 66.7, 0.55], [-137.3, 45.3, 0.55], [-137.3, 66.7, 0.55], ["rect", -26.399998474121094, 50.10000152587891, -22.59999771118164, 53.10000305175781], ["rect", -54.3, 52.5, -49.7, 55.5]]
 
 [node name="Runtime" type="Node" parent="."]
 script = ExtResource("26_uypp3")

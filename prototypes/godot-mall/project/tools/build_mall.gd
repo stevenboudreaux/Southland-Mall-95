@@ -8,6 +8,9 @@ const VAULT_SPRING = 4.9   # hall vault springing
 const COURT_SPRING = 6.6
 const RIB_STEP = 1.8
 const OPEN_H = 3.2         # storefront opening height
+const ANCHOR_FRONT = 24.0  # width of an anchor store's mall entrance (JCPenney's)
+## Store looks that differ from the map data (from Steven's photos and memory).
+const OVERRIDES = {"CORN DOG 7": {"awningColor": "#f2cf1d", "awningStripe": "#1f2d6e"}}
 var TEXEL = 0.16           # lightmap texel size (metres); fast bake for demos
 
 var mall: Node3D
@@ -18,12 +21,20 @@ var dyn_acc = {}
 var L: Dictionary          # layout
 var zones = {}             # id -> zone dict
 var obstacles = []
+var fx_obstacles = []     # fixtures (benches, planters, trash cans): only block when shown
+var fx = false            # while true, geometry goes to the switchable "fixtures" mesh
 var cur_color = Color.WHITE
 var atlas_index = {}       # store id -> atlas cell
 const ATLAS_COLS = 8
 const ATLAS_ROWS = 12
 
 # ------------------------------------------------------------------ materials
+func obst(o):
+	if fx:
+		fx_obstacles.append(o)
+	else:
+		obstacles.append(o)
+
 func tex(p):
 	return load("res://tex/" + p)
 
@@ -137,6 +148,17 @@ func mat(name):
 			m.roughness = 0.7
 		"trunk":
 			m.albedo_color = Color("#6d5a3e"); m.roughness = 0.95
+		"buff_tile":
+			m.albedo_texture = tex("buff_tile.png"); m.roughness = 0.35
+		"grey_tile":
+			m.albedo_texture = tex("grey_tile.png"); m.roughness = 0.35
+		"wood_diag":
+			m.albedo_texture = tex("wood_diag.png"); m.roughness = 0.6
+		"brown_stone":
+			m.albedo_texture = tex("brown_stone.png"); m.roughness = 0.12; m.metallic_specular = 0.7
+		"halo":
+			m.albedo_color = Color.WHITE
+			m.emission_enabled = true; m.emission = Color("#ffffff"); m.emission_energy_multiplier = 1.6
 		"outside_ground":
 			m.albedo_color = Color("#7c7a74"); m.roughness = 0.95
 		"exit_sign":
@@ -153,6 +175,9 @@ func mat(name):
 
 # ------------------------------------------------------------- mesh helpers
 func st(group, mname, dynamic = false):
+	if fx:
+		group = "fixtures"
+		dynamic = true
 	var A = dyn_acc if dynamic else acc
 	if not A.has(group):
 		A[group] = {}
@@ -584,7 +609,7 @@ func build_court(z):
 			cyl(g, "column", Vector3(qx, 0.35, qz), 0.3, 0.3, COURT_SPRING - 0.6, 24, false)
 			cyl(g, "stone", Vector3(qx, 0, qz), 0.4, 0.4, 0.35, 24, true)
 			cyl(g, "column", Vector3(qx, COURT_SPRING - 0.25, qz), 0.3, 0.42, 0.25, 24, true, true)
-			obstacles.append([qx, qz, 0.55])
+			obst([qx, qz, 0.55])
 	if z.style == "sears":
 		# white arch beam across the court, outlined with a pink stripe (1:34),
 		# and a small crystal pendant under the crown
@@ -624,9 +649,11 @@ func build_court(z):
 		cyl("lanterns", "crystal", pc - Vector3(0, 0.35, 0), 0.07, 0.0, 0.12, 8, false)
 		add_omni(P.call(0, 5.5, 0), 1.0, 7.0, Color(1.0, 0.95, 0.85))
 	if z.style == "shoe":
+		fx = true
 		palm_bed(g + "_props", Vector3(cx, 0, cz), 2.4, 5.0)
 		for b in [[-1.75, -1.2, PI * 0.5], [-1.75, 1.2, PI * 0.5], [1.75, -1.2, -PI * 0.5], [1.75, 1.2, -PI * 0.5]]:
 			bench(g + "_props", Vector3(cx + b[0], 0, cz + b[1]), b[2])
+		fx = false
 		for p in [Vector3(-3.8, 4.3, -4.2), Vector3(3.8, 4.3, -4.2), Vector3(-3.8, 4.3, 4.2), Vector3(3.8, 4.3, 4.2)]:
 			var lp = Vector3(cx, 0, cz) + p
 			lantern(lp, arch_y(p.x, half, COURT_SPRING, rise))
@@ -710,7 +737,7 @@ func build_court_flat(z):
 		for qz in [r[1] + inset, r[3] - inset]:
 			cyl(g, "column", Vector3(qx, 0.35, qz), 0.3, 0.3, SOF - 0.35, 24, false)
 			cyl(g, "stone", Vector3(qx, 0, qz), 0.4, 0.4, 0.35, 24, true)
-			obstacles.append([qx, qz, 0.55])
+			obst([qx, qz, 0.55])
 
 # ------------------------------------------------------------------ lights
 func disc_down(group, c, rad):
@@ -754,7 +781,7 @@ func zone_at(x, z):
 func label(text, fontname, fg, pos, n, max_w, cap_h = 0.56):
 	var lab = Label3D.new()
 	lab.text = text
-	var fnt = load("res://fonts/" + {"sans": "sans.otf", "serif": "serif.ttf", "script": "script.ttf"}[fontname])
+	var fnt = load("res://fonts/" + {"sans": "sans.otf", "serif": "serif.ttf", "script": "script.ttf", "sans_italic": "sans_italic.otf"}[fontname])
 	lab.font = fnt
 	lab.font_size = 128
 	lab.modulate = Color(fg)
@@ -778,9 +805,9 @@ func edge_basics(e):
 	var n = Vector3(e.n[0], 0, e.n[1])
 	return [a, b, n, (b - a).normalized(), a.distance_to(b)]
 
-func plain_wall(g, a, b, n, top = LANE_H):
+func plain_wall(g, a, b, n, top = LANE_H, wm = "cream"):
 	var t = (b - a).normalized()
-	quad(g, "cream", [a, b, b + Vector3(0, top, 0), a + Vector3(0, top, 0)], n)
+	quad(g, wm, [a, b, b + Vector3(0, top, 0), a + Vector3(0, top, 0)], n)
 	box(g, "stone", (a + b) * 0.5 + Vector3(0, 0.3, 0) + n * 0.03, abs_size(t, a.distance_to(b), 0.6, 0.06, n))
 
 func build_edge(e):
@@ -796,7 +823,31 @@ func build_edge(e):
 		"wall":
 			plain_wall(g, a, b, n)
 		"store":
-			storefront(g, e, a, b, n, t, Ln)
+			var sd0 = L.stores[e.store]
+			if sd0.anchor and Ln > ANCHOR_FRONT + 1.0:
+				# An anchor's mall entrance is one storefront about as wide as
+				# JCPenney's (Steven, Oct 5), centred where the mall approaches
+				# it; the rest of its frontage is solid wall.
+				var c = Ln * 0.5
+				var zid = zone_at(mid.x + n.x * 2.0, mid.z + n.z * 2.0)
+				for zz in L.zones:
+					if zz.type == "court":
+						var r = zz.rect
+						var cc = Vector3((r[0] + r[2]) * 0.5, 0, (r[1] + r[3]) * 0.5)
+						var along = (cc - a).dot(t)
+						var dist = abs((cc - a).dot(n))
+						if along > 0 and along < Ln and dist < 20.0:
+							c = along
+				var s0 = clamp(c - ANCHOR_FRONT * 0.5, 0.0, Ln - ANCHOR_FRONT)
+				var s1 = s0 + ANCHOR_FRONT
+				var wm = ANCHOR_LOOK.get(sd0.name, {}).get("wall", "cream")
+				if s0 > 0.01:
+					plain_wall(g, a, a + t * s0, n, LANE_H, wm)
+				storefront(g, e, a + t * s0, a + t * s1, n, t, ANCHOR_FRONT)
+				if s1 < Ln - 0.01:
+					plain_wall(g, a + t * s1, b, n, LANE_H, wm)
+			else:
+				storefront(g, e, a, b, n, t, Ln)
 		"exit", "entrance":
 			doors_out(g, e, a, b, n, t, Ln)
 		"restroom":
@@ -822,6 +873,9 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		kb_wall(g, a, a + t * m0, n, t)
 		kb_wall(g, a + t * (m0 + ew), b, n, t)
 		storefront(g, e, a + t * m0, a + t * (m0 + ew), n, t, ew, true)
+		return
+	if sd.anchor and ANCHOR_LOOK.has(sd.name):
+		anchor_front(g, e, a, b, n, t, Ln, sd, ANCHOR_LOOK[sd.name])
 		return
 	var pil = 0.4 if Ln > 2.5 else 0.25
 	var anchor = sd.anchor
@@ -857,12 +911,16 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 			box(g, "metal_dark", (p0 + p1) * 0.5 + Vector3(0, k, 0) + n * 0.02, abs_size(t, width, 0.03, 0.03, n))
 			k += 0.18
 		return
-	if sd.awning and sd.awningColor != null:
-		cur_color = Color(sd.awningColor)
+	var ov = OVERRIDES.get(sd.name, {})
+	if sd.awning and (sd.awningColor != null or ov.has("awningColor")):
+		cur_color = Color(ov.get("awningColor", sd.awningColor))
 		var aw0 = a + t * Ln * 0.5 + Vector3(0, OPEN_H + 0.05, 0)
 		var xf = Transform3D(Basis.looking_at(-n, Vector3.UP) * Basis(Vector3.RIGHT, 0.45), aw0 + n * 0.45)
 		box(g, "vcolor_matte", Vector3.ZERO, Vector3(Ln - 0.2, 0.06, 1.0), xf)
 		box(g, "vcolor_matte", aw0 + n * 0.9 + Vector3(0, -0.32, 0), abs_size(t, Ln - 0.2, 0.25, 0.04, n))
+		if ov.has("awningStripe"):
+			cur_color = Color(ov.awningStripe)
+			box(g, "vcolor_matte", aw0 + n * 0.925 + Vector3(0, -0.26, 0), abs_size(t, Ln - 0.2, 0.06, 0.02, n))
 		cur_color = Color.WHITE
 	var door_w = width if sd.open else min(3.0 if not anchor else 8.0, width * 0.45)
 	if sd.entry != null:
@@ -963,6 +1021,7 @@ func cinema_front(g, a, n, t, Ln):
 
 ## Jewelry kiosks (decision 1: both there since 1991) under lit rings (decision 7).
 func kiosks():
+	var centers = []
 	for e in L.edges:
 		if e.kind == "store" and L.stores[e.store].name.begins_with("GREAT AMERICAN COOKIE"):
 			var eb = edge_basics(e)
@@ -970,11 +1029,14 @@ func kiosks():
 			var corner = (a + b) * 0.5 + t * 3.2 + n * 2.7
 			gold_kiosk("kiosks", corner, t, n)
 			lit_ring("kiosks", corner + t * 1.0 + n * 0.7)
+			centers.append(corner)
 			break
 	# Mr. Silverman island: position is a guess (concourse, west of the cookie shop)
 	var ms = Vector3(-52.0, 0, 54.0)
 	island_kiosk("kiosks", ms)
 	lit_ring("kiosks", ms)
+	centers.append(ms)
+	return centers
 
 func gold_kiosk(g, c, t, n):
 	# two runs of waist-high cases at a right angle: one along the stores, one out into the hall
@@ -1005,7 +1067,7 @@ func gold_kiosk(g, c, t, n):
 		var lp = p0 + t * (0.5 + k * 0.75) + n * 1.2 + Vector3(0, 2.4, 0)
 		box(g, "downlight", lp, Vector3(0.1, 0.1, 0.1))
 	add_omni(c + t * 1.2 + n * 0.9 + Vector3(0, 2.2, 0), 0.7, 4.0, Color(1.0, 0.93, 0.8))
-	obstacles.append(["rect", min(corners[0].x, corners[3].x) - 0.3, min(corners[0].z, corners[3].z) - 0.3, max(corners[0].x, corners[3].x) + 0.3, max(corners[0].z, corners[3].z) + 0.3])
+	obst(["rect", min(corners[0].x, corners[3].x) - 0.3, min(corners[0].z, corners[3].z) - 0.3, max(corners[0].x, corners[3].x) + 0.3, max(corners[0].z, corners[3].z) + 0.3])
 
 func island_kiosk(g, c):
 	var sx = 3.4
@@ -1029,7 +1091,7 @@ func island_kiosk(g, c):
 	cur_color = Color.WHITE
 	label("Mr. Silverman", "serif", "#e8dcc0", c + Vector3(0, 1.95, 0.04), Vector3(0, 0, 1), 1.6, 0.2)
 	label("Mr. Silverman", "serif", "#e8dcc0", c + Vector3(0, 1.95, -0.04), Vector3(0, 0, -1), 1.6, 0.2)
-	obstacles.append(["rect", c.x - sx * 0.5 - 0.6, c.z - sz * 0.5 - 0.6, c.x + sx * 0.5 + 0.6, c.z + sz * 0.5 + 0.6])
+	obst(["rect", c.x - sx * 0.5 - 0.6, c.z - sz * 0.5 - 0.6, c.x + sx * 0.5 + 0.6, c.z + sz * 0.5 + 0.6])
 
 ## A floating white ring lit from inside, hung on cables, with small spots.
 func lit_ring(g, c):
@@ -1057,6 +1119,87 @@ func lit_ring(g, c):
 		var a = TAU * k / 6.0 + 0.3
 		box(g, "black", c + Vector3(cos(a), 0, sin(a)) * R + Vector3(0, y - 0.22, 0), Vector3(0.12, 0.16, 0.12))
 	add_omni(c + Vector3(0, y - 0.3, 0), 0.9, 6.0, Color(1.0, 0.95, 0.88))
+
+## Anchor fronts, as the current game draws them from Steven's photos:
+## a wide open mouth onto the sales floor under a store-specific fascia.
+const ANCHOR_LOOK = {
+	"SEARS": {"wall": "buff_tile", "fascia": "buff_tile", "frame": "grey_tile", "cols": "", "text": "SEARS", "font": "sans_italic", "fg": "#1f3f8f", "halo": true, "soffit": "lane_ceiling"},
+	"JCPENNEY": {"wall": "cream", "fascia": "wood_diag", "frame": "", "cols": "metal_dark", "text": "JCPenney", "font": "sans", "fg": "#ffffff", "halo": false, "soffit": "lane_ceiling"},
+	"DILLARD'S": {"wall": "cream", "fascia": "brown_stone", "frame": "", "cols": "", "text": "Dillard's", "font": "serif", "fg": "#ffffff", "halo": false, "soffit": "cream", "lit": true},
+}
+
+func anchor_front(g, e, a, b, n, t, Ln, sd, lk):
+	var mid = a + t * Ln * 0.5
+	var top = LANE_H
+	var mouth_h = OPEN_H + 0.2
+	var deep = clamp(float(e.depth), 6.0, 16.0)
+	# fascia across the full width, standing proud of the wall line
+	box(g, lk.fascia, mid + Vector3(0, (mouth_h + top) * 0.5, 0) + n * 0.15, abs_size(t, Ln, top - mouth_h, 0.3, n))
+	# soffit under the fascia
+	quad(g, lk.soffit, [a + Vector3(0, mouth_h, 0) + n * 0.3, b + Vector3(0, mouth_h, 0) + n * 0.3, b + Vector3(0, mouth_h, 0) - n * 0.6, a + Vector3(0, mouth_h, 0) - n * 0.6], Vector3.DOWN)
+	# end piers
+	for ee in [0.0, Ln - 0.6]:
+		var c0 = a + t * (ee + 0.3)
+		box(g, lk.fascia if lk.cols == "" else lk.cols, c0 + Vector3(0, mouth_h * 0.5, 0) + n * 0.15, abs_size(t, 0.6, mouth_h, 0.3, n))
+	if lk.frame != "":
+		# a darker tile band framing the mouth (Sears)
+		box(g, lk.frame, mid + Vector3(0, mouth_h + 0.2, 0) + n * 0.31, abs_size(t, Ln - 1.2, 0.4, 0.02, n))
+		for ee in [0.6, Ln - 0.6]:
+			box(g, lk.frame, a + t * ee + Vector3(0, mouth_h * 0.5, 0) + n * 0.31, abs_size(t, 0.4, mouth_h, 0.02, n))
+	if lk.cols != "":
+		# dark columns across the open front (JCPenney)
+		var k = 6.0
+		while k < Ln - 3.0:
+			box(g, lk.cols, a + t * k + Vector3(0, mouth_h * 0.5, 0) - n * 0.4, abs_size(t, 0.45, mouth_h, 0.45, n))
+			k += 6.0
+	# letters
+	var sc = mid + Vector3(0, (mouth_h + top) * 0.5, 0) + n * 0.31
+	if lk.halo:
+		box(g, "halo", sc - n * 0.005, abs_size(t, min(Ln * 0.42, 9.0), 1.15, 0.01, n))
+	var lab = label(lk.text, lk.font, lk.fg, sc + n * 0.02, n, min(Ln * 0.38, 8.0), 1.2)
+	if lk.get("lit", false):
+		lab.modulate = Color(1.3, 1.3, 1.3)
+	# the sales floor behind the open mouth
+	var p0 = a + t * 0.6
+	var p1 = b - t * 0.6
+	var back = -n * deep
+	var cell = atlas_index.get(e.store, 0)
+	var cu = float(cell % ATLAS_COLS) / ATLAS_COLS
+	var cv = float(cell / ATLAS_COLS) / ATLAS_ROWS
+	var du = 1.0 / ATLAS_COLS
+	var dv = 1.0 / ATLAS_ROWS
+	var reps = max(1, int(round((Ln - 1.2) / 6.0)))
+	for k2 in reps:
+		var q0 = p0 + t * ((Ln - 1.2) * k2 / reps)
+		var q1 = p0 + t * ((Ln - 1.2) * (k2 + 1) / reps)
+		quad(g, "int_back", [q0 + back, q1 + back, q1 + back + Vector3(0, mouth_h, 0), q0 + back + Vector3(0, mouth_h, 0)], n,
+			[Vector2(cu, cv + dv), Vector2(cu + du, cv + dv), Vector2(cu + du, cv), Vector2(cu, cv)])
+	quad(g, "int_back", [p0, p0 + back, p0 + back + Vector3(0, mouth_h, 0), p0 + Vector3(0, mouth_h, 0)], t,
+		[Vector2(cu, cv + dv), Vector2(cu + du, cv + dv), Vector2(cu + du, cv), Vector2(cu, cv)])
+	quad(g, "int_back", [p1 + back, p1, p1 + Vector3(0, mouth_h, 0), p1 + back + Vector3(0, mouth_h, 0)], -t,
+		[Vector2(cu, cv + dv), Vector2(cu + du, cv + dv), Vector2(cu + du, cv), Vector2(cu, cv)])
+	cur_color = Color(sd.carpet) if sd.carpet != null else Color("#d6cdbd")
+	quad(g, "int_floor", [p0, p1, p1 + back, p0 + back], Vector3.UP)
+	cur_color = Color.WHITE
+	quad(g, "int_wall", [p0 + Vector3(0, mouth_h, 0), p0 + back + Vector3(0, mouth_h, 0), p1 + back + Vector3(0, mouth_h, 0), p1 + Vector3(0, mouth_h, 0)], Vector3.DOWN)
+	var wd = Ln - 1.2
+	for ri in max(1, int(deep / 3.0)):
+		for ci in max(1, int(wd / 3.0)):
+			var pc = p0 + t * (wd * (ci + 0.5) / max(1, int(wd / 3.0))) - n * (deep * (ri + 0.5) / max(1, int(deep / 3.0))) + Vector3(0, mouth_h - 0.01, 0)
+			quad(g, "int_panel", [pc - t * 0.5 - n * 0.3, pc + t * 0.5 - n * 0.3, pc + t * 0.5 + n * 0.3, pc - t * 0.5 + n * 0.3], Vector3.DOWN)
+	# racks and tables in the store's colours, in rows
+	var mc = sd.merch
+	var k3 = 0
+	for row in [0.3, 0.55, 0.8]:
+		var pos = 1.5
+		while pos < wd - 1.0:
+			cur_color = Color(mc[k3 % mc.size()])
+			box(g, "vcolor", p0 + t * pos - n * (deep * row) + Vector3(0, 0.6, 0), abs_size(t, 1.6, 1.2, 0.6, n))
+			pos += 3.2
+			k3 += 1
+	cur_color = Color.WHITE
+	for k4 in 3:
+		add_omni(p0 + t * (wd * (k4 + 0.5) / 3.0) - n * deep * 0.45 + Vector3(0, mouth_h - 0.4, 0), 0.9, deep + 2.0, Color(1.0, 0.97, 0.9))
 
 ## Glass doors to the outside (exits and the main entrance), with daylight beyond.
 func doors_out(g, e, a, b, n, t, Ln):
@@ -1101,7 +1244,61 @@ func bench(group, at, yaw):
 		box(group, "metal_dark", Vector3(ee, 0.4, 0.3), Vector3(0.05, 0.8, 0.05), xf)
 		box(group, "metal_dark", Vector3(ee, 0.62, 0.0), Vector3(0.06, 0.04, 0.5), xf)
 		box(group, "metal_dark", Vector3(ee, 0.05, 0.1), Vector3(0.06, 0.04, 0.55), xf)
-	obstacles.append([at.x, at.z, 0.85])
+	obst([at.x, at.z, 0.85])
+
+func planter(at, kind):
+	cyl("fixtures", "planter", at, 0.42, 0.46, 0.62, 24, false)
+	cyl("fixtures", "soil", at + Vector3(0, 0.56, 0), 0.4, 0.4, 0.001, 18, true)
+	if kind == "palm":
+		palm(at + Vector3(0, 0.56, 0), 1.6)
+	else:
+		bush(at + Vector3(0, 0.56, 0), "leafy", 0.75, 5)
+	obst([at.x, at.z, 0.6])
+
+func trash(at):
+	cyl("fixtures", "planter", at, 0.24, 0.28, 0.82, 20, false)
+	cyl("fixtures", "planter", at + Vector3(0, 0.82, 0), 0.29, 0.29, 0.05, 20, false)
+	cyl("fixtures", "planter", at + Vector3(0, 0.87, 0), 0.29, 0.12, 0.12, 20, true)
+	obst([at.x, at.z, 0.45])
+
+## Benches, planters and trash cans in the groupings seen in the 2018 walkthrough:
+## a pair of benches facing each other across a round planter on the hall's
+## centre line every ~22 m, a trash can one lane out, and planters by court
+## columns. All of it goes in one mesh the player can switch on or off.
+func place_fixtures(avoid):
+	fx = true
+	var count = 0
+	for z in L.zones:
+		if z.type == "hall" and float(z.vault_half) > 0.0:
+			var sp = hall_span(z)
+			var lo = sp[0]
+			var hi = sp[1]
+			if hi - lo < 14.0:
+				continue
+			var yaw0 = 0.0 if z.axis == "z" else PI * 0.5
+			var k = 0
+			var s0 = lo + 7.0
+			while s0 < hi - 6.0:
+				var c = hall_P(z, 0, 0, s0)
+				var clear = true
+				for a in avoid:
+					if Vector2(c.x - a.x, c.z - a.z).length() < 7.5:
+						clear = false
+				if clear:
+					planter(c, "palm" if k % 2 == 0 else "leafy")
+					bench("fixtures", hall_P(z, 0, 0, s0 - 1.6), yaw0 + PI)
+					bench("fixtures", hall_P(z, 0, 0, s0 + 1.6), yaw0)
+					trash(hall_P(z, sp[2] * 0.45 * (1 if k % 2 == 0 else -1), 0, s0 + 4.5))
+					count += 1
+					k += 1
+				s0 += 22.0
+		elif z.type == "court" and z.style != "shoe":
+			var r = z.rect
+			planter(Vector3(r[0] + 2.3, 0, r[1] + 2.3), "palm")
+			planter(Vector3(r[2] - 2.3, 0, r[3] - 2.3), "palm")
+			trash(Vector3(r[2] - 2.3, 0, r[1] + 2.3))
+	fx = false
+	print("fixture groups: ", count)
 
 func palm(base, hgt):
 	cyl("foliage", "trunk", base, 0.07, 0.05, hgt, 8, false, false, true)
@@ -1162,7 +1359,7 @@ func palm_bed(group, at, sx, sz):
 			bush(p, "poinsettia", 0.28, 3)
 	palm(at + Vector3(0, h, -sz * 0.22), 2.4)
 	palm(at + Vector3(0, h, sz * 0.22), 1.9)
-	obstacles.append(["rect", at.x - sx * 0.5 - 0.3, at.z - sz * 0.5 - 0.3, at.x + sx * 0.5 + 0.3, at.z + sz * 0.5 + 0.3])
+	obst(["rect", at.x - sx * 0.5 - 0.3, at.z - sz * 0.5 - 0.3, at.x + sx * 0.5 + 0.3, at.z + sz * 0.5 + 0.3])
 
 func lantern(at, top_y):
 	var g = "lanterns"
@@ -1224,7 +1421,8 @@ func build():
 		quad("misc", "lane_ceiling", [Vector3(r[0], LANE_H, r[1]), Vector3(r[2], LANE_H, r[1]), Vector3(r[2], LANE_H, r[3]), Vector3(r[0], LANE_H, r[3])], Vector3.DOWN)
 	for e in L.edges:
 		build_edge(e)
-	kiosks()
+	var avoid = kiosks()
+	place_fixtures(avoid)
 	# K&B's mall-facing wall: pink with plum stripes instead of a full storefront
 	# is a per-store look we add in Phase 2 (decision 6); its storefront is generic for now.
 
@@ -1334,10 +1532,12 @@ func build():
 		if c is Label3D:
 			c.owner = mall
 
+	var cf = FileAccess.open("res://gen/collide.json", FileAccess.WRITE)
+	cf.store_string(JSON.stringify({"static": obstacles, "fixtures": fx_obstacles}))
+	cf.close()
 	var player = load("res://scripts/player.gd").new()
 	player.name = "Player"
 	player.set("obstacles", obstacles)
-	player.set("walk_rows", PackedStringArray(L.walk))
 	player.set("map_origin", Vector2(L.origin[0], L.origin[1]))
 	player.set("map_scale", L.scale)
 	mall.add_child(player); player.owner = mall
