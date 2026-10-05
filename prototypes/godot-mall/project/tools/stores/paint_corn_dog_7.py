@@ -68,7 +68,7 @@ def floor_basketweave():
     im = Image.new("RGB", (px, px), (74, 48, 30))
     d = ImageDraw.Draw(im)
     b = px / 4
-    woods = [(196, 142, 84), (170, 112, 62), (214, 166, 108), (150, 96, 54), (186, 130, 76)]
+    woods = [(190, 146, 98), (168, 120, 78), (206, 166, 118), (148, 104, 68), (180, 136, 92)]
     g = 3
     for j in range(4):
         for i in range(4):
@@ -107,7 +107,8 @@ def counter_front():
         for j in range(4, 7):
             if (i + j) % 2 == 1:
                 navy_tile(i, j)
-    save(base, "counter_front.png")
+    # painted floor-first from the top; build_mall's planar UVs put y = 0 at the image bottom
+    save(base.transpose(Image.FLIP_TOP_BOTTOM), "counter_front.png")
 
 
 def wall_yellow():
@@ -129,7 +130,7 @@ def wall_yellow():
     top = Image.merge("RGB", (n, n, n)).crop((0, int(1.5 * m), px, px))
     im.paste(top, (0, int(1.5 * m)))
     d.line([0, int(1.5 * m), px, int(1.5 * m)], fill=(200, 196, 186), width=3)
-    save(im, "wall_yellow.png")
+    save(im.transpose(Image.FLIP_TOP_BOTTOM), "wall_yellow.png")
 
 
 def tile_navy():

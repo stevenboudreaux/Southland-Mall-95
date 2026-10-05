@@ -201,14 +201,16 @@ func mat(name):
 					m.albedo_texture = tex("cd7/" + key + ".png")
 					m.roughness = 0.8
 				if key in ["tile_navy", "counter_front", "wall_yellow"]:
-					m.roughness = 0.25; m.metallic_specular = 0.6
+					# glazed tile: a soft sheen, not a mirror (the store has its own probe)
+					m.roughness = 0.45; m.metallic_specular = 0.5
 				elif key == "awning":
 					m.roughness = 0.3; m.metallic_specular = 0.7
 					m.emission_enabled = true; m.emission_texture = m.albedo_texture
 					m.emission = Color.WHITE; m.emission_energy_multiplier = 0.35
 					m.set_meta("e_day", 0.12); m.set_meta("e_night", 0.35)
 				elif key == "steel":
-					m.metallic = 0.85; m.roughness = 0.35
+					# brushed stainless: mostly what the baked light gives it, a little reflection
+					m.metallic = 0.4; m.roughness = 0.3; m.albedo_color = Color(1.1, 1.1, 1.12)
 				elif key == "troffer":
 					m.emission_enabled = true; m.emission_texture = m.albedo_texture
 					m.emission = Color.WHITE; m.emission_energy_multiplier = 2.5
@@ -218,7 +220,7 @@ func mat(name):
 					m.emission = Color.WHITE; m.emission_energy_multiplier = 1.4
 					m.set_meta("e_day", 1.4); m.set_meta("e_night", 1.6)
 				elif key == "floor":
-					m.roughness = 0.45; m.metallic_specular = 0.5
+					m.roughness = 0.55; m.metallic_specular = 0.45
 			elif name.begins_with("floorz_"):
 				# bake-time stand-in; the runtime swaps in the procedural floor shader
 				m.albedo_color = Color("#d4c4aa"); m.roughness = 0.14; m.metallic_specular = 0.6

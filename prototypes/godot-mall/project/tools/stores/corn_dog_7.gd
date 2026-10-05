@@ -87,6 +87,16 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 	var pl = P(a, t, n, DINE_U1, 0, 3.5)
 	var pr = P(a, t, n, DINE_U1 + 0.1, 0, 8.0)
 	b.obst(["rect", min(pl.x, pr.x), min(pl.z, pr.z), max(pl.x, pr.x), max(pl.z, pr.z)])
+	# the store's own reflection probe, so its glazed tile and steel reflect the shop and not the hall
+	var rp = ReflectionProbe.new()
+	var mid = P(a, t, n, (OPEN0 + OPEN1) * 0.5, CEIL * 0.5, DEPTH * 0.5)
+	rp.position = mid
+	rp.size = (t * (OPEN1 - OPEN0) + n * DEPTH).abs() + Vector3(0.2, CEIL + 0.1, 0.2)
+	rp.box_projection = true
+	rp.interior = true
+	rp.update_mode = ReflectionProbe.UPDATE_ONCE
+	rp.intensity = 0.8
+	b.light_root.add_child(rp)
 	# a soft light under the awning
 	var sl = b.add_spot(P(a, t, n, (OPEN0 + OPEN1) * 0.5, AWN_Y0 - 0.05, -0.5), Vector3.DOWN, 1.2, 5.0, 80.0, Color(1.0, 0.97, 0.88))
 	b.tag(sl, "", 0.6, 1.2)
