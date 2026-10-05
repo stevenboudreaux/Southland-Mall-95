@@ -1,7 +1,15 @@
 @tool
 extends EditorPlugin
+## The bake mode comes from the AUTOBAKE environment variable (cloud) or, when
+## the editor is opened from the Mac's Project Manager, from a one-shot file
+## res://.autobake holding "night", "day" or "warm" (deleted on pickup).
+var _mode := ""
 func _enter_tree():
-	if not OS.get_environment("AUTOBAKE"): return
+	_mode = OS.get_environment("AUTOBAKE")
+	if _mode == "" and FileAccess.file_exists("res://.autobake"):
+		_mode = FileAccess.get_file_as_string("res://.autobake").strip_edges()
+		DirAccess.remove_absolute(ProjectSettings.globalize_path("res://.autobake"))
+	if _mode == "": return
 	_run.call_deferred()
 func _find_buttons(n:Node, out:Array):
 	if n is Button: out.append(n)
@@ -17,7 +25,7 @@ func _run():
 		w += 1
 	await get_tree().create_timer(10.0).timeout
 	print("IMPORT SETTLED after ", w)
-	if OS.get_environment("AUTOBAKE") == "warm":
+	if _mode == "warm":
 		EditorInterface.save_scene()
 		await get_tree().create_timer(2.0).timeout
 		get_tree().quit()
@@ -25,7 +33,7 @@ func _run():
 	var root = EditorInterface.get_edited_scene_root()
 	var lm = root.find_child("LightmapGI", true, false)
 	# AUTOBAKE=day or night picks the lighting setup; anything else means night
-	var mode = OS.get_environment("AUTOBAKE")
+	var mode = _mode
 	if mode != "day":
 		mode = "night"
 	load("res://scripts/time_of_day.gd").apply(root, mode, false)
