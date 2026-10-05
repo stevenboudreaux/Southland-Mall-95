@@ -8,6 +8,10 @@ the court proof that came first is in `prototypes/godot-court/`.
 - Engine: Godot 4.7.2 (moved from 4.5 on Oct 5, 2026). The lightmap is baked on
   Steven's Mac in the editor (Ultra, ~12 min on its GPU; Medium ~1 min) instead of
   in the cloud (Medium, 43 min on software Vulkan). Export runs headless anywhere.
+- Lighting since 4.7: the 4.7 lightmapper lights the mall mostly from glowing
+  (emissive) surfaces, so the bake came out brighter than in 4.5. The Sears
+  hall (narrowest hall) washed out; its two meshes have their glow scaled to
+  80% (`HALL_GLOW` in build_mall.gd). Spot/omni energies barely move the bake.
 - Rebuild: `python3 project/tools/convert_map.py index.html` (map → layout_mall.json),
   `godot --headless --path project --script res://tools/build_mall.gd`, bake with
   the editor's Bake Lightmaps (or `addons/autobake`), export the Web preset.

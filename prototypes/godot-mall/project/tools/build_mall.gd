@@ -336,7 +336,7 @@ func build_hall(z):
 		while s0 < hi - 1.0:
 			var c = hall_P(z, 0, LANE_H - 0.01, s0)
 			disc_down(g, c, 0.16)
-			add_downlight(c, z.id)
+			add_downlight(c)
 			s0 += 4.0
 		return
 	var rise = hall_rise(vh)
@@ -351,7 +351,7 @@ func build_hall(z):
 			while s1 < hi - 0.8:
 				var c2 = hall_P(z, side * (vh + hw) * 0.5, LANE_H - 0.01, s1)
 				disc_down(g, c2, 0.17)
-				add_downlight(c2, z.id)
+				add_downlight(c2)
 				s1 += 4.5
 	var pts = arch_pts(vh, VAULT_SPRING, rise, 16)
 	var R = arch_R(vh, rise)
@@ -740,6 +740,12 @@ func build_court_flat(z):
 			obst([qx, qz, 0.55])
 
 # ------------------------------------------------------------------ lights
+## Since Godot 4.7 the lightmapper lights the mall mostly from glowing surfaces
+## (downlight discs at emission 8, the vault glow strip, store panels); a bake
+## with emission off drops the Sears hall from luma 189 to 94. The Sears hall
+## is the narrowest hall (10 m) and came out washed out (Steven, Oct 5), so
+## its meshes get their glow scaled down. Spot light energy barely matters.
+const HALL_GLOW = {"H1a": 0.8, "H1b": 0.8}
 func disc_down(group, c, rad):
 	var s = st(group, "downlight")
 	var seg = 12
@@ -748,21 +754,14 @@ func disc_down(group, c, rad):
 		var a1 = TAU * (i + 1) / seg
 		tri(s, c, c + Vector3(cos(a0), 0, sin(a0)) * rad, c + Vector3(cos(a1), 0, sin(a1)) * rad, Vector2(0.5, 0.5), Vector2(0, 0), Vector2(1, 0), Vector3.DOWN)
 
-## The Sears hall is 10 m wide (others 12 m) with the same lane rows, so it
-## carries ~16% more downlights per m2; at Ultra the white vault bounces that
-## into a washed-out hall (Steven, Oct 5). Dim its lanes and their bounce.
-const HALL_LIGHT = {"H1a": [1.1, 0.7], "H1b": [1.1, 0.7]}
-
-func add_downlight(c, zid = ""):
-	var lt = HALL_LIGHT.get(zid, [1.5, 1.0])
+func add_downlight(c):
 	var l = SpotLight3D.new()
 	l.position = c + Vector3(0, -0.05, 0)
 	l.rotation = Vector3(-PI / 2, 0, 0)
 	l.spot_angle = 58.0
 	l.spot_attenuation = 0.8
 	l.spot_range = 7.0
-	l.light_energy = lt[0]
-	l.light_indirect_energy = lt[1]
+	l.light_energy = 1.5
 	l.light_color = Color(1.0, 0.92, 0.80)
 	l.light_bake_mode = Light3D.BAKE_STATIC
 	light_root.add_child(l)
@@ -1480,7 +1479,11 @@ func build():
 			var s = acc[gname][mname]
 			s.index()
 			s.commit(am)
-			am.surface_set_material(am.get_surface_count() - 1, mat(mname))
+			var m = mat(mname)
+			if HALL_GLOW.has(gname) and m.emission_enabled:
+				m = m.duplicate()
+				m.emission_energy_multiplier *= HALL_GLOW[gname]
+			am.surface_set_material(am.get_surface_count() - 1, m)
 		var texel = TEXEL
 		if gname.ends_with("props") or gname == "lanterns":
 			texel = TEXEL * 0.6
