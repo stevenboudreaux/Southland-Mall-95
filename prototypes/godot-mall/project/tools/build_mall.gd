@@ -27,6 +27,8 @@ var cur_color = Color.WHITE
 var atlas_index = {}       # store id -> atlas cell
 var fronts = {}            # "x,z|x,z" of a store edge -> captured front (fronts.json)
 var fronts_px = 64.0       # atlas pixels per 2 m tile
+var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
+const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
 const ATLAS_COLS = 8
 const ATLAS_ROWS = 12
 
@@ -1136,6 +1138,14 @@ func front_art(g, e, a, b, n, t, Ln, sd, fa):
 		var c0 = a + t * ee
 		box(g, "white_pilaster", c0 + Vector3(0, y_bot * 0.5, 0) + n * 0.05, abs_size(t, pw, y_bot, 0.10, n))
 		box(g, "stone", c0 + Vector3(0, 0.3, 0) + n * 0.08, abs_size(t, pw + 0.04, 0.6, 0.16, n))
+	# the accuracy meter's badge (STOREFRONT-FIDELITY.md): a small plaque on the
+	# viewer's-left pier in the level's colour, so a walk shows what is sourced
+	if facade_levels.has(e.store):
+		var lv = clamp(facade_levels[e.store], 0, 4)
+		var pier_at = a + t * (Ln - pw * 0.5) if flip else a + t * (pw * 0.5)
+		cur_color = Color(LEVEL_COLORS[lv])
+		box(g, "vcolor", pier_at + Vector3(0, 1.45, 0) + n * 0.11, abs_size(t, 0.16, 0.16, 0.02, n))
+		cur_color = Color.WHITE
 	# reveals where a painted wall meets an opening
 	var tile_m = Ln / tiles
 	if not open_all:
@@ -1618,6 +1628,10 @@ func build():
 			var f = fj.fronts[key]
 			if f.has("uv"):
 				fronts[edge_key(f.a, f.b)] = f
+	if FileAccess.file_exists("res://facade_records.json"):
+		var fr = JSON.parse_string(FileAccess.get_file_as_string("res://facade_records.json"))
+		for sid in fr.stores:
+			facade_levels[sid] = int(fr.stores[sid].level)
 	for z in L.zones:
 		zones[z.id] = z
 	var ids = L.stores.keys()
