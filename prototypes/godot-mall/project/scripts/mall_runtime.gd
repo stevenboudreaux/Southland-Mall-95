@@ -229,7 +229,7 @@ func _set_emission(mat_name: String, e: float) -> void:
 func set_reflections(on: bool) -> void:
 	refl_on = on
 	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS if on else SubViewport.UPDATE_DISABLED
-	var st := strength * 1.5 if mode == "night" else strength * 0.7
+	var st := strength * 1.2 if mode == "night" else strength * 0.7
 	for m in floor_mats:
 		m.set_shader_parameter("strength", st if on else 0.0)
 

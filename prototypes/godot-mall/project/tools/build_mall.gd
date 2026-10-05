@@ -106,7 +106,7 @@ func mat(name):
 		"int_panel":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#fffaf2"); m.emission_energy_multiplier = 2.2
-			m.set_meta("e_day", 2.2); m.set_meta("e_night", 3.2)
+			m.set_meta("e_day", 2.2); m.set_meta("e_night", 2.4)
 		"vcolor":
 			m.vertex_color_use_as_albedo = true; m.roughness = 0.5
 		"vcolor_matte":
@@ -771,7 +771,7 @@ func build_court_flat(z):
 ## sun/sky changes move it by 1-2 points. The Sears hall is the narrowest hall
 ## (10 m) and came out washed out at Ultra (Steven, Oct 5), so its meshes get
 ## their glow scaled down, in both the day and the night setup.
-const HALL_GLOW = {"H1a": 0.8, "H1b": 0.8}
+const HALL_GLOW = {"H1a": 0.7, "H1b": 0.7}
 
 ## mat(mname), with its emission (and the per-setup e_day / e_night metadata
 ## read by scripts/time_of_day.gd) scaled by HALL_GLOW for the halls listed there.
@@ -1501,7 +1501,7 @@ func make_env(mode):
 	env.ambient_light_energy = 0.3 if mode == "day" else 0.12
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.05 if mode == "day" else 0.75
+	env.tonemap_exposure = 1.05 if mode == "day" else 0.7
 	env.tonemap_white = 6.0 if mode == "day" else 4.0
 	env.glow_enabled = true
 	env.glow_intensity = 0.35
