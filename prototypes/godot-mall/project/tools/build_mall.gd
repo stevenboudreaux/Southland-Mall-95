@@ -59,7 +59,7 @@ func mat(name):
 			m.emission_enabled = true; m.emission = Color("#ffc98a"); m.emission_energy_multiplier = 5.0
 		"ring_glow":
 			m.albedo_color = Color.WHITE
-			m.emission_enabled = true; m.emission = Color("#fff2dc"); m.emission_energy_multiplier = 3.5
+			m.emission_enabled = true; m.emission = Color("#fff2dc"); m.emission_energy_multiplier = 1.5
 		"black":
 			m.albedo_color = Color("#151313"); m.roughness = 0.35
 		"velvet":
@@ -83,7 +83,7 @@ func mat(name):
 		"vault_glow":
 			m.albedo_color = Color("#f3ead8"); m.roughness = 0.9
 			m.emission_enabled = true; m.emission = Color("#fff1d6"); m.emission_energy_multiplier = 1.0
-			m.set_meta("e_day", 0.55); m.set_meta("e_night", 1.0)
+			m.set_meta("e_day", 0.55); m.set_meta("e_night", 0.25)
 		"downlight":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#fff3df"); m.emission_energy_multiplier = 8.0
@@ -99,10 +99,12 @@ func mat(name):
 			m.albedo_texture = tex("int_atlas.png")
 			m.emission_enabled = true; m.emission_texture = m.albedo_texture
 			m.emission = Color.WHITE; m.emission_energy_multiplier = 0.3
+			m.set_meta("e_day", 0.3); m.set_meta("e_night", 0.55)
 			m.roughness = 0.8
 		"int_panel":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#fffaf2"); m.emission_energy_multiplier = 2.2
+			m.set_meta("e_day", 2.2); m.set_meta("e_night", 3.2)
 		"vcolor":
 			m.vertex_color_use_as_albedo = true; m.roughness = 0.5
 		"vcolor_matte":
@@ -152,7 +154,7 @@ func mat(name):
 		"cove_amber", "cove_cool", "cove_warm":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true
-			m.emission = {"cove_amber": Color("#FFC98A"), "cove_cool": Color("#F4F0FF"), "cove_warm": Color("#FFD9A8")}[name]
+			m.emission = {"cove_amber": Color("#FFC98A"), "cove_cool": Color("#DCE6FF"), "cove_warm": Color("#FFD9A8")}[name]
 			m.emission_energy_multiplier = 3.0
 			m.set_meta("e_day", 0.0); m.set_meta("e_night", 3.0)
 		"buff_tile":
@@ -535,10 +537,10 @@ func build_court(z):
 	tag(add_omni(P.call(0, COURT_SPRING, 0), 1.0, half * 2.5, Color(1.0, 0.95, 0.88)), "day")
 	# night: four key spots at the springing line, aimed down, so the floor
 	# gets broad overlapping pools instead of one hot centre
-	for qu in [-0.5, 0.5]:
-		for qs in [-0.25, 0.25]:
-			tag(add_spot(P.call(qu * half, COURT_SPRING - 0.2, qs * length), Vector3.DOWN, 2.5, 10.0, 60.0, Color("#FFE9C8")), "night")
-	var cove_col = {"shoe": Color("#FFC98A"), "sears": Color("#F4F0FF")}.get(z.style, Color("#FFD9A8"))
+	for qu in [-0.45, 0.45]:
+		for qs in [-0.33, 0.0, 0.33]:
+			tag(add_spot(P.call(qu * half, COURT_SPRING - 0.2, qs * length), Vector3.DOWN, 3.2, 12.0, 70.0, Color("#FFE9C8")), "night")
+	var cove_col = {"shoe": Color("#FFC98A"), "sears": Color("#DCE6FF")}.get(z.style, Color("#FFD9A8"))
 	var cove_mat = {"shoe": "cove_amber", "sears": "cove_cool"}.get(z.style, "cove_warm")
 	# walls
 	var sides = {}
@@ -779,7 +781,7 @@ func add_downlight(c):
 	l.light_color = Color(1.0, 0.92, 0.80)
 	l.light_bake_mode = Light3D.BAKE_STATIC
 	light_root.add_child(l)
-	tag(l, "", 1.5, 2.0)
+	tag(l, "", 1.5, 1.4)
 
 func add_omni(p, energy, rng, col, shadow = false):
 	var l = OmniLight3D.new()
@@ -1026,7 +1028,10 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		k2 += 1
 	cur_color = Color.WHITE
 	var sl = add_omni(a + t * Ln * 0.5 - n * min(1.5, deep * 0.4) + Vector3(0, OPEN_H - 0.4, 0), 0.45, max(deep + 1.0, 6.0), Color(1.0, 0.96, 0.9))
-	tag(sl, "", 0.45, 0.8)
+	tag(sl, "", 0.45, 1.2)
+	if Ln >= 2.0:
+		var spill_at = a + t * Ln * 0.5 - n * 0.4 + Vector3(0, OPEN_H - 0.15, 0)
+		tag(add_spot(spill_at, n * 0.9 + Vector3.DOWN * 1.0, 1.6, 7.0, 55.0, Color("#FFF1DC")), "night")
 	if sd.name.contains("CINEMA"):
 		cinema_front(g, a, n, t, Ln)
 
@@ -1457,11 +1462,11 @@ func make_env(mode):
 		psky.ground_bottom_color = Color("#7b766c")
 		psky.sky_energy_multiplier = 1.3
 	else:
-		psky.sky_top_color = Color("#05070F")
-		psky.sky_horizon_color = Color("#141A2E")
-		psky.ground_horizon_color = Color("#141A2E")
+		psky.sky_top_color = Color("#0B1530")
+		psky.sky_horizon_color = Color("#1B2747")
+		psky.ground_horizon_color = Color("#1B2747")
 		psky.ground_bottom_color = Color("#0A0A0C")
-		psky.sky_energy_multiplier = 0.15
+		psky.sky_energy_multiplier = 0.6
 		psky.sun_angle_max = 0.0
 	sky.sky_material = psky
 	env.background_mode = Environment.BG_SKY
@@ -1471,7 +1476,7 @@ func make_env(mode):
 	env.ambient_light_energy = 0.3 if mode == "day" else 0.12
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.05 if mode == "day" else 1.1
+	env.tonemap_exposure = 1.05 if mode == "day" else 0.85
 	env.tonemap_white = 6.0 if mode == "day" else 4.0
 	env.glow_enabled = true
 	env.glow_intensity = 0.35

@@ -216,7 +216,6 @@ func set_time(m: String) -> void:
 	mode = m
 	load("res://scripts/time_of_day.gd").apply(get_tree().current_scene, m)
 	# the ribbed vaults glow softly at night instead of reading as a lit ceiling
-	_set_emission("vault_glow", 0.3 if m == "night" else 0.55)
 	set_reflections(refl_on)
 
 func _set_emission(mat_name: String, e: float) -> void:
@@ -230,7 +229,7 @@ func _set_emission(mat_name: String, e: float) -> void:
 func set_reflections(on: bool) -> void:
 	refl_on = on
 	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS if on else SubViewport.UPDATE_DISABLED
-	var st := strength if mode == "night" else strength * 0.7
+	var st := strength * 1.5 if mode == "night" else strength * 0.7
 	for m in floor_mats:
 		m.set_shader_parameter("strength", st if on else 0.0)
 
