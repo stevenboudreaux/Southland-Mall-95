@@ -26,9 +26,17 @@ var refl_btn: Button
 var hint: Label
 var stick: Control
 var fps_t := 0.0
+var debug := false
 
 func _ready() -> void:
 	position = Vector3(33.0, 0, 0.0)
+	# the walkable grid comes from the layout file the mall was built from
+	if walk_rows.is_empty() and FileAccess.file_exists("res://layout_mall.json"):
+		var lay = JSON.parse_string(FileAccess.get_file_as_string("res://layout_mall.json"))
+		if lay is Dictionary:
+			walk_rows = PackedStringArray(lay.get("walk", []))
+			map_origin = Vector2(lay.origin[0], lay.origin[1])
+			map_scale = float(lay.scale)
 	cam = Camera3D.new()
 	cam.position = Vector3(0, EYE, 0)
 	cam.fov = 70.0
@@ -38,6 +46,7 @@ func _ready() -> void:
 	cam.current = true
 	_build_hud()
 	if OS.has_feature("web"):
+		debug = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('debug') || ''")) == "1"
 		var q = JavaScriptBridge.eval("new URLSearchParams(location.search).get('cam') || ''")
 		if q is String and q != "":
 			var v: PackedStringArray = q.split(",")
@@ -163,6 +172,8 @@ func _process(dt: float) -> void:
 	if fps_t > 0.5:
 		fps_t = 0.0
 		hud.text = "Houma Mall Rewind · Godot mall (1995)   %d fps" % Engine.get_frames_per_second()
+		if debug:
+			print("DBG pos=", position, " touch=", move_touch, " vec=", move_vec, " iv=", iv, " free_here=", _free(position.x, position.z), " rows=", walk_rows.size())
 
 func _try_move(d: Vector3) -> void:
 	var p := position + d

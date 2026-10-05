@@ -1337,7 +1337,7 @@ func build():
 	var player = load("res://scripts/player.gd").new()
 	player.name = "Player"
 	player.set("obstacles", obstacles)
-	player.set("walk_rows", L.walk)
+	player.set("walk_rows", PackedStringArray(L.walk))
 	player.set("map_origin", Vector2(L.origin[0], L.origin[1]))
 	player.set("map_scale", L.scale)
 	mall.add_child(player); player.owner = mall
