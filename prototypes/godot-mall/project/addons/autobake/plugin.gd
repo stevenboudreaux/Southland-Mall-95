@@ -33,11 +33,19 @@ func _run():
 	var root = EditorInterface.get_edited_scene_root()
 	var lm = root.find_child("LightmapGI", true, false)
 	# AUTOBAKE=day or night picks the lighting setup; anything else means night
+	# "fastnight" / "fastday": a Medium bake for quick looks (about 90 s on the
+	# Mac against ~13 min at Ultra); the scene keeps its own quality setting.
 	var mode = _mode
+	var fast = mode.begins_with("fast")
+	if fast:
+		mode = mode.substr(4)
 	if mode != "day":
 		mode = "night"
 	load("res://scripts/time_of_day.gd").apply(root, mode, false)
 	lm.light_data = null
+	var keep_quality = lm.quality
+	if fast:
+		lm.quality = LightmapGI.BAKE_QUALITY_MEDIUM
 	print("MODE ", mode)
 	EditorInterface.get_selection().clear()
 	EditorInterface.get_selection().add_node(lm)
@@ -66,6 +74,7 @@ func _run():
 		t += 1
 		if lm.light_data != null: break
 	print("LIGHTDATA ", lm.light_data, " after ", t)
+	lm.quality = keep_quality
 	EditorInterface.save_scene()
 	await get_tree().create_timer(1.0).timeout
 	get_tree().quit()

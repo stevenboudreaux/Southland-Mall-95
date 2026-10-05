@@ -1,0 +1,2855 @@
+{
+ "scale": 4,
+ "px_per_tile": 128,
+ "height_m": 4.6,
+ "fronts": {
+  "s1_0": {
+   "store": "s1",
+   "edge": 0,
+   "a": [
+    -40.0,
+    -96.0
+   ],
+   "b": [
+    30.0,
+    -96.0
+   ],
+   "name": "SEARS",
+   "tiles": 35,
+   "doors": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "flip": false,
+   "px": [
+    4480,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": true
+  },
+  "s40_1": {
+   "store": "s40",
+   "edge": 1,
+   "a": [
+    -70.0,
+    -86.0
+   ],
+   "b": [
+    -46.0,
+    -86.0
+   ],
+   "name": "SOUTHLAND CINEMA",
+   "tiles": 12,
+   "doors": [
+    5,
+    6
+   ],
+   "flip": true,
+   "px": [
+    1536,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.28173828125,
+    0.0,
+    0.46923828125,
+    0.146484375
+   ]
+  },
+  "s29ab_2": {
+   "store": "s29ab",
+   "edge": 2,
+   "a": [
+    -46.0,
+    -86.0
+   ],
+   "b": [
+    -36.0,
+    -86.0
+   ],
+   "name": "AMERICAN BANK",
+   "tiles": 5,
+   "doors": [],
+   "flip": true,
+   "px": [
+    640,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.0,
+    0.294921875,
+    0.078125,
+    0.44140625
+   ]
+  },
+  "s42_3": {
+   "store": "s42",
+   "edge": 3,
+   "a": [
+    22.0,
+    -86.0
+   ],
+   "b": [
+    36.0,
+    -86.0
+   ],
+   "name": "CUCOS BORDER CAFE",
+   "tiles": 7,
+   "doors": [
+    4,
+    5,
+    6
+   ],
+   "flip": true,
+   "px": [
+    896,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.87744140625,
+    0.0,
+    0.98681640625,
+    0.146484375
+   ]
+  },
+  "n8_4": {
+   "store": "n8",
+   "edge": 4,
+   "a": [
+    -10.0,
+    -86.0
+   ],
+   "b": [
+    -10.0,
+    -80.0
+   ],
+   "name": "SOLARIUM",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.94482421875,
+    0.4423828125,
+    0.99169921875,
+    0.5888671875
+   ]
+  },
+  "s28_5": {
+   "store": "s28",
+   "edge": 5,
+   "a": [
+    2.0,
+    -86.0
+   ],
+   "b": [
+    2.0,
+    -80.0
+   ],
+   "name": "DUNCAN SPORTS",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.31494140625,
+    0.58984375,
+    0.36181640625,
+    0.736328125
+   ]
+  },
+  "n9_6": {
+   "store": "n9",
+   "edge": 6,
+   "a": [
+    -10.0,
+    -80.0
+   ],
+   "b": [
+    -10.0,
+    -72.0
+   ],
+   "name": "RAVE",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.86474609375,
+    0.294921875,
+    0.92724609375,
+    0.44140625
+   ]
+  },
+  "s27_7": {
+   "store": "s27",
+   "edge": 7,
+   "a": [
+    2.0,
+    -80.0
+   ],
+   "b": [
+    2.0,
+    -72.0
+   ],
+   "name": "FOOTQUARTERS",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.927734375,
+    0.294921875,
+    0.990234375,
+    0.44140625
+   ]
+  },
+  "n10_8": {
+   "store": "n10",
+   "edge": 8,
+   "a": [
+    -10.0,
+    -72.0
+   ],
+   "b": [
+    -10.0,
+    -64.0
+   ],
+   "name": "LANE BRYANT",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.0,
+    0.4423828125,
+    0.0625,
+    0.5888671875
+   ]
+  },
+  "s26_9": {
+   "store": "s26",
+   "edge": 9,
+   "a": [
+    2.0,
+    -72.0
+   ],
+   "b": [
+    2.0,
+    -66.0
+   ],
+   "name": "LADY FOOT LOCKER",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.3623046875,
+    0.58984375,
+    0.4091796875,
+    0.736328125
+   ]
+  },
+  "n62_10": {
+   "store": "n62",
+   "edge": 10,
+   "a": [
+    2.0,
+    -66.0
+   ],
+   "b": [
+    2.0,
+    -62.0
+   ],
+   "name": "FELGER'S FOOTWEAR",
+   "tiles": 2,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": false,
+   "px": [
+    256,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.42626953125,
+    0.7373046875,
+    0.45751953125,
+    0.8837890625
+   ]
+  },
+  "s19_11": {
+   "store": "s19",
+   "edge": 11,
+   "a": [
+    -10.0,
+    -64.0
+   ],
+   "b": [
+    -10.0,
+    -58.0
+   ],
+   "name": "SOUND SHOP",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.40966796875,
+    0.58984375,
+    0.45654296875,
+    0.736328125
+   ]
+  },
+  "n63_12": {
+   "store": "n63",
+   "edge": 12,
+   "a": [
+    2.0,
+    -62.0
+   ],
+   "b": [
+    2.0,
+    -54.0
+   ],
+   "name": "",
+   "tiles": 4,
+   "doors": [],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": true,
+   "anchor": false,
+   "uv": [
+    0.06298828125,
+    0.4423828125,
+    0.12548828125,
+    0.5888671875
+   ]
+  },
+  "s18_13": {
+   "store": "s18",
+   "edge": 13,
+   "a": [
+    -10.0,
+    -58.0
+   ],
+   "b": [
+    -10.0,
+    -52.0
+   ],
+   "name": "KAY-BEE TOYS",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.45703125,
+    0.58984375,
+    0.50390625,
+    0.736328125
+   ]
+  },
+  "s24_14": {
+   "store": "s24",
+   "edge": 14,
+   "a": [
+    2.0,
+    -54.0
+   ],
+   "b": [
+    2.0,
+    -48.0
+   ],
+   "name": "PHILLY'S PIZZA",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.50439453125,
+    0.58984375,
+    0.55126953125,
+    0.736328125
+   ]
+  },
+  "s17_15": {
+   "store": "s17",
+   "edge": 15,
+   "a": [
+    -10.0,
+    -52.0
+   ],
+   "b": [
+    -10.0,
+    -40.0
+   ],
+   "name": "MILLER'S OUTPOST",
+   "tiles": 6,
+   "doors": [
+    2,
+    3
+   ],
+   "flip": true,
+   "px": [
+    768,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.2353515625,
+    0.1474609375,
+    0.3291015625,
+    0.2939453125
+   ]
+  },
+  "s24mc_16": {
+   "store": "s24mc",
+   "edge": 16,
+   "a": [
+    2.0,
+    -48.0
+   ],
+   "b": [
+    2.0,
+    -44.0
+   ],
+   "name": "MASTERCUTS",
+   "tiles": 2,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": false,
+   "px": [
+    256,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.4580078125,
+    0.7373046875,
+    0.4892578125,
+    0.8837890625
+   ]
+  },
+  "n65_17": {
+   "store": "n65",
+   "edge": 17,
+   "a": [
+    2.0,
+    -44.0
+   ],
+   "b": [
+    2.0,
+    -38.0
+   ],
+   "name": "FATHER & SON",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.5517578125,
+    0.58984375,
+    0.5986328125,
+    0.736328125
+   ]
+  },
+  "s16_18": {
+   "store": "s16",
+   "edge": 18,
+   "a": [
+    -10.0,
+    -40.0
+   ],
+   "b": [
+    -10.0,
+    -30.0
+   ],
+   "name": "JEAN NICOLE",
+   "tiles": 5,
+   "doors": [
+    2
+   ],
+   "flip": true,
+   "px": [
+    640,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.07861328125,
+    0.294921875,
+    0.15673828125,
+    0.44140625
+   ]
+  },
+  "s25_19": {
+   "store": "s25",
+   "edge": 19,
+   "a": [
+    2.0,
+    -38.0
+   ],
+   "b": [
+    2.0,
+    -18.0
+   ],
+   "name": "K&B",
+   "tiles": 10,
+   "doors": [
+    4,
+    5
+   ],
+   "flip": false,
+   "px": [
+    1280,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.4697265625,
+    0.0,
+    0.6259765625,
+    0.146484375
+   ]
+  },
+  "s15_20": {
+   "store": "s15",
+   "edge": 20,
+   "a": [
+    -10.0,
+    -30.0
+   ],
+   "b": [
+    -10.0,
+    -22.0
+   ],
+   "name": "KIDS MART",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.1259765625,
+    0.4423828125,
+    0.1884765625,
+    0.5888671875
+   ]
+  },
+  "s14_21": {
+   "store": "s14",
+   "edge": 21,
+   "a": [
+    -10.0,
+    -22.0
+   ],
+   "b": [
+    -10.0,
+    -14.0
+   ],
+   "name": "FOOTACTION USA",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.18896484375,
+    0.4423828125,
+    0.25146484375,
+    0.5888671875
+   ]
+  },
+  "s29_22": {
+   "store": "s29",
+   "edge": 22,
+   "a": [
+    2.0,
+    -18.0
+   ],
+   "b": [
+    2.0,
+    -10.0
+   ],
+   "name": "GORDON'S JEWELERS",
+   "tiles": 4,
+   "doors": [],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": true,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.251953125,
+    0.4423828125,
+    0.314453125,
+    0.5888671875
+   ]
+  },
+  "s13_23": {
+   "store": "s13",
+   "edge": 23,
+   "a": [
+    -10.0,
+    -14.0
+   ],
+   "b": [
+    -10.0,
+    22.0
+   ],
+   "name": "WOOLWORTH",
+   "tiles": 18,
+   "doors": [
+    8,
+    9
+   ],
+   "flip": true,
+   "px": [
+    2304,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.0,
+    0.0,
+    0.28125,
+    0.146484375
+   ]
+  },
+  "s29_24": {
+   "store": "s29",
+   "edge": 24,
+   "a": [
+    2.0,
+    -10.0
+   ],
+   "b": [
+    12.0,
+    -10.0
+   ],
+   "name": "GORDON'S JEWELERS",
+   "tiles": 5,
+   "doors": [],
+   "flip": false,
+   "px": [
+    640,
+    600
+   ],
+   "open": true,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.1572265625,
+    0.294921875,
+    0.2353515625,
+    0.44140625
+   ]
+  },
+  "s30_25": {
+   "store": "s30",
+   "edge": 25,
+   "a": [
+    12.0,
+    -10.0
+   ],
+   "b": [
+    12.0,
+    -6.0
+   ],
+   "name": "CLAIRE'S BOUTIQUES",
+   "tiles": 2,
+   "doors": [],
+   "flip": false,
+   "px": [
+    256,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.48974609375,
+    0.7373046875,
+    0.52099609375,
+    0.8837890625
+   ]
+  },
+  "s30_26": {
+   "store": "s30",
+   "edge": 26,
+   "a": [
+    12.0,
+    -6.0
+   ],
+   "b": [
+    20.0,
+    -6.0
+   ],
+   "name": "CLAIRE'S BOUTIQUES",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.31494140625,
+    0.4423828125,
+    0.37744140625,
+    0.5888671875
+   ]
+  },
+  "s31_27": {
+   "store": "s31",
+   "edge": 27,
+   "a": [
+    20.0,
+    -6.0
+   ],
+   "b": [
+    24.0,
+    -6.0
+   ],
+   "name": "MITCHELL'S FORMAL WEAR",
+   "tiles": 2,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": false,
+   "px": [
+    256,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.521484375,
+    0.7373046875,
+    0.552734375,
+    0.8837890625
+   ]
+  },
+  "s32_28": {
+   "store": "s32",
+   "edge": 28,
+   "a": [
+    24.0,
+    -6.0
+   ],
+   "b": [
+    30.0,
+    -6.0
+   ],
+   "name": "LASER COPIES",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.59912109375,
+    0.58984375,
+    0.64599609375,
+    0.736328125
+   ]
+  },
+  "s32b_29": {
+   "store": "s32b",
+   "edge": 29,
+   "a": [
+    30.0,
+    -6.0
+   ],
+   "b": [
+    36.0,
+    -6.0
+   ],
+   "name": "VISION PLAZA",
+   "tiles": 3,
+   "doors": [
+    2
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.646484375,
+    0.58984375,
+    0.693359375,
+    0.736328125
+   ]
+  },
+  "s35_30": {
+   "store": "s35",
+   "edge": 30,
+   "a": [
+    16.0,
+    6.0
+   ],
+   "b": [
+    22.0,
+    6.0
+   ],
+   "name": "TEE TAI'S",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.69384765625,
+    0.58984375,
+    0.74072265625,
+    0.736328125
+   ]
+  },
+  "s36_31": {
+   "store": "s36",
+   "edge": 31,
+   "a": [
+    22.0,
+    6.0
+   ],
+   "b": [
+    30.0,
+    6.0
+   ],
+   "name": "OPTICAL OUTLET",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.3779296875,
+    0.4423828125,
+    0.4404296875,
+    0.5888671875
+   ]
+  },
+  "s38_32": {
+   "store": "s38",
+   "edge": 32,
+   "a": [
+    30.0,
+    6.0
+   ],
+   "b": [
+    36.0,
+    6.0
+   ],
+   "name": "T.J.'S ONE HOUR PHOTO",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.7412109375,
+    0.58984375,
+    0.7880859375,
+    0.736328125
+   ]
+  },
+  "s33_33": {
+   "store": "s33",
+   "edge": 33,
+   "a": [
+    2.0,
+    10.0
+   ],
+   "b": [
+    10.0,
+    10.0
+   ],
+   "name": "FRANKS",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.44091796875,
+    0.4423828125,
+    0.50341796875,
+    0.5888671875
+   ]
+  },
+  "s34_34": {
+   "store": "s34",
+   "edge": 34,
+   "a": [
+    10.0,
+    10.0
+   ],
+   "b": [
+    16.0,
+    10.0
+   ],
+   "name": "ORANGE JULIUS",
+   "tiles": 3,
+   "doors": [],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.78857421875,
+    0.58984375,
+    0.83544921875,
+    0.736328125
+   ]
+  },
+  "s21_35": {
+   "store": "s21",
+   "edge": 35,
+   "a": [
+    2.0,
+    16.0
+   ],
+   "b": [
+    2.0,
+    26.0
+   ],
+   "name": "COACH HOUSE GIFTS",
+   "tiles": 5,
+   "doors": [
+    2
+   ],
+   "flip": false,
+   "px": [
+    640,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.23583984375,
+    0.294921875,
+    0.31396484375,
+    0.44140625
+   ]
+  },
+  "s10_36": {
+   "store": "s10",
+   "edge": 36,
+   "a": [
+    -10.0,
+    22.0
+   ],
+   "b": [
+    -10.0,
+    36.0
+   ],
+   "name": "LERNER SHOP",
+   "tiles": 7,
+   "doors": [
+    2,
+    3,
+    4
+   ],
+   "flip": true,
+   "px": [
+    896,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.12548828125,
+    0.1474609375,
+    0.23486328125,
+    0.2939453125
+   ]
+  },
+  "s21b_37": {
+   "store": "s21b",
+   "edge": 37,
+   "a": [
+    2.0,
+    26.0
+   ],
+   "b": [
+    2.0,
+    34.0
+   ],
+   "name": "RADIO SHACK",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.50390625,
+    0.4423828125,
+    0.56640625,
+    0.5888671875
+   ]
+  },
+  "s21c_38": {
+   "store": "s21c",
+   "edge": 38,
+   "a": [
+    2.0,
+    34.0
+   ],
+   "b": [
+    2.0,
+    38.0
+   ],
+   "name": "GENERAL NUTRITION CENTER",
+   "tiles": 2,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": false,
+   "px": [
+    256,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.55322265625,
+    0.7373046875,
+    0.58447265625,
+    0.8837890625
+   ]
+  },
+  "s8_39": {
+   "store": "s8",
+   "edge": 39,
+   "a": [
+    -10.0,
+    36.0
+   ],
+   "b": [
+    -10.0,
+    48.0
+   ],
+   "name": "GUMBALLS",
+   "tiles": 6,
+   "doors": [],
+   "flip": true,
+   "px": [
+    768,
+    600
+   ],
+   "open": true,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.32958984375,
+    0.1474609375,
+    0.42333984375,
+    0.2939453125
+   ]
+  },
+  "s21d_40": {
+   "store": "s21d",
+   "edge": 40,
+   "a": [
+    2.0,
+    38.0
+   ],
+   "b": [
+    2.0,
+    50.0
+   ],
+   "name": "THE AVENUE",
+   "tiles": 6,
+   "doors": [
+    2,
+    3
+   ],
+   "flip": false,
+   "px": [
+    768,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.423828125,
+    0.1474609375,
+    0.517578125,
+    0.2939453125
+   ]
+  },
+  "s50_41": {
+   "store": "s50",
+   "edge": 41,
+   "a": [
+    -138.0,
+    42.0
+   ],
+   "b": [
+    -136.0,
+    42.0
+   ],
+   "name": "THE LIMITED",
+   "tiles": 1,
+   "doors": [],
+   "flip": false,
+   "px": [
+    128,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.97802734375,
+    0.58984375,
+    0.99365234375,
+    0.736328125
+   ]
+  },
+  "s51_42": {
+   "store": "s51",
+   "edge": 42,
+   "a": [
+    -154.0,
+    44.0
+   ],
+   "b": [
+    -138.0,
+    44.0
+   ],
+   "name": "THE SHOE DEPT",
+   "tiles": 8,
+   "doors": [
+    3,
+    4
+   ],
+   "flip": false,
+   "px": [
+    1024,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.62646484375,
+    0.0,
+    0.75146484375,
+    0.146484375
+   ]
+  },
+  "s6_43": {
+   "store": "s6",
+   "edge": 43,
+   "a": [
+    -154.0,
+    44.0
+   ],
+   "b": [
+    -154.0,
+    68.0
+   ],
+   "name": "JCPENNEY",
+   "tiles": 12,
+   "doors": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "flip": true,
+   "px": [
+    1536,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": true
+  },
+  "s50_44": {
+   "store": "s50",
+   "edge": 44,
+   "a": [
+    -136.0,
+    44.0
+   ],
+   "b": [
+    -134.0,
+    44.0
+   ],
+   "name": "THE LIMITED",
+   "tiles": 1,
+   "doors": [],
+   "flip": false,
+   "px": [
+    128,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.68017578125,
+    0.7373046875,
+    0.69580078125,
+    0.8837890625
+   ]
+  },
+  "s50_45": {
+   "store": "s50",
+   "edge": 45,
+   "a": [
+    -134.0,
+    46.0
+   ],
+   "b": [
+    -132.0,
+    46.0
+   ],
+   "name": "THE LIMITED",
+   "tiles": 1,
+   "doors": [],
+   "flip": false,
+   "px": [
+    128,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.6962890625,
+    0.7373046875,
+    0.7119140625,
+    0.8837890625
+   ]
+  },
+  "s50_46": {
+   "store": "s50",
+   "edge": 46,
+   "a": [
+    -132.0,
+    48.0
+   ],
+   "b": [
+    -122.0,
+    48.0
+   ],
+   "name": "THE LIMITED",
+   "tiles": 5,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": false,
+   "px": [
+    640,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.314453125,
+    0.294921875,
+    0.392578125,
+    0.44140625
+   ]
+  },
+  "s49_47": {
+   "store": "s49",
+   "edge": 47,
+   "a": [
+    -122.0,
+    48.0
+   ],
+   "b": [
+    -110.0,
+    48.0
+   ],
+   "name": "CHAMPS SPORTS",
+   "tiles": 6,
+   "doors": [
+    2,
+    3
+   ],
+   "flip": false,
+   "px": [
+    768,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.51806640625,
+    0.1474609375,
+    0.61181640625,
+    0.2939453125
+   ]
+  },
+  "s48_48": {
+   "store": "s48",
+   "edge": 48,
+   "a": [
+    -110.0,
+    48.0
+   ],
+   "b": [
+    -102.0,
+    48.0
+   ],
+   "name": "B. DALTON BOOKSELLER",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.56689453125,
+    0.4423828125,
+    0.62939453125,
+    0.5888671875
+   ]
+  },
+  "s47_49": {
+   "store": "s47",
+   "edge": 49,
+   "a": [
+    -102.0,
+    48.0
+   ],
+   "b": [
+    -94.0,
+    48.0
+   ],
+   "name": "MERRY-GO-ROUND",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.6298828125,
+    0.4423828125,
+    0.6923828125,
+    0.5888671875
+   ]
+  },
+  "s46_50": {
+   "store": "s46",
+   "edge": 50,
+   "a": [
+    -94.0,
+    48.0
+   ],
+   "b": [
+    -86.0,
+    48.0
+   ],
+   "name": "",
+   "tiles": 4,
+   "doors": [],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": true,
+   "anchor": false,
+   "uv": [
+    0.69287109375,
+    0.4423828125,
+    0.75537109375,
+    0.5888671875
+   ]
+  },
+  "s45_51": {
+   "store": "s45",
+   "edge": 51,
+   "a": [
+    -86.0,
+    48.0
+   ],
+   "b": [
+    -80.0,
+    48.0
+   ],
+   "name": "BAKERS",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.8359375,
+    0.58984375,
+    0.8828125,
+    0.736328125
+   ]
+  },
+  "n33_52": {
+   "store": "n33",
+   "edge": 52,
+   "a": [
+    -80.0,
+    48.0
+   ],
+   "b": [
+    -74.0,
+    48.0
+   ],
+   "name": "JW",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.88330078125,
+    0.58984375,
+    0.93017578125,
+    0.736328125
+   ]
+  },
+  "n33b_53": {
+   "store": "n33b",
+   "edge": 53,
+   "a": [
+    -74.0,
+    48.0
+   ],
+   "b": [
+    -68.0,
+    48.0
+   ],
+   "name": "5-7-9",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.9306640625,
+    0.58984375,
+    0.9775390625,
+    0.736328125
+   ]
+  },
+  "n34_54": {
+   "store": "n34",
+   "edge": 54,
+   "a": [
+    -68.0,
+    48.0
+   ],
+   "b": [
+    -62.0,
+    48.0
+   ],
+   "name": "FOOT LOCKER",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.0,
+    0.7373046875,
+    0.046875,
+    0.8837890625
+   ]
+  },
+  "n35_55": {
+   "store": "n35",
+   "edge": 55,
+   "a": [
+    -62.0,
+    48.0
+   ],
+   "b": [
+    -50.0,
+    48.0
+   ],
+   "name": "GADZOOKS",
+   "tiles": 6,
+   "doors": [
+    2,
+    3
+   ],
+   "flip": false,
+   "px": [
+    768,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.6123046875,
+    0.1474609375,
+    0.7060546875,
+    0.2939453125
+   ]
+  },
+  "n36_56": {
+   "store": "n36",
+   "edge": 56,
+   "a": [
+    -50.0,
+    48.0
+   ],
+   "b": [
+    -38.0,
+    48.0
+   ],
+   "name": "LION'S SHARE RESTAURANT",
+   "tiles": 6,
+   "doors": [
+    2,
+    3
+   ],
+   "flip": false,
+   "px": [
+    768,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.70654296875,
+    0.1474609375,
+    0.80029296875,
+    0.2939453125
+   ]
+  },
+  "s44_57": {
+   "store": "s44",
+   "edge": 57,
+   "a": [
+    -38.0,
+    48.0
+   ],
+   "b": [
+    -32.0,
+    48.0
+   ],
+   "name": "WICKS 'N' STICKS",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.04736328125,
+    0.7373046875,
+    0.09423828125,
+    0.8837890625
+   ]
+  },
+  "smuopv1vy0_58": {
+   "store": "smuopv1vy0",
+   "edge": 58,
+   "a": [
+    -32.0,
+    48.0
+   ],
+   "b": [
+    -26.0,
+    48.0
+   ],
+   "name": "GREAT AMERICAN COOKIE CO",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.0947265625,
+    0.7373046875,
+    0.1416015625,
+    0.8837890625
+   ]
+  },
+  "s8b_59": {
+   "store": "s8b",
+   "edge": 59,
+   "a": [
+    -26.0,
+    48.0
+   ],
+   "b": [
+    -20.0,
+    48.0
+   ],
+   "name": "SPORTS AVENUE",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.14208984375,
+    0.7373046875,
+    0.18896484375,
+    0.8837890625
+   ]
+  },
+  "s8_60": {
+   "store": "s8",
+   "edge": 60,
+   "a": [
+    -20.0,
+    48.0
+   ],
+   "b": [
+    -10.0,
+    48.0
+   ],
+   "name": "GUMBALLS",
+   "tiles": 5,
+   "doors": [],
+   "flip": false,
+   "px": [
+    640,
+    600
+   ],
+   "open": true,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.39306640625,
+    0.294921875,
+    0.47119140625,
+    0.44140625
+   ]
+  },
+  "s4_61": {
+   "store": "s4",
+   "edge": 61,
+   "a": [
+    2.0,
+    50.0
+   ],
+   "b": [
+    2.0,
+    66.0
+   ],
+   "name": "PAYLESS SHOES",
+   "tiles": 8,
+   "doors": [
+    3,
+    4
+   ],
+   "flip": false,
+   "px": [
+    1024,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.751953125,
+    0.0,
+    0.876953125,
+    0.146484375
+   ]
+  },
+  "n39b_62": {
+   "store": "n39b",
+   "edge": 62,
+   "a": [
+    -130.0,
+    60.0
+   ],
+   "b": [
+    -124.0,
+    60.0
+   ],
+   "name": "BABBAGE'S",
+   "tiles": 3,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.189453125,
+    0.7373046875,
+    0.236328125,
+    0.8837890625
+   ]
+  },
+  "n42_63": {
+   "store": "n42",
+   "edge": 63,
+   "a": [
+    -124.0,
+    60.0
+   ],
+   "b": [
+    -118.0,
+    60.0
+   ],
+   "name": "COUNTRY FAIR",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.23681640625,
+    0.7373046875,
+    0.28369140625,
+    0.8837890625
+   ]
+  },
+  "s52_64": {
+   "store": "s52",
+   "edge": 64,
+   "a": [
+    -118.0,
+    60.0
+   ],
+   "b": [
+    -110.0,
+    60.0
+   ],
+   "name": "BLOCKBUSTER MUSIC",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.755859375,
+    0.4423828125,
+    0.818359375,
+    0.5888671875
+   ]
+  },
+  "s52b_65": {
+   "store": "s52b",
+   "edge": 65,
+   "a": [
+    -110.0,
+    60.0
+   ],
+   "b": [
+    -102.0,
+    60.0
+   ],
+   "name": "POCKET CHANGE",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.81884765625,
+    0.4423828125,
+    0.88134765625,
+    0.5888671875
+   ]
+  },
+  "s64_66": {
+   "store": "s64",
+   "edge": 66,
+   "a": [
+    -102.0,
+    60.0
+   ],
+   "b": [
+    -94.0,
+    60.0
+   ],
+   "name": "CHICK-FIL-A",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.8818359375,
+    0.4423828125,
+    0.9443359375,
+    0.5888671875
+   ]
+  },
+  "n46_67": {
+   "store": "n46",
+   "edge": 67,
+   "a": [
+    -94.0,
+    60.0
+   ],
+   "b": [
+    -86.0,
+    60.0
+   ],
+   "name": "COUNTY SEAT",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.0,
+    0.58984375,
+    0.0625,
+    0.736328125
+   ]
+  },
+  "s63_68": {
+   "store": "s63",
+   "edge": 68,
+   "a": [
+    -86.0,
+    60.0
+   ],
+   "b": [
+    -74.0,
+    60.0
+   ],
+   "name": "",
+   "tiles": 6,
+   "doors": [],
+   "flip": true,
+   "px": [
+    768,
+    600
+   ],
+   "open": false,
+   "vacant": true,
+   "anchor": false,
+   "uv": [
+    0.80078125,
+    0.1474609375,
+    0.89453125,
+    0.2939453125
+   ]
+  },
+  "s62_69": {
+   "store": "s62",
+   "edge": 69,
+   "a": [
+    -74.0,
+    60.0
+   ],
+   "b": [
+    -68.0,
+    60.0
+   ],
+   "name": "GOLDEN CHAIN GANG",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.2841796875,
+    0.7373046875,
+    0.3310546875,
+    0.8837890625
+   ]
+  },
+  "s61_70": {
+   "store": "s61",
+   "edge": 70,
+   "a": [
+    -68.0,
+    60.0
+   ],
+   "b": [
+    -58.0,
+    60.0
+   ],
+   "name": "CONCEPTS",
+   "tiles": 5,
+   "doors": [
+    2
+   ],
+   "flip": true,
+   "px": [
+    640,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.4716796875,
+    0.294921875,
+    0.5498046875,
+    0.44140625
+   ]
+  },
+  "s60_71": {
+   "store": "s60",
+   "edge": 71,
+   "a": [
+    -58.0,
+    60.0
+   ],
+   "b": [
+    -50.0,
+    60.0
+   ],
+   "name": "REGIS HAIRSTYLISTS",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.06298828125,
+    0.58984375,
+    0.12548828125,
+    0.736328125
+   ]
+  },
+  "s59_72": {
+   "store": "s59",
+   "edge": 72,
+   "a": [
+    -48.0,
+    60.0
+   ],
+   "b": [
+    -44.0,
+    60.0
+   ],
+   "name": "SPECIAL TEES",
+   "tiles": 2,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": true,
+   "px": [
+    256,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.5849609375,
+    0.7373046875,
+    0.6162109375,
+    0.8837890625
+   ]
+  },
+  "s58_73": {
+   "store": "s58",
+   "edge": 73,
+   "a": [
+    -44.0,
+    60.0
+   ],
+   "b": [
+    -40.0,
+    60.0
+   ],
+   "name": "NATURALIZER",
+   "tiles": 2,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": true,
+   "px": [
+    256,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.61669921875,
+    0.7373046875,
+    0.64794921875,
+    0.8837890625
+   ]
+  },
+  "n56_74": {
+   "store": "n56",
+   "edge": 74,
+   "a": [
+    -40.0,
+    60.0
+   ],
+   "b": [
+    -36.0,
+    60.0
+   ],
+   "name": "AFTERTHOUGHTS",
+   "tiles": 2,
+   "doors": [
+    0,
+    1
+   ],
+   "flip": true,
+   "px": [
+    256,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.6484375,
+    0.7373046875,
+    0.6796875,
+    0.8837890625
+   ]
+  },
+  "s57_75": {
+   "store": "s57",
+   "edge": 75,
+   "a": [
+    -36.0,
+    60.0
+   ],
+   "b": [
+    -20.0,
+    60.0
+   ],
+   "name": "KARMELKORN",
+   "tiles": 8,
+   "doors": [],
+   "flip": true,
+   "px": [
+    1024,
+    600
+   ],
+   "open": true,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.0,
+    0.1474609375,
+    0.125,
+    0.2939453125
+   ]
+  },
+  "n39b_76": {
+   "store": "n39b",
+   "edge": 76,
+   "a": [
+    -132.0,
+    62.0
+   ],
+   "b": [
+    -130.0,
+    62.0
+   ],
+   "name": "BABBAGE'S",
+   "tiles": 1,
+   "doors": [],
+   "flip": true,
+   "px": [
+    128,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.71240234375,
+    0.7373046875,
+    0.72802734375,
+    0.8837890625
+   ]
+  },
+  "s57_77": {
+   "store": "s57",
+   "edge": 77,
+   "a": [
+    -20.0,
+    60.0
+   ],
+   "b": [
+    -20.0,
+    70.0
+   ],
+   "name": "KARMELKORN",
+   "tiles": 5,
+   "doors": [],
+   "flip": true,
+   "px": [
+    640,
+    600
+   ],
+   "open": true,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.55029296875,
+    0.294921875,
+    0.62841796875,
+    0.44140625
+   ]
+  },
+  "n39_78": {
+   "store": "n39",
+   "edge": 78,
+   "a": [
+    -134.0,
+    64.0
+   ],
+   "b": [
+    -132.0,
+    64.0
+   ],
+   "name": "GOLD 'N' GIFTS UNLIMITED",
+   "tiles": 1,
+   "doors": [],
+   "flip": true,
+   "px": [
+    128,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.728515625,
+    0.7373046875,
+    0.744140625,
+    0.8837890625
+   ]
+  },
+  "n39_79": {
+   "store": "n39",
+   "edge": 79,
+   "a": [
+    -136.0,
+    66.0
+   ],
+   "b": [
+    -134.0,
+    66.0
+   ],
+   "name": "GOLD 'N' GIFTS UNLIMITED",
+   "tiles": 1,
+   "doors": [],
+   "flip": true,
+   "px": [
+    128,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.74462890625,
+    0.7373046875,
+    0.76025390625,
+    0.8837890625
+   ]
+  },
+  "n39_80": {
+   "store": "n39",
+   "edge": 80,
+   "a": [
+    -134.0,
+    64.0
+   ],
+   "b": [
+    -134.0,
+    66.0
+   ],
+   "name": "GOLD 'N' GIFTS UNLIMITED",
+   "tiles": 1,
+   "doors": [],
+   "flip": false,
+   "px": [
+    128,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.7607421875,
+    0.7373046875,
+    0.7763671875,
+    0.8837890625
+   ]
+  },
+  "s7_81": {
+   "store": "s7",
+   "edge": 81,
+   "a": [
+    -154.0,
+    68.0
+   ],
+   "b": [
+    -146.0,
+    68.0
+   ],
+   "name": "ZALES",
+   "tiles": 4,
+   "doors": [],
+   "flip": true,
+   "px": [
+    512,
+    600
+   ],
+   "open": true,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.1259765625,
+    0.58984375,
+    0.1884765625,
+    0.736328125
+   ]
+  },
+  "n39_82": {
+   "store": "n39",
+   "edge": 82,
+   "a": [
+    -136.0,
+    66.0
+   ],
+   "b": [
+    -136.0,
+    68.0
+   ],
+   "name": "GOLD 'N' GIFTS UNLIMITED",
+   "tiles": 1,
+   "doors": [],
+   "flip": false,
+   "px": [
+    128,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.77685546875,
+    0.7373046875,
+    0.79248046875,
+    0.8837890625
+   ]
+  },
+  "s20_83": {
+   "store": "s20",
+   "edge": 83,
+   "a": [
+    2.0,
+    66.0
+   ],
+   "b": [
+    2.0,
+    74.0
+   ],
+   "name": "SAADI'S",
+   "tiles": 4,
+   "doors": [
+    1,
+    2
+   ],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.18896484375,
+    0.58984375,
+    0.25146484375,
+    0.736328125
+   ]
+  },
+  "s7_84": {
+   "store": "s7",
+   "edge": 84,
+   "a": [
+    -146.0,
+    68.0
+   ],
+   "b": [
+    -146.0,
+    78.0
+   ],
+   "name": "ZALES",
+   "tiles": 5,
+   "doors": [],
+   "flip": true,
+   "px": [
+    640,
+    600
+   ],
+   "open": true,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.62890625,
+    0.294921875,
+    0.70703125,
+    0.44140625
+   ]
+  },
+  "s54_85": {
+   "store": "s54",
+   "edge": 85,
+   "a": [
+    -138.0,
+    68.0
+   ],
+   "b": [
+    -138.0,
+    80.0
+   ],
+   "name": "CORN DOG 7",
+   "tiles": 6,
+   "doors": [
+    2,
+    3
+   ],
+   "flip": false,
+   "px": [
+    768,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.89501953125,
+    0.1474609375,
+    0.98876953125,
+    0.2939453125
+   ]
+  },
+  "s57b_86": {
+   "store": "s57b",
+   "edge": 86,
+   "a": [
+    -20.0,
+    74.0
+   ],
+   "b": [
+    -10.0,
+    74.0
+   ],
+   "name": "GRYDER'S",
+   "tiles": 5,
+   "doors": [],
+   "flip": true,
+   "px": [
+    640,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.70751953125,
+    0.294921875,
+    0.78564453125,
+    0.44140625
+   ]
+  },
+  "s57b_87": {
+   "store": "s57b",
+   "edge": 87,
+   "a": [
+    -10.0,
+    74.0
+   ],
+   "b": [
+    -10.0,
+    80.0
+   ],
+   "name": "GRYDER'S",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": true,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.33154296875,
+    0.7373046875,
+    0.37841796875,
+    0.8837890625
+   ]
+  },
+  "s3_88": {
+   "store": "s3",
+   "edge": 88,
+   "a": [
+    2.0,
+    74.0
+   ],
+   "b": [
+    2.0,
+    80.0
+   ],
+   "name": "ATHLETE'S FOOT",
+   "tiles": 3,
+   "doors": [
+    1
+   ],
+   "flip": false,
+   "px": [
+    384,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.37890625,
+    0.7373046875,
+    0.42578125,
+    0.8837890625
+   ]
+  },
+  "s7b_89": {
+   "store": "s7b",
+   "edge": 89,
+   "a": [
+    -146.0,
+    78.0
+   ],
+   "b": [
+    -146.0,
+    88.0
+   ],
+   "name": "TERREBONNE GENERAL OUTREACH",
+   "tiles": 5,
+   "doors": [
+    2
+   ],
+   "flip": true,
+   "px": [
+    640,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.7861328125,
+    0.294921875,
+    0.8642578125,
+    0.44140625
+   ]
+  },
+  "s2_90": {
+   "store": "s2",
+   "edge": 90,
+   "a": [
+    -10.0,
+    80.0
+   ],
+   "b": [
+    2.0,
+    80.0
+   ],
+   "name": "DILLARD'S",
+   "tiles": 6,
+   "doors": [
+    1,
+    2,
+    3,
+    4
+   ],
+   "flip": true,
+   "px": [
+    768,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": true
+  },
+  "s56_91": {
+   "store": "s56",
+   "edge": 91,
+   "a": [
+    -138.0,
+    80.0
+   ],
+   "b": [
+    -138.0,
+    88.0
+   ],
+   "name": "WESLEY AUSTIN",
+   "tiles": 4,
+   "doors": [],
+   "flip": false,
+   "px": [
+    512,
+    600
+   ],
+   "open": false,
+   "vacant": false,
+   "anchor": false,
+   "uv": [
+    0.251953125,
+    0.58984375,
+    0.314453125,
+    0.736328125
+   ]
+  }
+ },
+ "atlas": {
+  "file": "tex/fronts_atlas.png",
+  "px": [
+   4096,
+   2048
+  ],
+  "px_per_tile": 64
+ }
+}

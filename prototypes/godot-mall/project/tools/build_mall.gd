@@ -25,6 +25,8 @@ var fx_obstacles = []     # fixtures (benches, planters, trash cans): only block
 var fx = false            # while true, geometry goes to the switchable "fixtures" mesh
 var cur_color = Color.WHITE
 var atlas_index = {}       # store id -> atlas cell
+var fronts = {}            # "x,z|x,z" of a store edge -> captured front (fronts.json)
+var fronts_px = 64.0       # atlas pixels per 2 m tile
 const ATLAS_COLS = 8
 const ATLAS_ROWS = 12
 
@@ -103,6 +105,15 @@ func mat(name):
 			m.emission = Color.WHITE; m.emission_energy_multiplier = 0.3
 			m.set_meta("e_day", 0.3); m.set_meta("e_night", 0.55)
 			m.roughness = 0.8
+		"front_art":
+			# the live game's storefront paintings (tools/capture_fronts.py), lit
+			# a little from within so the signs read at night
+			m.albedo_texture = tex("fronts_atlas.png")
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture
+			m.emission = Color.WHITE; m.emission_energy_multiplier = 0.45
+			m.set_meta("e_day", 0.15); m.set_meta("e_night", 0.45)
+			m.roughness = 0.85
 		"int_panel":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#fffaf2"); m.emission_energy_multiplier = 2.2
@@ -950,6 +961,10 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 	if sd.anchor and ANCHOR_LOOK.has(sd.name):
 		anchor_front(g, e, a, b, n, t, Ln, sd, ANCHOR_LOOK[sd.name])
 		return
+	var fa = fronts.get(edge_key(e.a, e.b))
+	if fa != null and not inner_call:
+		front_art(g, e, a, b, n, t, Ln, sd, fa)
+		return
 	var pil = 0.4 if Ln > 2.5 else 0.25
 	var anchor = sd.anchor
 	var deep = clamp(float(e.depth), 3.0, 14.0 if anchor else 9.0)
@@ -1014,7 +1029,16 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 				var mp = a + t * (s0 + (s1 - s0) * k / cnt)
 				box(g, "bronze", mp + Vector3(0, (OPEN_H + 0.4) * 0.5, 0), abs_size(t, 0.06, OPEN_H - 0.4, 0.1, n))
 	box(g, "bronze", mid + Vector3(0, OPEN_H - 0.04, 0), abs_size(t, width, 0.08, 0.12, n))
-	# interior
+	interior(g, e, a, n, t, Ln, sd, p0, p1, width, deep)
+	if sd.name.contains("CINEMA"):
+		cinema_front(g, a, n, t, Ln)
+
+func edge_key(pa, pb):
+	return "%.1f,%.1f|%.1f,%.1f" % [pa[0], pa[1], pb[0], pb[1]]
+
+## The store behind a frontage: back wall and side walls from the interior
+## atlas, floor, ceiling with lit panels, merchandise blocks, and its lights.
+func interior(g, e, a, n, t, Ln, sd, p0, p1, width, deep):
 	var back = -n * deep
 	var cell = atlas_index.get(e.store, 0)
 	var cu = float(cell % ATLAS_COLS) / ATLAS_COLS
@@ -1057,8 +1081,79 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 	if Ln >= 2.0:
 		var spill_at = a + t * Ln * 0.5 - n * 0.4 + Vector3(0, OPEN_H - 0.15, 0)
 		tag(add_spot(spill_at, n * 0.9 + Vector3.DOWN * 1.0, 1.6, 7.0, 55.0, Color("#FFF1DC")), "night")
-	if sd.name.contains("CINEMA"):
-		cinema_front(g, a, n, t, Ln)
+
+## A storefront painted by the live game (Phase 4, tools/capture_fronts.py):
+## the painting covers the frontage floor to lane ceiling; its fascia band
+## (rows 17..56 of 150 in the live game's drawing) stands 12 cm proud with
+## returns; the end piers are real; door tiles are open onto the 3D interior
+## with reveals, and an open front shows the whole interior under the fascia.
+## Anchors keep their own 3D fronts. The picture is drawn as seen from the
+## hall, so on an edge that runs right-to-left for that viewer it is mirrored.
+const FRONT_ROWS = 150.0
+const FASCIA_TOP_PX = 17.0
+const FASCIA_BOT_PX = 56.0
+func front_art(g, e, a, b, n, t, Ln, sd, fa):
+	var uv = fa.uv
+	var tiles = int(fa.tiles)
+	var flip = bool(fa.flip)
+	var H = LANE_H
+	var y_top = H * (1.0 - FASCIA_TOP_PX / FRONT_ROWS)
+	var y_bot = H * (1.0 - FASCIA_BOT_PX / FRONT_ROWS)
+	var tu = func(f):   # fraction along the edge -> atlas u
+		return uv[0] + (uv[2] - uv[0]) * ((1.0 - f) if flip else f)
+	var tv = func(y):   # height -> atlas v
+		return uv[1] + (uv[3] - uv[1]) * (1.0 - y / H)
+	var strip = func(off, f0, f1, y0, y1):
+		var q0 = a + t * (f0 * Ln) + off
+		var q1 = a + t * (f1 * Ln) + off
+		quad(g, "front_art", [q0 + Vector3(0, y0, 0), q1 + Vector3(0, y0, 0), q1 + Vector3(0, y1, 0), q0 + Vector3(0, y1, 0)], n,
+			[Vector2(tu.call(f0), tv.call(y0)), Vector2(tu.call(f1), tv.call(y0)), Vector2(tu.call(f1), tv.call(y1)), Vector2(tu.call(f0), tv.call(y1))])
+	var doors = []
+	for d in fa.doors:
+		doors.append(int(d))
+	var open_all = bool(fa.open) or (bool(sd.open) and doors.is_empty())
+	# wall picture tile by tile: door tiles (or an open front) are open up to the fascia
+	for k in tiles:
+		var f0 = float(k) / tiles
+		var f1 = float(k + 1) / tiles
+		if open_all or k in doors:
+			strip.call(Vector3.ZERO, f0, f1, y_bot, H)
+		else:
+			strip.call(Vector3.ZERO, f0, f1, 0.0, H)
+	# the fascia band stands proud, with returns
+	var fd = 0.12
+	strip.call(n * fd, 0.0, 1.0, y_bot, y_top)
+	var fb = a + Vector3(0, y_bot, 0)
+	var ft = a + Vector3(0, y_top, 0)
+	var fh = Vector3(0, y_top - y_bot, 0)
+	quad(g, "bulkhead", [fb, fb + n * fd, fb + t * Ln + n * fd, fb + t * Ln], Vector3.DOWN)
+	quad(g, "bulkhead", [ft + t * Ln, ft + t * Ln + n * fd, ft + n * fd, ft], Vector3.UP)
+	quad(g, "bulkhead", [fb, fb + fh, fb + fh + n * fd, fb + n * fd], -t)
+	quad(g, "bulkhead", [fb + t * Ln + n * fd, fb + t * Ln + fh + n * fd, fb + t * Ln + fh, fb + t * Ln], t)
+	# end piers over the picture's own (8 px = half a metre at the live scale)
+	var pw = min(0.5, Ln * 0.2)
+	for ee in [pw * 0.5, Ln - pw * 0.5]:
+		var c0 = a + t * ee
+		box(g, "white_pilaster", c0 + Vector3(0, y_bot * 0.5, 0) + n * 0.05, abs_size(t, pw, y_bot, 0.10, n))
+		box(g, "stone", c0 + Vector3(0, 0.3, 0) + n * 0.08, abs_size(t, pw + 0.04, 0.6, 0.16, n))
+	# reveals where a painted wall meets an opening
+	var tile_m = Ln / tiles
+	if not open_all:
+		for k in doors:
+			for side in [[k, 1.0], [k + 1, -1.0]]:
+				var kk = side[0]
+				var neighbour_open = kk - 1 in doors if side[1] > 0 else kk in doors
+				if kk <= 0 or kk >= tiles or neighbour_open:
+					continue
+				var cc = a + t * (kk * tile_m) - n * 0.2 + Vector3(0, y_bot * 0.5, 0)
+				box(g, "cream", cc, abs_size(t, 0.06, y_bot, 0.4, n))
+	# the interior behind the opening
+	if sd.vacant:
+		return
+	var deep = clamp(float(e.depth), 3.0, 9.0)
+	var in0 = pw
+	var in1 = Ln - pw
+	interior(g, e, a, n, t, Ln, sd, a + t * in0, a + t * in1, in1 - in0, deep)
 
 func kb_wall(g, a, b, n, t):
 	var Lw = a.distance_to(b)
@@ -1516,6 +1611,13 @@ func make_env(mode):
 func build():
 	seed(1995)
 	L = JSON.parse_string(FileAccess.get_file_as_string("res://layout_mall.json"))
+	if FileAccess.file_exists("res://fronts.json"):
+		var fj = JSON.parse_string(FileAccess.get_file_as_string("res://fronts.json"))
+		fronts_px = float(fj.atlas.px_per_tile)
+		for key in fj.fronts:
+			var f = fj.fronts[key]
+			if f.has("uv"):
+				fronts[edge_key(f.a, f.b)] = f
 	for z in L.zones:
 		zones[z.id] = z
 	var ids = L.stores.keys()
