@@ -197,7 +197,13 @@ func mat(name):
 				var key = name.substr(4)
 				if key == "soffit":
 					m.albedo_color = Color("#f4f2ec"); m.roughness = 0.9
-				else:
+				elif key == "glass":
+					# clear interior glass (food cases, the kitchen partition): barely there, a faint sheen
+					m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+					m.albedo_color = Color(0.9, 0.95, 0.95, 0.06)
+					m.roughness = 0.35; m.metallic_specular = 0.1
+					m.cull_mode = BaseMaterial3D.CULL_DISABLED
+				elif key != "glass":
 					m.albedo_texture = tex("cd7/" + key + ".png")
 					m.roughness = 0.8
 				if key in ["tile_navy", "counter_front", "wall_yellow"]:

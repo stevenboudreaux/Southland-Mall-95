@@ -202,7 +202,7 @@ static func counter(b, g, a, t, n):
 	var uu = u0 + 0.8
 	while uu + 1.2 <= u1 - 0.8:
 		var cc = P(a, t, n, uu + 0.6, COUNTER_H + 0.27, d0 + 0.32)
-		b.quad("glass", "glass", [cc + t * 0.6 - n * 0.27 - Vector3(0, 0.25, 0), cc - t * 0.6 - n * 0.27 - Vector3(0, 0.25, 0),
+		b.quad("cd7_glass", "cd7_glass", [cc + t * 0.6 - n * 0.27 - Vector3(0, 0.25, 0), cc - t * 0.6 - n * 0.27 - Vector3(0, 0.25, 0),
 			cc - t * 0.6 - n * 0.27 + Vector3(0, 0.25, 0), cc + t * 0.6 - n * 0.27 + Vector3(0, 0.25, 0)], n, [], true)
 		b.box(g, "cd7_steel", cc + Vector3(0, 0.26, 0), b.abs_size(t, 1.2, 0.03, 0.55, n))
 		b.box(g, "cd7_steel", cc + Vector3(0, -0.26, 0), b.abs_size(t, 1.2, 0.02, 0.55, n))
@@ -246,21 +246,21 @@ static func partition(b, g, a, t, n):
 		b.box(g, "vcolor", P(a, t, n, uu, 1.75, d), b.abs_size(t, 0.08, 1.3, 0.1, n))
 		uu += 1.2
 	b.cur_color = Color.WHITE
-	b.quad("glass", "glass", [P(a, t, n, u0, 1.15, d), P(a, t, n, u1, 1.15, d), P(a, t, n, u1, 2.4, d), P(a, t, n, u0, 2.4, d)], n, [], true)
+	b.quad("cd7_glass", "cd7_glass", [P(a, t, n, u0, 1.15, d), P(a, t, n, u1, 1.15, d), P(a, t, n, u1, 2.4, d), P(a, t, n, u0, 2.4, d)], n, [], true)
 	# two TV menu boards hung over the right end of the counter, angled down toward the queue
 	for um in [8.9, 10.0]:
 		var c = P(a, t, n, um, 2.5, d - 0.35)
 		var w = 0.9
 		var h = 0.5
-		var tilt = Basis(t, -0.3)
+		var tilt = Basis(t, 0.3)   # rotate about t so the screen's face turns down toward the queue
 		var hv = tilt * Vector3(0, h * 0.5, 0)
 		var pA = c - t * (w * 0.5) - hv
 		var pB = c + t * (w * 0.5) - hv
 		var pC = c + t * (w * 0.5) + hv
 		var pD = c - t * (w * 0.5) + hv
-		b.quad(g, "cd7_menu", [pA, pB, pC, pD], (tilt * n).normalized(), [Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)])
+		b.quad("cd7_screens", "cd7_menu", [pA, pB, pC, pD], (tilt * n).normalized(), [Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
 		b.cur_color = Color("#101012")
-		b.box(g, "vcolor", Vector3.ZERO, Vector3(0.95, 0.56, 0.05), Transform3D(Basis.looking_at(-n, Vector3.UP) * Basis(Vector3.RIGHT, -0.3), c - (tilt * n) * 0.03))
+		b.box(g, "vcolor", Vector3.ZERO, Vector3(0.95, 0.56, 0.05), Transform3D(Basis.looking_at(-n, Vector3.UP) * Basis(Vector3.RIGHT, -0.3), c - (tilt * n) * 0.03), [], true)
 		b.cur_color = Color.WHITE
 	# the kitchen beyond: dim walls, stainless shelving, the fryers' glow
 	var kd0 = d + 0.1
@@ -285,7 +285,7 @@ static func dining(b, g, a, t, n):
 	for dd in [pd0, (pd0 + pd1) * 0.5, pd1]:
 		b.box(g, "vcolor", P(a, t, n, u1, 1.45, dd), b.abs_size(t, 0.1, 0.75, 0.08, n))
 	b.cur_color = Color.WHITE
-	b.quad("glass", "glass", [P(a, t, n, u1, 1.15, pd0), P(a, t, n, u1, 1.15, pd1), P(a, t, n, u1, 1.8, pd1), P(a, t, n, u1, 1.8, pd0)], t, [], true)
+	b.quad("cd7_glass", "cd7_glass", [P(a, t, n, u1, 1.15, pd0), P(a, t, n, u1, 1.15, pd1), P(a, t, n, u1, 1.8, pd1), P(a, t, n, u1, 1.8, pd0)], t, [], true)
 	# silk plants in planters on the half-wall
 	for dd in [pd0 + 0.5, (pd0 + pd1) * 0.5, pd1 - 0.5]:
 		b.cur_color = Color("#6b4a2a")

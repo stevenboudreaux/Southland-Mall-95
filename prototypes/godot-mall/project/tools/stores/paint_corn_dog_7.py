@@ -90,25 +90,24 @@ def floor_basketweave():
 
 
 def counter_front():
-    """1 m x 1 m: v=0 at the floor (image top), the counter top at the image bottom.
-    Navy base two courses, yellow field with a 3x3 navy checker panel, navy course under the top."""
+    """1 m x 1 m of counter face (10 x 10 tiles of 10 cm), as the close-up photo has it, from the floor up:
+    navy, navy, yellow, yellow, checker x3 (panels 7 tiles wide, 3-tile yellow gaps), yellow, yellow, navy."""
     px = 1000
     base = tiles(px, 0.1, px, YEL)
     d = ImageDraw.Draw(base)
     t = px * 0.1
     g = 4
-    def navy_tile(i, j):
+    def navy_tile(i, row_from_floor):
+        j = 9 - row_from_floor          # painted with the floor at the image bottom
         d.rectangle([i * t + g, j * t + g, (i + 1) * t - 1, (j + 1) * t - 1], fill=vary(NAVY, 5))
         d.rectangle([i * t + g, j * t + g, (i + 1) * t - 1, j * t + g + t * 0.18], fill=(44, 56, 130))
     for i in range(10):
-        navy_tile(i, 0); navy_tile(i, 1)          # base courses (floor side)
-        navy_tile(i, 9)                            # course under the stainless top
-    for i in range(3, 6):
-        for j in range(4, 7):
-            if (i + j) % 2 == 1:
-                navy_tile(i, j)
-    # painted floor-first from the top; build_mall's planar UVs put y = 0 at the image bottom
-    save(base.transpose(Image.FLIP_TOP_BOTTOM), "counter_front.png")
+        navy_tile(i, 0); navy_tile(i, 1); navy_tile(i, 9)
+    for i in range(7):                  # tiles 0..6 of each metre are a checker panel, 7..9 the gap
+        for r in (4, 5, 6):
+            if (i + r) % 2 == 0:
+                navy_tile(i, r)
+    save(base, "counter_front.png")
 
 
 def wall_yellow():
