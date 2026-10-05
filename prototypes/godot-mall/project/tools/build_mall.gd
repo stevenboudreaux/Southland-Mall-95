@@ -762,6 +762,28 @@ func build_court_flat(z):
 			obst([qx, qz, 0.55])
 
 # ------------------------------------------------------------------ lights
+## Since Godot 4.7 the lightmapper lights the mall mostly from glowing surfaces
+## (downlight discs at emission 8, the vault glow strip, store panels); a bake
+## with emission off drops the Sears hall from luma 189 to 94, while spot/omni/
+## sun/sky changes move it by 1-2 points. The Sears hall is the narrowest hall
+## (10 m) and came out washed out at Ultra (Steven, Oct 5), so its meshes get
+## their glow scaled down, in both the day and the night setup.
+const HALL_GLOW = {"H1a": 0.8, "H1b": 0.8}
+
+## mat(mname), with its emission (and the per-setup e_day / e_night metadata
+## read by scripts/time_of_day.gd) scaled by HALL_GLOW for the halls listed there.
+func glow_mat(gname, mname):
+	var m = mat(mname)
+	if not HALL_GLOW.has(gname) or not m.emission_enabled:
+		return m
+	var k = HALL_GLOW[gname]
+	m = m.duplicate()
+	m.emission_energy_multiplier *= k
+	for key in ["e_day", "e_night"]:
+		if m.has_meta(key):
+			m.set_meta(key, m.get_meta(key) * k)
+	return m
+
 func disc_down(group, c, rad):
 	var s = st(group, "downlight")
 	var seg = 12
@@ -1549,7 +1571,7 @@ func build():
 			var s = acc[gname][mname]
 			s.index()
 			s.commit(am)
-			am.surface_set_material(am.get_surface_count() - 1, mat(mname))
+			am.surface_set_material(am.get_surface_count() - 1, glow_mat(gname, mname))
 		var texel = TEXEL
 		if gname.ends_with("props") or gname == "lanterns":
 			texel = TEXEL * 0.6
