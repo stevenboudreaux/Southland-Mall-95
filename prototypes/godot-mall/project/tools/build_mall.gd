@@ -83,12 +83,12 @@ func mat(name):
 		"vault_glow":
 			m.albedo_color = Color("#f3ead8"); m.roughness = 0.9
 			m.emission_enabled = true; m.emission = Color("#fff1d6"); m.emission_energy_multiplier = 1.0
-			m.set_meta("e_day", 0.55); m.set_meta("e_night", 0.15)
+			m.set_meta("e_day", 0.55); m.set_meta("e_night", 0.10)
 		"downlight":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#fff3df"); m.emission_energy_multiplier = 8.0
 			# Godot 4.7 lights the halls mostly from these discs: dim them at night (moodier night, Steven Oct 5)
-			m.set_meta("e_day", 8.0); m.set_meta("e_night", 3.5)
+			m.set_meta("e_day", 8.0); m.set_meta("e_night", 2.0)
 		"stone":
 			m.albedo_texture = tex("stone.png"); m.roughness = 0.55
 		"bronze":
@@ -1501,7 +1501,7 @@ func make_env(mode):
 	env.ambient_light_energy = 0.3 if mode == "day" else 0.12
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.05 if mode == "day" else 0.85
+	env.tonemap_exposure = 1.05 if mode == "day" else 0.75
 	env.tonemap_white = 6.0 if mode == "day" else 4.0
 	env.glow_enabled = true
 	env.glow_intensity = 0.35
