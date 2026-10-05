@@ -751,7 +751,7 @@ func disc_down(group, c, rad):
 ## The Sears hall is 10 m wide (others 12 m) with the same lane rows, so it
 ## carries ~16% more downlights per m2; at Ultra the white vault bounces that
 ## into a washed-out hall (Steven, Oct 5). Dim its lanes and their bounce.
-const HALL_LIGHT = {"H1a": [1.3, 0.7], "H1b": [1.3, 0.7]}
+const HALL_LIGHT = {"H1a": [1.1, 0.7], "H1b": [1.1, 0.7]}
 
 func add_downlight(c, zid = ""):
 	var lt = HALL_LIGHT.get(zid, [1.5, 1.0])
