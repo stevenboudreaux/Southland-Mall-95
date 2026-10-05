@@ -111,7 +111,9 @@ func mat(name):
 			# the live game's storefront paintings (tools/capture_fronts.py), lit
 			# a little from within so the signs read at night
 			m.albedo_texture = tex("fronts_atlas.png")
-			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
+			# nearest keeps the live game's pixel look up close; anisotropic mipmaps keep a
+			# long frontage seen down the hall from smearing
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS_ANISOTROPIC
 			m.emission_enabled = true; m.emission_texture = m.albedo_texture
 			m.emission = Color.WHITE; m.emission_energy_multiplier = 0.45
 			m.set_meta("e_day", 0.15); m.set_meta("e_night", 0.45)
