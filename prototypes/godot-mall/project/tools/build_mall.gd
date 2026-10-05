@@ -83,10 +83,12 @@ func mat(name):
 		"vault_glow":
 			m.albedo_color = Color("#f3ead8"); m.roughness = 0.9
 			m.emission_enabled = true; m.emission = Color("#fff1d6"); m.emission_energy_multiplier = 1.0
-			m.set_meta("e_day", 0.55); m.set_meta("e_night", 0.25)
+			m.set_meta("e_day", 0.55); m.set_meta("e_night", 0.15)
 		"downlight":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#fff3df"); m.emission_energy_multiplier = 8.0
+			# Godot 4.7 lights the halls mostly from these discs: dim them at night (moodier night, Steven Oct 5)
+			m.set_meta("e_day", 8.0); m.set_meta("e_night", 3.5)
 		"stone":
 			m.albedo_texture = tex("stone.png"); m.roughness = 0.55
 		"bronze":
@@ -168,6 +170,7 @@ func mat(name):
 		"halo":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#ffffff"); m.emission_energy_multiplier = 1.6
+			m.set_meta("e_day", 1.6); m.set_meta("e_night", 1.0)
 		"outside_ground":
 			m.albedo_color = Color("#7c7a74"); m.roughness = 0.95
 		"exit_sign":
@@ -1616,9 +1619,13 @@ func build():
 
 	var lmg = LightmapGI.new()
 	lmg.name = "LightmapGI"
-	lmg.quality = LightmapGI.BAKE_QUALITY_MEDIUM
+	# Godot 4.7: Medium leaves blotchy low-frequency noise on the hall walls and
+	# vaults (the light comes from many small emissive discs); Ultra on Steven's
+	# Mac takes ~12 min per setup, and the denoiser needs more than its 0.1 default.
+	lmg.quality = LightmapGI.BAKE_QUALITY_ULTRA
 	lmg.bounces = 3
 	lmg.use_denoiser = true
+	lmg.denoiser_strength = 0.25
 	lmg.environment_mode = LightmapGI.ENVIRONMENT_MODE_SCENE
 	lmg.max_texture_size = 4096
 	lmg.generate_probes_subdiv = LightmapGI.GENERATE_PROBES_SUBDIV_4
