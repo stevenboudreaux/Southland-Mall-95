@@ -138,7 +138,7 @@ func _add_button(name: String, on: bool, top: int, cb: Callable, words := ["off"
 		cb.call(v))
 	hud.get_parent().add_child(btn)
 	buttons.append(btn)
-	cb.call.call_deferred(on)
+	(func(): cb.call(btn.button_pressed)).call_deferred()   # current state, after any URL overrides
 
 func _input(e: InputEvent) -> void:
 	var half := get_viewport().get_visible_rect().size.x * 0.5
