@@ -239,7 +239,8 @@ def awning():
     # opening 2.4..9.6 m, the awning 0.2 m past each pier, end radius 0.6)
     END = math.pi * 0.5 * 0.6
     PATH_M = END + (9.6 - 2.4 + 0.4 - 1.2) + END
-    PROF_M = 1.85
+    S0, S1 = 0.55, 0.62    # the navy stripe, metres up from the bottom edge
+    PROF_M = 1.10 + 0.85 * math.pi / 2    # face + quarter roll (corn_dog_7.gd)
     W, H = int(PATH_M * PPM), int(PROF_M * PPM)
     row = lambda v: int((PROF_M - v) * PPM)
     im = Image.new("RGB", (W, H), YEL)
@@ -263,7 +264,7 @@ def awning():
         d.line([px + 2, 0, px + 2, H], fill=(255, 246, 150), width=1)
         x += 1.3
     # the navy pinstripe 0.33 m up from the bottom edge, 7 cm tall
-    d.rectangle([0, row(0.40), W, row(0.33)], fill=NAVY)
+    d.rectangle([0, row(S1), W, row(S0)], fill=NAVY)
     L = json.load(open(os.path.join(HERE, "cd7_letters.json")))
 
     def letters(obj, height_m, u_m, v_bottom_m, extra=""):
@@ -280,12 +281,12 @@ def awning():
     # "seasoned fries": sits on the stripe, left of centre
     # the stripe stops either side of "seasoned fries", which sits across the line (close photo)
     sl = L["CD7O"]["l"]; sw = sl["w"] / sl["h"] * 0.30
-    d.rectangle([int((END + 0.78) * PPM), row(0.40) - 2, int((END + 0.85 + sw + 0.08) * PPM), row(0.33) + 2], fill=YEL)
-    letters(L["CD7O"]["l"], 0.30, END + 0.85, 0.365 - 0.15, stroke % "M-4.2 19.2 Q-1.2 17.5 2.6 10.6")
+    d.rectangle([int((END + 0.78) * PPM), row(S1) - 2, int((END + 0.85 + sw + 0.08) * PPM), row(S0) + 2], fill=YEL)
+    letters(L["CD7O"]["l"], 0.30, END + 0.85, (S0 + S1) / 2 - 0.15, stroke % "M-4.2 19.2 Q-1.2 17.5 2.6 10.6")
     # "CORN DOG 7": above the stripe, centre-right
-    letters(L["CD7"]["t"], 0.50, END + 3.12, 0.40 + 0.08)
+    letters(L["CD7"]["t"], 0.48, END + 3.2, S1 + 0.1)
     # "fresh lemonade": below the stripe at the right end, running onto the rounded end
-    letters(L["CD7O"]["r"], 0.22, END + 5.5, 0.33 - 0.05 - 0.22,
+    letters(L["CD7O"]["r"], 0.24, END + 5.45, S0 - 0.06 - 0.24,
             stroke % "M130.6 15.6 C137.5 14.8 137.2 9.6 133.2 10.2" + stroke % "M132.2 19.4 Q136.5 19.6 140 15.8")
     save(im, "awning.png")
 

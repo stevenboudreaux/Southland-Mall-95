@@ -12,12 +12,12 @@ const OPEN1 = 9.6       # ~7 m between the piers; the unit itself is 12 m and th
 const ROOM0 = 0.3       # the room behind the mall wall (the dining room runs left behind it, photo 2)
 const ROOM1 = 11.7
 const PIER = 0.30
-const AWN_Y0 = 2.75     # awning bottom edge
-const AWN_FACE = 0.75   # vertical face before the roll
-const AWN_R = 0.70      # roll radius
-const AWN_PROJ = 1.10
+const AWN_Y0 = 2.45     # awning bottom edge (the opening is ~8 ft)
+const AWN_FACE = 1.10   # vertical face before the roll: the sign box is ~3/4 of the pier height (photo)
+const AWN_R = 0.85      # roll radius; the roll tops out just under the mall ceiling
+const AWN_PROJ = 1.00
 const AWN_END_R = 0.60  # rounded ends in plan
-const PROF_M = 1.85     # profile length painted into awning.png
+const PROF_M = 2.435    # profile length painted into awning.png (AWN_FACE + AWN_R * PI / 2)
 const PATH_M = 10.1     # sweep length painted into awning.png
 const CEIL = 2.9
 const DEPTH = 11.0
@@ -170,6 +170,14 @@ static func awning(b, g, a, t, n):
 			if nn.dot(n) < 0 and j < 2:
 				nn = -nn
 			b.quad(g, "cd7_awning", [p00, p10, p11, p01], nn, [Vector2(u0, v0), Vector2(u1, v0), Vector2(u1, v1), Vector2(u0, v1)])
+	# the cap from the roll's crest back to the wall
+	var last = prof.size() - 1
+	for k in path.size() - 1:
+		var q0 = pts[k][last]
+		var q1 = pts[k + 1][last]
+		var w0 = a + t * path[k][0] + Vector3(0, AWN_Y0 + AWN_FACE + AWN_R, 0)
+		var w1 = a + t * path[k + 1][0] + Vector3(0, AWN_Y0 + AWN_FACE + AWN_R, 0)
+		b.quad(g, "cd7_soffit", [q0, q1, w1, w0], Vector3.UP)
 	# underside: white soffit with the recessed strip light, and the aluminium trim along the bottom edge
 	var row0 = pts[0]
 	var under = []
@@ -301,17 +309,19 @@ static func dining(b, g, a, t, n):
 	b.cur_color = Color("#9a6a3a")
 	b.box(g, "vcolor", P(a, t, n, u1, 0.55, (pd0 + pd1) * 0.5), b.abs_size(t, 0.12, 1.1, pd1 - pd0, n))
 	b.box(g, "vcolor", P(a, t, n, u1, 1.12, (pd0 + pd1) * 0.5), b.abs_size(t, 0.16, 0.05, pd1 - pd0, n))
-	b.box(g, "vcolor", P(a, t, n, u1, 1.82, (pd0 + pd1) * 0.5), b.abs_size(t, 0.1, 0.05, pd1 - pd0, n))
-	for dd in [pd0, (pd0 + pd1) * 0.5, pd1]:
-		b.box(g, "vcolor", P(a, t, n, u1, 1.45, dd), b.abs_size(t, 0.1, 0.75, 0.08, n))
+	b.box(g, "vcolor", P(a, t, n, u1, 2.22, (pd0 + pd1) * 0.5), b.abs_size(t, 0.12, 0.06, pd1 - pd0, n))
+	var dq = pd0
+	while dq <= pd1 + 0.01:
+		b.box(g, "vcolor", P(a, t, n, u1, 1.65, dq), b.abs_size(t, 0.1, 1.1, 0.08, n))
+		dq += 0.9
 	b.cur_color = Color.WHITE
-	b.quad("cd7_glass", "cd7_glass", [P(a, t, n, u1, 1.15, pd0), P(a, t, n, u1, 1.15, pd1), P(a, t, n, u1, 1.8, pd1), P(a, t, n, u1, 1.8, pd0)], t, [], true)
-	# silk plants in planters on the half-wall
-	for dd in [pd0 + 0.5, (pd0 + pd1) * 0.5, pd1 - 0.5]:
+	b.quad("cd7_glass", "cd7_glass", [P(a, t, n, u1, 1.15, pd0), P(a, t, n, u1, 1.15, pd1), P(a, t, n, u1, 2.2, pd1), P(a, t, n, u1, 2.2, pd0)], t, [], true)
+	# silk plants trailing from planters along the top of the screen
+	for dd in [pd0 + 0.45, pd0 + 1.8, pd1 - 1.8, pd1 - 0.45]:
 		b.cur_color = Color("#6b4a2a")
-		b.box(g, "vcolor_matte", P(a, t, n, u1, 1.95, dd), b.abs_size(t, 0.3, 0.22, 0.3, n))
+		b.box(g, "vcolor_matte", P(a, t, n, u1, 2.35, dd), b.abs_size(t, 0.3, 0.2, 0.3, n))
 		b.cur_color = Color.WHITE
-		b.bush(P(a, t, n, u1, 2.05, dd), "leafy", 0.45, 6)
+		b.bush(P(a, t, n, u1, 2.42, dd), "leafy", 0.5, 7)
 	# three booths along the left wall: oak ends, dark red seats, butcher-block tables
 	var dd = 3.0
 	for i in 5:
@@ -333,7 +343,16 @@ static func booth(b, g, a, t, n, u0, d0):
 	for off in [0.0, L - 0.45]:
 		b.box(g, "vcolor", P(a, t, n, u0 + 0.65, 0.2, d0 + off + 0.225), b.abs_size(t, 1.1, 0.4, 0.45, n))    # plinth
 		b.box(g, "vcolor", P(a, t, n, u0 + 1.2, 0.55, d0 + off + 0.225), b.abs_size(t, 0.06, 1.1, 0.45, n))   # oak end panel
+	# the divider between booths rises as an oak frame with glass, a plant on top (photo from the left)
+	b.box(g, "vcolor", P(a, t, n, u0 + 0.65, 1.55, d0 + 0.03), b.abs_size(t, 1.2, 0.06, 0.06, n))
+	b.box(g, "vcolor", P(a, t, n, u0 + 0.65, 2.0, d0 + 0.03), b.abs_size(t, 1.2, 0.06, 0.08, n))
+	b.box(g, "vcolor", P(a, t, n, u0 + 1.22, 1.55, d0 + 0.03), b.abs_size(t, 0.07, 0.95, 0.07, n))
 	b.cur_color = Color.WHITE
+	b.quad("cd7_glass", "cd7_glass", [P(a, t, n, u0, 1.08, d0 + 0.03), P(a, t, n, u0 + 1.2, 1.08, d0 + 0.03), P(a, t, n, u0 + 1.2, 1.97, d0 + 0.03), P(a, t, n, u0, 1.97, d0 + 0.03)], n, [], true)
+	b.cur_color = Color("#6b4a2a")
+	b.box(g, "vcolor_matte", P(a, t, n, u0 + 0.9, 2.12, d0 + 0.03), b.abs_size(t, 0.26, 0.18, 0.22, n))
+	b.cur_color = Color.WHITE
+	b.bush(P(a, t, n, u0 + 0.9, 2.18, d0 + 0.03), "leafy", 0.45, 6)
 	b.box(g, "cd7_butcher", P(a, t, n, u0 + 0.62, 0.74, d0 + L * 0.5), b.abs_size(t, 1.05, 0.05, 0.6, n))
 	b.cur_color = Color("#2a2a2e")
 	b.box(g, "vcolor", P(a, t, n, u0 + 0.9, 0.36, d0 + L * 0.5), b.abs_size(t, 0.08, 0.72, 0.08, n))
