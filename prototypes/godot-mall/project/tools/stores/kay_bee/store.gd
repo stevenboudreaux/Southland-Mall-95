@@ -520,8 +520,9 @@ static func fill_mat(m, key, b):
 			m.albedo_texture = b.tex("kb/troffer.png")
 			m.emission_enabled = true; m.emission_texture = m.albedo_texture
 			m.emission = Color.WHITE; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
-			m.emission_energy_multiplier = 2.2
-			m.set_meta("e_day", 2.2); m.set_meta("e_night", 2.2)
+			# 2.2 blew the lens out to plain white (Demo 7); 1.5 keeps the prismatic lens readable
+			m.emission_energy_multiplier = 1.5
+			m.set_meta("e_day", 1.5); m.set_meta("e_night", 1.5)
 		"carpet":
 			m.albedo_texture = b.tex("kb/carpet.png"); m.roughness = 0.95; m.metallic_specular = 0.1
 		"ceiling":
