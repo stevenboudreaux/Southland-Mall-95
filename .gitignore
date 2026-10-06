@@ -23,3 +23,6 @@ Desktop.ini
 *.key
 credentials.json
 secrets.json
+
+# Python bytecode from the texture painters
+__pycache__/
