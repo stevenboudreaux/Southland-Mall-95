@@ -1,0 +1,43 @@
+# Deploys the whole site to GitHub Pages: everything on main, plus the current Godot mall
+# build from the godot-build branch copied into prototypes/godot-mall/play/. The Godot
+# build is kept out of main's history so the repository does not grow with every demo.
+# Runs on every push to main (editor publishes, photo approvals) and when godot-build
+# changes (its own workflow starts this one).
+name: Deploy site to Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: site
+      - uses: actions/checkout@v4
+        with:
+          ref: godot-build
+          path: build
+      - name: Add the Godot mall build
+        run: |
+          mkdir -p site/prototypes/godot-mall/play
+          cp build/play/* site/prototypes/godot-mall/play/
+          rm -rf site/.git
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deployment
+        uses: actions/deploy-pages@v4

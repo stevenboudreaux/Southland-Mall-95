@@ -155,7 +155,26 @@ void fragment() {
 }
 """
 
+## The web page ships two builds of the game: textures in computer GPU formats (S3TC and
+## BPTC) or in phone and headset ones (ETC2 and ASTC), and web/shell.html picks one before
+## the engine starts. If it guessed wrong for this GPU, switch to the other build once and
+## remember the choice in this browser.
+func _check_pack() -> void:
+	if not OS.has_feature("web"):
+		return
+	var kind := str(JavaScriptBridge.eval("window.__mallPack || ''", true))
+	if kind == "":
+		return
+	var desk := OS.has_feature("s3tc") and OS.has_feature("bptc")
+	var mob := OS.has_feature("etc2") and OS.has_feature("astc")
+	var ok := desk if kind == "desktop" else mob
+	var other := "mobile" if kind == "desktop" else "desktop"
+	var other_ok := mob if kind == "desktop" else desk
+	if not ok and other_ok:
+		JavaScriptBridge.eval("try{if(!sessionStorage.getItem('southland-pack-flip')){sessionStorage.setItem('southland-pack-flip','1');localStorage.setItem('southland-pack','%s');location.reload();}}catch(e){}" % other, true)
+
 func _ready() -> void:
+	_check_pack()
 	vp = SubViewport.new()
 	vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	vp.msaa_3d = Viewport.MSAA_DISABLED

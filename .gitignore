@@ -26,3 +26,10 @@ secrets.json
 
 # Python bytecode from the texture painters
 __pycache__/
+
+# The Godot mall build and its lightmaps live on the godot-build branch (one commit,
+# replaced on each publish), not in main's history: design/godot-build-hosting.md
+prototypes/godot-mall/play/index.*
+prototypes/godot-mall/project/main_*.exr
+prototypes/godot-mall/project/main_*.exr.import
+prototypes/godot-mall/project/main_*.lmbake

@@ -6,6 +6,7 @@
 # the project, re-imports, exports the web build to .scratch/builds/<prefix>, shoots the
 # cameras with ?time=<mode> through movetest.py (0 errors + MOVED expected) and writes
 # .scratch/shots/<prefix>-<mode>-sheet.jpg. Default cameras: Pocket Change.
+# The export is split (tools/export_web.sh): index.desktop.pck and index.mobile.pck.
 # The .exr.import matters: its slices/vertical follows the lightmap atlas layer count.
 # Needs godot 4.7.2 at /home/claude/godot. Run in the background or split cameras if the
 # 10-minute tool limit is near (SwiftShader takes ~40-60 s per camera).
@@ -17,8 +18,8 @@ md5sum $P/main_$M.exr | cut -c1-12
 cd $P; export PATH=/home/claude:$PATH
 (timeout 900 godot --headless --path . --import > /dev/null 2>&1 || true)
 mkdir -p $R/.scratch/builds/$PX
-timeout 400 godot --headless --path . --export-release Web $R/.scratch/builds/$PX/index.html > $R/.scratch/builds/$PX.log 2>&1 || true
-ls -la $R/.scratch/builds/$PX/index.pck | awk '{print "pck", $5}'
+tools/export_web.sh $R/.scratch/builds/$PX > $R/.scratch/builds/$PX.log 2>&1 || true
+cat $R/.scratch/builds/$PX.log | tail -1 | sed 's/^/pck /'
 cd $R
 curl -s -o /dev/null http://127.0.0.1:8765/ || (python3 -m http.server 8765 > /dev/null 2>&1 &); sleep 1
 C=${3:-'{"front":"-101.6,57.2,128,3","hall":"-106,52,180,6","door":"-106,63,180,-4","rede":"-104.6,70.5,180,-4","mid":"-106,74,180,-4","back":"-106,88,180,-4"}'}

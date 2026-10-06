@@ -204,6 +204,31 @@ window.mallSigns = {
 		<script>
 const GODOT_CONFIG = $GODOT_CONFIG;
 const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
+// Two builds of the game, the same except for texture formats: "desktop" (S3TC and BPTC,
+// computer GPUs) and "mobile" (ETC2 and ASTC: phones, tablets, VR headsets). Each device
+// downloads only its own. tools/export_web.sh fills in the sizes. Override with ?pack=.
+const PACK_SIZES = {"desktop": 0, "mobile": 0}; // PACK_SIZES
+function mallPackKind() {
+	try { const q = new URLSearchParams(location.search).get('pack'); if (q === 'desktop' || q === 'mobile') { return q; } } catch (e) { /* ignore */ }
+	try { const s = localStorage.getItem('southland-pack'); if (s === 'desktop' || s === 'mobile') { return s; } } catch (e) { /* ignore */ }
+	try {
+		const gl = document.createElement('canvas').getContext('webgl2');
+		if (gl) {
+			const has = (n) => !!gl.getExtension(n);
+			const desk = has('WEBGL_compressed_texture_s3tc') && has('EXT_texture_compression_bptc');
+			const mob = has('WEBGL_compressed_texture_etc') && has('WEBGL_compressed_texture_astc');
+			const lose = gl.getExtension('WEBGL_lose_context');
+			if (lose) { lose.loseContext(); }
+			if (desk) { return 'desktop'; }
+			if (mob) { return 'mobile'; }
+		}
+	} catch (e) { /* ignore */ }
+	return /iPhone|iPad|Android|Quest|OculusBrowser|Mobile/.test(navigator.userAgent) ? 'mobile' : 'desktop';
+}
+window.__mallPack = mallPackKind();
+GODOT_CONFIG['mainPack'] = 'index.' + window.__mallPack + '.pck';
+GODOT_CONFIG['fileSizes'] = GODOT_CONFIG['fileSizes'] || {};
+if (PACK_SIZES[window.__mallPack]) { GODOT_CONFIG['fileSizes'][GODOT_CONFIG['mainPack']] = PACK_SIZES[window.__mallPack]; }
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {
