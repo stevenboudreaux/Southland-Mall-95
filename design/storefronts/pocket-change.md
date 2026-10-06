@@ -34,7 +34,7 @@ The machines' titles and art are original: real titles and logos are not reprodu
   - Ceiling: black lay-in at 3.6 m.
   - Walls: dark charcoal-navy, with a royal-blue band at 2.45–2.6 m and a blue neon tube along both side walls at 3.3 m.
   - Floor: a near-black cut-pile arcade carpet scattered with neon squiggles, triangles, dots and zigzags (an original pattern in the style of the time).
-  - Light: a few black can downlights down the room and three brighter ones over the redemption counter. The machines' screens, marquees and lamps do most of the lighting.
+  - Light: black can downlights down the room, with glowing lamp faces (in Godot 4.7 the bake takes its light mostly from emission), and three brighter ones over the redemption counter. The carpet is blacklight-reactive, as 90s arcades' carpets were: the confetti glows faintly. With the machines' screens, marquees and lamps, that keeps the room dark but readable. The first full-quality bake without the glowing lamp faces and carpet came out nearly black.
   - Back: an employees-only door with an exit sign.
 - **Layout, front to back:**
   - **d 1.6–2.5, by the door:** three claw cranes (styles 0–2) facing the entrance. These are what the mall sees through the opening, as in the 2009 photo.
@@ -62,7 +62,9 @@ The machines' titles and art are original: real titles and logos are not reprodu
 - `store.gd` builds:
   - the front, into the hall's (H5) mesh;
   - the room, into `pc_shell`;
-  - the machines, into `pc0_props` … `pc3_props` (one mesh per 10 m, for culling), at the finer props lightmap texel.
+  - the machines, into `pc0_mach` … `pc3_mach` (one mesh per 10 m, for culling), at a coarse lightmap texel (1.5×), with compressed vertex data for the dynamic parts.
+- **Lightmap atlas.** Plush, the skee-ball rings and other tiny faces go to the dynamic meshes and are lit by probes. In the lightmap, thousands of tiny charts had doubled the atlas. The atlas is now 5 × 1024² layers (was 4); the `.exr.import`'s `slices/vertical` must come back from the Mac with each bake.
+- **Sign letters.** These are dynamic, lit by probes plus a little emission standing in for the hall's light.
 - **Walk grid.** `tools/open_interiors.py` opens the whole unit. Machine obstacles are padded 0.25 m so the camera stays out of the cabinets.
 - **Store probe.** The store has its own interior ReflectionProbe.
 - **`BUILT_RECTS`** keeps the neighbours' generic interiors out.
