@@ -48,6 +48,7 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 	room(b, G, a, t, n)
 	lights(b, G, a, t, n)
 	machines(b, a, t, n)
+	unbake_small(b)
 	var rp = ReflectionProbe.new()
 	rp.position = P(a, t, n, UNIT * 0.5, CEIL * 0.5, DEPTH * 0.5)
 	rp.size = (t * UNIT + n * DEPTH).abs() + Vector3(0.1, CEIL + 0.1, 0.1)
@@ -190,10 +191,10 @@ static func room(b, G, a, t, n):
 			b.box(G, "pc_store_neon", nc, b.abs_size(t, 0.025, 0.025, 1.7, n))
 			for e in [-0.88, 0.88]:
 				b.cur_color = Color("#1a1a1e")
-				b.box(G, "vcolor", nc - n * e, b.abs_size(t, 0.04, 0.04, 0.06, n))
+				b.box(G, "vcolor", nc - n * e, b.abs_size(t, 0.04, 0.04, 0.06, n), Transform3D.IDENTITY, [], true)
 			for e in [-0.5, 0.5]:
 				b.cur_color = Color("#8a8a8a")
-				b.box(G, "vcolor", nc - n * e - side[1] * 0.025, b.abs_size(t, 0.03, 0.05, 0.02, n))
+				b.box(G, "vcolor", nc - n * e - side[1] * 0.025, b.abs_size(t, 0.03, 0.05, 0.02, n), Transform3D.IDENTITY, [], true)
 			b.cur_color = Color.WHITE
 			dn += 1.9
 	b.quad(G, "pc_store_blue", [P(a, t, n, u1, 2.45, dB), P(a, t, n, u0, 2.45, dB), P(a, t, n, u0, 2.6, dB), P(a, t, n, u1, 2.6, dB)], n)
@@ -214,7 +215,7 @@ static func lights(b, G, a, t, n):
 		for u in [2.6, 5.4]:
 			var c = P(a, t, n, u, CEIL - 0.005, d)
 			b.cur_color = Color("#101012")
-			b.cyl(G, "vcolor", c - Vector3(0, 0.02, 0), 0.09, 0.09, 0.02, 12, false, true)
+			b.cyl(G, "vcolor", c - Vector3(0, 0.02, 0), 0.09, 0.09, 0.02, 12, false, true, true)
 			b.cur_color = Color.WHITE
 			b.disc_down(G, c - Vector3(0, 0.021, 0), 0.06)
 			var l = b.add_spot(c - Vector3(0, 0.05, 0), Vector3.DOWN, 0.9, 5.0, 38.0, Color(1.0, 0.86, 0.66))
@@ -226,6 +227,28 @@ static func lights(b, G, a, t, n):
 		b.tag(l2, "", 1.3, 1.3)
 
 # ------------------------------------------------------------------ the machines
+## Plush piles and the skee-ball rings are thousands of tiny faces: in the lightmap each
+## becomes its own chart with padding, which pushed the mall's atlas to a second size
+## step (+4 MB per lighting setup and format). They move to the dynamic meshes, lit by
+## the probes. The screens stay static so their glow is baked onto the room.
+static func unbake_small(b):
+	for gname in b.acc.keys():
+		if not gname.ends_with("_mach"):
+			continue
+		for mname in b.acc[gname].keys():
+			if not (mname.contains("plush") or mname.contains("_fur") or mname == "pc_skee_rim"):
+				continue
+			var s_static = b.acc[gname][mname]
+			b.acc[gname].erase(mname)
+			if not b.dyn_acc.has(gname):
+				b.dyn_acc[gname] = {}
+			if b.dyn_acc[gname].has(mname):
+				var tmp = ArrayMesh.new()
+				s_static.commit(tmp)
+				b.dyn_acc[gname][mname].append_from(tmp, 0, Transform3D.IDENTITY)
+			else:
+				b.dyn_acc[gname][mname] = s_static
+
 ## Places one prop module: the player stands at (u, d) facing `dir` ("+d", "-d", "+u", "-u").
 ## Its walk obstacles are widened by `pad` so the camera stays out of the cabinets.
 static func put(b, a, t, n, mod, u, d, dir, opts = {}, pad = 0.25):
