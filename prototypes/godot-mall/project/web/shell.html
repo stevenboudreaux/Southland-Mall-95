@@ -123,6 +123,29 @@ body {
 // play/signs.json on GitHub, the same way the main game's editor Publish writes files
 // (contents API, the token it keeps in this browser under "southland-gh"). Nothing secret
 // lives here: without a saved token it asks for one and does not keep it.
+// The playable arcade cabinets (scripts/signs.gd, play/emu.html): a full-window frame over the
+// game; emu.html posts "emu-close" to come back to the mall.
+window.mallRoms = {
+	frame: null,
+	open: function (url) {
+		if (this.frame) return;
+		var f = document.createElement('iframe');
+		f.src = url;
+		f.allow = 'autoplay; fullscreen; gamepad';
+		f.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:1000;background:#000';
+		document.body.appendChild(f);
+		this.frame = f;
+	},
+	close: function () {
+		if (!this.frame) return;
+		this.frame.remove();
+		this.frame = null;
+		var c = document.getElementById('canvas');
+		if (c) c.focus();
+	},
+	isOpen: function () { return this.frame ? '1' : '0'; }
+};
+window.addEventListener('message', function (e) { if (e.data === 'emu-close') window.mallRoms.close(); });
 window.mallSigns = {
 	status: '',
 	path: 'prototypes/godot-mall/play/signs.json',

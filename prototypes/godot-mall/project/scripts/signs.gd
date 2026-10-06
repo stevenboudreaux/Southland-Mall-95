@@ -33,6 +33,16 @@ const PC_STYLE := [
 	{"font": "sans", "fill": "#fff6dc", "outline": "#c02818"},          # 7 PADDLE PANIC
 ]
 const KB_STYLE := {"font": "sans", "fill": "#b0f03c", "outline": ""}
+
+## The twelve playable cabinets (Steven, Oct 6: "3 Atari, 3 NES, 3 Genesis, 3 SNES",
+## sprinkled round the room): video cabinets with joysticks, picked to spread across
+## Pocket Change. Each takes one system's ROMs (play/emu.html); play/roms.json says which
+## ROM each one has. Values are EmulatorJS core names.
+const ARCADE := {"pc.video.36": "atari2600", "pc.video.01": "nes", "pc.video.07": "segaMD", "pc.video.64": "snes",
+	"pc.video.44": "atari2600", "pc.video.17": "nes", "pc.video.52": "segaMD", "pc.video.23": "snes",
+	"pc.video.56": "atari2600", "pc.video.29": "nes", "pc.video.61": "segaMD", "pc.video.70": "snes"}
+const SYS_NAME := {"atari2600": "Atari 2600", "nes": "NES", "segaMD": "Genesis", "snes": "Super NES"}
+const SYS_COL := {"atari2600": "#e8742a", "nes": "#d8202a", "segaMD": "#2a5ad8", "snes": "#8a4ad0"}
 const FONT_FILES := {"sans": "sans.otf", "sans_italic": "sans_italic.otf", "serif": "serif.ttf", "script": "script.ttf"}
 
 var recs := {}          # id -> record from gen/signs.json
@@ -54,6 +64,14 @@ var press_t := 0
 var pressed := false
 var publishing := false
 var poll_t := 0.0
+var roms := {}          # cabinet id -> {file, core, name, title} from play/roms.json
+var arcade_mode := false
+var b_arc: Button
+var play_ui: CanvasLayer
+var b_play: Button
+var play_id := ""
+var near_t := 0.0
+var sys_tags := []      # owner-only labels naming each playable cabinet's system
 
 func _ready() -> void:
 	web = OS.has_feature("web")
@@ -65,6 +83,9 @@ func _ready() -> void:
 				order.append(r.id)
 	if not web:
 		return
+	_stickers()
+	_build_play_ui()
+	_fetch_roms()
 	var o = JavaScriptBridge.eval("(function(){try{var q=new URLSearchParams(location.search).get('owner');if(q==='1')localStorage.setItem('southland-editor','1');return localStorage.getItem('southland-editor')==='1'?'1':'0'}catch(e){return '0'}})()")
 	is_owner = str(o) == "1"
 	if is_owner:
@@ -92,6 +113,135 @@ func _fetch_published() -> void:
 				_apply_all()
 		h.queue_free())
 	h.request(url + "?t=" + str(Time.get_unix_time_from_system()))
+
+func _fetch_roms() -> void:
+	var url = JavaScriptBridge.eval("new URL('roms.json', location.href).href")
+	if not (url is String):
+		return
+	var h := HTTPRequest.new()
+	add_child(h)
+	h.request_completed.connect(func(result, code, _headers, body):
+		if result == HTTPRequest.RESULT_SUCCESS and code == 200:
+			var j = JSON.parse_string(body.get_string_from_utf8())
+			if j is Dictionary and j.get("cabinets") is Dictionary:
+				roms = j.cabinets
+		h.queue_free())
+	h.request(url + "?t=" + str(Time.get_unix_time_from_system()))
+
+## A small "PLAYABLE" sticker under each playable cabinet's marquee, in its system's colour.
+func _stickers() -> void:
+	if not fonts.has("sans"):
+		fonts["sans"] = load("res://fonts/sans.otf")
+	for id in ARCADE:
+		if not recs.has(id):
+			continue
+		var f = recs[id].faces[0]
+		var P = []
+		for p in f.p:
+			P.append(Vector3(p[0], p[1], p[2]))
+		var n = Vector3(f.n[0], f.n[1], f.n[2])
+		var right = (P[1] - P[0]).normalized()
+		var up = (P[3] - P[0]).normalized()
+		var c = (P[0] + P[1]) * 0.5 - up * 0.05 + n * 0.012
+		var lab := Label3D.new()
+		lab.font = fonts["sans"]
+		lab.font_size = 64
+		lab.text = "PLAYABLE"
+		lab.modulate = Color.WHITE
+		lab.outline_size = 22
+		lab.outline_modulate = Color(SYS_COL[ARCADE[id]])
+		lab.pixel_size = 0.0006
+		lab.shaded = false
+		lab.double_sided = false
+		lab.basis = Basis(right, up, n.normalized())
+		lab.position = c
+		add_child(lab)
+
+# ------------------------------------------------------------------ the arcade
+func _build_play_ui() -> void:
+	play_ui = CanvasLayer.new()
+	play_ui.layer = 21
+	add_child(play_ui)
+	b_play = Button.new()
+	b_play.text = "PLAY"
+	b_play.custom_minimum_size = Vector2(260, 64)
+	b_play.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	b_play.focus_mode = Control.FOCUS_NONE
+	b_play.add_theme_font_size_override("font_size", 26)
+	b_play.visible = false
+	play_ui.add_child(b_play)
+
+## Whether the player stands at a playable cabinet that has a game: within 1.6 m of its
+## front and facing it. Sets play_id and shows the Play button.
+func _near_check() -> void:
+	var cam := get_viewport().get_camera_3d()
+	var found = ""
+	if cam != null and not roms.is_empty():
+		var fwd = -cam.global_transform.basis.z
+		fwd.y = 0.0
+		fwd = fwd.normalized()
+		for id in ARCADE:
+			if not roms.has(id) or not recs.has(id):
+				continue
+			var f = recs[id].faces[0]
+			var c = Vector3.ZERO
+			for p in f.p:
+				c += Vector3(p[0], 0.0, p[2])
+			c *= 0.25
+			var n = Vector3(f.n[0], 0.0, f.n[2]).normalized()
+			var spot = c + n * 0.9
+			var me = Vector3(cam.global_position.x, 0.0, cam.global_position.z)
+			if me.distance_to(spot) < 1.6 and fwd.dot(-n) > 0.3:
+				found = id
+				break
+	play_id = found
+	if b_play == null:
+		return
+	b_play.visible = found != ""
+	if found != "":
+		var t = str(roms[found].get("title", ""))
+		if t == "" or t == str(recs[found].title):
+			t = text_of(found)
+		b_play.text = "PLAY  " + t
+		var vs = get_viewport().get_visible_rect().size
+		b_play.size = Vector2(max(260.0, 22.0 * b_play.text.length()), 64)
+		b_play.position = Vector2((vs.x - b_play.size.x) * 0.5, vs.y - 150)
+
+func _play(id: String) -> void:
+	JavaScriptBridge.eval("window.mallRoms && window.mallRoms.open('emu.html?id=' + encodeURIComponent(" + JSON.stringify(id) + "))")
+
+func _arcade_setup(id: String) -> void:
+	var q = "emu.html?setup=" + id.uri_encode() + "&sys=" + str(ARCADE[id]) + "&title=" + text_of(id).uri_encode()
+	JavaScriptBridge.eval("window.mallRoms && window.mallRoms.open(" + JSON.stringify(q) + ")")
+
+## In Arcade mode the owner sees which system each playable cabinet takes.
+func _show_sys_tags(on: bool) -> void:
+	for l in sys_tags:
+		l.queue_free()
+	sys_tags.clear()
+	if not on:
+		return
+	for id in ARCADE:
+		if not recs.has(id):
+			continue
+		var f = recs[id].faces[0]
+		var c = Vector3.ZERO
+		for p in f.p:
+			c += Vector3(p[0], p[1], p[2])
+		c *= 0.25
+		var lab := Label3D.new()
+		lab.font = fonts["sans"]
+		lab.font_size = 64
+		lab.text = SYS_NAME[ARCADE[id]] + ("\n" + str(roms[id].get("name", "")) if roms.has(id) else "\n(empty)")
+		lab.modulate = Color.WHITE
+		lab.outline_size = 18
+		lab.outline_modulate = Color(SYS_COL[ARCADE[id]])
+		lab.pixel_size = 0.0015
+		lab.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+		lab.no_depth_test = true
+		lab.position = c + Vector3(0, 0.45, 0)
+		add_child(lab)
+		sys_tags.append(lab)
 
 ## The text a sign shows now: the owner's draft, else the published text, else the original.
 func text_of(id: String) -> String:
@@ -210,8 +360,10 @@ func _build_ui() -> void:
 	b_edit = _btn("Edit signs", Vector2(12, 132))
 	b_edit.toggle_mode = true
 	b_pub = _btn("Publish signs", Vector2(12, 182))
+	b_arc = _btn("Arcade", Vector2(12, 232))
+	b_arc.toggle_mode = true
 	status = Label.new()
-	status.position = Vector2(14, 230)
+	status.position = Vector2(14, 280)
 	status.add_theme_font_size_override("font_size", 18)
 	status.add_theme_color_override("font_color", Color.WHITE)
 	status.add_theme_color_override("font_outline_color", Color.BLACK)
@@ -234,18 +386,19 @@ func _refresh_ui() -> void:
 	if ui == null:
 		return
 	b_edit.button_pressed = editing
+	b_arc.button_pressed = arcade_mode
 	b_pub.disabled = draft.is_empty() or publishing
 	b_pub.text = "Publish signs (%d)" % draft.size() if not draft.is_empty() else "Publish signs"
 	if publishing:
 		status.text = "Publishing..."
 	elif editing:
 		status.text = "Tap a sign to change its words"
+	elif arcade_mode:
+		status.text = "Tap a PLAYABLE cabinet to put a game on it"
 	elif status.text.begins_with("Tap"):
 		status.text = ""
 
 func _input(e: InputEvent) -> void:
-	if not is_owner:
-		return
 	var pos = null
 	var down = false
 	var up = false
@@ -255,12 +408,26 @@ func _input(e: InputEvent) -> void:
 		pos = e.position; down = e.pressed; up = not e.pressed
 	if pos == null:
 		return
+	if down and b_play != null and b_play.visible and b_play.get_global_rect().has_point(pos):
+		get_viewport().set_input_as_handled()
+		_play(play_id)
+		return
+	if not is_owner:
+		return
 	if down:
-		for b in [b_edit, b_pub]:
+		for b in [b_edit, b_pub, b_arc]:
 			if b.get_global_rect().has_point(pos):
 				get_viewport().set_input_as_handled()
 				if b == b_edit:
 					editing = not editing
+					if editing and arcade_mode:
+						arcade_mode = false
+						_show_sys_tags(false)
+				elif b == b_arc:
+					arcade_mode = not arcade_mode
+					if arcade_mode:
+						editing = false
+					_show_sys_tags(arcade_mode)
 				elif not b.disabled:
 					_publish()
 				_refresh_ui()
@@ -271,10 +438,14 @@ func _input(e: InputEvent) -> void:
 	elif up and pressed:
 		pressed = false
 		# a tap (not a walk or look drag) while editing picks a sign
-		if editing and pos.distance_to(press_at) < 14.0 and Time.get_ticks_msec() - press_t < 450:
+		if (editing or arcade_mode) and pos.distance_to(press_at) < 14.0 and Time.get_ticks_msec() - press_t < 450:
 			var id = _pick(pos)
-			if id != "":
+			if id != "" and editing:
 				_retype(id)
+			elif id != "" and ARCADE.has(id):
+				_arcade_setup(id)
+			elif id != "":
+				status.text = "That one isn't a playable cabinet: look for the PLAYABLE stickers"
 
 ## The sign under the screen point: the nearest one whose face contains it.
 func _pick(sp: Vector2) -> String:
@@ -347,6 +518,11 @@ func _publish() -> void:
 	_refresh_ui()
 
 func _process(dt: float) -> void:
+	if web:
+		near_t += dt
+		if near_t > 0.2:
+			near_t = 0.0
+			_near_check()
 	if not publishing:
 		return
 	poll_t += dt

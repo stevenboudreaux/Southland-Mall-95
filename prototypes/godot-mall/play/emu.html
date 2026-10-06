@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Pocket Change arcade</title>
+<!--
+  The playable arcade cabinets of the Godot mall (design/godot-arcade-roms.md).
+  emu.html?id=<cabinet>              plays the ROM that play/roms.json gives that cabinet
+  emu.html?setup=<cabinet>&title=..  the owner's page to put a ROM on a cabinet (or take it off)
+  The game runs in EmulatorJS (GPL-3.0, loaded from its CDN); the emulator core is picked
+  from the ROM's file extension. ROMs are the owner's own files, uploaded to play/roms/ with
+  the GitHub token the mall editor keeps in this browser ("southland-gh"); nothing secret is here.
+  The mall page shows this in a full-window frame and listens for "emu-close".
+-->
+<style>
+  :root { --bg: #08080c; --fg: #f2f2ee; --dim: #9a9aa6; --accent: #ffd23c; --line: #2a2a34; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 16px/1.4 -apple-system, "Helvetica Neue", Arial, sans-serif; }
+  #bar { position: fixed; top: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; gap: 12px; padding: 0 12px; padding-top: env(safe-area-inset-top);
+         background: #000; border-bottom: 1px solid var(--line); z-index: 10; }
+  #bar b { flex: 1; letter-spacing: .04em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  button { font: inherit; color: #000; background: var(--accent); border: 0; border-radius: 8px; padding: 9px 14px; font-weight: 700; }
+  button.ghost { background: transparent; color: var(--fg); border: 1px solid var(--line); }
+  #wrap { position: fixed; top: calc(48px + env(safe-area-inset-top)); left: 0; right: 0; bottom: 0; }
+  #game { width: 100%; height: 100%; }
+  #setup { max-width: 560px; margin: 0 auto; padding: 72px 16px 32px; }
+  #setup h1 { font-size: 22px; margin: 0 0 6px; }
+  #setup p { color: var(--dim); margin: 6px 0 16px; }
+  .card { border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin: 14px 0; }
+  input[type=file] { color: var(--fg); width: 100%; margin: 8px 0 14px; }
+  #msg { min-height: 1.4em; margin-top: 12px; }
+  .ok { color: #7ee08a; } .err { color: #ff7a7a; }
+</style>
+</head>
+<body>
+<div id="bar"><button class="ghost" id="back">&#8592; Back to the mall</button><b id="title">Pocket Change</b></div>
+<div id="wrap" hidden><div id="game"></div></div>
+<div id="setup" hidden>
+  <h1 id="s-title">Arcade cabinet</h1>
+  <p>Put one of your own ROM files on this cabinet. Anyone who walks up to it in the mall gets a Play button.</p>
+  <p id="s-sys"></p>
+  <div class="card">
+    <div id="current">Nothing on this cabinet yet.</div>
+    <input type="file" id="file">
+    <button id="upload">Put it on this cabinet</button>
+    <button class="ghost" id="remove" hidden>Take it off</button>
+    <div id="msg"></div>
+  </div>
+</div>
+<script>
+(function () {
+  var q = new URLSearchParams(location.search);
+  var ROMS = 'prototypes/godot-mall/play/roms.json';
+  // each playable cabinet is one system (scripts/signs.gd ARCADE): its core and the file endings it takes
+  var SYS = { atari2600: { name: 'Atari 2600', ext: ['a26', 'bin'] }, nes: { name: 'NES', ext: ['nes', 'fds', 'unf'] },
+              segaMD: { name: 'Genesis', ext: ['md', 'gen', 'smd', 'bin'] }, snes: { name: 'Super NES', ext: ['sfc', 'smc'] } };
+  var CORE = { nes: 'nes', fds: 'nes', unf: 'nes', sfc: 'snes', smc: 'snes', md: 'segaMD', gen: 'segaMD', smd: 'segaMD', a26: 'atari2600' };
+  function ext(name) { var m = /\.([a-z0-9]+)$/i.exec(name || ''); return m ? m[1].toLowerCase() : ''; }
+  function close() {
+    if (window.parent && window.parent !== window) window.parent.postMessage('emu-close', '*');
+    else location.href = './';
+  }
+  document.getElementById('back').onclick = close;
+  function loadList() {
+    return fetch('roms.json?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.json() : { cabinets: {} }; })
+      .catch(function () { return { cabinets: {} }; });
+  }
+
+  // ---------------------------------------------------------------- play
+  if (q.get('id')) {
+    loadList().then(function (L) {
+      var c = (L.cabinets || {})[q.get('id')];
+      if (!c) { document.getElementById('title').textContent = 'No game on this cabinet'; return; }
+      document.getElementById('title').textContent = c.title || c.name || 'Pocket Change';
+      document.getElementById('wrap').hidden = false;
+      window.EJS_player = '#game';
+      window.EJS_core = c.core || CORE[ext(c.file)] || 'nes';
+      window.EJS_gameUrl = c.file;
+      window.EJS_gameName = c.title || c.name || 'game';
+      window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+      window.EJS_startOnLoaded = true;
+      window.EJS_color = '#ffd23c';
+      var s = document.createElement('script');
+      s.src = window.EJS_pathtodata + 'loader.js';
+      s.onerror = function () { document.getElementById('title').textContent = "The emulator didn't load. Check the connection and try again."; };
+      document.body.appendChild(s);
+    });
+    return;
+  }
+
+  // ---------------------------------------------------------------- owner setup
+  var id = q.get('setup');
+  if (!id) { close(); return; }
+  document.getElementById('setup').hidden = false;
+  document.getElementById('title').textContent = 'Arcade setup';
+  document.getElementById('s-title').textContent = (q.get('title') || 'Cabinet') + '  (' + id + ')';
+  var sys = SYS[q.get('sys')] ? q.get('sys') : null;
+  if (sys) {
+    document.getElementById('s-sys').textContent = 'This is a ' + SYS[sys].name + ' cabinet: it takes .' + SYS[sys].ext.join(', .') + ' files.';
+    document.getElementById('file').accept = SYS[sys].ext.map(function (e) { return '.' + e; }).join(',');
+  }
+  var msg = document.getElementById('msg');
+  function say(t, cls) { msg.textContent = t; msg.className = cls || ''; }
+  function show(L) {
+    var c = (L.cabinets || {})[id];
+    document.getElementById('current').textContent = c ? ('On this cabinet now: ' + (c.name || c.file)) : 'Nothing on this cabinet yet.';
+    document.getElementById('remove').hidden = !c;
+  }
+  loadList().then(show);
+
+  var cfg = {};
+  try { cfg = JSON.parse(localStorage.getItem('southland-gh') || '{}'); } catch (e) {}
+  function repo() {
+    if (cfg.repo) return cfg.repo;
+    var h = location.hostname, seg = location.pathname.split('/').filter(Boolean)[0];
+    if (/\.github\.io$/.test(h) && seg) return h.split('.')[0] + '/' + seg;
+    return 'stevenboudreaux/Southland-Mall-95';
+  }
+  function token() {
+    var t = cfg.token;
+    if (!t) t = prompt('GitHub token (the one the mall editor uses). It is not saved.');
+    return t;
+  }
+  function api(path, tok) { return 'https://api.github.com/repos/' + repo() + '/contents/' + path.split('/').map(encodeURIComponent).join('/'); }
+  function H(tok) { return { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/vnd.github.object+json', 'X-GitHub-Api-Version': '2022-11-28' }; }
+  function getSha(path, tok, br) {
+    return fetch(api(path) + '?ref=' + encodeURIComponent(br), { headers: H(tok), cache: 'no-store' }).then(function (r) {
+      if (r.status === 404) return null;
+      if (r.status === 401) throw 'the token was refused';
+      if (!r.ok) throw 'GitHub said ' + r.status;
+      return r.json();
+    });
+  }
+  function put(path, b64, message, tok, br) {
+    return getSha(path, tok, br).then(function (cur) {
+      var body = { message: message, content: b64, branch: br };
+      if (cur && cur.sha) body.sha = cur.sha;
+      return fetch(api(path), { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, H(tok)), body: JSON.stringify(body) });
+    }).then(function (r) {
+      if (r.ok) return r;
+      if (r.status === 403 || r.status === 404) throw 'this token cannot write to ' + repo();
+      if (r.status === 409) throw 'someone else changed it; try again';
+      if (r.status === 413 || r.status === 422) throw 'GitHub refused the file (too big?)';
+      throw 'GitHub said ' + r.status;
+    });
+  }
+  function b64text(s) {
+    var by = new TextEncoder().encode(s), out = '';
+    for (var i = 0; i < by.length; i += 0x8000) out += String.fromCharCode.apply(null, by.subarray(i, i + 0x8000));
+    return btoa(out);
+  }
+  function saveList(tok, br, change) {
+    // merge into the live list, so a change made elsewhere is kept
+    return getSha(ROMS, tok, br).then(function (cur) {
+      var L = { cabinets: {} };
+      if (cur && cur.content) {
+        try {
+          var bin = atob(cur.content.replace(/\n/g, '')), arr = new Uint8Array(bin.length);
+          for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+          L = JSON.parse(new TextDecoder().decode(arr));
+        } catch (e) { L = { cabinets: {} }; }
+      }
+      L.cabinets = L.cabinets || {};
+      change(L.cabinets);
+      return put(ROMS, b64text(JSON.stringify(L, null, 1) + '\n'), 'Update the arcade ROM list', tok, br).then(function () { return L; });
+    });
+  }
+
+  document.getElementById('upload').onclick = function () {
+    var f = document.getElementById('file').files[0];
+    if (!f) { say('Pick a ROM file first.', 'err'); return; }
+    var core = sys || CORE[ext(f.name)];
+    if (!core || (sys && SYS[sys].ext.indexOf(ext(f.name)) < 0)) {
+      say("That file doesn't fit this cabinet" + (sys ? ' (it takes .' + SYS[sys].ext.join(', .') + ')' : '') + '.', 'err'); return;
+    }
+    if (f.size > 40 * 1024 * 1024) { say('That file is too big to upload here (over 40 MB).', 'err'); return; }
+    var tok = token();
+    if (!tok) { say('No token, nothing uploaded.', 'err'); return; }
+    var br = cfg.branch || 'main';
+    var safe = f.name.replace(/[^A-Za-z0-9._-]+/g, '_');
+    var path = 'prototypes/godot-mall/play/roms/' + safe;
+    say('Uploading ' + f.name + '...');
+    var rd = new FileReader();
+    rd.onload = function () {
+      var b64 = String(rd.result).split(',')[1];
+      put(path, b64, 'Add an arcade ROM: ' + safe, tok, br).then(function () {
+        return saveList(tok, br, function (C) { C[id] = { file: 'roms/' + safe, core: core, name: f.name, title: q.get('title') || '', system: sys || core }; });
+      }).then(function (L) {
+        show(L);
+        say('Done. It will be playable on this cabinet in about a minute, once the site updates.', 'ok');
+      }).catch(function (e) { say('Not uploaded: ' + (typeof e === 'string' ? e : 'network error'), 'err'); });
+    };
+    rd.readAsDataURL(f);
+  };
+  document.getElementById('remove').onclick = function () {
+    var tok = token();
+    if (!tok) return;
+    var br = cfg.branch || 'main';
+    saveList(tok, br, function (C) { delete C[id]; }).then(function (L) {
+      show(L);
+      say('Taken off. (The file stays in play/roms/.)', 'ok');
+    }).catch(function (e) { say('Not changed: ' + (typeof e === 'string' ? e : 'network error'), 'err'); });
+  };
+})();
+</script>
+</body>
+</html>
