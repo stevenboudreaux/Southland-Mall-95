@@ -87,7 +87,7 @@ From `prototypes/godot-mall/project/facade_records.json` (tools/facade_meter.py)
 | 71 | REGIS HAIRSTYLISTS | 3 depth-accurate | 8 m | the year of the photos it was built from, and a second person's confirmation | none |
 | 72 | 5-7-9 | 3 depth-accurate | 6 m | the year of the photos it was built from, and a second person's confirmation | none |
 | 73 | BAKERS | 3 depth-accurate | 6 m | the year of the photos it was built from, and a second person's confirmation | none |
-| 74 | KAY-BEE TOYS | 3 depth-accurate | 6 m | the year of the photos it was built from, and a second person's confirmation | none |
+| 74 | KAY-BEE TOYS | built in full 3D (Demo 7, level 2) | 6 m | a photo or video of the inside of the Southland store itself; the unit's real depth | none |
 | 75 | SPORTS AVENUE | 3 depth-accurate | 6 m | the year of the photos it was built from, and a second person's confirmation | none |
 | 76 | WICKS 'N' STICKS | 3 depth-accurate | 6 m | the year of the photos it was built from, and a second person's confirmation | none |
 | 77 | MASTERCUTS | 3 depth-accurate | 4 m | the year of the photos it was built from, and a second person's confirmation | none |

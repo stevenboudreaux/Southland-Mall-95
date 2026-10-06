@@ -16,6 +16,8 @@ OPEN = {
     "s54": [(79, 80, 134, 139), (81, 84, 134, 136)],
     # Pocket Change (s52b, tiles x 93-96, y 130-149, faces north): the whole arcade
     "s52b": [(93, 96, 130, 149)],
+    # Kay-Bee Toys (s18, tiles x 131-142, y 71-73, faces east): the whole store
+    "s18": [(131, 142, 71, 73)],
 }
 
 

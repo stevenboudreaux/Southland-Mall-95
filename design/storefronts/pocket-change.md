@@ -10,7 +10,7 @@ Steven's description of the interior: the ticket redemption counter on the left 
 **Accuracy level:** 2–3. The front is from one angled photo. The room is from memory and same-chain references.
 
 **Guessed (not from Southland photos):**
-- the room's finishes (black ceiling, dark walls, blue band and neon, the carpet pattern);
+- the room's finishes (black ceiling, dark walls, blue band and neon);
 - the exact layout and machine count;
 - the token rate.
 
@@ -33,8 +33,8 @@ The machines' titles and art are original: real titles and logos are not reprodu
 - **Room.**
   - Ceiling: black lay-in at 3.6 m.
   - Walls: dark charcoal-navy, with a royal-blue band at 2.45–2.6 m and a blue neon tube along both side walls at 3.3 m.
-  - Floor: a near-black cut-pile arcade carpet scattered with neon squiggles, triangles, dots and zigzags (an original pattern in the style of the time).
-  - Light: black can downlights down the room, with glowing lamp faces (in Godot 4.7 the bake takes its light mostly from emission), and three brighter ones over the redemption counter. The carpet is blacklight-reactive, as 90s arcades' carpets were: the confetti glows faintly. With the machines' screens, marquees and lamps, that keeps the room dark but readable. The first full-quality bake without the glowing lamp faces and carpet came out nearly black.
+  - Floor: a plain dark charcoal cut-pile carpet, one solid colour with no pattern and no glow (Steven, Oct 6, 2026: "remove the graphics from pocket change carpet just make it solid dark color").
+  - Light: black can downlights down the room, with glowing lamp faces (in Godot 4.7 the bake takes its light mostly from emission), and three brighter ones over the redemption counter. With the machines' screens, marquees and lamps, that keeps the room dark but readable (until Oct 6 the carpet also had a glowing confetti pattern; it was removed at Steven's request). The first full-quality bake without the glowing lamp faces and carpet came out nearly black.
   - Back: an employees-only door with an exit sign.
 - **Layout (Steven, Oct 6).** Walking in, everything on the right stands flush against the right wall in one line, front to back:
   - three claw machines (styles 0–2), d 0.85–3.3;

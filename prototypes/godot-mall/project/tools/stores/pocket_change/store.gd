@@ -392,12 +392,8 @@ static func fill_mat(m, key, b):
 			m.emission_enabled = true; m.emission = Color("#6a6e72"); m.emission_energy_multiplier = 0.3
 			m.set_meta("e_day", 0.35); m.set_meta("e_night", 0.25)
 		"carpet":
-			# blacklight-reactive arcade carpet: the confetti glows, the black ground stays black
+			# plain dark carpet, no pattern and no glow (Steven, Oct 6)
 			m.albedo_texture = b.tex("pc/store_carpet.png"); m.roughness = 0.95; m.metallic_specular = 0.2
-			m.emission_enabled = true; m.emission_texture = m.albedo_texture
-			m.emission = Color.WHITE; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
-			m.emission_energy_multiplier = 0.45
-			m.set_meta("e_day", 0.45); m.set_meta("e_night", 0.45)
 		"can":
 			m.albedo_color = Color("#fff4e0")
 			m.emission_enabled = true; m.emission = Color("#ffe6c0"); m.emission_energy_multiplier = 10.0

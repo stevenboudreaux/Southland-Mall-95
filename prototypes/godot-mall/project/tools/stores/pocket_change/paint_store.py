@@ -88,53 +88,10 @@ def glassblock():
 
 
 def carpet():
-    """2 m x 2 m, seamless: a 1990s arcade carpet, near-black with scattered neon squiggles,
-    triangles, dots and zigzags (an original pattern in the style of the time)."""
+    """2 m x 2 m, seamless: a plain dark charcoal cut-pile carpet. Steven (Oct 6, 2026):
+    no graphics on the Pocket Change carpet, one solid dark colour."""
     N = 1024
-    rng = random.Random(1995)
-    im = Image.new("RGB", (N, N), (14, 12, 20))
-    d = ImageDraw.Draw(im)
-    cols = [(214, 36, 138), (30, 190, 196), (240, 206, 46), (120, 64, 236), (60, 120, 240), (236, 112, 40)]
-
-    def wrap(fn):
-        for ox in (-N, 0, N):
-            for oy in (-N, 0, N):
-                fn(ox, oy)
-
-    for _ in range(70):   # squiggles
-        c = rng.choice(cols)
-        x, y = rng.uniform(0, N), rng.uniform(0, N)
-        ang = rng.uniform(0, math.tau)
-        L = rng.uniform(50, 110)
-        pts = []
-        for k in range(14):
-            t = k / 13
-            px_ = x + math.cos(ang) * L * t - math.sin(ang) * math.sin(t * math.pi * 3) * 10
-            py_ = y + math.sin(ang) * L * t + math.cos(ang) * math.sin(t * math.pi * 3) * 10
-            pts.append((px_, py_))
-        wrap(lambda ox, oy: d.line([(p[0] + ox, p[1] + oy) for p in pts], fill=c, width=6, joint="curve"))
-    for _ in range(55):   # triangles (outlined)
-        c = rng.choice(cols)
-        x, y = rng.uniform(0, N), rng.uniform(0, N)
-        r = rng.uniform(16, 30)
-        a0 = rng.uniform(0, math.tau)
-        tri = [(x + r * math.cos(a0 + k * math.tau / 3), y + r * math.sin(a0 + k * math.tau / 3)) for k in range(3)]
-        wrap(lambda ox, oy: d.polygon([(p[0] + ox, p[1] + oy) for p in tri], outline=c, width=5))
-    for _ in range(140):  # dots
-        c = rng.choice(cols)
-        x, y = rng.uniform(0, N), rng.uniform(0, N)
-        r = rng.uniform(4, 9)
-        wrap(lambda ox, oy: d.ellipse([x - r + ox, y - r + oy, x + r + ox, y + r + oy], fill=c))
-    for _ in range(35):   # zigzags
-        c = rng.choice(cols)
-        x, y = rng.uniform(0, N), rng.uniform(0, N)
-        ang = rng.uniform(0, math.tau)
-        pts = []
-        for k in range(6):
-            s = 14 * k
-            o = 10 if k % 2 else -10
-            pts.append((x + math.cos(ang) * s - math.sin(ang) * o, y + math.sin(ang) * s + math.cos(ang) * o))
-        wrap(lambda ox, oy: d.line([(p[0] + ox, p[1] + oy) for p in pts], fill=c, width=5))
+    im = Image.new("RGB", (N, N), (22, 21, 26))
     a = np.asarray(im).astype(np.float32)
     # cut-pile texture: per-pixel fibre noise, a little softness, a hint of traffic wear
     a = np.asarray(Image.fromarray(a.astype(np.uint8)).filter(ImageFilter.GaussianBlur(1.1))).astype(np.float32)
