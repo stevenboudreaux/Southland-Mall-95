@@ -1176,6 +1176,23 @@ def paint_marquees():
     save(atlas, "video_marquees.png", colors=256)
 
 
+def paint_marquees_blank():
+    """The same marquee art with every word left off: the owner-editable titles are drawn
+    over it live in the game (scripts/signs.gd), so a renamed cabinet keeps its artwork."""
+    global fancy_text
+    keep_fancy, keep_text = fancy_text, ImageDraw.ImageDraw.text
+    fancy_text = lambda img, *a, **k: img
+    ImageDraw.ImageDraw.text = lambda self, *a, **k: None
+    try:
+        atlas = Image.new("RGB", (1024, 1024), (0, 0, 0))
+        for i, fn in enumerate(MARQUEES):
+            img = mq_finish(fn(), 500 + i)
+            atlas.paste(img, ((i % 2) * 512, (i // 2) * 170))
+        save(atlas, "video_marquees_blank.png", colors=256)
+    finally:
+        fancy_text, ImageDraw.ImageDraw.text = keep_fancy, keep_text
+
+
 # =================================================================== bezels
 def paint_bezels():
     atlas = Image.new("RGB", (1024, 512), (10, 10, 12))
@@ -1696,6 +1713,7 @@ def main():
     paint_scan()
     paint_screens()
     paint_marquees()
+    paint_marquees_blank()
     paint_bezels()
     paint_panels()
     paint_sides()

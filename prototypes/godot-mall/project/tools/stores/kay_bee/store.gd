@@ -33,6 +33,7 @@ const LETTER_D = 0.10
 const SH_D = 0.40       # shelf depth
 const BAY = 1.22        # 4 ft gondola bay
 const UP = Vector3.UP
+const DEPT_NAMES = ["DOLLS", "VIDEO", "GAMES", "VEHICLES", "STUFFED TOYS", "ACTION TOYS", "PRESCHOOL", "SPORTS"]   # paint_store.py DEPTS
 
 static func P(a, t, n, u, y, d):
 	return a + t * u - n * d + Vector3(0, y, 0)
@@ -370,8 +371,27 @@ static func dept(b, a, t, n, u, d, k):
 	var h = 0.375
 	var y0 = 2.56
 	var c = P(a, t, n, u, 0, d)
+	var faces = []
 	for s in [1.0, -1.0]:
 		fq(b, G, "kb_dept", c + n * 0.012 * s - t * w * 0.5 * s, t * s, n * s, 0.0, w, y0, y0 + h, 0.0, 0.0, k / 8.0, 1.0, (k + 1) / 8.0)
+		# the same face for the owner-editable text (scripts/signs.gd): left to right as read
+		var o = c + n * 0.012 * s - t * w * 0.5 * s
+		var r = t * s
+		var f = n * s
+		var ua = 0.0
+		var ub = 1.0
+		if r.dot((-f).cross(UP)) < 0.0:
+			# fq mirrors the u range for this side; keep the text running along the reading direction
+			o = o + r * w
+			r = -r
+		faces.append([[L(o, r, f, 0.0, y0, 0.0), L(o, r, f, w, y0, 0.0), L(o, r, f, w, y0 + h, 0.0), L(o, r, f, 0.0, y0 + h, 0.0)],
+			[Vector2(ua, 1.0), Vector2(ub, 1.0), Vector2(ub, 0.0), Vector2(ua, 0.0)], f])
+	if "signs" in b:
+		var j = 0
+		for rr in b.signs:
+			if rr.kind == "kb_dept":
+				j += 1
+		b.sign_add("kb.dept.%d" % (j + 1), "kb_dept", DEPT_NAMES[k], k, faces)
 	b.cur_color = Color("#c8c8c8")
 	for s in [-0.6, 0.6]:
 		b.box("kb_small", "vcolor", c + t * s + Vector3(0, (y0 + h + CEIL) * 0.5, 0), Vector3(0.006, CEIL - y0 - h, 0.006), Transform3D.IDENTITY, [], true)

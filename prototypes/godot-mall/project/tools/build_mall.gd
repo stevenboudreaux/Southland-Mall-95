@@ -22,6 +22,7 @@ var L: Dictionary          # layout
 var zones = {}             # id -> zone dict
 var obstacles = []
 var fx_obstacles = []     # fixtures (benches, planters, trash cans): only block when shown
+var signs = []             # owner-editable signs (scripts/signs.gd), written to gen/signs.json
 var fx = false            # while true, geometry goes to the switchable "fixtures" mesh
 var cur_color = Color.WHITE
 var atlas_index = {}       # store id -> atlas cell
@@ -929,6 +930,21 @@ func zone_at(x, z):
 		if x >= r[0] and x <= r[2] and z >= r[1] and z <= r[3]:
 			return zid
 	return "misc"
+
+## An owner-editable sign (scripts/signs.gd draws its text live over a blank copy of the
+## art). `faces`: [[p0, p1, p2, p3], [uv0..uv3], normal] per face, p0->p1 along the text,
+## p0->p3 up; `style` picks the look (font, colours) in signs.gd.
+func sign_add(id, kind, title, style, faces):
+	var F = []
+	for f in faces:
+		var pts = []
+		var uvs = []
+		for p in f[0]:
+			pts.append([snappedf(p.x, 0.0001), snappedf(p.y, 0.0001), snappedf(p.z, 0.0001)])
+		for q in f[1]:
+			uvs.append([snappedf(q.x, 0.00001), snappedf(q.y, 0.00001)])
+		F.append({"p": pts, "uv": uvs, "n": [snappedf(f[2].x, 0.0001), snappedf(f[2].y, 0.0001), snappedf(f[2].z, 0.0001)]})
+	signs.append({"id": id, "kind": kind, "title": title, "style": style, "faces": F})
 
 func label(text, fontname, fg, pos, n, max_w, cap_h = 0.56):
 	var lab = Label3D.new()
@@ -1859,6 +1875,9 @@ func build():
 		if c is Label3D:
 			c.owner = mall
 
+	var sf = FileAccess.open("res://gen/signs.json", FileAccess.WRITE)
+	sf.store_string(JSON.stringify({"signs": signs}))
+	sf.close()
 	var cf = FileAccess.open("res://gen/collide.json", FileAccess.WRITE)
 	cf.store_string(JSON.stringify({"static": obstacles, "fixtures": fx_obstacles}))
 	cf.close()
@@ -1872,6 +1891,11 @@ func build():
 	rt.set_script(load("res://scripts/mall_runtime.gd"))
 	rt.name = "Runtime"
 	mall.add_child(rt); rt.owner = mall
+	# owner-editable sign text (gen/signs.json); after the player so its taps come first
+	var sg = Node.new()
+	sg.set_script(load("res://scripts/signs.gd"))
+	sg.name = "Signs"
+	mall.add_child(sg); sg.owner = mall
 
 	var ps = PackedScene.new()
 	ps.pack(mall)

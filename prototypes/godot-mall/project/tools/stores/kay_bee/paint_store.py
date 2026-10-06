@@ -513,6 +513,18 @@ def dept_signs():
     save(grain(im, 1.5, 31), "dept_signs", 48)
 
 
+def dept_blank():
+    """One department board with no words: the owner-editable text is drawn over it live
+    (scripts/signs.gd)."""
+    W, H = 512, 128
+    im = Image.new("RGB", (W * SS, H * SS), (22, 104, 110))
+    d = ImageDraw.Draw(im)
+    d.rectangle([0, 0, W * SS, 10 * SS], fill=(30, 128, 134))
+    d.rectangle([0, 118 * SS, W * SS, H * SS], fill=(14, 80, 86))
+    im = im.resize((W, H), Image.LANCZOS)
+    save(grain(im, 1.5, 31), "dept_blank", 48)
+
+
 def cards():
     """Price and sale cards, 512 x 512 in a 2 x 2 grid:
     orange price cards with white figures (video), and the yellow SALE signs of the photo."""
@@ -604,5 +616,5 @@ if __name__ == "__main__":
     tile_wall(); louver(); carpet(); ceiling(); troffer(); pegboard(); shelf_edge()
     for i, c in enumerate(STYLES):
         merch(c, 100 + i)
-    plush(); carton(); dept_signs(); cards(); counter(); screens(); wire()
+    plush(); carton(); dept_signs(); dept_blank(); cards(); counter(); screens(); wire()
     print("wrote tex/kb/*.png")

@@ -375,9 +375,23 @@ static func _marquee(b, g, xf, si, fr, Wi):
 	var pts = [_fp(fr, x0, 0, w), _fp(fr, x1, 0, w), _fp(fr, x1, L, w), _fp(fr, x0, L, w)]
 	var uv = [_mq_uv(col, row, 0, 1), _mq_uv(col, row, 1, 1), _mq_uv(col, row, 1, 0), _mq_uv(col, row, 0, 0)]
 	_q(b, g, "pc_video_marquee", xf, pts, fr.N, uv)
+	_sign(b, si, xf, pts, uv, fr.N)
 	var fxf = Transform3D(Basis(Vector3.RIGHT, fr.V, -fr.N), fr.O)
 	_bx(b, g, "pc_video_metal", xf, fxf, Vector3(0, 0.011, 0.003), Vector3(Wi, 0.022, 0.014), false)
 	_bx(b, g, "pc_video_metal", xf, fxf, Vector3(0, L - 0.011, 0.003), Vector3(Wi, 0.022, 0.014), false)
+
+## Registers the marquee as an owner-editable title (scripts/signs.gd), numbered in build order.
+static func _sign(b, si, xf, pts, uv, n):
+	if not ("signs" in b):
+		return
+	var k = 0
+	for r in b.signs:
+		if r.kind == "pc_marquee":
+			k += 1
+	var P = []
+	for p in pts:
+		P.append(xf * p)
+	b.sign_add("pc.video.%02d" % (k + 1), "pc_marquee", STYLES[si].title, si, [[P, uv, (xf.basis * n).normalized()]])
 
 static func _mq_uv(col, row, fu, fv):
 	return Vector2((col * 512.0 + 3.0 + fu * 506.0) / 1024.0, (row * 170.0 + 3.0 + fv * 164.0) / 1024.0)
@@ -414,6 +428,7 @@ static func _housing(b, g, xf, s, si):
 		m.append(Vector3(lerp(-hw, hw, c[0]), y, z) + nfront * 0.003)
 		uv.append(_mq_uv(col, row, c[0], 1.0 - c[1]))
 	_q(b, g, "pc_video_marquee", xf, m, nfront, uv)
+	_sign(b, si, xf, m, uv, nfront)
 	for sg in [-1.0, 1.0]:
 		var a = Vector3(sg * hw0, y0, z0)
 		var c = Vector3(sg * hw1, y1, z1)

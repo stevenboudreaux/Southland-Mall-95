@@ -118,6 +118,65 @@ body {
 			<div id="status-notice"></div>
 		</div>
 
+		<script>
+// Owner-editable signs (scripts/signs.gd): publishing the owner's sign edits to
+// play/signs.json on GitHub, the same way the main game's editor Publish writes files
+// (contents API, the token it keeps in this browser under "southland-gh"). Nothing secret
+// lives here: without a saved token it asks for one and does not keep it.
+window.mallSigns = {
+	status: '',
+	path: 'prototypes/godot-mall/play/signs.json',
+	repo: function (cfg) {
+		if (cfg.repo) return cfg.repo;
+		var h = location.hostname, seg = location.pathname.split('/').filter(Boolean)[0];
+		if (/\.github\.io$/.test(h) && seg) return h.split('.')[0] + '/' + seg;
+		return 'stevenboudreaux/Southland-Mall-95';
+	},
+	b64: function (str) {
+		var by = new TextEncoder().encode(str), s = '';
+		for (var i = 0; i < by.length; i += 0x8000) s += String.fromCharCode.apply(null, by.subarray(i, i + 0x8000));
+		return btoa(s);
+	},
+	publish: function (draftJson) {
+		var S = this;
+		S.status = 'busy';
+		var cfg = {};
+		try { cfg = JSON.parse(localStorage.getItem('southland-gh') || '{}'); } catch (e) {}
+		var repo = S.repo(cfg), br = cfg.branch || 'main', tok = cfg.token;
+		if (!tok) tok = prompt('GitHub token to publish the signs (the one the mall editor uses). It is not saved.');
+		if (!tok) { S.status = 'error: no GitHub token'; return; }
+		var draft = JSON.parse(draftJson);
+		var H = { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/vnd.github.object+json', 'X-GitHub-Api-Version': '2022-11-28' };
+		var u = 'https://api.github.com/repos/' + repo + '/contents/' + S.path.split('/').map(encodeURIComponent).join('/');
+		fetch(u + '?ref=' + encodeURIComponent(br), { headers: H, cache: 'no-store' }).then(function (r) {
+			if (r.status === 404) return null;
+			if (r.status === 401) throw 'the token was refused';
+			if (!r.ok) throw 'GitHub said ' + r.status;
+			return r.json();
+		}).then(function (cur) {
+			// merge into the live list so nothing published elsewhere is lost
+			var live = { signs: {} };
+			if (cur && cur.content) {
+				try {
+					var bin = atob(cur.content.replace(/\n/g, '')), arr = new Uint8Array(bin.length);
+					for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+					live = JSON.parse(new TextDecoder().decode(arr));
+				} catch (e) { live = { signs: {} }; }
+			}
+			live.signs = live.signs || {};
+			Object.keys(draft).forEach(function (k) { live.signs[k] = draft[k]; });
+			var body = { message: 'Update the mall signs from the Godot mall', content: S.b64(JSON.stringify(live, null, 1) + '\n'), branch: br };
+			if (cur && cur.sha) body.sha = cur.sha;
+			return fetch(u, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify(body) });
+		}).then(function (r) {
+			if (r.ok) { S.status = 'ok'; return; }
+			if (r.status === 403 || r.status === 404) throw 'this token cannot write to ' + repo;
+			if (r.status === 409) throw 'someone else changed the signs; reload and publish again';
+			throw 'GitHub said ' + r.status;
+		}).catch(function (e) { S.status = 'error: ' + (typeof e === 'string' ? e : (e && e.message) || 'network error'); });
+	}
+};
+		</script>
 		<script src="$GODOT_URL"></script>
 		<script>
 const GODOT_CONFIG = $GODOT_CONFIG;
