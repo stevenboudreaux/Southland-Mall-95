@@ -21,6 +21,11 @@ OPEN = {
     # Gumballs (s8, tiles x 138-142, y 118-123, a corner open to the east hall and the
     # Dillard's court): the whole store
     "s8": [(138, 142, 118, 123)],
+    # JW (n33, tiles x 108-110, y 110-123) and 5-7-9 (n33b, x 111-113), side by side on the
+    # Concourse's north side, facing south; County Seat (n46, x 101-104, y 130-149) facing north
+    "n33": [(108, 110, 110, 123)],
+    "n33b": [(111, 113, 110, 123)],
+    "n46": [(101, 104, 130, 149)],
 }
 
 

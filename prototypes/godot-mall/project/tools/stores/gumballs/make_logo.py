@@ -5,7 +5,7 @@ with a long swash sweeping under the word from the G's tail out past the s. Mr D
 (OFL-1.1, MrDafoe-Regular.ttf here) is the nearest free brush script; it is thickened to
 the sign's heavier stroke and the swash is drawn. The word is rasterised, traced (OpenCV)
 and triangulated with its holes (earcut). Units are metres: x from the left, y up from the
-lowest point. Writes tools/stores/gumballs/logo.json, and logo_preview.png to check.
+lowest point. Writes tools/stores/gumballs/logo.json, and /tmp/gumballs_logo_preview.png to check.
   python3 tools/stores/gumballs/make_logo.py   (from the project folder)
 """
 import json, math, os
@@ -92,7 +92,7 @@ def main():
            "note": "loops: outer counter-clockwise, holes clockwise (seen from the front, y up); tris: face triangles"}
     json.dump(out, open(os.path.join(HERE, "logo.json"), "w"))
     prev = Image.fromarray(a[y0:y1 + 1, x0:x1 + 1]).resize((900, int(900 * (y1 - y0) / (x1 - x0))))
-    prev.save(os.path.join(HERE, "logo_preview.png"))
+    prev.save("/tmp/gumballs_logo_preview.png")
     print("logo %.2f x %.2f m, %d parts, %d triangles" % (WIDTH_M, out["height"], len(letters), ntri))
 
 

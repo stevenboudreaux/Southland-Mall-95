@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bdir5mcnoew8l"
-path="res://.godot/imported/logo_preview.png-d45d40a7411d3035ba574e73c2a4b303.ctex"
+uid="uid://bn3yh13odkiqd"
+path="res://.godot/imported/folded.png-745f9e3b338c657e20e3d11bf9279fd9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tools/stores/gumballs/logo_preview.png"
-dest_files=["res://.godot/imported/logo_preview.png-d45d40a7411d3035ba574e73c2a4b303.ctex"]
+source_file="res://tex/ap/folded.png"
+dest_files=["res://.godot/imported/folded.png-745f9e3b338c657e20e3d11bf9279fd9.ctex"]
 
 [params]
 
