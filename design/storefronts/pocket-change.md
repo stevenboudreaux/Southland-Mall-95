@@ -36,22 +36,27 @@ The machines' titles and art are original: real titles and logos are not reprodu
   - Floor: a near-black cut-pile arcade carpet scattered with neon squiggles, triangles, dots and zigzags (an original pattern in the style of the time).
   - Light: black can downlights down the room, with glowing lamp faces (in Godot 4.7 the bake takes its light mostly from emission), and three brighter ones over the redemption counter. The carpet is blacklight-reactive, as 90s arcades' carpets were: the confetti glows faintly. With the machines' screens, marquees and lamps, that keeps the room dark but readable. The first full-quality bake without the glowing lamp faces and carpet came out nearly black.
   - Back: an employees-only door with an exit sign.
-- **Layout, front to back:**
-  - **d 1.6–2.5, by the door:** three claw cranes (styles 0–2) facing the entrance. These are what the mall sees through the opening, as in the 2009 photo.
-  - **On the left:**
-    - two token changers against the front wall;
-    - the redemption counter: a 1.6 m return, then a 5 m glass showcase run facing the room (d 3.1–8.1);
-    - behind the counter, a 5 m prize wall, 2.8 m tall.
-  - **On the right:** four skee-ball alleys, side by side (d 3.6–6.7), played toward the back.
-  - **The middle (d 9.6–12.2):** the enclosed two-seat dinosaur-safari motion ride, its doorway toward the entrance. You can step into the doorway.
-  - **Down both walls:** upright video cabinets, 8 styles mixed.
-  - **d 14.6–18.7:**
-    - left: four basketball cage games against the wall;
-    - right: two twin sit-down racers.
-  - **d 20.5–24:** a central island of back-to-back uprights. More uprights continue along both walls.
-  - **d 30–33, right:** three pinball machines.
-  - **Back wall:** a few more uprights.
-- **Machines.** Each is a prop module in `tools/stores/pocket_change/` (contract in its README.md): crane, skee, hoops, ride, video, driver (racers and pinball) and redeem (counter, prize wall, tokens). Each module has a texture painter (`paint_<m>.py` → `tex/pc/<m>_*.png`).
+- **Layout (Steven, Oct 6).** Walking in, everything on the right stands flush against the right wall in one line, front to back:
+  - three claw machines (styles 0–2), d 0.85–3.3;
+  - four skee-ball alleys, played toward the wall, d 3.4–6.4;
+  - four basketball games, d 6.5–10.6;
+  - then video games to the back.
+
+  On the left:
+  - the token changers against the front wall;
+  - the redemption counter (a 1.6 m return, then a 5 m glass showcase facing the room, d 3.1–8.1), with the 5 m prize wall behind it;
+  - then video games, the two twin racers (d 14.5–18.3), more video games, three pinball machines (d 29–31.6), and video games up to the back door.
+
+  The middle:
+  - the sit-in dinosaur ride (d 11.4–14.0), its doorway toward the entrance, so you can step in;
+  - an island of back-to-back uprights (d 18.6–20.7);
+  - two air hockey tables end to end (d 25.6–28 and 30.8–33.3).
+
+  The air hockey tables match Steven's photo: white and silver cabinet, blue stripe, blue playfield, a chrome arch with a lamp and score unit, clear side guards.
+
+  Three more uprights stand on the back wall.
+- **The blue band** under the neon (2.4–2.62 m) is not in the lightmap. At 15 cm it was one texel tall and broke into blocks (Steven's phone, Oct 6). It is now probe-lit with a soft glow of its own.
+- **Machines.** Each is a prop module in `tools/stores/pocket_change/` (contract in its README.md): crane, skee, hoops, ride, video, driver (racers and pinball) and redeem (counter, prize wall, tokens). airhockey (from Steven's photo, Oct 6). Each module has a texture painter (`paint_<m>.py` → `tex/pc/<m>_*.png`).
 
 ## Period notes (1995)
 - **No anachronisms:** CRT screens, backlit marquees, red 7-segment scores, coin doors with token slots, orange ticket strips. No LCDs, card readers or LED boards.

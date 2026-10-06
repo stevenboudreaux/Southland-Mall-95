@@ -183,7 +183,9 @@ static func room(b, G, a, t, n):
 	# the blue returns at the door and the blue-lit Pocket Change interiors in Steven's references)
 	for side in [[u0, t, WALL_T, dB], [u1, -t, dB, WALL_T]]:
 		var uu = side[0]
-		b.quad(G, "pc_store_blue", [P(a, t, n, uu, 2.45, side[2]), P(a, t, n, uu, 2.45, side[3]), P(a, t, n, uu, 2.6, side[3]), P(a, t, n, uu, 2.6, side[2])], side[1])
+		# the band is dynamic: 15 cm of wall was one lightmap texel tall and broke up into
+		# blocks under the neon (Steven, Oct 6); it carries a soft glow of its own instead
+		b.quad(G, "pc_store_band", [P(a, t, n, uu, 2.4, side[2]), P(a, t, n, uu, 2.4, side[3]), P(a, t, n, uu, 2.62, side[3]), P(a, t, n, uu, 2.62, side[2])], side[1], [], true)
 		# 1990s neon: separate 1.8 m tubes with dark electrode ends, on clips, small gaps between
 		var dn = WALL_T + 0.4
 		while dn + 1.8 < dB - 0.3:
@@ -197,7 +199,7 @@ static func room(b, G, a, t, n):
 				b.box(G, "vcolor", nc - n * e - side[1] * 0.025, b.abs_size(t, 0.03, 0.05, 0.02, n), Transform3D.IDENTITY, [], true)
 			b.cur_color = Color.WHITE
 			dn += 1.9
-	b.quad(G, "pc_store_blue", [P(a, t, n, u1, 2.45, dB), P(a, t, n, u0, 2.45, dB), P(a, t, n, u0, 2.6, dB), P(a, t, n, u1, 2.6, dB)], n)
+	b.quad(G, "pc_store_band", [P(a, t, n, u1, 2.4, dB), P(a, t, n, u0, 2.4, dB), P(a, t, n, u0, 2.62, dB), P(a, t, n, u1, 2.62, dB)], n, [], true)
 	# the back door (employees only) with a lit exit sign over it
 	var du = 6.6
 	b.cur_color = Color("#3a3c42")
@@ -274,75 +276,90 @@ static func fp(mod, opts = {}):
 	return load("res://tools/stores/pocket_change/%s.gd" % mod).footprint(opts)
 
 ## A row of upright cabinets against a side wall: `wall_u` is the wall's face, facing
-## the room along `dir`; they run from d0 toward +d with 3 cm gaps.
-static func wall_row(b, a, t, n, styles, wall_u, dir, d0):
+## the room along `dir`. They run from d0 toward +d with 3 cm gaps, cycling through
+## `styles`, until the next one would pass d_max. Returns where the row ends.
+static func wall_row(b, a, t, n, styles, wall_u, dir, d0, d_max = -1.0):
 	var d = d0
-	for s in styles:
-		var o = {"style": s}
+	var k = 0
+	var count = styles.size() if d_max < 0.0 else 1000
+	while k < count:
+		var o = {"style": styles[k % styles.size()]}
 		var sz = fp("video", o)
+		if d_max >= 0.0 and d + sz.x > d_max:
+			break
 		var u = wall_u + sz.y if dir == "-u" else wall_u - sz.y
 		put(b, a, t, n, "video", u, d + sz.x * 0.5, dir, o)
 		d += sz.x + 0.03
+		k += 1
 	return d
 
+## A run of machines of one module with their backs flush to a side wall, side by side
+## from d0 toward +d. Returns where the run ends.
+static func wall_run(b, a, t, n, mod, opts_list, wall_u, dir, d0, gap = 0.0):
+	var d = d0
+	for o in opts_list:
+		var sz = fp(mod, o)
+		var u = wall_u + sz.y if dir == "-u" else wall_u - sz.y
+		put(b, a, t, n, mod, u, d + sz.x * 0.5, dir, o)
+		d += sz.x + gap
+	return d
+
+## The layout, as Steven remembers it (Oct 6). Walking in, everything on the right
+## stands flush against the right wall in one line, front to back: the claw machines,
+## the four skee-ball alleys, the four basketball games, then the video games. On the
+## left are the token changers, the redemption counter and the prize wall, then video
+## games, the racers and pinball. The sit-in ride and an island of uprights are in the
+## middle, and two air hockey tables are in the open middle at the back.
 static func machines(b, a, t, n):
-	var u0 = SIDE
-	var u1 = UNIT - SIDE
-	# --- by the door: three cranes facing the entrance (seen from the mall in the 2009 photo)
-	var cw = fp("crane").x
-	for i in 3:
-		put(b, a, t, n, "crane", F0 + COL + 0.1 + cw * (i + 0.5), 1.6, "+d", {"style": i})
-	# --- on the left: token changers against the front wall, then the redemption counter
+	var u0 = SIDE              # the right wall (walking in)
+	var u1 = UNIT - SIDE       # the left wall
+	# --- left: token changers against the front wall, then the redemption counter
 	for u in [6.95, 7.5]:
 		put(b, a, t, n, "redeem", u, WALL_T + 0.5, "-d", {"kind": "tokens"}, 0.15)
 	put(b, a, t, n, "redeem", 6.7, 2.5, "+d", {"kind": "counter", "length": 1.6}, 0.15)
 	put(b, a, t, n, "redeem", 5.9, 5.6, "+u", {"kind": "counter", "length": 5.0}, 0.15)
 	put(b, a, t, n, "redeem", u1 - 0.45, 5.6, "+u", {"kind": "prizewall", "length": 5.0, "height": 2.8}, 0.0)
-	# --- on the right: four skee-ball alleys, played toward the back of the store
-	var sw = fp("skee").x
-	for i in 4:
-		put(b, a, t, n, "skee", u0 + sw * (i + 0.5), 3.6, "+d", {"number": i + 1})
-	# --- the sit-in dinosaur ride in the middle, its doorway toward the entrance; you can step in
+	# --- right wall, front to back: claws, skee-ball, basketball, video games
+	var d = WALL_T + 0.05
+	d = wall_run(b, a, t, n, "crane", [{"style": 0}, {"style": 1}, {"style": 2}], u0, "-u", d, 0.02)
+	d = wall_run(b, a, t, n, "skee", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1)
+	d = wall_run(b, a, t, n, "hoops", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1)
+	wall_row(b, a, t, n, [0, 3, 4, 5, 2, 6, 1, 7, 0, 4, 3, 2, 5, 6], u0, "-u", d + 0.15, DEPTH - 1.9)
+	# --- left wall past the prize wall: video games, the twin racers, more video games,
+	# pinball, and video games up to the back door
+	d = wall_row(b, a, t, n, [1, 6, 0, 4, 3, 2], u1, "+u", 8.6, 14.4)
+	d = wall_run(b, a, t, n, "driver", [{"kind": "racer", "style": 0}, {"kind": "racer", "style": 1}], u1, "+u", 14.5, 0.1)
+	d = wall_row(b, a, t, n, [2, 5, 0, 7, 3, 4, 6, 1], u1, "+u", d + 0.2, 29.0)
+	d = wall_run(b, a, t, n, "driver", [{"kind": "pinball", "style": 0}, {"kind": "pinball", "style": 1}, {"kind": "pinball", "style": 2}], u1, "+u", 29.2, 0.12)
+	wall_row(b, a, t, n, [0, 3, 5, 2], u1, "+u", d + 0.2, DEPTH - 2.2)
+	# --- the middle: the sit-in dinosaur ride, its doorway toward the entrance (you can step in)
+	var ru = 4.3
+	var rd = 11.4
 	var k0 = b.obstacles.size()
-	put(b, a, t, n, "ride", 4.0, 9.6, "+d", {})
+	put(b, a, t, n, "ride", ru, rd, "+d", {})
 	b.obstacles.resize(k0)
 	var rw = fp("ride")
 	for r in [[-rw.x * 0.5, -0.5, 0.0, rw.y], [0.5, rw.x * 0.5, 0.0, rw.y], [-0.5, 0.5, 1.15, rw.y]]:
-		var q0 = P(a, t, n, 4.0 - r[0], 0, 9.6 + r[2])
-		var q1 = P(a, t, n, 4.0 - r[1], 0, 9.6 + r[3])
+		var q0 = P(a, t, n, ru - r[0], 0, rd + r[2])
+		var q1 = P(a, t, n, ru - r[1], 0, rd + r[3])
 		b.obst(["rect", min(q0.x, q1.x) - 0.1, min(q0.z, q1.z) - 0.1, max(q0.x, q1.x) + 0.1, max(q0.z, q1.z) + 0.1])
-	# --- video games along both walls past the counter and the skee-ball
-	wall_row(b, a, t, n, [0, 3, 4, 5, 0, 2, 7, 6], u0, "-u", 7.3)
-	wall_row(b, a, t, n, [1, 6, 0, 4, 3, 2], u1, "+u", 8.8)
-	# --- four basketball games on the left wall, two twin racers on the right
-	var hw = fp("hoops")
-	for i in 4:
-		put(b, a, t, n, "hoops", u1 - hw.y, 14.6 + hw.x * (i + 0.5), "+u", {"number": i + 1})
-	var rc = fp("driver", {"kind": "racer"})
-	for i in 2:
-		put(b, a, t, n, "driver", u0 + rc.y, 14.6 + (rc.x + 0.1) * (i + 0.5), "-u", {"kind": "racer", "style": i})
-	# --- the middle: an island of back-to-back uprights
-	var d = 20.5
-	var pairs = [[0, 4], [2, 5], [3, 0], [7, 2], [4, 3]]
-	for pr in pairs:
+	# --- an island of back-to-back uprights
+	d = 18.6
+	for pr in [[0, 4], [2, 5], [3, 0]]:
 		var sa = fp("video", {"style": pr[0]})
 		var sb = fp("video", {"style": pr[1]})
 		var wdt = max(sa.x, sb.x)
 		put(b, a, t, n, "video", 4.0 - sa.y, d + wdt * 0.5, "+u", {"style": pr[0]})
 		put(b, a, t, n, "video", 4.0 + sb.y, d + wdt * 0.5, "-u", {"style": pr[1]})
 		d += wdt + 0.03
-	# --- more along the walls toward the back
-	wall_row(b, a, t, n, [2, 4, 6, 0, 3, 5, 7, 4, 0, 2], u0, "-u", 19.6)
-	wall_row(b, a, t, n, [1, 0, 3, 5, 2, 6, 4, 0, 7], u1, "+u", 19.6)
-	# --- pinball on the right toward the back; two more uprights by the back door's left
-	var pb = fp("driver", {"kind": "pinball"})
-	for i in 3:
-		put(b, a, t, n, "driver", u0 + pb.y, 30.0 + (pb.x + 0.12) * (i + 0.5), "-u", {"kind": "pinball", "style": i})
-	wall_row(b, a, t, n, [6, 1, 0, 5], u1, "+u", 30.5)
+	# --- two air hockey tables in the open middle at the back, end to end down the room
+	for i in 2:
+		put(b, a, t, n, "airhockey", 4.0, 25.6 + i * 5.2, "+d", {"number": i + 1})
+	# --- a few uprights on the back wall, right of the back door
 	for i in 3:
 		var s = [3, 0, 2][i]
 		var sz = fp("video", {"style": s})
-		put(b, a, t, n, "video", 1.0 + i * 0.75, DEPTH - SIDE - sz.y, "+d", {"style": s})
+		put(b, a, t, n, "video", 1.9 + i * 0.75, DEPTH - SIDE - sz.y, "+d", {"style": s})
 
 # ------------------------------------------------------------------ materials
 ## "pc_store_<key>" (build_mall.gd's mat() calls this).
@@ -358,6 +375,10 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#eceef0"); m.metallic = 0.55; m.roughness = 0.1
 		"blue":
 			m.albedo_color = Color("#1e48b0"); m.roughness = 0.55
+		"band":
+			m.albedo_color = Color("#1e48b0"); m.roughness = 0.55
+			m.emission_enabled = true; m.emission = Color("#2c58d8"); m.emission_energy_multiplier = 0.35
+			m.set_meta("e_day", 0.35); m.set_meta("e_night", 0.35)
 		"black":
 			m.albedo_color = Color("#0e0e12"); m.roughness = 0.8
 		"letterface":
