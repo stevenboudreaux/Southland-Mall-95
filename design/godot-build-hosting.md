@@ -31,21 +31,17 @@
   - It runs on every push to main.
   - `godot-build`'s own workflow starts it when a new build is pushed.
 - **Pages setting:** Settings → Pages → Source must be "GitHub Actions". The "Deploy from a branch" setting would serve main without the Godot build.
-- **History:** the old builds and lightmaps were removed from the history of every branch with `git filter-repo`.
+- **History (done Oct 6, ~4 pm):** the old builds and lightmaps, `play3b/` and the `godot-court` build and bakes were removed from the history of every branch with `git filter-repo`, and all ten branches force-pushed.
   - Before: 755 MiB, mostly 18 old game files (239 MB) and 36 old light bakes (353 MB).
-  - After (measured on a scratch copy): about 103 MiB for main's history plus 74 MiB for `godot-build`.
+  - After: 149 MiB for the whole repository, `godot-build` included.
   - GitHub's own size figure drops only after GitHub cleans up the unreachable objects.
+  - **Backup of the old history:** `~/GodotProjects/southland-backup-2026-10-06.bundle` on Steven's MacBook Air (705 MB, all 10 branches as of Demo 9b; `git clone southland-backup-2026-10-06.bundle` restores it).
+  - Commit ids changed. Any older clone must be re-cloned or reset to the new `origin/main`; never push an old clone's branches back.
 
 ## Publishing a demo now
 1. **Bake on the Mac.** If the project there has no lightmaps yet, copy them from the branch first: `git fetch origin godot-build && git archive FETCH_HEAD lightmaps | tar -x`, then move `lightmaps/*` into `prototypes/godot-mall/project/`.
 2. **Bring the bake back and check it:** `tools/qa/bakecheck.sh` (it now calls `export_web.sh`).
 3. **Commit code changes to main** as usual. There is no build or lightmap to commit.
-4. **Replace the build branch.** Make a fresh folder with `play/` (the export), `lightmaps/` (the six `main_*` files), `README.md` and `.github/workflows/deploy-on-build.yml`, both copied from the branch. Then:
-   ```
-   git init -q -b godot-build
-   git add -A
-   git commit -m "chore: Godot mall Demo N build and lightmaps"
-   git push --force <repo> godot-build
-   ```
-5. **Wait for the deploy:** Pages redeploys in a minute or two (Actions tab: "Deploy site to Pages").
+4. **Replace the build branch** from the project folder: `tools/publish_build.sh <builddir> "chore: Godot mall Demo N build and lightmaps"`. It takes the export and the project's six `main_*` lightmap files and force-pushes them to `godot-build` as one commit, keeping the branch's README and workflow.
+5. **Wait for the deploy:** Pages redeploys in a minute or two (Actions tab: "Deploy site to Pages"; check it with `gh run list -R stevenboudreaux/Southland-Mall-95 -L 3`).
 - **For a change that needs no rebake** (probe-lit parts only), take the lightmaps from the branch, rebuild, export and do step 4.

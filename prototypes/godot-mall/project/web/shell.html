@@ -330,11 +330,14 @@ const engine = new Engine(GODOT_CONFIG);
 			'onPrintError': function () { say('Engine error: ' + Array.prototype.slice.call(arguments).join(' ').slice(0, 220)); },
 			'onExit': function (code) { say('The engine stopped (code ' + code + ')'); },
 			'onProgress': function (current, total) {
-				if (current > 0 && total > 0) {
+				// the last progress tick can land after the loading screen is removed
+				const lbar = document.getElementById('load-bar');
+				const lmb = document.getElementById('load-mb');
+				if (current > 0 && total > 0 && lbar && lmb) {
 					statusProgress.value = current;
 					statusProgress.max = total;
-					document.getElementById('load-bar').style.width = (100 * current / total).toFixed(1) + '%';
-					document.getElementById('load-mb').textContent = (current / 1048576).toFixed(0) + ' of ' + (total / 1048576).toFixed(0) + ' MB' + (current >= total ? ' · setting up the lights…' : '');
+					lbar.style.width = (100 * current / total).toFixed(1) + '%';
+					lmb.textContent = (current / 1048576).toFixed(0) + ' of ' + (total / 1048576).toFixed(0) + ' MB' + (current >= total ? ' · setting up the lights…' : '');
 					if (current >= total && !startedAt) { startedAt = Date.now(); }
 				} else {
 					statusProgress.removeAttribute('value');

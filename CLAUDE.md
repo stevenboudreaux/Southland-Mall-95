@@ -13,8 +13,10 @@ hooks and rules, run at `modes.rigor: minimal`.
 
 - **Engine**: none. Hand-built browser game: vanilla JavaScript, canvas raycaster
   with 3D, side and overhead views. No build step, no framework, no npm.
-- **Hosting**: GitHub Pages from `main` (live: https://stevenboudreaux.github.io/Southland-Mall-95/).
-  `.nojekyll` is present so Pages serves files as-is. Anything pushed to `main` is live.
+- **Hosting**: GitHub Pages, deployed by the Actions workflow `.github/workflows/pages.yml`
+  (live: https://stevenboudreaux.github.io/Southland-Mall-95/). It serves `main` plus the Godot
+  mall build from the single-commit `godot-build` branch (`design/godot-build-hosting.md`).
+  Anything pushed to `main` is live.
 - **Backend**: Google Apps Script (`apps-script/Code.gs`), deployed by hand from
   Steven's Google account. Editing the file here does not redeploy it.
 - **Version Control**: Git, trunk-based on `main`.
