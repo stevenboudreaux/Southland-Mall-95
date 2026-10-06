@@ -17,7 +17,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "..", "..", "..", "tex", "kb")
 os.makedirs(OUT, exist_ok=True)
-BOLD = "/usr/share/fonts/truetype/google-fonts/Poppins-Bold.ttf"
+BOLD = "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf"   # a Helvetica-type grotesque, right for the early 1990s
 SS = 2   # supersampling for the drawn sheets
 
 
@@ -525,7 +525,7 @@ def cards():
         x0 = k * h
         d.rectangle([x0, 0, x0 + h, h], fill=(238, 96, 34))
         d.rectangle([x0, 0, x0 + h, h * 0.24], fill=(26, 110, 60))
-        fit_text(d, "EARLY BIRD" if k == 0 else "SPECIAL", (x0 + 16 * SS, 6 * SS, x0 + h - 16 * SS, h * 0.22), BOLD, (250, 240, 120))
+        fit_text(d, "SALE PRICE" if k == 0 else "SPECIAL", (x0 + 16 * SS, 6 * SS, x0 + h - 16 * SS, h * 0.22), BOLD, (250, 240, 120))
         fit_text(d, big, (x0 + 20 * SS, h * 0.26, x0 + h * 0.62, h * 0.98), BOLD, (255, 255, 255))
         fit_text(d, small, (x0 + h * 0.60, h * 0.34, x0 + h - 14 * SS, h * 0.62), BOLD, (255, 255, 255))
     # (0,1): yellow SALE sign with red letters; (1,1): "20% OFF"
@@ -536,7 +536,7 @@ def cards():
     d.rectangle([h, h, N, N], fill=(250, 214, 40))
     d.rectangle([h, N - h * 0.34, N, N], fill=(26, 130, 70))
     fit_text(d, "20%", (h + 14 * SS, h + 6 * SS, N - 14 * SS, N - h * 0.36), BOLD, (214, 34, 40))
-    fit_text(d, "OFF SALE", (h + 20 * SS, N - h * 0.32, N - 20 * SS, N - 8 * SS), BOLD, (255, 255, 255))
+    fit_text(d, "OFF", (h + 60 * SS, N - h * 0.32, N - 60 * SS, N - 8 * SS), BOLD, (255, 255, 255))
     im = im.resize((512, 512), Image.LANCZOS)
     save(grain(im, 1.5, 41), "cards", 64)
 
@@ -563,16 +563,18 @@ def screens():
     im = Image.new("RGB", (256, 128), (0, 0, 0))
     d = ImageDraw.Draw(im)
     rng = random.Random(8)
-    d.rectangle([0, 0, 127, 127], fill=(70, 150, 236))
-    d.rectangle([0, 96, 127, 127], fill=(120, 76, 40))
-    d.rectangle([0, 92, 127, 98], fill=(60, 170, 70))
-    for (x, y, w) in [(10, 20, 30), (70, 34, 40), (40, 12, 22)]:
-        d.ellipse([x, y, x + w, y + w * 0.4], fill=(250, 250, 250))
-    for x in (24, 56, 88):
-        d.rectangle([x, 64, x + 16, 72], fill=(220, 150, 60))
-    d.rectangle([60, 78, 70, 92], fill=(220, 40, 40))
-    d.rectangle([62, 72, 68, 78], fill=(240, 200, 160))
-    d.rectangle([100, 82, 112, 92], fill=(90, 50, 130))
+    # an invented top-down space shooter: stars, a small ship, rows of blocky invaders
+    d.rectangle([0, 0, 127, 127], fill=(8, 8, 28))
+    for _ in range(40):
+        x, y = rng.randint(0, 126), rng.randint(0, 126)
+        d.point((x, y), fill=rng.choice([(250, 250, 250), (160, 180, 250), (250, 230, 160)]))
+    for j in range(3):
+        for i in range(6):
+            x, y = 14 + i * 18, 22 + j * 16
+            d.rectangle([x, y, x + 10, y + 7], fill=[(90, 220, 120), (240, 200, 60), (230, 90, 200)][j])
+            d.rectangle([x + 2, y + 2, x + 3, y + 3], fill=(8, 8, 28)); d.rectangle([x + 7, y + 2, x + 8, y + 3], fill=(8, 8, 28))
+    d.polygon([(64, 100), (56, 114), (72, 114)], fill=(120, 200, 250))
+    d.line([64, 96, 64, 84], fill=(250, 250, 250), width=1)
     d.rectangle([4, 4, 40, 9], fill=(250, 250, 250)); d.rectangle([90, 4, 124, 9], fill=(250, 220, 60))
     d.rectangle([128, 0, 255, 127], fill=(6, 14, 8))
     for j in range(7):
