@@ -8,8 +8,8 @@
 
 **Guessed (not from a Southland source):**
 - the unit's depth (24 m) and the exact fixture count and order;
-- which department sits where past the first two boards (the video shows DOLLS on the left and VIDEO on the right walking in; the rest is arranged to fit);
-- the cash wrap's position and finish (the video shows it only behind a crowd);
+- which department sits where (the video shows DOLLS on the left and VIDEO on the right walking in; here the room is mirrored, see Layout, and the rest is arranged to fit);
+- the cash wrap's exact size and finish (the video shows it only behind a crowd);
 - the show window left of the pier (the photo shows stock behind something there; glass is a guess).
 
 All package art, price cards and screen pictures are original. No real toy brand, logo, character or box art is reproduced. The video's branded department board is left out; the boards carry plain department words only.
@@ -30,9 +30,10 @@ All package art, price cards and screen pictures are original. No real toy brand
 
 ## Inside (from the video; walkable)
 - **Room.** Tan level-loop carpet. White 2 × 4 ft lay-in ceiling at 3.2 m with two rows of fluorescent troffers. Off-white side walls, a tan back wall with the stockroom door and an exit sign.
-- **Wall shelving.** White 4 ft gondola bays, five shelves to 2.15 m, pegboard backs, ticket strips on the shelf lips, and overstock (more product and shipping cartons) stacked to the ceiling. Left wall from d 1.7: dolls, preschool, games, sports. Right wall from d 4.6: video, vehicles, action toys, games, soft toys. Two bays of soft toys on the back wall.
+- **Layout (Steven, Oct 6).** "The check out counter was to the left when you walk in to the entrance at Southland Mall." The room is therefore the video's layout mirrored left to right: the cash wrap and the video game case are on the left by the door.
+- **Wall shelving.** White 4 ft gondola bays, five shelves to 2.15 m, pegboard backs, ticket strips on the shelf lips, and overstock (more product and shipping cartons) stacked to the ceiling. Right wall from d 1.7: dolls, preschool, games, sports. Left wall past the cash wrap, from d 4.6: video, vehicles, action toys, games, soft toys. Two bays of soft toys on the back wall, left of the stockroom door.
 - **Middle.** A rolling wire dump bin of soft toys, a low double-sided gondola with end caps (d 7.2–12.1), a stack-out with an orange price card, a second gondola (d 15.0–19.9), a second bin.
-- **By the door.** A stack with a toy castle on top (video), a promotional stack with an orange "9.99" card, and the cash wrap on the right with a beige register; the video game case (tan cabinet, a demo TV, glass-fronted shelves) is on the wall behind it.
+- **By the door.** A stack with a toy castle on top (video), a promotional stack with an orange "9.99" card, and the cash wrap on the left with a beige register; the video game case (tan cabinet, a demo TV, glass-fronted shelves) is on the wall behind it.
 - **Department boards.** Teal boards with lime capitals hanging across the aisles: DOLLS, VIDEO, PRESCHOOL, VEHICLES, GAMES, ACTION TOYS, SPORTS, STUFFED TOYS.
 - **Not built.** The chalk queue lines on the carpet and the closed gate (both belong to the video's sale morning), and shoppers.
 

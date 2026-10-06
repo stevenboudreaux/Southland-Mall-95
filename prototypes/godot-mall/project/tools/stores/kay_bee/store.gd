@@ -10,7 +10,8 @@
 ## tan carpet, white lay-in ceiling with fluorescent troffers, white shelving packed to
 ## the ceiling along both walls, low gondolas and stack-outs down the middle, teal
 ## department boards with lime lettering, orange price cards, and the cash wrap with the
-## video game case behind it. All package art is original (paint_store.py).
+## video game case behind it. The layout is the video's mirrored: Steven remembers the
+## checkout on the left as you walk in. All package art is original (paint_store.py).
 ##
 ## Frame: u runs along the frontage from the edge's start `a` (z = -58, the viewer's
 ## right; Sound Shop beyond it) to Miller's Outpost's side (u = 6). d runs into the store
@@ -178,7 +179,7 @@ static func room(b, G, a, t, n):
 	# inside of the fascia and the window's end
 	b.quad(G, "kb_wall", [P(a, t, n, PIER1, 0, 0.06), P(a, t, n, PIER0, 0, 0.06), P(a, t, n, PIER0, HEAD, 0.06), P(a, t, n, PIER1, HEAD, 0.06)], -n)
 	# the stockroom door in the back wall, an exit sign over it (video)
-	var du = 4.55
+	var du = UNIT - 4.55
 	b.cur_color = Color("#8c6a44")
 	b.box(G, "vcolor", P(a, t, n, du, 1.05, dB - 0.02), b.abs_size(t, 0.95, 2.1, 0.04, n))
 	b.cur_color = Color("#c9c9c9")
@@ -376,7 +377,7 @@ static func dept(b, a, t, n, u, d, k):
 		b.box("kb_small", "vcolor", c + t * s + Vector3(0, (y0 + h + CEIL) * 0.5, 0), Vector3(0.006, CEIL - y0 - h, 0.006), Transform3D.IDENTITY, [], true)
 	b.cur_color = Color.WHITE
 
-## The cash wrap on the right by the door, the register, and the video game case behind it.
+## The cash wrap on the left by the door (the caller mirrors the frame), the register, and the video game case behind it.
 static func cash_wrap(b, a, t, n, rng):
 	var G = "kb_fix"
 	# the counter: its front faces the aisle (+u)
@@ -430,8 +431,8 @@ static func cash_wrap(b, a, t, n, rng):
 
 ## Everything on the floor, front to back (the video's order where it shows).
 static func fixtures(b, a, t, n, rng):
-	var uR = SIDE            # right wall, walking in
-	var uL = UNIT - SIDE     # left wall
+	var uR = SIDE            # the far side wall from the cash wrap (see the mirror below)
+	var uL = UNIT - SIDE
 	# show window display and the first stack by the door, the castle on top (video)
 	var top = stack(b, a, t, n, 5.45, 0.75, 0.8, 0.9, 4, "dolls", -1, rng)
 	castle(b, P(a, t, n, 5.45, top, 0.75), t, n)
@@ -439,6 +440,10 @@ static func fixtures(b, a, t, n, rng):
 	# stock piled high on both sides of the opening, as in the photo
 	stack(b, a, t, n, 4.25, 0.75, 0.7, 0.7, 6, "vehicles", -1, rng)
 	stack(b, a, t, n, 1.15, 1.2, 0.7, 0.6, 5, "games", -1, rng)
+	# Steven (Oct 6): at Southland the checkout counter was on the LEFT as you walk in, so the
+	# room is the video's layout mirrored. From here on u is measured from the left wall.
+	a = a + t * UNIT
+	t = -t
 	cash_wrap(b, a, t, n, rng)
 	# the yellow sale signs hanging at the front (photo)
 	for s in [[1.5, 0], [2.9, 1], [4.1, 0]]:
@@ -459,7 +464,7 @@ static func fixtures(b, a, t, n, rng):
 	stack(b, a, t, n, 3.0, 13.4, 1.0, 0.8, 4, "action", 1, rng)
 	gondola(b, a, t, n, 3.0, 15.0, ["games", "sports", "sports", "sports"], ["action", "action", "vehicles", "video"], "vehicles", "sports", rng)
 	bin(b, a, t, n, 3.0, 21.4, rng)
-	# department boards (video: DOLLS on the left and VIDEO on the right as you walk in)
+	# department boards (mirrored with the room: VIDEO over the cash wrap on the left, DOLLS on the right)
 	for s in [[4.6, 3.0, 0], [1.35, 2.7, 1], [4.6, 8.4, 6], [1.35, 7.6, 3], [4.6, 13.2, 2], [1.35, 13.6, 5], [4.6, 18.4, 7], [2.0, 21.6, 4]]:
 		dept(b, a, t, n, s[0], s[1], s[2])
 
