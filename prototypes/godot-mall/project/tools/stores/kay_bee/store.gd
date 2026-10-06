@@ -310,10 +310,10 @@ static func stack(b, a, t, n, u, d, w, dp, layers, cat, card, rng):
 	if card >= 0:
 		var cc = P(a, t, n, u, top, d)
 		b.cur_color = Color("#d8d8d4")
-		b.box("kb_small", "vcolor", cc + Vector3(0, 0.12, 0), Vector3(0.015, 0.24, 0.015), Transform3D.IDENTITY, [], true)
+		b.box("kb_small", "vcolor", cc + Vector3(0, 0.12, 0), Vector3(0.015, 0.24, 0.015), Transform3D.IDENTITY)
 		b.cur_color = Color.WHITE
 		for s in [1.0, -1.0]:
-			fq(b, "kb_small", "kb_cards", cc + n * 0.012 * s - t * 0.17 * s, t * s, n * s, 0.03, 0.31, 0.24, 0.52, 0.0, card * 0.5, 0.0, card * 0.5 + 0.5, 0.5, true)
+			fq(b, "kb_small", "kb_cards", cc + n * 0.012 * s - t * 0.17 * s, t * s, n * s, 0.03, 0.31, 0.24, 0.52, 0.0, card * 0.5, 0.0, card * 0.5 + 0.5, 0.5)
 	ob(b, P(a, t, n, u - w * 0.5, 0, d - dp * 0.5), P(a, t, n, u + w * 0.5, 0, d + dp * 0.5), 0.15)
 	return top
 
@@ -351,16 +351,16 @@ static func bin(b, a, t, n, u, d, rng):
 static func castle(b, c, t, n):
 	var G = "kb_small"
 	b.cur_color = Color("#e9e6ee")
-	b.box(G, "vcolor_matte", c + Vector3(0, 0.2, 0), b.abs_size(t, 0.56, 0.4, 0.34, n), Transform3D.IDENTITY, ["-y"], true)
+	b.box(G, "vcolor_matte", c + Vector3(0, 0.2, 0), b.abs_size(t, 0.56, 0.4, 0.34, n), Transform3D.IDENTITY, ["-y"])
 	for s in [-1.0, 1.0]:
 		b.cur_color = Color("#e9e6ee")
-		b.cyl(G, "vcolor_matte", c + t * 0.3 * s, 0.1, 0.1, 0.62, 12, false, false, true)
+		b.cyl(G, "vcolor_matte", c + t * 0.3 * s, 0.1, 0.1, 0.62, 12, false, false)
 		b.cur_color = Color("#e48ac0")
-		b.cyl(G, "vcolor_matte", c + t * 0.3 * s + Vector3(0, 0.62, 0), 0.13, 0.002, 0.26, 12, false, true, true)
+		b.cyl(G, "vcolor_matte", c + t * 0.3 * s + Vector3(0, 0.62, 0), 0.13, 0.002, 0.26, 12, false, true)
 	b.cur_color = Color("#e48ac0")
-	b.cyl(G, "vcolor_matte", c + Vector3(0, 0.4, 0), 0.2, 0.002, 0.3, 12, false, true, true)
+	b.cyl(G, "vcolor_matte", c + Vector3(0, 0.4, 0), 0.2, 0.002, 0.3, 12, false, true)
 	b.cur_color = Color("#8fb4e6")
-	b.box(G, "vcolor_matte", c + n * 0.172 + Vector3(0, 0.13, 0), b.abs_size(t, 0.16, 0.26, 0.004, n), Transform3D.IDENTITY, [], true)
+	b.box(G, "vcolor_matte", c + n * 0.172 + Vector3(0, 0.13, 0), b.abs_size(t, 0.16, 0.26, 0.004, n), Transform3D.IDENTITY, [])
 	b.cur_color = Color.WHITE
 
 ## A hanging department board (dept_signs.png row `k`), across the aisle, readable from both sides.
@@ -389,16 +389,16 @@ static func cash_wrap(b, a, t, n, rng):
 	var S = "kb_small"
 	var ro = L(o, r, t, 0.5, 0.95, 0.08)
 	b.cur_color = Color("#d9d2bf")
-	lbox(b, S, "vcolor", ro, r, t, 0.0, 0.0, 0.0, 0.42, 0.1, 0.4, ["-y"], true)
-	lbox(b, S, "vcolor", ro, r, t, 0.06, 0.1, 0.02, 0.3, 0.27, 0.3, ["-y"], true)
+	lbox(b, S, "vcolor", ro, r, t, 0.0, 0.0, 0.0, 0.42, 0.1, 0.4, ["-y"])
+	lbox(b, S, "vcolor", ro, r, t, 0.06, 0.1, 0.02, 0.3, 0.27, 0.3, ["-y"])
 	b.cur_color = Color("#bdb6a4")
-	lbox(b, S, "vcolor", ro, r, t, 0.5, 0.0, 0.1, 0.4, 0.03, 0.18, ["-y"], true)
+	lbox(b, S, "vcolor", ro, r, t, 0.5, 0.0, 0.1, 0.4, 0.03, 0.18, ["-y"])
 	b.cur_color = Color.WHITE
 	# the staff side sees the screen
-	fq(b, S, "kb_screen", ro + r * 0.36 + t * 0.018, -r, -t, 0.03, 0.27, 0.13, 0.34, 0.0, 0.5, 0.0, 1.0, 1.0, true)
+	fq(b, S, "kb_screen", ro + r * 0.36 + t * 0.018, -r, -t, 0.03, 0.27, 0.13, 0.34, 0.0, 0.5, 0.0, 1.0, 1.0)
 	# bags and a charity can stand in for counter clutter
 	b.cur_color = Color("#f4f2ec")
-	lbox(b, S, "vcolor_matte", o, r, t, 1.7, 0.95, 0.15, 0.3, 0.02, 0.36, ["-y"], true)
+	lbox(b, S, "vcolor_matte", o, r, t, 1.7, 0.95, 0.15, 0.3, 0.02, 0.36, ["-y"])
 	b.cur_color = Color.WHITE
 	ob(b, P(a, t, n, SIDE, 0, 1.9), P(a, t, n, 1.55, 0, 4.5))
 	# the video game case on the wall behind: tan cabinet, a demo TV, locked glass shelves
@@ -545,6 +545,9 @@ static func fill_mat(m, key, b):
 			m.set_meta("e_day", 1.5); m.set_meta("e_night", 1.5)
 		"wire":
 			m.albedo_texture = b.tex("kb/wire.png"); m.roughness = 0.4
+			# dynamic (alpha) and so probe-lit: a little glow keeps the white wire from going grey
+			m.emission_enabled = true; m.emission = Color("#d8d8d2"); m.emission_energy_multiplier = 0.5
+			m.set_meta("e_day", 0.5); m.set_meta("e_night", 0.5)
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
 		_:
