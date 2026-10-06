@@ -28,6 +28,10 @@ const CEIL = 3.2
 const HALL_OPEN = 40.2   # the hall face is open from here round the corner...
 const COURT_OPEN = -15.0 # ...to here on the court face
 const PIER = 0.25
+const HEAD_Z0 = 44.0     # the black-light wall runs from here to the court window (the T-shirts end here)
+const CK_X = -12.3       # the checkout counter's hall-side face (the clerk stands east of it)
+const CK_Z0 = 43.3       # ...and its north and south ends
+const CK_Z1 = 46.5
 const SILL = 0.45        # show window bulkhead
 const UP = Vector3.UP
 
@@ -330,7 +334,7 @@ static func fixtures(b, rng):
 	ob(b, xa, 40.26 - 3 * 1.22, xa + 0.56, 40.26)
 	# --- west wall, front: black slatwall of bagged T-shirts to the ceiling (video 3:07)
 	var t0 = 40.5
-	var t1 = 46.0
+	var t1 = HEAD_Z0
 	var tw = t1 - t0
 	b.quad(G, "gb_slat_black", [W(xa + 0.02, 0, t1), W(xa + 0.02, 0, t0), W(xa + 0.02, CEIL, t0), W(xa + 0.02, CEIL, t1)], Vector3(1, 0, 0),
 		[Vector2(t1 / 0.305, CEIL / 0.305), Vector2(t0 / 0.305, CEIL / 0.305), Vector2(t0 / 0.305, 0), Vector2(t1 / 0.305, 0)])
@@ -343,38 +347,95 @@ static func fixtures(b, rng):
 	b.box(G, "gb_blue", W(xa + 0.33, 0.95, 40.38), Vector3(0.5, 1.9, 0.5), Transform3D.IDENTITY, ["-y"])
 	fq(b, G, "gb_snacks", W(xa + 0.581, 0, 40.63), Vector3(0, 0, -1), Vector3(1, 0, 0), 0.0, 0.5, 0.05, 1.85, 0.0)
 	ob(b, xa, 40.13, xa + 0.6, 40.63)
-	# --- west wall by the court window: posters on white slatwall, a keychain spinner
-	b.quad(G, "gb_slat_white", [W(xa + 0.02, 0, Z1 - 0.3), W(xa + 0.02, 0, t1), W(xa + 0.02, CEIL, t1), W(xa + 0.02, CEIL, Z1 - 0.3)], Vector3(1, 0, 0),
-		[Vector2((Z1 - 0.3) / 0.305, CEIL / 0.305), Vector2(t1 / 0.305, CEIL / 0.305), Vector2(t1 / 0.305, 0), Vector2((Z1 - 0.3) / 0.305, 0)])
-	fq(b, G, "gb_posters", W(xa, 0, Z1 - 0.4), Vector3(0, 0, -1), Vector3(1, 0, 0), 0.0, 1.5, 1.2, 2.7, 0.04)
-	spinner(b, W(-18.9, 0, 46.6), 0.3, 1.5, 0.42, "gb_knick")
-	# --- the cash wrap in the north-east corner: an L of candy cases, the register, the oval sign
-	showcase(b, W(-13.6, 0, 39.2), Vector3(1, 0, 0), Vector3(0, 0, 1), 2.5, 0.0)
-	showcase(b, W(-13.6, 0, za + 0.3), Vector3(0, 0, 1), Vector3(-1, 0, 0), 2.6, 0.4)
-	ob(b, -14.25, za, -10.4, 39.85)
+	# --- west wall by the court window: the black-light wall (Steven, Oct 6): black-light
+	# posters up top, lava lamps, lightning balls and black lights on the second row, incense
+	# and trinkets at the bottom, all under purple black-light tubes
+	headshop_wall(b, xa, HEAD_Z0, Z1 - 0.3)
+	# --- the checkout (Steven, Oct 6, from the Courier photo of the Southland store): a glass
+	# counter in the front corner running parallel to the hall (and The Avenue across it);
+	# the clerk stands on its hall side and looks out through the corner toward Karmelkorn
+	showcase(b, W(CK_X, 0, CK_Z1), Vector3(0, 0, -1), Vector3(-1, 0, 0), CK_Z1 - CK_Z0, 0.4)
+	ob(b, CK_X - 0.7, CK_Z0, CK_X, CK_Z1)
 	var S = "gb_small"
-	var ro = W(-11.8, 1.06, 39.3)
+	var ro = W(CK_X - 0.33, 1.06, CK_Z0 + 0.9)
 	b.cur_color = Color("#d9d2bf")
-	b.box(S, "vcolor", ro + Vector3(0, 0.05, 0.2), Vector3(0.42, 0.1, 0.4), Transform3D.IDENTITY, ["-y"], true)
-	b.box(S, "vcolor", ro + Vector3(0, 0.24, 0.12), Vector3(0.3, 0.27, 0.22), Transform3D.IDENTITY, ["-y"], true)
+	b.box(S, "vcolor", ro, Vector3(0.4, 0.1, 0.42), Transform3D.IDENTITY, ["-y"], true)
+	b.box(S, "vcolor", ro + Vector3(0.06, 0.19, 0.0), Vector3(0.22, 0.27, 0.3), Transform3D.IDENTITY, ["-y"], true)
+	b.cur_color = Color("#f4f2ec")
+	b.box(S, "vcolor_matte", W(CK_X - 0.3, 1.13, CK_Z1 - 0.5), Vector3(0.3, 0.14, 0.36), Transform3D.IDENTITY, ["-y"], true)
 	b.cur_color = Color.WHITE
-	# the red oval sign hanging over the candy case (video 2:56)
-	oval_sign(b, W(-12.35, 2.35, 39.55))
-	# the hall window's T-shirt display and its sale card (video 3:29)
-	# (window_hall builds them)
-	# --- the corner: the big globe machine, two small ones, a postcard spinner
-	globe_machine(b, W(-11.7, 0, 44.4))
+	# the candy case along the north wall's east end, under the red oval sign (video 2:56)
+	showcase(b, W(-14.2, 0, za + 0.05), Vector3(1, 0, 0), Vector3(0, 0, 1), 3.6, 0.0)
+	ob(b, -14.2, za, -10.6, za + 0.65)
+	oval_sign(b, W(-12.4, 2.35, za + 1.2))
+	# --- the post at the unit's corner (Steven, Oct 6; the Courier photos show it)
+	b.box("gb_shell", "gb_fascia", W(X1 - 0.2, HEAD * 0.5, Z1 - 0.2), Vector3(0.4, HEAD, 0.4), Transform3D.IDENTITY, ["-y", "+y"])
+	ob(b, X1 - 0.4, Z1 - 0.4, X1, Z1, 0.1)
+	# --- the big globe machine by the hall door, two small ones by the court door, a card spinner
+	globe_machine(b, W(-11.3, 0, 41.4))
 	b.box(G, "gb_maroon", W(-14.6, 0.45, 46.95), Vector3(0.7, 0.9, 0.45), Transform3D.IDENTITY, ["-y"])
 	small_machine(b, W(-14.78, 0.9, 46.95))
 	small_machine(b, W(-14.42, 0.9, 46.95))
 	ob(b, -14.95, 46.72, -14.25, 47.18)
-	spinner(b, W(-13.1, 0, 45.6), 0.4, 1.7, 0.46, "gb_cards")
+	spinner(b, W(-14.4, 0, 45.2), 0.4, 1.7, 0.46, "gb_cards")
 	# --- the middle: a low island of novelties and knickknacks, lava lamps on its end
 	island(b, W(-16.4, 0, 41.4), rng)
 	# a round bin of plush
-	b.cyl("gb_fix", "gb_white", W(-13.2, 0, 42.6), 0.42, 0.42, 0.62, 18, false, false)
-	b.cyl("gb_fix", "gb_plush", W(-13.2, 0.62, 42.6), 0.42, 0.12, 0.3, 18, true, false)
-	ob(b, -13.62, 42.18, -12.78, 43.02)
+	b.cyl("gb_fix", "gb_white", W(-13.6, 0, 41.3), 0.42, 0.42, 0.62, 18, false, false)
+	b.cyl("gb_fix", "gb_plush", W(-13.6, 0.62, 41.3), 0.42, 0.12, 0.3, 18, true, false)
+	ob(b, -14.02, 40.88, -13.18, 41.72)
+
+## The black-light wall on the west wall between z0 and z1: black slatwall, purple tubes,
+## posters, a shelf of lava lamps, lightning balls and boxed black lights, incense below.
+static func headshop_wall(b, xa, z0, z1):
+	var G = "gb_fix"
+	var r = Vector3(0, 0, -1)
+	var f = Vector3(1, 0, 0)
+	var o = W(xa, 0, z1)
+	var ln = z1 - z0
+	b.quad(G, "gb_slat_black", [W(xa + 0.02, 0, z1), W(xa + 0.02, 0, z0), W(xa + 0.02, CEIL, z0), W(xa + 0.02, CEIL, z1)], f,
+		[Vector2(z1 / 0.305, CEIL / 0.305), Vector2(z0 / 0.305, CEIL / 0.305), Vector2(z0 / 0.305, 0), Vector2(z1 / 0.305, 0)])
+	# black-light tubes over the posters and over the lamp shelf
+	for y in [3.0, 1.98]:
+		lbox(b, "gb_small", "gb_blacklight", o, r, f, 0.15, y, 0.04, ln - 0.3, 0.035, 0.035, [], true)
+	# the posters (black-light, fluorescing), four across
+	var pw = min(0.86, (ln - 0.2) / 4.0 - 0.06)
+	for k in 4:
+		var x0 = 0.1 + k * (ln - 0.2) / 4.0 + 0.03
+		fq(b, G, "gb_bl_posters", o, r, f, x0, x0 + pw, 2.08, 2.08 + pw * 1.5, 0.03, k * 0.25, 0.0, k * 0.25 + 0.25, 1.0)
+	# the lamp shelf at 1.15 m
+	lbox(b, G, "gb_black", o, r, f, 0.0, 1.12, 0.0, ln, 0.03, 0.34, [])
+	var cols = ["red", "blue", "green", "purple", "orange", "pink"]
+	var x = 0.25
+	var k = 0
+	while x < ln - 0.2:
+		var c = o + r * x + f * 0.17 + UP * 1.15
+		match k % 4:
+			0, 2:
+				lava(b, c, cols[k % 6], 1.05)
+				x += 0.32
+			1:
+				plasma_ball(b, c)
+				x += 0.42
+			3:
+				# a boxed black light standing up, its tube glowing through the window
+				b.box("gb_small", "gb_black", c + UP * 0.3, Vector3(0.12, 0.6, 0.12), Transform3D.IDENTITY, ["-y"], true)
+				b.box("gb_small", "gb_blacklight", c + UP * 0.3 + f * 0.062, Vector3(0.03, 0.48, 0.004), Transform3D.IDENTITY, [], true)
+				x += 0.3
+		k += 1
+	# incense, burners and trinkets on the low shelf
+	lbox(b, G, "gb_black", o, r, f, 0.0, 0.0, 0.0, ln, 0.42, 0.36, ["-y"])
+	fq(b, G, "gb_incense", o, r, f, 0.02, ln - 0.02, 0.42, 0.87, 0.2, 0.0, 0.0, ln / 2.4, 1.0)
+	lbox(b, G, "gb_black", o, r, f, 0.0, 0.87, 0.0, ln, 0.025, 0.3, [])
+	ob(b, xa, z0, xa + 0.4, z1)
+
+## A lightning ball: a black base and a glowing purple globe of tendrils.
+static func plasma_ball(b, c):
+	var S = "gb_small"
+	b.cur_color = Color("#141416")
+	b.cyl(S, "vcolor", c, 0.08, 0.05, 0.1, 14, true, false, true)
+	b.cur_color = Color.WHITE
+	ball(b, S, c + UP * 0.22, 0.12, "gb_plasma", 10)
 
 ## The low white island down the middle: two bays each side (boxed novelties on the low
 ## shelves, knickknacks on the top shelf) and an end cap of lava lamps toward the court.
@@ -561,6 +622,28 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#1e46be"); m.roughness = 0.5
 		"sale":
 			m.albedo_texture = b.tex("gb/sale.png"); m.roughness = 0.6
+		"bl_posters":
+			# fluorescent inks under the black lights: they glow in their own colours
+			m.albedo_texture = b.tex("gb/bl_posters.png"); m.roughness = 0.7
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture
+			m.emission = Color.WHITE; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission_energy_multiplier = 0.9
+			m.set_meta("e_day", 0.9); m.set_meta("e_night", 0.9)
+		"incense":
+			m.albedo_texture = b.tex("gb/incense.png"); m.roughness = 0.7
+		"black":
+			m.albedo_color = Color("#141418"); m.roughness = 0.6
+		"blacklight":
+			m.albedo_color = Color("#6a40ff")
+			m.emission_enabled = true; m.emission = Color("#6a3cff"); m.emission_energy_multiplier = 3.0
+			m.set_meta("e_day", 3.0); m.set_meta("e_night", 3.0)
+		"plasma":
+			m.albedo_texture = b.tex("gb/plasma.png")
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture
+			m.emission = Color.WHITE; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission_energy_multiplier = 2.0
+			m.set_meta("e_day", 2.0); m.set_meta("e_night", 2.0)
+			m.roughness = 0.05; m.metallic_specular = 0.9
 		"maroon":
 			m.albedo_color = Color("#6a1820"); m.roughness = 0.35; m.metallic_specular = 0.55
 		"red":

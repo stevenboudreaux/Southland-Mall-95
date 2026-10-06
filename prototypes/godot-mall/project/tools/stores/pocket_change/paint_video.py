@@ -11,6 +11,9 @@ Atlases (cell index = style index 0..7, layout must match video.gd):
 Shared: video_lam.png (body laminate, tinted), video_tmold.png, video_kick.png, video_door.png,
 video_entry.png / video_entry_e.png (coin entry and its lit reject button), video_speaker.png,
 video_glass.png (fingerprints, alpha), video_scan.png (scanline overlay).
+Owner renames (scripts/signs.gd): video_marquees_blank.png, video_fronts_blank.png,
+video_panels_blank.png, video_bezels_blank.png (word-free copies) and video_titles.json
+(where each title sits); see paint_marquees_blank() and paint_titles_blank().
 
 All game titles, artwork and characters are invented. Run: python3 paint_video.py
 """
@@ -1194,7 +1197,8 @@ def paint_marquees_blank():
 
 
 # =================================================================== bezels
-def paint_bezels():
+def paint_bezels(blank=False, info=None):
+    """blank / info: see paint_titles_blank()."""
     atlas = Image.new("RGB", (1024, 512), (10, 10, 12))
     accents = [(250, 180, 30), (250, 200, 40), (240, 60, 40), (120, 160, 255), (250, 250, 250), (255, 70, 180), (250, 120, 20), (250, 200, 40)]
     lines = [("INSERT TOKEN - PUSH 1 OR 2 PLAYER START", "WINNER STAYS ON"),
@@ -1234,7 +1238,16 @@ def paint_bezels():
         d.text((W / 2, y_bot + 14), lines[i][1], font=fit("cond", lines[i][1], W * 0.92, 18), fill=acc, anchor="mm")
         y_top = hy0 / 2
         if y_top > 18:
-            d.text((W / 2, y_top), s["title"], font=font("condo", 22), fill=acc, anchor="mm")
+            if not blank:
+                d.text((W / 2, y_top), s["title"], font=font("condo", 22), fill=acc, anchor="mm")
+            if info is not None:
+                # the face is the bezel strip above the picture: image rows 0 .. hy0
+                bb = d.textbbox((W / 2, y_top), s["title"], font=font("condo", 22), anchor="mm")
+                info.append({"band": [round(bb[1] / hy0, 4), round(bb[3] / hy0, 4)], "span": [0.15, 0.85],
+                             "font": "sans_italic", "fill": hexc(acc), "outline": "",
+                             "rect": cell_rect(i, 4, 256, 256, bb, 2)})
+        elif info is not None:
+            info.append(None)
         if s["vert"]:
             # wide side margins: game hints down each side
             for x in ((hx0) / 2, (hx1 + W) / 2):
@@ -1242,7 +1255,9 @@ def paint_bezels():
                     d.text((x, H * 0.25 + j * 30), t, font=font("cond", 18), fill=(220, 220, 220) if j < 3 else acc, anchor="mm")
         img = down(img, 256, 256)
         atlas.paste(img, ((i % 4) * 256, (i // 4) * 256))
-    save(atlas, "video_bezels.png", colors=128)
+    if not blank:
+        save(atlas, "video_bezels.png", colors=128)
+    return atlas
 
 
 # ==================================================================== panels
@@ -1258,7 +1273,8 @@ PANEL_BG = {
 }
 
 
-def paint_panels():
+def paint_panels(blank=False, info=None):
+    """blank / info: see paint_titles_blank()."""
     atlas = Image.new("RGB", (1024, 1024), (0, 0, 0))
     for i, s in enumerate(STY):
         k = 2
@@ -1361,13 +1377,25 @@ def paint_panels():
         fy0 = TH
         d.rectangle([0, fy0, W, H], fill=PANEL_BG[i][0][1])
         d.line([(0, fy0 + 3), (W, fy0 + 3)], fill=(200, 200, 200) if not light else (120, 120, 120), width=3)
-        d.text((W / 2, fy0 + 34 * k / 2 + 16), s["title"], font=font("condo", 34), fill=(255, 210, 60) if not light else (200, 30, 30), anchor="mm")
+        tcol = (255, 210, 60) if not light else (200, 30, 30)
+        if not blank:
+            d.text((W / 2, fy0 + 34 * k / 2 + 16), s["title"], font=font("condo", 34), fill=tcol, anchor="mm")
+        if info is not None:
+            # the face is the panel's front lip: cell rows 192 (top) .. 255 (bottom) at 1x
+            bb = d.textbbox((W / 2, fy0 + 34 * k / 2 + 16), s["title"], font=font("condo", 34), anchor="mm")
+            it = d.textbbox((W * 0.12, fy0 + 32 * k / 2 + 16), "INSERT TOKEN", font=font("cond", 18), anchor="mm")
+            u0 = round((it[2] + 16) / W, 4)
+            info.append({"band": [round((bb[1] / k - 192) / 63.0, 4), round((bb[3] / k - 192) / 63.0, 4)], "span": [u0, round(1 - u0, 4)],
+                         "font": "sans_italic", "fill": hexc(tcol), "outline": "",
+                         "rect": cell_rect(i, 2, 512, 256, bb, k)})
         for x in (W * 0.12, W * 0.88):
             d.text((x, fy0 + 32 * k / 2 + 16), "INSERT TOKEN", font=font("cond", 18), fill=ink, anchor="mm")
         img = down(img, 512, 256)
         img = wear_panel(img, i, s, light)
         atlas.paste(img, ((i % 2) * 512, (i // 2) * 256))
-    save(atlas, "video_panels.png", colors=256)
+    if not blank:
+        save(atlas, "video_panels.png", colors=256)
+    return atlas
 
 
 def wear_panel(img, i, s, light):
@@ -1603,8 +1631,9 @@ def paint_sides():
 FRONT_BASE = {0: (20, 20, 22), 1: (24, 24, 27), 2: (20, 20, 22), 3: (20, 18, 26), 4: (20, 20, 22), 5: (20, 18, 26), 6: (168, 20, 26), 7: (18, 18, 20)}
 
 
-def paint_fronts():
-    """Lower-front panel art (video_fronts.png, 4 x 2 cells of 256 x 256), framing the coin door."""
+def paint_fronts(blank=False, info=None):
+    """Lower-front panel art (video_fronts.png, 4 x 2 cells of 256 x 256), framing the coin door.
+    blank / info: see paint_titles_blank()."""
     atlas = Image.new("RGB", (1024, 512), (0, 0, 0))
     for i, s in enumerate(STY):
         k = 2
@@ -1682,8 +1711,17 @@ def paint_fronts():
                 d.rectangle([0, H - 110 + j * 20, W, H - 96 + j * 20], fill=c)
             tcol = (250, 200, 60)
             title_y = H - 140
-        img = fancy_text(img, (W / 2, title_y), s["title"], fit("condo", s["title"], W * 0.8, 46), tcol, tuple(int(v * 0.8) for v in tcol),
-                         stroke_col=(10, 10, 10), stroke=4)
+        tf = fit("condo", s["title"], W * 0.8, 46)
+        if not blank:
+            img = fancy_text(img, (W / 2, title_y), s["title"], tf, tcol, tuple(int(v * 0.8) for v in tcol),
+                             stroke_col=(10, 10, 10), stroke=4)
+        if info is not None:
+            # the face maps the cell with video.gd _uv_cell's 0.004 pad
+            bb = text_mask((W, H), (W / 2, title_y), s["title"], tf, "mm", 4).getbbox()
+            fv = lambda y: round((y / H - 0.004) / 0.992, 4)
+            info.append({"band": [fv(bb[1]), fv(bb[3])], "span": [0.1, 0.9],
+                         "font": "sans_italic", "fill": hexc(tuple(int(v * 0.9) for v in tcol)), "outline": hexc((10, 10, 10)),
+                         "osz": round(96 * 4 / tf.size, 1), "rect": cell_rect(i, 4, 256, 256, bb, k)})
         # wear: shoe scuffs low, grime toward the floor
         a = to_arr(img)
         yy = np.mgrid[0:H, 0:W][0].astype(np.float32)
@@ -1698,7 +1736,57 @@ def paint_fronts():
             v = int(r.integers(90, 150))
             d.line([(x, y), (x + L, y + r.uniform(-4, 4))], fill=(v, v, v), width=1)
         atlas.paste(down(img, 256, 256), ((i % 4) * 256, (i // 4) * 256))
-    save(atlas, "video_fronts.png", colors=256)
+    if not blank:
+        save(atlas, "video_fronts.png", colors=256)
+    return atlas
+
+
+def hexc(c):
+    return "#%02x%02x%02x" % tuple(int(v) for v in c[:3])
+
+
+def cell_rect(i, cols, cw, chh, bb, k, pad=4):
+    """A title's box (bb, in the k-times cell image) as a padded rectangle in the atlas."""
+    ox, oy = (i % cols) * cw, (i // cols) * chh
+    return [max(ox, ox + int(bb[0] / k) - pad), max(oy, oy + int(bb[1] / k) - pad),
+            min(ox + cw, ox + int(math.ceil(bb[2] / k)) + pad), min(oy + chh, oy + int(math.ceil(bb[3] / k)) + pad)]
+
+
+def paint_titles_blank():
+    """Word-free copies of the three cabinet faces that repeat the game's title: the lower
+    front (video_fronts_blank.png), the control panel's front lip (video_panels_blank.png) and
+    the bezel strip above the picture (video_bezels_blank.png). A renamed cabinet (scripts/
+    signs.gd) lays these over the painted faces and draws its new name in the title's place.
+
+    Each blank is the original atlas with only the title's box repainted from a run that
+    left the title off, so everything else is identical to the pixel (same palette and
+    indices; the box takes the nearest palette colours, undithered). Also writes
+    video_titles.json: per face and style, where the title sits ("band": [top, bottom] as
+    fractions of the face from its top edge; "span": the width the words may use, as
+    fractions from the face's left edge) and its look (font in the game's fonts/, fill,
+    outline, "osz" = outline size at a 96 px font). video.gd reads it at build time."""
+    out = {}
+    for key, fn, colors in (("fronts", paint_fronts, 256), ("panels", paint_panels, 256), ("bezels", paint_bezels, 128)):
+        info = []
+        full = fn(blank=True, info=info)   # title left off; info filled
+        orig = Image.open(os.path.join(OUT, "video_%s.png" % key))
+        if orig.mode != "P":
+            orig = orig.convert("RGB").quantize(colors=colors, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.FLOYDSTEINBERG)
+        # keep the original's palette indices; map only the repainted boxes to their nearest entries
+        idx = np.array(orig, np.uint8)
+        pal = np.array(orig.getpalette()[:768], np.int32).reshape(-1, 3)
+        src = np.asarray(full.convert("RGB"), np.int32)
+        for e in info:
+            if e is not None:
+                x0, y0, x1, y1 = e["rect"]
+                c = src[y0:y1, x0:x1].reshape(-1, 1, 3)
+                idx[y0:y1, x0:x1] = ((c - pal[None, :, :]) ** 2).sum(2).argmin(1).reshape(y1 - y0, x1 - x0)
+        res = Image.fromarray(idx, "P")
+        res.putpalette(orig.getpalette())
+        res.save(os.path.join(OUT, "video_%s_blank.png" % key), optimize=True)
+        out[key] = [None if e is None else {k: v for k, v in e.items() if k != "rect"} for e in info]
+    with open(os.path.join(HERE, "video_titles.json"), "w") as f:
+        json.dump(out, f, indent=1)
 
 
 def main():
@@ -1718,6 +1806,7 @@ def main():
     paint_panels()
     paint_sides()
     paint_fronts()
+    paint_titles_blank()
     tot = 0
     for f in sorted(os.listdir(OUT)):
         if f.startswith("video_") and f.endswith(".png"):

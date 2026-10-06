@@ -171,6 +171,7 @@ static func build(b, g, o, f, opts = {}):
 	var ch = _chain(s)
 	var Wi = s.W - 2.0 * T
 	var lam = "pc_video_lam_%d" % si
+	var sf = {}   # title-bearing faces for the owner-editable sign: name -> [points, uvs, normal] (machine frame)
 	_sides(b, g, xf, s, si, ch)
 	# ---- front chain faces between the side panels
 	for i in ch.size() - 1:
@@ -187,22 +188,25 @@ static func build(b, g, o, f, opts = {}):
 				# lower-front art panel (video_fronts.png, 4 x 2 cells of 256 x 256)
 				var fc = si % 4
 				var frw = si / 4
-				_q(b, g, "pc_video_front", xf, p, fr.N, [_uv_cell(4, 2, fc, frw, 0, 1), _uv_cell(4, 2, fc, frw, 1, 1), _uv_cell(4, 2, fc, frw, 1, 0), _uv_cell(4, 2, fc, frw, 0, 0)])
+				var fuv = [_uv_cell(4, 2, fc, frw, 0, 1), _uv_cell(4, 2, fc, frw, 1, 1), _uv_cell(4, 2, fc, frw, 1, 0), _uv_cell(4, 2, fc, frw, 0, 0)]
+				_q(b, g, "pc_video_front", xf, p, fr.N, fuv)
+				sf["fronts"] = [p, fuv, fr.N]
 			"hid":
 				_q(b, g, "pc_video_cpside", xf, p, fr.N, [])
 			"bezel":
-				_bezel(b, g, xf, s, si, fr, Wi)
+				sf["bezels"] = _bezel(b, g, xf, s, si, fr, Wi)
 			"speaker":
 				var w = 0.004
 				var ps = [_fp(fr, -Wi * 0.5, 0, w), _fp(fr, Wi * 0.5, 0, w), _fp(fr, Wi * 0.5, fr.L, w), _fp(fr, -Wi * 0.5, fr.L, w)]
 				_q(b, g, "pc_video_speaker", xf, ps, fr.N, uv01)
 			"marquee":
-				_marquee(b, g, xf, si, fr, Wi)
+				sf["marquee"] = _marquee(b, g, xf, si, fr, Wi)
 			"cap", "top", "back":
 				_q(b, g, lam, xf, p, fr.N, [])
 	if s.flare > 0:
-		_housing(b, g, xf, s, si)
-	_panel(b, g, xf, s, si)
+		sf["marquee"] = _housing(b, g, xf, s, si)
+	sf["panels"] = _panel(b, g, xf, s, si)
+	_sign(b, si, xf, sf)
 	_doors(b, g, xf, s)
 	_controls(b, g, xf, s)
 	# obstacle: the footprint
@@ -266,6 +270,7 @@ static func _sides(b, g, xf, s, si, ch):
 				[Vector2(0, vv), Vector2(0.2, vv), Vector2(0.2, 0), Vector2(0, 0)])
 
 ## The monitor bezel with the CRT behind it, the scanline layer and the front glass.
+## Returns the bezel strip above the picture [points, uvs, normal].
 static func _bezel(b, g, xf, s, si, fr, Wi):
 	var sw = s.scr[0]
 	var sh = s.scr[1]
@@ -281,12 +286,15 @@ static func _bezel(b, g, xf, s, si, fr, Wi):
 	var hs0 = sb
 	var hs1 = sb + sh
 	var rects = [[x0, x1, 0.0, hs0], [x0, x1, hs1, Lb], [x0, hx0, hs0, hs1], [hx1, x1, hs0, hs1]]
+	var top = []
 	for r in rects:
 		var pts = [_fp(fr, r[0], r[2], wb), _fp(fr, r[1], r[2], wb), _fp(fr, r[1], r[3], wb), _fp(fr, r[0], r[3], wb)]
 		var uv = []
 		for q in [[r[0], r[2]], [r[1], r[2]], [r[1], r[3]], [r[0], r[3]]]:
 			uv.append(_uv_cell(BEZEL_COLS, 2, col, row, (q[0] - x0) / Wi, 1.0 - q[1] / Lb, 0.0))
 		_q(b, g, "pc_video_bezel", xf, pts, fr.N, uv)
+		if r[2] == hs1:
+			top = [pts, uv, fr.N]   # the strip above the picture, where the title is printed
 	# recess walls from the hole back to the tube
 	var wr = wb + 0.032
 	var corners = [[hx0, hs0], [hx1, hs0], [hx1, hs1], [hx0, hs1]]
@@ -363,8 +371,9 @@ static func _bezel(b, g, xf, s, si, fr, Wi):
 	var wg = wb - 0.004
 	var gp = [_fp(fr, x0 + 0.002, 0.004, wg), _fp(fr, x1 - 0.002, 0.004, wg), _fp(fr, x1 - 0.002, Lb - 0.004, wg), _fp(fr, x0 + 0.002, Lb - 0.004, wg)]
 	_q(b, g, "pc_video_glass", xf, gp, fr.N, [Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
+	return top
 
-## The backlit marquee between two black retainer strips.
+## The backlit marquee between two black retainer strips. Returns [points, uvs, normal].
 static func _marquee(b, g, xf, si, fr, Wi):
 	var col = si % MQ_COLS
 	var row = si / MQ_COLS
@@ -375,28 +384,63 @@ static func _marquee(b, g, xf, si, fr, Wi):
 	var pts = [_fp(fr, x0, 0, w), _fp(fr, x1, 0, w), _fp(fr, x1, L, w), _fp(fr, x0, L, w)]
 	var uv = [_mq_uv(col, row, 0, 1), _mq_uv(col, row, 1, 1), _mq_uv(col, row, 1, 0), _mq_uv(col, row, 0, 0)]
 	_q(b, g, "pc_video_marquee", xf, pts, fr.N, uv)
-	_sign(b, si, xf, pts, uv, fr.N)
 	var fxf = Transform3D(Basis(Vector3.RIGHT, fr.V, -fr.N), fr.O)
 	_bx(b, g, "pc_video_metal", xf, fxf, Vector3(0, 0.011, 0.003), Vector3(Wi, 0.022, 0.014), false)
 	_bx(b, g, "pc_video_metal", xf, fxf, Vector3(0, L - 0.011, 0.003), Vector3(Wi, 0.022, 0.014), false)
+	return [pts, uv, fr.N]
 
-## Registers the marquee as an owner-editable title (scripts/signs.gd), numbered in build order.
-static func _sign(b, si, xf, pts, uv, n):
-	if not ("signs" in b):
+## Where each style's title is printed on the lower front, the panel lip and the bezel, and
+## in what look: written by paint_video.py paint_titles_blank().
+static var _titles = null
+
+static func _title_info():
+	if _titles == null:
+		_titles = {}
+		var path = "res://tools/stores/pocket_change/video_titles.json"
+		if FileAccess.file_exists(path):
+			var j = JSON.parse_string(FileAccess.get_file_as_string(path))
+			if j is Dictionary:
+				_titles = j
+	return _titles
+
+## Registers the cabinet's title as an owner-editable sign (scripts/signs.gd), numbered in
+## build order. The marquee is the first face (signs.gd reads faces[0] as "the marquee"); the
+## lower front, the panel's front lip and the bezel strip, which repeat the title, follow, each
+## with its word-free atlas (tex/pc/video_<face>_blank.png), the title's band on that face
+## and its look, so a rename changes every printed copy of the name together.
+static func _sign(b, si, xf, sf):
+	if not ("signs" in b) or not sf.has("marquee"):
 		return
 	var k = 0
 	for r in b.signs:
 		if r.kind == "pc_marquee":
 			k += 1
-	var P = []
-	for p in pts:
-		P.append(xf * p)
-	b.sign_add("pc.video.%02d" % (k + 1), "pc_marquee", STYLES[si].title, si, [[P, uv, (xf.basis * n).normalized()]])
+	var faces = []
+	var info = _title_info()
+	for key in ["marquee", "fronts", "panels", "bezels"]:
+		if not sf.has(key) or sf[key] == null or sf[key].is_empty():
+			continue
+		var P = []
+		for p in sf[key][0]:
+			P.append(xf * p)
+		var face = [P, sf[key][1], (xf.basis * sf[key][2]).normalized()]
+		if key != "marquee":
+			var t = info.get(key, [])
+			if si >= t.size() or t[si] == null:
+				continue
+			var e = t[si]
+			var look = {"font": e.font, "fill": e.fill, "outline": e.outline}
+			if e.has("osz"):
+				look["osz"] = e.osz
+			face.append({"tex": "res://tex/pc/video_%s_blank.png" % key, "band": e.band, "span": e.span, "look": look, "lit": true})
+		faces.append(face)
+	b.sign_add("pc.video.%02d" % (k + 1), "pc_marquee", STYLES[si].title, si, faces)
 
 static func _mq_uv(col, row, fu, fv):
 	return Vector2((col * 512.0 + 3.0 + fu * 506.0) / 1024.0, (row * 170.0 + 3.0 + fv * 164.0) / 1024.0)
 
 ## Style 6: a marquee housing wider than the cabinet, its sides flaring out toward the top.
+## Returns the marquee face [points, uvs, normal].
 static func _housing(b, g, xf, s, si):
 	var z0 = s.mq[0]
 	var y0 = s.mq[1]
@@ -428,7 +472,6 @@ static func _housing(b, g, xf, s, si):
 		m.append(Vector3(lerp(-hw, hw, c[0]), y, z) + nfront * 0.003)
 		uv.append(_mq_uv(col, row, c[0], 1.0 - c[1]))
 	_q(b, g, "pc_video_marquee", xf, m, nfront, uv)
-	_sign(b, si, xf, m, uv, nfront)
 	for sg in [-1.0, 1.0]:
 		var a = Vector3(sg * hw0, y0, z0)
 		var c = Vector3(sg * hw1, y1, z1)
@@ -452,8 +495,10 @@ static func _housing(b, g, xf, s, si):
 	# top edge trim (T-molding over the front of the roof)
 	_q(b, g, tm, xf, [tl + Vector3(0, 0.002, -0.002), tr + Vector3(0, 0.002, -0.002), tr + Vector3(0, 0.002, 0.018), tl + Vector3(0, 0.002, 0.018)], Vector3.UP,
 		[Vector2(0, 2), Vector2(1, 2), Vector2(1, 0), Vector2(0, 0)])
+	return [m, uv, nfront]
 
 ## The control panel: a steel box a little wider than the cabinet, overlay on top and front.
+## Returns the front lip [points, uvs, normal], where the title is printed.
 static func _panel(b, g, xf, s, si):
 	var y0 = s.cp[0]
 	var tf = s.cp[1]
@@ -463,6 +508,7 @@ static func _panel(b, g, xf, s, si):
 	var prof = [Vector2(0, y0), Vector2(0, tf), Vector2(d, tb), Vector2(d, tb - 0.07), Vector2(s.kz - 0.004, s.lo - 0.01)]
 	var col = si % PANEL_COLS
 	var row = si / PANEL_COLS
+	var lip = []
 	for i in prof.size():
 		var A = prof[i]
 		var B = prof[(i + 1) % prof.size()]
@@ -471,6 +517,7 @@ static func _panel(b, g, xf, s, si):
 		if i == 0:
 			var uv = [_pn_uv(col, row, 0, 192 + 64), _pn_uv(col, row, 1, 192 + 64), _pn_uv(col, row, 1, 192), _pn_uv(col, row, 0, 192)]
 			_q(b, g, "pc_video_panel", xf, p, fr.N, uv)
+			lip = [p, uv, fr.N]
 		elif i == 1:
 			var uv = [_pn_uv(col, row, 0, 192), _pn_uv(col, row, 1, 192), _pn_uv(col, row, 1, 0), _pn_uv(col, row, 0, 0)]
 			_q(b, g, "pc_video_panel", xf, p, fr.N, uv)
@@ -492,6 +539,7 @@ static func _panel(b, g, xf, s, si):
 				var q = outline[idx[k + j]]
 				pts.append(xf * Vector3(sg * Wp * 0.5, q.y, q.x))
 			b.tri(stt, pts[0], pts[1], pts[2], Vector2.ZERO, Vector2.ZERO, Vector2.ZERO, n)
+	return lip
 
 static func _pn_uv(col, row, fu, py):
 	return Vector2((col * 512.0 + 2.0 + fu * 508.0) / 1024.0, (row * 256.0 + clamp(py, 1.0, 255.0)) / 1024.0)

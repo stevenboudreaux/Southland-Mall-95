@@ -35,6 +35,10 @@ const TEXT_U0 = 6.12    # the sign starts 0.42 m in from the fascia's left end (
 const TEXT_Y = 2.90     # baseline: the caps sit in the fascia's upper part (photo)
 const LETTER_OFF = 0.04     # on stand-offs: they throw a shadow on the tile
 const LETTER_D = 0.07
+const RIGHT_BACK = 3.0  # the right-hand line of machines starts this much further in (Steven, Oct 6)
+const CENTRE_U = 3.7    # the centre aisle's line, where the feature games stand
+const CYC_D = 2.9       # the cyclone game's front edge, just inside the door
+const PUSH_D = 6.5      # the coin pusher's front edge, behind it
 
 static func P(a, t, n, u, y, d):
 	return a + t * u - n * d + Vector3(0, y, 0)
@@ -319,8 +323,9 @@ static func machines(b, a, t, n):
 	put(b, a, t, n, "redeem", 6.7, 2.5, "+d", {"kind": "counter", "length": 1.6}, 0.15)
 	put(b, a, t, n, "redeem", 5.9, 5.6, "+u", {"kind": "counter", "length": 5.0}, 0.15)
 	put(b, a, t, n, "redeem", u1 - 0.45, 5.6, "+u", {"kind": "prizewall", "length": 5.0, "height": 2.8}, 0.0)
-	# --- right wall, front to back: claws, skee-ball, basketball, video games
-	var d = WALL_T + 0.05
+	# --- right wall, front to back: claws, skee-ball, basketball, video games. Steven (Oct 6,
+	# 12:22): the whole line starts about 10 ft further back than first built
+	var d = WALL_T + 0.05 + RIGHT_BACK
 	d = wall_run(b, a, t, n, "crane", [{"style": 0}, {"style": 1}, {"style": 2}], u0, "-u", d, 0.02)
 	d = wall_run(b, a, t, n, "skee", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1)
 	d = wall_run(b, a, t, n, "hoops", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1)
@@ -332,6 +337,11 @@ static func machines(b, a, t, n):
 	d = wall_row(b, a, t, n, [2, 5, 0, 7, 3, 4, 6, 1], u1, "+u", d + 0.2, 29.0)
 	d = wall_run(b, a, t, n, "driver", [{"kind": "pinball", "style": 0}, {"kind": "pinball", "style": 1}, {"kind": "pinball", "style": 2}], u1, "+u", 29.2, 0.12)
 	wall_row(b, a, t, n, [0, 3, 5, 2], u1, "+u", d + 0.2, DEPTH - 2.2)
+	# --- the feature game dead centre as you walk in (Steven, Oct 6): the cyclone-style
+	# light-ring ticket game, and the coin pusher behind it, both facing the entrance
+	for m in [["cyclone", CYC_D], ["pusher", PUSH_D]]:
+		if ResourceLoader.exists("res://tools/stores/pocket_change/%s.gd" % m[0]):
+			put(b, a, t, n, m[0], CENTRE_U, m[1], "+d", {}, 0.2)
 	# --- the middle: the sit-in dinosaur ride, its doorway toward the entrance (you can step in)
 	var ru = 4.3
 	var rd = 11.4

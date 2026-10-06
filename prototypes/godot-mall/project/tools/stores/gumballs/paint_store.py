@@ -654,8 +654,124 @@ def lava():
     save(Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)).convert("RGB"), "lava", 32)
 
 
+# ------------------------------------------------------------------ the black-light wall (Steven, Oct 6)
+def bl_posters():
+    """Four black-light posters, original psychedelic art (no band, film or brand art):
+    flocked-look swirls in fluorescent colours on black. 4 x 256 x 384 in a 1024 x 384 sheet."""
+    W, H = 256, 384
+    sheet = Image.new("RGB", (W * 4, H), (0, 0, 0))
+    FL = [(255, 40, 200), (60, 255, 80), (255, 240, 40), (40, 220, 255), (255, 120, 20), (180, 60, 255)]
+    r = np.random.default_rng(1969)
+    for k in range(4):
+        im = Image.new("RGB", (W * SS, H * SS), (6, 4, 10))
+        d = ImageDraw.Draw(im)
+        cx, cy = W * SS / 2, H * SS * 0.45
+        if k == 0:     # a radiating sun with a face-free spiral centre
+            for i in range(36):
+                a0 = i * 10
+                d.pieslice([cx - 400, cy - 400, cx + 400, cy + 400], a0, a0 + 5, fill=FL[i % 6])
+            for rr, c in ((150, (6, 4, 10)), (130, FL[2]), (100, FL[4]), (70, FL[0]), (40, FL[3])):
+                d.ellipse([cx - rr, cy - rr, cx + rr, cy + rr], fill=c)
+        elif k == 1:   # mushrooms
+            for (mx, my, ms, c) in ((cx - 120, cy + 120, 1.0, FL[0]), (cx + 110, cy + 170, 0.8, FL[3]), (cx, cy - 40, 1.3, FL[2])):
+                d.rectangle([mx - 30 * ms, my, mx + 30 * ms, my + 180 * ms], fill=FL[1])
+                d.chord([mx - 140 * ms, my - 110 * ms, mx + 140 * ms, my + 90 * ms], 180, 360, fill=c)
+                for j in range(6):
+                    sx = mx + r.uniform(-100, 100) * ms
+                    sy = my - r.uniform(10, 80) * ms
+                    d.ellipse([sx - 14 * ms, sy - 10 * ms, sx + 14 * ms, sy + 10 * ms], fill=(250, 250, 240))
+        elif k == 2:   # peace sign in a wavy rainbow
+            for i, c in enumerate(FL):
+                rr = 240 - i * 26
+                d.ellipse([cx - rr, cy - rr, cx + rr, cy + rr], outline=c, width=22)
+            d.ellipse([cx - 110, cy - 110, cx + 110, cy + 110], outline=(250, 250, 250), width=26)
+            d.line([(cx, cy - 110), (cx, cy + 110)], fill=(250, 250, 250), width=26)
+            d.line([(cx, cy), (cx - 78, cy + 78)], fill=(250, 250, 250), width=26)
+            d.line([(cx, cy), (cx + 78, cy + 78)], fill=(250, 250, 250), width=26)
+        else:          # an eye in a starburst of waves
+            for i in range(14):
+                y = 60 + i * 50
+                pts = [(x, y + 26 * math.sin(x / 40 + i)) for x in range(0, W * SS, 8)]
+                d.line(pts, fill=FL[i % 6], width=14)
+            d.ellipse([cx - 170, cy - 90, cx + 170, cy + 90], fill=(250, 250, 240), outline=FL[5], width=12)
+            d.ellipse([cx - 70, cy - 70, cx + 70, cy + 70], fill=FL[3])
+            d.ellipse([cx - 30, cy - 30, cx + 30, cy + 30], fill=(6, 4, 10))
+        word = ["FAR OUT", "GROOVY", "PEACE", "TRIPPY"][k]
+        f = fit(BLACK, word, W * SS * 0.8, 70 * SS)
+        d.text((W * SS / 2, H * SS - 46 * SS), word, font=f, fill=FL[(k + 2) % 6], anchor="mm", stroke_width=3 * SS, stroke_fill=(6, 4, 10))
+        d.rectangle([0, 0, W * SS - 1, H * SS - 1], outline=(30, 30, 34), width=6 * SS)
+        sheet.paste(im.resize((W, H), Image.LANCZOS), (k * W, 0))
+    save(sheet, "bl_posters", 128)
+
+
+def incense():
+    """The bottom shelf of the black-light wall: incense boxes and cones, stick bundles in a
+    cup, brass and soapstone burners, little trinkets. 1024 x 192 for 2.4 x 0.45 m."""
+    W, H = 1024, 192
+    im = Image.new("RGB", (W, H), (14, 12, 18))
+    d = ImageDraw.Draw(im)
+    r = np.random.default_rng(77)
+    x = 6
+    base = H - 6
+    names = ["SANDALWOOD", "PATCHOULI", "JASMINE", "MUSK", "ROSE", "AMBER", "VANILLA", "PINE"]
+    while x < W - 40:
+        k = r.integers(5)
+        if k == 0:     # an incense box
+            c = [(120, 30, 120), (30, 90, 60), (160, 60, 20), (40, 50, 140), (150, 20, 30)][r.integers(5)]
+            d.rectangle([x, base - 110, x + 46, base], fill=c, outline=(230, 190, 80), width=2)
+            d.ellipse([x + 8, base - 92, x + 38, base - 62], fill=(230, 190, 80))
+            nm = names[r.integers(len(names))]
+            f = fit(COND_B, nm, 42, 11)
+            d.text((x + 23, base - 30), nm, font=f, fill=(250, 240, 200), anchor="mm")
+            x += 52
+        elif k == 1:   # sticks standing in a cup
+            d.rectangle([x, base - 40, x + 34, base], fill=(200, 170, 110))
+            for j in range(9):
+                sx = x + 4 + j * 3.4
+                d.line([(sx, base - 40), (sx + r.uniform(-6, 6), base - 140)], fill=(110, 60, 40), width=2)
+            x += 42
+        elif k == 2:   # a soapstone burner (a little elephant shape)
+            d.ellipse([x, base - 46, x + 60, base - 6], fill=(220, 210, 190))
+            d.rectangle([x + 8, base - 14, x + 18, base], fill=(220, 210, 190))
+            d.rectangle([x + 42, base - 14, x + 52, base], fill=(220, 210, 190))
+            d.polygon([(x + 54, base - 36), (x + 72, base - 20), (x + 66, base - 10), (x + 52, base - 22)], fill=(220, 210, 190))
+            d.ellipse([x + 22, base - 40, x + 30, base - 32], fill=(60, 50, 40))
+            x += 80
+        elif k == 3:   # cones in a dish
+            d.ellipse([x, base - 16, x + 70, base], fill=(170, 130, 60))
+            for j in range(4):
+                cx = x + 12 + j * 15
+                d.polygon([(cx - 6, base - 10), (cx + 6, base - 10), (cx, base - 30)], fill=[(150, 40, 30), (90, 60, 40), (40, 90, 50)][j % 3])
+            x += 78
+        else:          # a crystal and a little mirror-ball trinket
+            d.polygon([(x + 10, base), (x, base - 40), (x + 14, base - 70), (x + 28, base - 40), (x + 20, base)], fill=(180, 140, 230), outline=(240, 220, 255))
+            d.ellipse([x + 32, base - 30, x + 60, base - 2], fill=(200, 200, 210))
+            for j in range(5):
+                d.line([(x + 32, base - 26 + j * 6), (x + 60, base - 26 + j * 6)], fill=(120, 120, 130))
+            x += 70
+    save(grain(im, 2.0, 79), "incense", 96)
+
+
+def plasma():
+    """A lightning ball's glow: purple-pink tendrils from the centre (sphere wrap)."""
+    W = 256
+    im = Image.new("RGB", (W, W), (40, 6, 70))
+    d = ImageDraw.Draw(im)
+    r = np.random.default_rng(91)
+    for i in range(14):
+        x = r.uniform(0, W)
+        pts = [(x, W)]
+        for j in range(10):
+            x += r.uniform(-16, 16)
+            pts.append((x, W - (j + 1) * W / 10))
+        d.line(pts, fill=(250, 140, 255), width=4)
+        d.line(pts, fill=(255, 230, 255), width=1)
+    save(im.filter(ImageFilter.GaussianBlur(1.2)), "plasma", 48)
+
+
 def main():
     os.makedirs(OUT, exist_ok=True)
+    bl_posters(); incense(); plasma()
     lava()
     plaque(); bins(); plush(); jackets(); tees(); posters(); cards(); boxes(); knick()
     showcase(); oval(); gumball_fill(); floor(); snacks(); sale()

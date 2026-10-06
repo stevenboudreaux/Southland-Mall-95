@@ -73,3 +73,13 @@ All T-shirt graphics, posters, cards, packaging and the chocolate sign's wording
 - `paint_store.py` → `tex/gb/`.
 - `make_logo.py` → `logo.json`.
 - Hooks in `tools/build_mall.gd` (dispatch, `BUILT_RECTS`, `gb_` materials) and `tools/open_interiors.py` (s8).
+
+## Changes from Steven, Oct 6 (12:56)
+- **The checkout.** Steven compared it with the Courier's photo of the real store (the clerk looking out past a corner post to Karmelkorn across the court, Dillard's to the left, The Avenue behind). It is a glass counter in the front corner, z 43.3–46.5, running parallel to the hall, and so to The Avenue's storefront across it. The clerk stands on its hall side; customers come up from the west. The register sits on top.
+- **The candy case** stays along the north wall's east end, under the oval sign. The big globe machine is now by the hall door.
+- **A post at the unit's corner,** 0.4 m square, white, as in both Courier photos.
+- **The black-light wall.** The west wall by the court window, z 44.0–47.7, is black slatwall under purple black-light tubes:
+  - top: four original psychedelic black-light posters;
+  - second row: lava lamps, lightning balls and boxed black lights;
+  - bottom: incense boxes, stick cups, cones, burners and crystals.
+  - The T-shirt wall now ends at z 44.

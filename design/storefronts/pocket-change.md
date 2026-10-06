@@ -74,3 +74,16 @@ The machines' titles and art are original: real titles and logos are not reprodu
 - **Store probe.** The store has its own interior ReflectionProbe.
 - **`BUILT_RECTS`** keeps the neighbours' generic interiors out.
 - **Previews.** `tools/qa/preview.sh "store:POCKET CHANGE" …` renders the store without a bake.
+
+## Changes from Steven, Oct 6 (12:22) — Demo 9
+- **The right-hand line moved back.** Claws, skee-ball, basketball and the video row now start 3 m further back (`RIGHT_BACK` in store.gd).
+- **The feature game, dead centre inside the door:** a 1995 light-ring ticket game after ICE's Cyclone in Steven's video (`Go20o7LBn4c`; the pink-and-grey 1995 cabinet).
+  - It ships as **WHIRLWIND**, an original name and decal; the name is owner-editable.
+  - Module `cyclone.gd`, `paint_cyclone.py`; the lamps are animated at run time by `scripts/cyclone_lights.gd`:
+    - the ring chase laps every 1.2 s;
+    - every 10 s the ring flashes 4 times and the chase reverses;
+    - the neon coils take turns green → pink → cyan, ~0.5 s each;
+    - the tower lamps blink alternately.
+- **A 3-player coin pusher behind it:** the Silver Skis structure, with a marquee in the style of Steven's Coin Galaxy graphic.
+  - It ships as **COIN COMET**, an original name, editable, with original space art on the translites.
+  - Module `pusher.gd`, `paint_pusher.py`.

@@ -330,8 +330,10 @@ static func fill_mat(m, key, b):
 			# probe-lit (alpha): a little glow keeps them from going grey
 			m.emission_enabled = true; m.emission_texture = m.albedo_texture
 			m.emission = Color.WHITE; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
-			m.emission_energy_multiplier = 0.25
-			m.set_meta("e_day", 0.25); m.set_meta("e_night", 0.25)
+			# 0.25 left them near black on the black slatwall in the baked game (Steven, Oct 6:
+			# "significant lighting bugs in JW"): they are lit by probes only, so carry more of their own
+			m.emission_energy_multiplier = 0.75
+			m.set_meta("e_day", 0.75); m.set_meta("e_night", 0.75)
 		"folded":
 			m.albedo_texture = b.tex("ap/folded.png"); m.roughness = 0.85
 		"folded_top":

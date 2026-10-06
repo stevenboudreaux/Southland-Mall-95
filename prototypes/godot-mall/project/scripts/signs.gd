@@ -4,7 +4,10 @@
 ## The build (tools/build_mall.gd sign_add) lists every such sign in res://gen/signs.json
 ## with its faces in world space. The painted texture keeps the original words; when a sign
 ## has new text, this script lays a word-free copy of its art over it and draws the new text
-## with a Label3D, so a rename needs no rebuild and no rebake.
+## with a Label3D, so a rename needs no rebuild and no rebake. A sign may have several faces
+## (a video cabinet: marquee, lower front, panel lip, bezel strip); a face can carry its own
+## word-free art ("tex"), the band its title was painted in ("band", "span"), its own "look"
+## and "lit" (a painted, unlit-from-within face); all faces of a sign change together.
 ##
 ## Where the text comes from, in order:
 ##   1. the published list, play/signs.json next to the game ({"signs": {id: text}});
@@ -38,9 +41,9 @@ const KB_STYLE := {"font": "sans", "fill": "#b0f03c", "outline": ""}
 ## sprinkled round the room): video cabinets with joysticks, picked to spread across
 ## Pocket Change. Each takes one system's ROMs (play/emu.html); play/roms.json says which
 ## ROM each one has. Values are EmulatorJS core names.
-const ARCADE := {"pc.video.36": "atari2600", "pc.video.01": "nes", "pc.video.07": "segaMD", "pc.video.64": "snes",
-	"pc.video.44": "atari2600", "pc.video.17": "nes", "pc.video.52": "segaMD", "pc.video.23": "snes",
-	"pc.video.56": "atari2600", "pc.video.29": "nes", "pc.video.61": "segaMD", "pc.video.70": "snes"}
+const ARCADE := {"pc.video.33": "atari2600", "pc.video.37": "nes", "pc.video.03": "segaMD", "pc.video.62": "snes",
+	"pc.video.11": "atari2600", "pc.video.46": "nes", "pc.video.17": "segaMD", "pc.video.52": "snes",
+	"pc.video.22": "atari2600", "pc.video.54": "nes", "pc.video.29": "segaMD", "pc.video.67": "snes"}
 const SYS_NAME := {"atari2600": "Atari 2600", "nes": "NES", "segaMD": "Genesis", "snes": "Super NES"}
 const SYS_COL := {"atari2600": "#e8742a", "nes": "#d8202a", "segaMD": "#2a5ad8", "snes": "#8a4ad0"}
 const FONT_FILES := {"sans": "sans.otf", "sans_italic": "sans_italic.otf", "serif": "serif.ttf", "script": "script.ttf"}
@@ -270,25 +273,32 @@ func _apply(id: String) -> void:
 		for p in f.p:
 			P.append(Vector3(p[0], p[1], p[2]))
 		var n = Vector3(f.n[0], f.n[1], f.n[2])
-		nodes.append(_overlay(r, P, f.uv, n))
+		nodes.append(_overlay(r, f, P, f.uv, n))
 		if txt.strip_edges() != "":
-			nodes.append(_label(r, P, n, txt))
+			nodes.append(_label(r, f, P, n, txt))
 	made[id] = nodes
 
-## A word-free copy of the sign's art laid just in front of it.
-func _overlay(r, P: Array, uv: Array, n: Vector3) -> MeshInstance3D:
-	var key = str(r.get("tex", ""))
+## A word-free copy of the sign's art laid just in front of it. A face may name its own art
+## ("tex"); a "lit" face (painted, not backlit: a cabinet's lower front, panel lip, bezel)
+## gets a shaded copy so it takes the room's light like the face under it.
+func _overlay(r, f, P: Array, uv: Array, n: Vector3) -> MeshInstance3D:
+	var key = str(f.get("tex", r.get("tex", "")))
 	if key == "":
 		key = "res://tex/pc/video_marquees_blank.png" if r.kind == "pc_marquee" else "res://tex/kb/dept_blank.png"
-	if not mats.has(key):
+	var lit = bool(f.get("lit", false))
+	var mk = key + ("|lit" if lit else "")
+	if not mats.has(mk):
 		var m := StandardMaterial3D.new()
-		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+		if lit:
+			m.roughness = 0.5
+		else:
+			m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		m.cull_mode = BaseMaterial3D.CULL_DISABLED
 		m.albedo_texture = load(key)
 		if r.kind == "kb_dept":
 			m.albedo_color = Color(0.92, 0.92, 0.92)
 		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-		mats[key] = m
+		mats[mk] = m
 	var am := ArrayMesh.new()
 	var arr = []
 	arr.resize(Mesh.ARRAY_MAX)
@@ -306,15 +316,22 @@ func _overlay(r, P: Array, uv: Array, n: Vector3) -> MeshInstance3D:
 	am.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arr)
 	var mi := MeshInstance3D.new()
 	mi.mesh = am
-	mi.material_override = mats[key]
+	mi.material_override = mats[mk]
 	mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	if lit:
+		mi.gi_mode = GeometryInstance3D.GI_MODE_DYNAMIC   # lit by the lightmap's probes
 	add_child(mi)
 	return mi
 
-## The new words, centred on the face and fitted to it.
-func _label(r, P: Array, n: Vector3, txt: String) -> Label3D:
+## The new words, centred on the face and fitted to it; or, on a face with a "band"
+## ([top, bottom] as fractions of the face from its top edge, where the painted title was),
+## centred in that band, the capitals as tall as the band, within the face's "span"
+## ([left, right] fractions of its width).
+func _label(r, f, P: Array, n: Vector3, txt: String) -> Label3D:
 	var st = KB_STYLE
-	if r.has("look"):
+	if f.has("look"):
+		st = f.look
+	elif r.has("look"):
 		st = r.look
 	elif r.kind == "pc_marquee":
 		st = PC_STYLE[clampi(int(r.style), 0, PC_STYLE.size() - 1)]
@@ -332,22 +349,41 @@ func _label(r, P: Array, n: Vector3, txt: String) -> Label3D:
 	lab.text = txt
 	lab.modulate = Color(st.fill)
 	if st.outline != "":
-		lab.outline_size = 14
+		lab.outline_size = int(st.get("osz", 14))
 		lab.outline_modulate = Color(st.outline)
 	else:
 		lab.outline_size = 0
-	lab.shaded = false
+	lab.shaded = bool(f.get("lit", false))
+	if lab.shaded:
+		lab.gi_mode = GeometryInstance3D.GI_MODE_DYNAMIC
 	lab.double_sided = false
 	lab.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	lab.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	lab.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	var sz = lab.font.get_multiline_string_size(txt, HORIZONTAL_ALIGNMENT_CENTER, -1, 96)
 	sz.x += lab.outline_size * 2
+	lab.basis = Basis(right.normalized(), up.normalized(), n.normalized())
+	if f.has("band"):
+		var bd = f.band
+		var sp = f.get("span", [0.07, 0.93])
+		var bh = h * (float(bd[1]) - float(bd[0]))
+		# capitals are about 0.73 em; the band is the painted capitals plus their outline
+		lab.pixel_size = min(w * (float(sp[1]) - float(sp[0])) / max(sz.x, 1.0), bh / (96.0 * 0.73 + lab.outline_size))
+		var asc = lab.font.get_ascent(96)
+		var dsc = lab.font.get_descent(96)
+		# Label3D centres the line box; drop it so the capitals' middle sits on the band's
+		var drop = (96.0 * 0.73 * 0.5 - (asc - dsc) * 0.5) * lab.pixel_size
+		var t = (float(bd[0]) + float(bd[1])) * 0.5
+		var cu = (float(sp[0]) + float(sp[1])) * 0.5
+		var pb = P[0] + (P[3] - P[0]) * (1.0 - t)
+		var pt = P[1] + (P[2] - P[1]) * (1.0 - t)
+		lab.position = pb.lerp(pt, cu) - up.normalized() * drop + n * 0.006
+		add_child(lab)
+		return lab
 	var fw = 0.9 if r.kind == "kb_dept" else 0.86
 	var fh = 0.7 if r.kind == "kb_dept" else 0.62
 	lab.pixel_size = min(w * fw / max(sz.x, 1.0), h * fh / max(sz.y, 1.0))
 	var c = (P[0] + P[1] + P[2] + P[3]) * 0.25
-	lab.basis = Basis(right.normalized(), up.normalized(), n.normalized())
 	lab.position = c + n * 0.006
 	add_child(lab)
 	return lab

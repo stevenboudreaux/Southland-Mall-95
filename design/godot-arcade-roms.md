@@ -6,10 +6,11 @@
 
 ## What it does
 - **The cabinets:** twelve upright video cabinets with joysticks are playable. They are spread round the arcade, three for each system:
-  - Atari 2600: `pc.video.36`, `pc.video.44`, `pc.video.56`.
-  - NES: `pc.video.01`, `pc.video.17`, `pc.video.29`.
-  - Genesis: `pc.video.07`, `pc.video.52`, `pc.video.61`.
-  - Super NES: `pc.video.64`, `pc.video.23`, `pc.video.70`.
+  - Atari 2600: `pc.video.33`, `pc.video.11`, `pc.video.22`.
+  - NES: `pc.video.37`, `pc.video.46`, `pc.video.54`.
+  - Genesis: `pc.video.03`, `pc.video.17`, `pc.video.29`.
+  - Super NES: `pc.video.62`, `pc.video.52`, `pc.video.67`.
+  - (Re-picked for Demo 9, when the right-hand line moved back and the cabinet numbering changed. Cabinet ids follow build order, so a layout change can renumber them: check `play/roms.json` and `play/signs.json` before publishing one.)
   - Each wears a small white "PLAYABLE" sticker under its marquee, outlined in its system's colour. The list is `ARCADE` in `scripts/signs.gd`.
 - **Playing:** anyone who stands at one of these cabinets, facing it, gets a **PLAY** button, but only once it has a game. The button opens `play/emu.html` in a full-window frame over the mall.
   - The game runs in EmulatorJS (GPL-3.0, loaded from cdn.emulatorjs.org), which has on-screen controls on phones.

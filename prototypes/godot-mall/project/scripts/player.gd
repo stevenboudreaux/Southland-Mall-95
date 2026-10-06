@@ -13,6 +13,7 @@ var fixtures_on := false
 @export var map_scale := 2.0
 const EYE := 1.62
 const SPEED := 4.0
+const RUN := 2.2      # holding X (or Shift) runs: Steven, Oct 6, "add back the ability to run by hitting x"
 const RADIUS := 0.3
 var yaw := PI * 0.5   # looking west (-x) from the entrance
 var pitch := 0.06
@@ -200,7 +201,8 @@ func _process(dt: float) -> void:
 		hint.visible = false
 		var fwd := -transform.basis.z
 		var right := transform.basis.x
-		var step := (right * iv.x - fwd * iv.y) * SPEED * dt
+		var run := RUN if (Input.is_physical_key_pressed(KEY_X) or Input.is_physical_key_pressed(KEY_SHIFT)) else 1.0
+		var step := (right * iv.x - fwd * iv.y) * SPEED * run * dt
 		_try_move(Vector3(step.x, 0, 0))
 		_try_move(Vector3(0, 0, step.z))
 	fps_t += dt
