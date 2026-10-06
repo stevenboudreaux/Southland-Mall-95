@@ -943,7 +943,7 @@ func zone_at(x, z):
 ## An owner-editable sign (scripts/signs.gd draws its text live over a blank copy of the
 ## art). `faces`: [[p0, p1, p2, p3], [uv0..uv3], normal] per face, p0->p1 along the text,
 ## p0->p3 up; `style` picks the look (font, colours) in signs.gd.
-func sign_add(id, kind, title, style, faces):
+func sign_add(id, kind, title, style, faces, extra = {}):
 	var F = []
 	for f in faces:
 		var pts = []
@@ -953,7 +953,9 @@ func sign_add(id, kind, title, style, faces):
 		for q in f[1]:
 			uvs.append([snappedf(q.x, 0.00001), snappedf(q.y, 0.00001)])
 		F.append({"p": pts, "uv": uvs, "n": [snappedf(f[2].x, 0.0001), snappedf(f[2].y, 0.0001), snappedf(f[2].z, 0.0001)]})
-	signs.append({"id": id, "kind": kind, "title": title, "style": style, "faces": F})
+	var rec = {"id": id, "kind": kind, "title": title, "style": style, "faces": F}
+	rec.merge(extra)
+	signs.append(rec)
 
 func label(text, fontname, fg, pos, n, max_w, cap_h = 0.56):
 	var lab = Label3D.new()

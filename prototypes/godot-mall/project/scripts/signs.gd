@@ -1,5 +1,5 @@
-## Owner-editable signs: the arcade cabinets' marquee titles in Pocket Change and the
-## department boards in Kay-Bee Toys.
+## Owner-editable signs: the names on Pocket Change's video cabinets, basketball games
+## and claw machines, and the department boards in Kay-Bee Toys.
 ##
 ## The build (tools/build_mall.gd sign_add) lists every such sign in res://gen/signs.json
 ## with its faces in world space. The painted texture keeps the original words; when a sign
@@ -127,15 +127,15 @@ func _apply(id: String) -> void:
 
 ## A word-free copy of the sign's art laid just in front of it.
 func _overlay(r, P: Array, uv: Array, n: Vector3) -> MeshInstance3D:
-	var key = r.kind
+	var key = str(r.get("tex", ""))
+	if key == "":
+		key = "res://tex/pc/video_marquees_blank.png" if r.kind == "pc_marquee" else "res://tex/kb/dept_blank.png"
 	if not mats.has(key):
 		var m := StandardMaterial3D.new()
 		m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 		m.cull_mode = BaseMaterial3D.CULL_DISABLED
-		if key == "pc_marquee":
-			m.albedo_texture = load("res://tex/pc/video_marquees_blank.png")
-		else:
-			m.albedo_texture = load("res://tex/kb/dept_blank.png")
+		m.albedo_texture = load(key)
+		if r.kind == "kb_dept":
 			m.albedo_color = Color(0.92, 0.92, 0.92)
 		m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 		mats[key] = m
@@ -163,7 +163,11 @@ func _overlay(r, P: Array, uv: Array, n: Vector3) -> MeshInstance3D:
 
 ## The new words, centred on the face and fitted to it.
 func _label(r, P: Array, n: Vector3, txt: String) -> Label3D:
-	var st = PC_STYLE[clampi(int(r.style), 0, PC_STYLE.size() - 1)] if r.kind == "pc_marquee" else KB_STYLE
+	var st = KB_STYLE
+	if r.has("look"):
+		st = r.look
+	elif r.kind == "pc_marquee":
+		st = PC_STYLE[clampi(int(r.style), 0, PC_STYLE.size() - 1)]
 	var right = (P[1] - P[0])
 	var w = right.length()
 	var up = (P[3] - P[0])
@@ -189,8 +193,8 @@ func _label(r, P: Array, n: Vector3, txt: String) -> Label3D:
 	lab.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
 	var sz = lab.font.get_multiline_string_size(txt, HORIZONTAL_ALIGNMENT_CENTER, -1, 96)
 	sz.x += lab.outline_size * 2
-	var fw = 0.86 if r.kind == "pc_marquee" else 0.9
-	var fh = 0.62 if r.kind == "pc_marquee" else 0.7
+	var fw = 0.9 if r.kind == "kb_dept" else 0.86
+	var fh = 0.7 if r.kind == "kb_dept" else 0.62
 	lab.pixel_size = min(w * fw / max(sz.x, 1.0), h * fh / max(sz.y, 1.0))
 	var c = (P[0] + P[1] + P[2] + P[3]) * 0.25
 	lab.basis = Basis(right.normalized(), up.normalized(), n.normalized())

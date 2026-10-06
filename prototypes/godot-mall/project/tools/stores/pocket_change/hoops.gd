@@ -239,6 +239,13 @@ static func build(b, g, o, f, opts = {}):
 	q(b, g, "pc_hoops_paint", xf, [Vector3(-HW, MQ_Y0 + 0.02, zf), Vector3(-0.49, MQ_Y0 + 0.02, zf), Vector3(-0.49, H - 0.02, zf), Vector3(-HW, H - 0.02, zf)], FR)
 	q(b, g, "pc_hoops_paint", xf, [Vector3(0.49, MQ_Y0 + 0.02, zf), Vector3(HW, MQ_Y0 + 0.02, zf), Vector3(HW, H - 0.02, zf), Vector3(0.49, H - 0.02, zf)], FR)
 	q(b, g, "pc_hoops_marquee", xf, [Vector3(-0.49, MQ_Y0 + 0.02, zf + 0.004), Vector3(0.49, MQ_Y0 + 0.02, zf + 0.004), Vector3(0.49, H - 0.02, zf + 0.004), Vector3(-0.49, H - 0.02, zf + 0.004)], FR, ruv())
+	if "signs" in b:
+		# the name is owner-editable (scripts/signs.gd); paint_blanks.py paints the word-free copy
+		var mp = []
+		for v in [Vector3(-0.49, MQ_Y0 + 0.02, zf + 0.004), Vector3(0.49, MQ_Y0 + 0.02, zf + 0.004), Vector3(0.49, H - 0.02, zf + 0.004), Vector3(-0.49, H - 0.02, zf + 0.004)]:
+			mp.append(xf * v)
+		b.sign_add("pc.hoops.%d" % num, "pc_hoops", "BAYOU BUCKETS", 0, [[mp, ruv(), (xf.basis * FR).normalized()]],
+			{"tex": "res://tex/pc/hoops_marquee_blank.png", "look": {"font": "sans_italic", "fill": "#ffe878", "outline": "#c81c22"}})
 
 	# ---- coin door (static plate) and machine number plate
 	var dz = -0.012

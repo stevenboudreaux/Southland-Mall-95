@@ -227,6 +227,20 @@ static func build(b, g, o, f, opts = {}):
 	b.box(g, body, Vector3(0, (Y_HD + H) * 0.5, (0.14 + D) * 0.5), Vector3(W, H - Y_HD, D - 0.14), xf)
 	var hm = "pc_crane_hdr%d" % st
 	face(b, g, hm, xf, [Vector3(-0.37, 1.665, 0.138), Vector3(0.37, 1.665, 0.138), Vector3(0.37, 1.955, 0.138), Vector3(-0.37, 1.955, 0.138)], Vector3(0, 0, -1), px(0, 0, 1024, 400, 1024.0, 640.0))
+	if "signs" in b:
+		# the name is owner-editable (scripts/signs.gd); paint_blanks.py paints the word-free copy
+		var mp = []
+		for v in [Vector3(-0.37, 1.665, 0.138), Vector3(0.37, 1.665, 0.138), Vector3(0.37, 1.955, 0.138), Vector3(-0.37, 1.955, 0.138)]:
+			mp.append(xf * v)
+		var rr = px(0, 0, 1024, 400, 1024.0, 640.0)
+		var k = 0
+		for r0 in b.signs:
+			if r0.kind == "pc_crane":
+				k += 1
+		var looks = [{"font": "sans_italic", "fill": "#fff278", "outline": "#7a0c08"}, {"font": "sans_italic", "fill": "#fff48c", "outline": "#c0207a"}, {"font": "serif", "fill": "#ff5a4a", "outline": "#ffffff"}]
+		b.sign_add("pc.crane.%d" % (k + 1), "pc_crane", ["PRIZE CATCHER", "LUCKY GRAB", "SKILL CRANE"][st], st,
+			[[mp, [Vector2(rr.x, rr.w), Vector2(rr.z, rr.w), Vector2(rr.z, rr.y), Vector2(rr.x, rr.y)], (xf.basis * Vector3(0, 0, -1)).normalized()]],
+			{"tex": "res://tex/pc/crane_header_%d_blank.png" % st, "look": looks[st]})
 	var hs = px(0, 416, 512, 640, 1024.0, 640.0)
 	b.box(g, "pc_crane_chrome", Vector3(0, 1.962, 0.133), Vector3(0.768, 0.016, 0.012), xf)
 	b.box(g, "pc_crane_chrome", Vector3(0, 1.658, 0.133), Vector3(0.768, 0.016, 0.012), xf)

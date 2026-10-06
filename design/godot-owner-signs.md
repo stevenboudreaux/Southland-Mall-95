@@ -28,5 +28,5 @@
 - **Test:** `tools/qa/signstest.py` (it loads as the owner with a draft, then runs the tap-and-type flow).
 
 ## Not covered yet
-- The other machines' names: claw machines, basketball, skee-ball, racers, pinball, the ride and air hockey.
+- The other machines' names: skee-ball, racers, pinball, the ride and air hockey.
 - The cabinets' lower-front and bezel art, which repeat the original title.
