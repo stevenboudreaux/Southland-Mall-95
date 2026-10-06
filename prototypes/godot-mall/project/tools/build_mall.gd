@@ -1783,7 +1783,11 @@ func build():
 			s.commit(am)
 			am.surface_set_material(am.get_surface_count() - 1, glow_mat(gname, mname))
 		var texel = TEXEL
-		if gname.ends_with("props") or gname == "lanterns":
+		if gname.ends_with("_mach"):
+			# arcade machines: mostly lit by their own glow; a coarse texel keeps the
+			# lightmap atlas to one layer (a fine one doubled the download)
+			texel = TEXEL * 1.5
+		elif gname.ends_with("props") or gname == "lanterns":
 			texel = TEXEL * 0.6
 		elif gname == "outside":
 			texel = TEXEL * 4.0
@@ -1802,7 +1806,8 @@ func build():
 		for mname in dyn_acc[gname]:
 			var s = dyn_acc[gname][mname]
 			s.index()
-			s.commit(am)
+			# the arcade's many small machine parts: compressed vertex attributes halve the download
+			s.commit(am, Mesh.ARRAY_FLAG_COMPRESS_ATTRIBUTES if gname.begins_with("pc") else 0)
 			am.surface_set_material(am.get_surface_count() - 1, mat(mname))
 		ResourceSaver.save(am, "res://gen/dyn_" + gname + ".res")
 		var mi = MeshInstance3D.new()

@@ -233,7 +233,7 @@ static func put(b, a, t, n, mod, u, d, dir, opts = {}, pad = 0.25):
 	var M = load("res://tools/stores/pocket_change/%s.gd" % mod)
 	var k0 = b.obstacles.size()
 	# one mesh per 10 m of the room, so the ones out of view are culled
-	M.build(b, "pc%d_props" % int(clamp(d / 10.0, 0, 3)), P(a, t, n, u, 0, d), f, opts)
+	M.build(b, "pc%d_mach" % int(clamp(d / 10.0, 0, 3)), P(a, t, n, u, 0, d), f, opts)
 	for i in range(k0, b.obstacles.size()):
 		var o = b.obstacles[i]
 		if o[0] is String and o[0] == "rect":
