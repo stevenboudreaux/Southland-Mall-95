@@ -32,7 +32,7 @@ var fronts = {}            # "x,z|x,z" of a store edge -> captured front (fronts
 const USE_FRONT_ART = false
 ## Stores built in full 3D: their footprint (x0, z0, x1, z1 in metres) is kept clear of the
 ## generic interiors of neighbouring stores, which would otherwise run through them.
-const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0]}
+const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE": [-110.0, 60.0, -102.0, 100.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
@@ -46,7 +46,16 @@ func obst(o):
 	else:
 		obstacles.append(o)
 
+var raw_tex = false        # previews (tools/qa/preview.gd) read the PNGs directly, no import step
+
 func tex(p):
+	if raw_tex:
+		var im = Image.load_from_file(ProjectSettings.globalize_path("res://tex/" + p))
+		if im == null:
+			push_error("missing texture " + p)
+			return null
+		im.generate_mipmaps()
+		return ImageTexture.create_from_image(im)
 	return load("res://tex/" + p)
 
 func mat(name):
@@ -220,6 +229,8 @@ func mat(name):
 					m.roughness = 0.3; m.metallic_specular = 0.7
 					m.emission_enabled = true; m.emission_texture = m.albedo_texture
 					m.emission = Color.WHITE; m.emission_energy_multiplier = 0.35
+					# multiply: the sign glows its own yellow (add would wash it toward white)
+					m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
 					m.set_meta("e_day", 0.12); m.set_meta("e_night", 0.35)
 				elif key == "steel":
 					# brushed stainless: mostly what the baked light gives it, a little reflection
@@ -233,6 +244,13 @@ func mat(name):
 					m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 				elif key == "floor":
 					m.roughness = 0.55; m.metallic_specular = 0.45
+			elif name.begins_with("pc_"):
+				# Pocket Change: "pc_<module>_<key>" is filled in by
+				# tools/stores/pocket_change/<module>.gd's fill_mat(m, key, b)
+				var parts = name.substr(3).split("_", true, 1)
+				var mp = "res://tools/stores/pocket_change/%s.gd" % parts[0]
+				if parts.size() < 2 or not ResourceLoader.exists(mp) or not load(mp).fill_mat(m, parts[1], self):
+					push_error("unknown material " + name)
 			elif name.begins_with("floorz_"):
 				# bake-time stand-in; the runtime swaps in the procedural floor shader
 				m.albedo_color = Color("#d4c4aa"); m.roughness = 0.14; m.metallic_specular = 0.6
@@ -1005,6 +1023,10 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		return
 	if sd.anchor and ANCHOR_LOOK.has(sd.name):
 		anchor_front(g, e, a, b, n, t, Ln, sd, ANCHOR_LOOK[sd.name])
+		return
+	if sd.name == "POCKET CHANGE" and not inner_call:
+		# built in full 3D from Steven's 2009 photo of the unchanged front, with a walkable arcade (Phase 4b)
+		load("res://tools/stores/pocket_change/store.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	if sd.name == "CORN DOG 7" and not inner_call:
 		# built in full 3D from the photographs of the unchanged shop (Phase 4b)
