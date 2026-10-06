@@ -235,7 +235,10 @@ def awning():
     the roll meets the wall (profile length PROF_M). Lettering from the vector traces (cd7_letters.json)."""
     import cairosvg, io
     PPM = 400
-    PATH_M = 10.1   # 0.94 (left end) + 8.2 (front) + 0.94 (right end)
+    # the sweep: the rounded left end, the straight front, the rounded right end (corn_dog_7.gd: the
+    # opening 2.4..9.6 m, the awning 0.2 m past each pier, end radius 0.6)
+    END = math.pi * 0.5 * 0.6
+    PATH_M = END + (9.6 - 2.4 + 0.4 - 1.2) + END
     PROF_M = 1.85
     W, H = int(PATH_M * PPM), int(PROF_M * PPM)
     row = lambda v: int((PROF_M - v) * PPM)
@@ -253,8 +256,8 @@ def awning():
         c = tuple(min(255, int(v * k)) for v in YEL)
         d.line([0, y, W, y], fill=c)
     # panel seams every 1.3 m along the front
-    x = 0.94 + 0.55
-    while x < PATH_M - 0.94:
+    x = END + 0.55
+    while x < PATH_M - END:
         px = int(x * PPM)
         d.line([px, 0, px, H], fill=(206, 176, 20), width=2)
         d.line([px + 2, 0, px + 2, H], fill=(255, 246, 150), width=1)
@@ -275,11 +278,14 @@ def awning():
 
     stroke = '<path d="%s" fill="none" stroke="#1b2466" stroke-width="2.1" stroke-linecap="round"/>'
     # "seasoned fries": sits on the stripe, left of centre
-    letters(L["CD7O"]["l"], 0.30, 0.94 + 1.4, 0.40 + 0.02, stroke % "M-4.2 19.2 Q-1.2 17.5 2.6 10.6")
+    # the stripe stops either side of "seasoned fries", which sits across the line (close photo)
+    sl = L["CD7O"]["l"]; sw = sl["w"] / sl["h"] * 0.30
+    d.rectangle([int((END + 0.78) * PPM), row(0.40) - 2, int((END + 0.85 + sw + 0.08) * PPM), row(0.33) + 2], fill=YEL)
+    letters(L["CD7O"]["l"], 0.30, END + 0.85, 0.365 - 0.15, stroke % "M-4.2 19.2 Q-1.2 17.5 2.6 10.6")
     # "CORN DOG 7": above the stripe, centre-right
-    letters(L["CD7"]["t"], 0.48, 0.94 + 4.55, 0.40 + 0.08)
+    letters(L["CD7"]["t"], 0.50, END + 3.12, 0.40 + 0.08)
     # "fresh lemonade": below the stripe at the right end, running onto the rounded end
-    letters(L["CD7O"]["r"], 0.22, 0.94 + 7.45, 0.33 - 0.05 - 0.22,
+    letters(L["CD7O"]["r"], 0.22, END + 5.5, 0.33 - 0.05 - 0.22,
             stroke % "M130.6 15.6 C137.5 14.8 137.2 9.6 133.2 10.2" + stroke % "M132.2 19.4 Q136.5 19.6 140 15.8")
     save(im, "awning.png")
 

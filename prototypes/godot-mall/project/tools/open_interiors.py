@@ -12,8 +12,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PROJ = os.path.join(HERE, "..")
 OPEN = {
     # Corn Dog 7 (s54, tiles x 79-84, y 134-139, faces west): the queue in front
-    # of the counter, and the dining room along the north wall
-    "s54": [(79, 80, 134, 139), (81, 84, 134, 135)],
+    # of the counter, and the dining room along the north wall (it runs behind the mall wall)
+    "s54": [(79, 80, 134, 139), (81, 84, 134, 136)],
 }
 
 

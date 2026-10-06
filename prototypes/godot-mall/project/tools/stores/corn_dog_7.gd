@@ -7,8 +7,10 @@
 ## `b` is the builder (build_mall.gd's SceneTree script); everything goes
 ## through its quad/box/cyl helpers so it lands in the zone's static mesh.
 
-const OPEN0 = 1.5       # opening along the frontage (metres from the edge's start)
-const OPEN1 = 10.5
+const OPEN0 = 2.4       # opening along the frontage (metres from the edge's start): the photos give
+const OPEN1 = 9.6       # ~7 m between the piers; the unit itself is 12 m and the room uses all of it
+const ROOM0 = 0.3       # the room behind the mall wall (the dining room runs left behind it, photo 2)
+const ROOM1 = 11.7
 const PIER = 0.30
 const AWN_Y0 = 2.75     # awning bottom edge
 const AWN_FACE = 0.75   # vertical face before the roll
@@ -20,11 +22,11 @@ const PATH_M = 10.1     # sweep length painted into awning.png
 const CEIL = 2.9
 const DEPTH = 11.0
 const COUNTER_D = 3.0
-const COUNTER_U0 = 4.8
+const COUNTER_U0 = 5.2
 const COUNTER_H = 1.0
 const COUNTER_DEEP = 0.8
 const PART_D = 4.5      # oak-and-glass partition into the kitchen
-const DINE_U1 = 4.5     # dining room is left of this
+const DINE_U1 = 5.0     # dining room is left of this
 
 ## Frame helpers: u along the frontage from `a`, d into the store, y up.
 static func P(a, t, n, u, y, d):
@@ -37,9 +39,9 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 	b.quad(g, "cream", [P(a, t, n, OPEN1, 0, 0), bb, bb + Vector3(0, b.LANE_H, 0), P(a, t, n, OPEN1, b.LANE_H, 0)], n)
 	# fire-extinguisher cabinet on the left flank
 	b.cur_color = Color("#f2f2ee")
-	b.box(g, "vcolor", P(a, t, n, 0.9, 1.35, -0.04), b.abs_size(t, 0.34, 0.72, 0.08, n))
+	b.box(g, "vcolor", P(a, t, n, OPEN0 - 0.8, 1.35, -0.04), b.abs_size(t, 0.34, 0.72, 0.08, n))
 	b.cur_color = Color("#c8202c")
-	b.box(g, "vcolor", P(a, t, n, 0.9, 1.3, -0.08), b.abs_size(t, 0.1, 0.4, 0.02, n))
+	b.box(g, "vcolor", P(a, t, n, OPEN0 - 0.8, 1.3, -0.08), b.abs_size(t, 0.1, 0.4, 0.02, n))
 	b.cur_color = Color.WHITE
 	# ---- piers: navy tile, three faces
 	for u0 in [OPEN0, OPEN1 - PIER]:
@@ -51,18 +53,29 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 	# ---- the awning
 	awning(b, g, a, t, n)
 	# ---- the room shell: ceiling, floor, walls (the opening's head above the awning is the oak band)
-	var u0 = OPEN0
-	var u1 = OPEN1
-	var floor_pts = [P(a, t, n, u0, 0, 0), P(a, t, n, u1, 0, 0), P(a, t, n, u1, 0, DEPTH), P(a, t, n, u0, 0, DEPTH)]
-	b.quad(g, "cd7_floor", floor_pts, up, [], false, 1.0 / 1.2)
+	var u0 = ROOM0
+	var u1 = ROOM1
+	# the floor: the opening's threshold, then the whole room
+	b.quad(g, "cd7_floor", [P(a, t, n, OPEN0, 0, 0), P(a, t, n, OPEN1, 0, 0), P(a, t, n, OPEN1, 0, 0.3), P(a, t, n, OPEN0, 0, 0.3)], up, [], false, 1.0 / 1.2)
+	b.quad(g, "cd7_floor", [P(a, t, n, u0, 0, 0.3), P(a, t, n, u1, 0, 0.3), P(a, t, n, u1, 0, DEPTH), P(a, t, n, u0, 0, DEPTH)], up, [], false, 1.0 / 1.2)
 	b.quad(g, "cd7_ceiling", [P(a, t, n, u0, CEIL, 0.3), P(a, t, n, u0, CEIL, DEPTH), P(a, t, n, u1, CEIL, DEPTH), P(a, t, n, u1, CEIL, 0.3)], Vector3.DOWN, [], false, 1.0 / 2.4)
-	# soffit under the opening head (between the awning and the room ceiling)
-	b.quad(g, "cd7_soffit", [P(a, t, n, u0, AWN_Y0, 0), P(a, t, n, u0, AWN_Y0, 0.3), P(a, t, n, u1, AWN_Y0, 0.3), P(a, t, n, u1, AWN_Y0, 0)], Vector3.DOWN)
+	# soffit under the opening head, and the jambs (the mall wall's thickness) either side
+	b.quad(g, "cd7_soffit", [P(a, t, n, OPEN0, AWN_Y0, 0), P(a, t, n, OPEN0, AWN_Y0, 0.3), P(a, t, n, OPEN1, AWN_Y0, 0.3), P(a, t, n, OPEN1, AWN_Y0, 0)], Vector3.DOWN)
+	# side and back walls of the room
 	b.quad(g, "cd7_wall_yellow", [P(a, t, n, u0, 0, 0.3), P(a, t, n, u0, 0, DEPTH), P(a, t, n, u0, CEIL, DEPTH), P(a, t, n, u0, CEIL, 0.3)], t, [], false, 1.0 / 2.9)
 	b.quad(g, "cd7_wall_yellow", [P(a, t, n, u1, 0, DEPTH), P(a, t, n, u1, 0, 0.3), P(a, t, n, u1, CEIL, 0.3), P(a, t, n, u1, CEIL, DEPTH)], -t, [], false, 1.0 / 2.9)
 	b.quad(g, "cd7_wall_yellow", [P(a, t, n, u1, 0, DEPTH), P(a, t, n, u0, 0, DEPTH), P(a, t, n, u0, CEIL, DEPTH), P(a, t, n, u1, CEIL, DEPTH)], n, [], false, 1.0 / 2.9)
-	# the head of the opening: the opening is lower than the room's ceiling, so a short wall drops to the awning
-	b.quad(g, "cd7_soffit", [P(a, t, n, u0, AWN_Y0, 0.3), P(a, t, n, u1, AWN_Y0, 0.3), P(a, t, n, u1, CEIL, 0.3), P(a, t, n, u0, CEIL, 0.3)], -n)
+	# the inside of the front wall either side of the opening, and over it up to the room's ceiling
+	b.quad(g, "cd7_wall_yellow", [P(a, t, n, u0, 0, 0.3), P(a, t, n, OPEN0, 0, 0.3), P(a, t, n, OPEN0, CEIL, 0.3), P(a, t, n, u0, CEIL, 0.3)], -n, [], false, 1.0 / 2.9)
+	b.quad(g, "cd7_wall_yellow", [P(a, t, n, OPEN1, 0, 0.3), P(a, t, n, u1, 0, 0.3), P(a, t, n, u1, CEIL, 0.3), P(a, t, n, OPEN1, CEIL, 0.3)], -n, [], false, 1.0 / 2.9)
+	b.quad(g, "cd7_soffit", [P(a, t, n, OPEN0, AWN_Y0, 0.3), P(a, t, n, OPEN1, AWN_Y0, 0.3), P(a, t, n, OPEN1, CEIL, 0.3), P(a, t, n, OPEN0, CEIL, 0.3)], -n)
+	# the walls' ends at the opening (behind the piers)
+	b.quad(g, "cd7_soffit", [P(a, t, n, OPEN0, 0, 0), P(a, t, n, OPEN0, 0, 0.3), P(a, t, n, OPEN0, AWN_Y0, 0.3), P(a, t, n, OPEN0, AWN_Y0, 0)], t)
+	b.quad(g, "cd7_soffit", [P(a, t, n, OPEN1, 0, 0.3), P(a, t, n, OPEN1, 0, 0), P(a, t, n, OPEN1, AWN_Y0, 0), P(a, t, n, OPEN1, AWN_Y0, 0.3)], -t)
+	for wr in [[0.0, OPEN0], [OPEN1, 12.0]]:
+		var w0 = P(a, t, n, wr[0], 0, -0.05)
+		var w1 = P(a, t, n, wr[1], 0, 0.35)
+		b.obst(["rect", min(w0.x, w1.x), min(w0.z, w1.z), max(w0.x, w1.x), max(w0.z, w1.z)])
 	# ---- ceiling troffers on a 2.4 m grid, each lit
 	var dd = 1.5
 	while dd < DEPTH - 0.6:
@@ -82,16 +95,17 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 	# ---- the dining room
 	dining(b, g, a, t, n)
 	# ---- obstacles (the walk grid itself is opened by tools/open_interiors.py)
-	b.obst(["rect", (P(a, t, n, COUNTER_U0, 0, COUNTER_D)).x - 0.0, (P(a, t, n, COUNTER_U0, 0, COUNTER_D)).z,
-		(P(a, t, n, u1, 0, DEPTH)).x, (P(a, t, n, u1, 0, DEPTH)).z])
+	var k0 = P(a, t, n, COUNTER_U0, 0, COUNTER_D)
+	var k1 = P(a, t, n, u1, 0, DEPTH)
+	b.obst(["rect", min(k0.x, k1.x), min(k0.z, k1.z), max(k0.x, k1.x), max(k0.z, k1.z)])
 	var pl = P(a, t, n, DINE_U1, 0, 3.5)
 	var pr = P(a, t, n, DINE_U1 + 0.1, 0, 8.0)
 	b.obst(["rect", min(pl.x, pr.x), min(pl.z, pr.z), max(pl.x, pr.x), max(pl.z, pr.z)])
 	# the store's own reflection probe, so its glazed tile and steel reflect the shop and not the hall
 	var rp = ReflectionProbe.new()
-	var mid = P(a, t, n, (OPEN0 + OPEN1) * 0.5, CEIL * 0.5, DEPTH * 0.5)
+	var mid = P(a, t, n, (ROOM0 + ROOM1) * 0.5, CEIL * 0.5, DEPTH * 0.5)
 	rp.position = mid
-	rp.size = (t * (OPEN1 - OPEN0) + n * DEPTH).abs() + Vector3(0.2, CEIL + 0.1, 0.2)
+	rp.size = (t * (ROOM1 - ROOM0) + n * DEPTH).abs() + Vector3(0.2, CEIL + 0.1, 0.2)
 	rp.box_projection = true
 	rp.interior = true
 	rp.update_mode = ReflectionProbe.UPDATE_ONCE
@@ -178,7 +192,7 @@ static func awning(b, g, a, t, n):
 
 static func counter(b, g, a, t, n):
 	var u0 = COUNTER_U0
-	var u1 = OPEN1
+	var u1 = ROOM1
 	var ch = 0.5   # chamfer
 	var d0 = COUNTER_D
 	var d1 = COUNTER_D + COUNTER_DEEP
@@ -200,7 +214,7 @@ static func counter(b, g, a, t, n):
 	b.box(g, "cd7_steel", P(a, t, n, (u0 + ch + u1) * 0.5, COUNTER_H - 0.02, d0 - 0.025), b.abs_size(t, u1 - u0 - ch, 0.04, 0.05, n))
 	# glass food cases on the counter, lit inside
 	var uu = u0 + 0.8
-	while uu + 1.2 <= u1 - 0.8:
+	while uu + 1.2 <= OPEN1 - 0.4:
 		var cc = P(a, t, n, uu + 0.6, COUNTER_H + 0.27, d0 + 0.32)
 		b.quad("cd7_glass", "cd7_glass", [cc + t * 0.6 - n * 0.27 - Vector3(0, 0.25, 0), cc - t * 0.6 - n * 0.27 - Vector3(0, 0.25, 0),
 			cc - t * 0.6 - n * 0.27 + Vector3(0, 0.25, 0), cc + t * 0.6 - n * 0.27 + Vector3(0, 0.25, 0)], n, [], true)
@@ -224,23 +238,23 @@ static func counter(b, g, a, t, n):
 		b.tag(cl, "", 0.25, 0.4)
 		uu += 1.3
 	# the condiment table on casters against the counter's right end
-	b.box(g, "cd7_steel", P(a, t, n, u1 - 0.75, 0.84, d0 - 0.35), b.abs_size(t, 0.7, 0.03, 0.5, n))
-	b.box(g, "cd7_steel", P(a, t, n, u1 - 0.75, 0.3, d0 - 0.35), b.abs_size(t, 0.66, 0.02, 0.46, n))
+	b.box(g, "cd7_steel", P(a, t, n, OPEN1 - 0.75, 0.84, d0 - 0.35), b.abs_size(t, 0.7, 0.03, 0.5, n))
+	b.box(g, "cd7_steel", P(a, t, n, OPEN1 - 0.75, 0.3, d0 - 0.35), b.abs_size(t, 0.66, 0.02, 0.46, n))
 	for q in [[-0.32, -0.22], [0.32, -0.22], [-0.32, 0.22], [0.32, 0.22]]:
-		b.box(g, "cd7_steel", P(a, t, n, u1 - 0.75 + q[0], 0.42, d0 - 0.35 + q[1]), b.abs_size(t, 0.03, 0.84, 0.03, n))
+		b.box(g, "cd7_steel", P(a, t, n, OPEN1 - 0.75 + q[0], 0.42, d0 - 0.35 + q[1]), b.abs_size(t, 0.03, 0.84, 0.03, n))
 	b.cur_color = Color("#e8d24a")
-	b.cyl(g, "vcolor", P(a, t, n, u1 - 0.9, 0.86, d0 - 0.3), 0.05, 0.05, 0.22, 10)
+	b.cyl(g, "vcolor", P(a, t, n, OPEN1 - 0.9, 0.86, d0 - 0.3), 0.05, 0.05, 0.22, 10)
 	b.cur_color = Color("#b43a2a")
-	b.cyl(g, "vcolor", P(a, t, n, u1 - 0.65, 0.86, d0 - 0.3), 0.05, 0.05, 0.22, 10)
+	b.cyl(g, "vcolor", P(a, t, n, OPEN1 - 0.65, 0.86, d0 - 0.3), 0.05, 0.05, 0.22, 10)
 	b.cur_color = Color.WHITE
 	# stainless hood canopy over the back counter
-	b.box(g, "cd7_steel", P(a, t, n, 7.3, 2.3, 4.0), b.abs_size(t, 2.6, 0.6, 0.8, n))
+	b.box(g, "cd7_steel", P(a, t, n, 6.8, 2.3, 4.0), b.abs_size(t, 2.4, 0.6, 0.8, n))
 	# the back counter line (worktop) between the counter and the partition
 	b.box(g, "cd7_steel", P(a, t, n, (u0 + u1) * 0.5, 0.45, d1 + 0.35), b.abs_size(t, u1 - u0, 0.9, 0.6, n))
 
 static func partition(b, g, a, t, n):
 	var u0 = COUNTER_U0
-	var u1 = OPEN1
+	var u1 = ROOM1
 	var d = PART_D
 	# solid oak below 1.1 m, glass panels to 2.4 m between oak posts, oak header
 	b.quad(g, "cd7_oak_slats", [P(a, t, n, u0, 0, d), P(a, t, n, u1, 0, d), P(a, t, n, u1, 1.1, d), P(a, t, n, u0, 1.1, d)], n)
@@ -254,7 +268,7 @@ static func partition(b, g, a, t, n):
 	b.cur_color = Color.WHITE
 	b.quad("cd7_glass", "cd7_glass", [P(a, t, n, u0, 1.15, d), P(a, t, n, u1, 1.15, d), P(a, t, n, u1, 2.4, d), P(a, t, n, u0, 2.4, d)], n, [], true)
 	# two TV menu boards hung over the right end of the counter, angled down toward the queue
-	for um in [8.9, 10.0]:
+	for um in [7.9, 8.95]:
 		var c = P(a, t, n, um, 2.5, d - 0.35)
 		var w = 0.9
 		var h = 0.5
@@ -279,7 +293,7 @@ static func partition(b, g, a, t, n):
 	b.tag(kl, "", 0.35, 0.5)
 
 static func dining(b, g, a, t, n):
-	var u0 = OPEN0
+	var u0 = ROOM0
 	var u1 = DINE_U1
 	# the oak half-wall with glass that divides the dining room from the queue, plants on top
 	var pd0 = 3.5
@@ -299,12 +313,12 @@ static func dining(b, g, a, t, n):
 		b.cur_color = Color.WHITE
 		b.bush(P(a, t, n, u1, 2.05, dd), "leafy", 0.45, 6)
 	# three booths along the left wall: oak ends, dark red seats, butcher-block tables
-	var dd = 4.2
-	for i in 3:
+	var dd = 3.0
+	for i in 5:
 		booth(b, g, a, t, n, u0, dd)
 		dd += 1.6
 	# two four-tops in the open floor
-	for q in [[3.2, 4.6], [3.2, 7.4]]:
+	for q in [[3.3, 4.4], [3.3, 7.0], [3.3, 9.6]]:
 		table(b, g, a, t, n, q[0], q[1])
 
 static func booth(b, g, a, t, n, u0, d0):
