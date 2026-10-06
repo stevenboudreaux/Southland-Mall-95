@@ -8,3 +8,6 @@ Added Oct 5, 2026 on the `godot-4.7-ultra` branch. `tools/*` is excluded from th
 - `noemit.gd -- <outdir>` — writes copies of all `gen/*.res` with emission off, to measure how much of a bake comes from glowing surfaces.
 
 Run the .gd tools with `godot --headless --path . --script res://tools/qa/<tool>.gd -- <args>`.
+
+- `preview.sh <module|store:NAME> <out-prefix> "<x,y,z,yaw,pitch;...>" [opts-json] [lit|dark]`: renders one Pocket Change prop module, or a store with its hall, in ~30 s without building the mall or baking (xvfb + `--write-movie`, `preview.gd` reads PNGs raw). It uses realtime light, so it is for modelling and texture checks only.
+- `bakecheck.sh <prefix> <night|day> [cams-json]`: after a Mac bake, puts the staged lightmap in the project, exports and shoots the cameras (see its header).

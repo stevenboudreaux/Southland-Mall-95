@@ -28,7 +28,7 @@ with sync_playwright() as p:
         pg.goto(f"http://127.0.0.1:8765/{path}?cam={cam}")
         took = wait_ready(pg, logs)
         time.sleep(12)
-        pg.screenshot(path=f"{out}-{name}.png")
+        pg.screenshot(path=f"{out}-{name}.png", timeout=int(os.environ.get("SHOT_TIMEOUT", "120000")))
         errs = [l for l in logs if "ERROR" in l.upper()]
         print(name, "ready_s", took, "errors", len(errs), errs[:3])
         ctx.close()
