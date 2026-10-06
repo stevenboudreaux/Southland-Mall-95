@@ -80,7 +80,7 @@ def paint_side():
     def P(z, y):
         return (z / SIDE_Z * W, (SIDE_Y - y) / SIDE_Y * H)
     base = np.zeros((H, W, 3), np.float32)
-    red = np.array([168, 24, 22], np.float32)
+    red = np.array([26, 50, 150], np.float32)   # royal blue laminate
     n1 = smooth_noise(H, W, 40, 11)[..., None]
     n2 = fine_noise(H, W, 12)[..., None]
     base[:] = red * (1.0 + 0.05 * n1 + 0.025 * n2)
@@ -93,13 +93,13 @@ def paint_side():
     def ln(z0, y0, z1, y1, col, wdt):
         d.line([P(z0, y0), P(z1, y1)], fill=col, width=wdt)
     # yellow pinstripe under the rail line, following the incline
-    for off, col, wdt in ((0.045, (236, 186, 30, 255), 5), (0.065, (20, 14, 12, 200), 2)):
+    for off, col, wdt in ((0.045, (238, 240, 244, 255), 5), (0.065, (240, 242, 246, 200), 2)):
         pts = [P(0.0, 0.90 - off), P(0.32, 0.90 - off), P(2.18, 1.1734 - off), P(2.26, 1.36 - off), P(3.08, 1.48 - off)]
         d.line(pts, fill=col, width=wdt, joint="curve")
     # streaks
     for i, (y, L) in enumerate(((0.95, 1.05), (0.88, 1.30), (0.81, 0.95), (0.74, 1.15))):
         z1 = 2.55
-        ln(z1 - L, y, z1, y, (240, 196, 40, 230 - i * 25), 9 - i)
+        ln(z1 - L, y, z1, y, (236, 238, 244, 230 - i * 25), 9 - i)
     # ball (cream circle with a highlight) and stars
     cx, cy = P(2.70, 0.86)
     rr = 54
@@ -114,7 +114,7 @@ def paint_side():
         d.polygon(pts, fill=col)
     for z, y, r1 in ((2.35, 1.18, 22), (2.95, 1.16, 16), (2.18, 0.60, 14), (2.92, 0.58, 26)):
         x, y_ = P(z, y)
-        star(x, y_, r1, (250, 214, 50, 240), 0.2)
+        star(x, y_, r1, (244, 246, 250, 240), 0.2)
     # (the TICKETS lettering is a separate decal, skee_sidetext.png, so it reads right on both sides)
     im = im.filter(ImageFilter.GaussianBlur(0.5))
     a = np.asarray(im, np.float32)
@@ -130,15 +130,15 @@ def paint_side():
         y = ybase + abs(r.gauss(0, 0.05))
         x, yp = P(z, y)
         L = r.uniform(6, 30)
-        d2.line([(x, yp), (x + L, yp + r.uniform(-3, 3))], fill=(20, 10, 10, r.randint(40, 110)), width=r.randint(1, 3))
-    scratches(d2, W, H, 90, 15, (230, 170, 160, 50), (6, 40))
-    scratches(d2, W, H, 40, 16, (50, 10, 10, 70), (10, 70))
+        d2.line([(x, yp), (x + L, yp + r.uniform(-3, 3))], fill=(8, 10, 24, r.randint(40, 110)), width=r.randint(1, 3))
+    scratches(d2, W, H, 90, 15, (170, 185, 230, 50), (6, 40))
+    scratches(d2, W, H, 40, 16, (10, 16, 50, 70), (10, 70))
     # black toe kick on the back section and black T-molding / aluminium corner on edges
     d2.polygon([P(2.18, 0.0), P(3.12, 0.0), P(3.12, 0.07), P(2.18, 0.07)], fill=(22, 18, 18, 255))
     pts = [P(z, y) for z, y in SIDE_OUTLINE]
     d2.line(pts + [pts[0]], fill=(18, 16, 16, 255), width=6)
     # aluminium front-corner angle (as on the reference alleys)
-    d2.polygon([P(0, 0.28), P(0.05, 0.28), P(0.05, 0.90), P(0, 0.90)], fill=(170, 170, 168, 255))
+    d2.polygon([P(0, 0.28), P(0.05, 0.28), P(0.05, 0.90), P(0, 0.90)], fill=(26, 26, 30, 255))
     d2.line([P(0.05, 0.28), P(0.05, 0.90)], fill=(90, 90, 90, 255), width=2)
     for y in (0.36, 0.62, 0.84):
         x, yp = P(0.025, y)
@@ -161,8 +161,8 @@ def paint_sidetext():
     f = font(F_BLACK_IT, 104)
     bb = d.textbbox((0, 0), "TICKETS", font=f)
     x, y = (W - (bb[2] - bb[0])) / 2 - bb[0], (H - (bb[3] - bb[1])) / 2 - bb[1]
-    d.text((x + 5, y + 5), "TICKETS", font=f, fill=(30, 6, 6, 160))
-    d.text((x, y), "TICKETS", font=f, fill=(246, 240, 228, 255), stroke_width=3, stroke_fill=(250, 200, 40, 255))
+    d.text((x + 5, y + 5), "TICKETS", font=f, fill=(6, 10, 30, 160))
+    d.text((x, y), "TICKETS", font=f, fill=(246, 240, 228, 255), stroke_width=3, stroke_fill=(150, 160, 178, 255))
     a = np.asarray(im, np.float32)
     # worn vinyl: speckled loss of the letters, more at the bottom (kicked), and an overall fade
     loss = 0.5 + 0.5 * smooth_noise(H, W, 6, 18)
@@ -185,14 +185,15 @@ COIN_LAMPS = [(-0.245, 0.585), (-0.135, 0.585)]  # centres of the lit coin entri
 
 def paint_front():
     W, H = FRONT_W, FRONT_H
-    red = np.array([166, 23, 21], np.float32)
+    red = np.array([25, 48, 146], np.float32)   # royal blue laminate
     a = red * (1.0 + 0.05 * smooth_noise(H, W, 30, 21)[..., None] + 0.025 * fine_noise(H, W, 22)[..., None])
     yy = np.linspace(0, 1, H)[:, None, None]
     a *= 1.0 - 0.25 * np.clip((yy - 0.7) / 0.3, 0, 1)
     im = to_img(a)
     d = ImageDraw.Draw(im, "RGBA")
     # yellow pinstripe near the top and a black kick plate at the bottom
-    d.rectangle([0, 10, W, 15], fill=(236, 186, 30, 255))
+    d.rectangle([0, 10, W, 15], fill=(238, 240, 244, 255))
+    d.rectangle([0, 20, W, 22], fill=(238, 240, 244, 255))
     x0, y0 = fpx(-0.38, 0.34)
     d.rectangle([0, y0, W, H], fill=(24, 20, 20, 255))
     # coin door: grey steel, two token entries with lit inserts, two return buttons, lock
@@ -244,19 +245,19 @@ def paint_front():
     r = random.Random(23)
     for _ in range(70):
         x, y = r.uniform(0, W), r.uniform(H * 0.55, H * 0.85)
-        d.line([(x, y), (x + r.uniform(8, 30), y + r.uniform(-2, 2))], fill=(20, 8, 8, r.randint(30, 90)), width=r.randint(1, 3))
-    scratches(d, W, H, 50, 24, (240, 200, 190, 45), (5, 30))
+        d.line([(x, y), (x + r.uniform(8, 30), y + r.uniform(-2, 2))], fill=(8, 10, 26, r.randint(30, 90)), width=r.randint(1, 3))
+    scratches(d, W, H, 50, 24, (180, 195, 235, 45), (5, 30))
     for (cx, cy, rad) in ((fpx(0.2, 0.59)) + (40,), (fpx(-0.19, 0.53)) + (60,)):
         for _ in range(30):
             x, y = cx + r.gauss(0, rad * 0.6), cy + r.gauss(0, rad * 0.4)
-            d.ellipse([x - 4, y - 3, x + 4, y + 3], fill=(40, 20, 16, 24))
+            d.ellipse([x - 4, y - 3, x + 4, y + 3], fill=(14, 16, 30, 24))
     return save(im, "front")
 
 
 # ---------------------------------------------------------------- lane (dark laminate over cork-ish playfield), hump on top 13%
 def paint_lane():
     W, H = 256, 1024
-    base = np.array([38, 34, 31], np.float32)
+    base = np.array([15, 15, 16], np.float32)   # black playfield
     n = 0.10 * smooth_noise(H, W, 24, 31) + 0.08 * fine_noise(H, W, 32, 0.5) + 0.05 * smooth_noise(H, W, 6, 33)
     a = base * (1.0 + n[..., None])
     xx = np.linspace(-1, 1, W)[None, :]
@@ -266,7 +267,7 @@ def paint_lane():
     a *= (1.0 + 0.12 * path)[..., None]
     # dust along the rails
     edge = np.clip((np.abs(xx) - 0.82) / 0.18, 0, 1)
-    a = a * (1 - 0.3 * edge[..., None]) + np.array([90, 84, 76]) * 0.3 * edge[..., None]
+    a = a * (1 - 0.3 * edge[..., None]) + np.array([70, 70, 72]) * 0.3 * edge[..., None]
     im = to_img(a)
     d = ImageDraw.Draw(im, "RGBA")
     r = random.Random(34)
@@ -275,27 +276,27 @@ def paint_lane():
         x = r.gauss(W / 2, W * 0.18)
         y0 = r.uniform(H * 0.13, H)
         L = r.uniform(80, 500)
-        d.line([(x, y0), (x + r.uniform(-12, 12), y0 - L)], fill=(120, 112, 100, r.randint(5, 14)), width=r.randint(2, 6))
+        d.line([(x, y0), (x + r.uniform(-12, 12), y0 - L)], fill=(120, 120, 124, r.randint(8, 22)), width=r.randint(2, 6))
     # impact scuffs near the front where balls are dropped, scratches, a few chips
     for _ in range(90):
         x, y = r.gauss(W / 2, W * 0.22), r.uniform(H * 0.70, H)
-        d.ellipse([x - 3, y - 2, x + 3, y + 2], fill=(110, 100, 90, r.randint(25, 70)))
-    scratches(d, W, H, 120, 35, (130, 120, 108, 35), (8, 60), 1, math.pi / 2)
+        d.ellipse([x - 3, y - 2, x + 3, y + 2], fill=(120, 120, 124, r.randint(30, 80)))
+    scratches(d, W, H, 140, 35, (140, 140, 146, 45), (8, 60), 1, math.pi / 2)
     for _ in range(12):
         x, y = r.uniform(0, W), r.uniform(H * 0.15, H)
-        d.ellipse([x - 2, y - 2, x + 2, y + 2], fill=(140, 120, 90, 120))
+        d.ellipse([x - 2, y - 2, x + 2, y + 2], fill=(150, 150, 150, 120))
     # hump (v < 0.13): polished hardwood with a worn lip
     hn = 0.10 * smooth_noise(133, W, 12, 36) + 0.05 * fine_noise(133, W, 37, 0.5)
     grain = 0.06 * np.sin(np.linspace(0, 55, W)[None, :] + 4 * smooth_noise(133, W, 30, 38))
-    hump = to_img(np.array([52, 38, 28], np.float32) * (1 + hn + grain)[..., None])
+    hump = to_img(np.array([18, 18, 19], np.float32) * (1 + hn + grain)[..., None])
     hd = ImageDraw.Draw(hump, "RGBA")
     for i in range(40):
         x = r.uniform(0, W)
-        hd.line([(x, 0), (x + r.uniform(-6, 6), 133)], fill=(30, 20, 12, 40), width=1)
+        hd.line([(x, 0), (x + r.uniform(-6, 6), 133)], fill=(60, 60, 64, 30), width=1)
     for i in range(30):   # ball strike marks on the ramp
         x, y = r.gauss(W / 2, W * 0.2), r.uniform(10, 120)
-        hd.ellipse([x - 3, y - 1.5, x + 3, y + 1.5], fill=(100, 84, 68, 40))
-    hd.rectangle([0, 0, W, 8], fill=(120, 96, 70, 140))     # worn lip
+        hd.ellipse([x - 3, y - 1.5, x + 3, y + 1.5], fill=(120, 120, 126, 50))
+    hd.rectangle([0, 0, W, 8], fill=(110, 110, 116, 140))     # worn lip
     hd.rectangle([0, 128, W, 133], fill=(20, 16, 14, 255))   # seam to lane
     im.paste(hump, (0, 0))
     return save(im.filter(ImageFilter.GaussianBlur(0.4)), "lane")
@@ -304,19 +305,19 @@ def paint_lane():
 # ---------------------------------------------------------------- rail cap (yellow), v=0 back, v=1 front
 def paint_rail():
     W, H = 64, 1024
-    yel = np.array([226, 176, 26], np.float32)
+    yel = np.array([150, 154, 162], np.float32)   # chrome-grey powder coat
     a = yel * (1 + 0.05 * smooth_noise(H, W, 16, 41)[..., None] + 0.03 * fine_noise(H, W, 42)[..., None])
     yy = np.linspace(0, 1, H)[:, None]
     xx = np.linspace(-1, 1, W)[None, :]
     # hand wear toward the front: paint rubbed thin to grey primer / dark wood
     wear = np.clip((yy - 0.55) / 0.45, 0, 1) * (0.5 + 0.5 * smooth_noise(H, W, 10, 43)) * (1 - 0.6 * np.abs(xx))
     wear = np.clip(wear * 1.6 - 0.35, 0, 1)
-    a = a * (1 - wear[..., None]) + np.array([92, 78, 58], np.float32) * wear[..., None]
+    a = a * (1 - wear[..., None]) + np.array([196, 200, 206], np.float32) * wear[..., None]
     # grime on edges
     a *= (1 - 0.25 * (np.abs(xx) ** 6))[..., None]
     im = to_img(a)
     d = ImageDraw.Draw(im, "RGBA")
-    scratches(d, W, H, 80, 44, (60, 40, 20, 70), (5, 40), 1, math.pi / 2)
+    scratches(d, W, H, 80, 44, (60, 62, 68, 70), (5, 40), 1, math.pi / 2)
     return save(im.filter(ImageFilter.GaussianBlur(0.4)), "rail")
 
 

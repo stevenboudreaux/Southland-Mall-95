@@ -31,9 +31,9 @@ const STEPS = [9, 8, 7, 6, 5]   # tile rows in each column, stepping away from t
 const WALL_T = 0.8      # the front wall with its blue returns (the photo's return runs back ~0.8 m)
 const SIDE = 0.15       # party walls' inner faces from the unit edges
 const CEIL = 3.6        # black ceiling inside
-const TEXT_U0 = 6.08    # the sign starts 0.42 m in from the fascia's left end (viewer's left = high u)
+const TEXT_U0 = 6.12    # the sign starts 0.42 m in from the fascia's left end (viewer's left = high u)
 const TEXT_Y = 2.90     # baseline: the caps sit in the fascia's upper part (photo)
-const LETTER_OFF = 0.025
+const LETTER_OFF = 0.04     # on stand-offs: they throw a shadow on the tile
 const LETTER_D = 0.07
 
 static func P(a, t, n, u, y, d):
@@ -81,7 +81,7 @@ static func front(b, g, a, t, n):
 	for c0 in [F0, F1 - COL]:
 		var pl = 0.15
 		var cc = P(a, t, n, c0 + COL * 0.5, pl * 0.5, -PROUD * 0.5)
-		b.box(g, "pc_store_tile", cc, b.abs_size(t, COL + 0.06, pl, PROUD + 0.04, n), Transform3D.IDENTITY, ["-y"])
+		b.box(g, "pc_store_tile", cc, b.abs_size(t, COL + 0.1, pl, PROUD + 0.06, n), Transform3D.IDENTITY, ["-y"])
 		col_faces(b, g, a, t, n, c0, c0 + COL, pl, HEAD)
 	# the fascia: a tiled box standing out over the opening, a polished stainless underside
 	var fu = [F0, F1]
@@ -181,8 +181,19 @@ static func room(b, G, a, t, n):
 	for side in [[u0, t, WALL_T, dB], [u1, -t, dB, WALL_T]]:
 		var uu = side[0]
 		b.quad(G, "pc_store_blue", [P(a, t, n, uu, 2.45, side[2]), P(a, t, n, uu, 2.45, side[3]), P(a, t, n, uu, 2.6, side[3]), P(a, t, n, uu, 2.6, side[2])], side[1])
-		var nc = P(a, t, n, uu, 3.3, (WALL_T + dB) * 0.5) + side[1] * 0.04
-		b.box(G, "pc_store_neon", nc, b.abs_size(t, 0.03, 0.03, dB - WALL_T - 0.4, n))
+		# 1990s neon: separate 1.8 m tubes with dark electrode ends, on clips, small gaps between
+		var dn = WALL_T + 0.4
+		while dn + 1.8 < dB - 0.3:
+			var nc = P(a, t, n, uu, 3.3, dn + 0.9) + side[1] * 0.045
+			b.box(G, "pc_store_neon", nc, b.abs_size(t, 0.025, 0.025, 1.7, n))
+			for e in [-0.88, 0.88]:
+				b.cur_color = Color("#1a1a1e")
+				b.box(G, "vcolor", nc - n * e, b.abs_size(t, 0.04, 0.04, 0.06, n))
+			for e in [-0.5, 0.5]:
+				b.cur_color = Color("#8a8a8a")
+				b.box(G, "vcolor", nc - n * e - side[1] * 0.025, b.abs_size(t, 0.03, 0.05, 0.02, n))
+			b.cur_color = Color.WHITE
+			dn += 1.9
 	b.quad(G, "pc_store_blue", [P(a, t, n, u1, 2.45, dB), P(a, t, n, u0, 2.45, dB), P(a, t, n, u0, 2.6, dB), P(a, t, n, u1, 2.6, dB)], n)
 	# the back door (employees only) with a lit exit sign over it
 	var du = 6.6
@@ -310,10 +321,10 @@ static func fill_mat(m, key, b):
 			# glazed wall tile: a soft sheen (the hall's probe gives it the mall's reflections)
 			m.albedo_texture = b.tex("pc/store_tile.png"); m.roughness = 0.22; m.metallic_specular = 0.6
 		"glassblock":
-			m.albedo_texture = b.tex("pc/store_glassblock.png"); m.roughness = 0.12; m.metallic_specular = 0.8
+			m.albedo_texture = b.tex("pc/store_glassblock.png"); m.roughness = 0.06; m.metallic_specular = 1.0
 		"steel":
 			# the polished head under the fascia (a bright reflective strip in the photo)
-			m.albedo_color = Color("#d8dade"); m.metallic = 0.85; m.roughness = 0.12
+			m.albedo_color = Color("#eceef0"); m.metallic = 0.55; m.roughness = 0.1
 		"blue":
 			m.albedo_color = Color("#1e48b0"); m.roughness = 0.55
 		"black":

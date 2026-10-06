@@ -659,55 +659,69 @@ def scr_gun():
     return down(img, SW, SH)
 
 
-def scr_shooter():
-    """Portrait picture (251 x 336), rotated into the landscape cell."""
+def scr_sidescroller():
+    """Horizontal side-scrolling shooter: ship flies right over a rocky ridge, nebula behind."""
     k = 2
-    W, H = SH * k, SW * k
-    img = to_img(vgrad(W, H, [(0, (4, 4, 16)), (0.6, (16, 8, 40)), (1, (30, 10, 50))]))
-    a = to_arr(img)
-    for cx, cy, rr, c in ((W * 0.3, H * 0.35, 260, (120, 30, 140)), (W * 0.8, H * 0.6, 200, (30, 60, 150))):
-        g = radial(W, H, cx, cy, rr) ** 2
-        a += g[:, :, None] * np.array(c, np.float32)[None, None, :] / 255.0 * 0.5
+    W, H = SW * k, SH * k
+    a = vgrad(W, H, [(0, (6, 4, 20)), (0.7, (20, 10, 40)), (1, (30, 14, 44))])
+    for cx, cy, rr, c in ((W * 0.70, H * 0.30, 300, (170, 40, 120)), (W * 0.30, H * 0.55, 260, (30, 110, 150)), (W * 0.9, H * 0.7, 180, (90, 40, 170))):
+        a += (radial(W, H, cx, cy, rr) ** 2)[:, :, None] * np.array(c, np.float32)[None, None, :] / 255.0 * 0.55
+    n = fbm(W, H, 351, (90, 30, 10), (0.5, 0.3, 0.2))
+    a *= (0.75 + 0.5 * n)[:, :, None]
     img = to_img(a)
     d = ImageDraw.Draw(img)
-    r = rng(303)
-    for i in range(240):
-        x, y = r.uniform(0, W), r.uniform(0, H)
+    r = rng(352)
+    for i in range(90):
+        x, y = r.uniform(0, W), r.uniform(0, H * 0.8)
+        L = r.uniform(2, 26)
         v = int(r.integers(120, 255))
-        s = 1 if r.random() < 0.85 else 2
-        d.rectangle([x, y, x + s, y + s], fill=(v, v, v))
-    # planet with ring
-    px, py = W * 0.18, H * 0.78
-    d.ellipse([px - 90, py - 90, px + 90, py + 90], fill=(170, 110, 60))
-    d.chord([px - 90, py - 90, px + 90, py + 90], 100, 280, fill=(110, 64, 40))
-    d.arc([px - 150, py - 30, px + 150, py + 30], 200, 520, fill=(220, 200, 160), width=6)
-    # enemy formation
-    for row in range(4):
-        for col in range(6):
-            ex = 70 + col * 72 + (row % 2) * 30
-            ey = 120 + row * 56
-            c = [(60, 220, 120), (250, 160, 40), (250, 80, 80), (120, 200, 255)][row]
-            d.polygon([(ex, ey - 14), (ex + 18, ey + 4), (ex + 8, ey + 12), (ex, ey + 4), (ex - 8, ey + 12), (ex - 18, ey + 4)], fill=c)
-            d.ellipse([ex - 5, ey - 4, ex + 5, ey + 6], fill=(30, 20, 40))
-    # player ship
-    sx, sy = W * 0.55, H * 0.85
-    d.polygon([(sx, sy - 44), (sx + 10, sy - 18), (sx + 36, sy + 10), (sx + 10, sy + 6), (sx, sy + 18), (sx - 10, sy + 6),
-               (sx - 36, sy + 10), (sx - 10, sy - 18)], fill=(220, 225, 235))
-    d.polygon([(sx, sy - 30), (sx + 5, sy - 12), (sx - 5, sy - 12)], fill=(60, 160, 255))
-    d.ellipse([sx - 7, sy + 14, sx + 7, sy + 34], fill=(255, 180, 60))
-    for i in range(5):
-        d.rectangle([sx - 3, sy - 80 - i * 60, sx + 3, sy - 60 - i * 60], fill=(255, 250, 140))
-    # explosion
-    d.polygon(star_pts(W * 0.72, H * 0.42, 34, 14, 9), fill=(255, 200, 60))
-    d.polygon(star_pts(W * 0.72, H * 0.42, 18, 8, 7), fill=(255, 255, 220))
-    d.text((14, 12), "1UP", font=font("mono", 18), fill=(255, 60, 60), anchor="lt")
-    d.text((14, 34), "0052300", font=font("mono", 18), fill=(255, 255, 255), anchor="lt")
-    d.text((W - 14, 12), "HI", font=font("mono", 18), fill=(255, 60, 60), anchor="rt")
-    d.text((W - 14, 34), "0100000", font=font("mono", 18), fill=(255, 255, 255), anchor="rt")
-    for i in range(3):
-        d.polygon([(20 + i * 26, H - 14), (30 + i * 26, H - 36), (40 + i * 26, H - 14)], fill=(220, 225, 235))
-    img = down(img, SH, SW)
-    return img.rotate(-90, expand=True)
+        d.line([(x, y), (x + L, y)], fill=(v, v, v), width=1 if L < 14 else 2)
+    # rocky ridge along the bottom, two layers
+    for layer, (col, base, amp) in enumerate((((60, 36, 70), 0.80, 40), ((96, 60, 50), 0.88, 30))):
+        pts = [(0, H)]
+        x = 0
+        while x <= W + 20:
+            pts.append((x, H * base - amp * abs(math.sin(x * 0.013 + layer)) - r.uniform(0, amp * 0.6)))
+            x += 18
+        pts.append((W, H))
+        d.polygon(pts, fill=col)
+    # armoured cruiser entering from the right
+    cx, cy = W * 0.92, H * 0.34
+    d.polygon([(cx - 120, cy), (cx - 60, cy - 46), (cx + 120, cy - 46), (cx + 120, cy + 46), (cx - 60, cy + 46)], fill=(120, 126, 140))
+    d.rectangle([cx - 40, cy - 60, cx + 120, cy - 46], fill=(90, 96, 110))
+    d.rectangle([cx - 30, cy + 46, cx + 120, cy + 58], fill=(90, 96, 110))
+    for j in range(5):
+        d.rectangle([cx - 30 + j * 28, cy - 8, cx - 16 + j * 28, cy + 4], fill=(255, 200, 60))
+    d.ellipse([cx - 96, cy - 10, cx - 76, cy + 10], fill=(255, 60, 40))
+    # wedge gunships on a sine path
+    for j in range(5):
+        ex = W * 0.48 + j * 46
+        ey = H * 0.58 + 50 * math.sin(j * 0.9)
+        d.polygon([(ex - 22, ey), (ex + 18, ey - 14), (ex + 10, ey), (ex + 18, ey + 14)], fill=(240, 130, 40))
+        d.polygon([(ex - 4, ey - 4), (ex + 8, ey - 4), (ex + 8, ey + 4), (ex - 4, ey + 4)], fill=(80, 30, 20))
+    # player ship, facing right, engine flame behind
+    sx, sy = W * 0.18, H * 0.48
+    d.polygon([(sx - 50, sy - 6), (sx + 46, sy), (sx - 50, sy + 10)], fill=(220, 226, 236))
+    d.polygon([(sx - 30, sy - 4), (sx - 10, sy - 24), (sx + 4, sy - 2)], fill=(170, 176, 190))
+    d.polygon([(sx - 30, sy + 6), (sx - 10, sy + 24), (sx + 4, sy + 4)], fill=(170, 176, 190))
+    d.ellipse([sx - 6, sy - 9, sx + 18, sy + 1], fill=(60, 170, 255))
+    d.polygon([(sx - 52, sy - 5), (sx - 82, sy + 2), (sx - 52, sy + 9)], fill=(255, 170, 50))
+    d.polygon([(sx - 52, sy - 2), (sx - 68, sy + 2), (sx - 52, sy + 6)], fill=(255, 250, 200))
+    for j in range(4):
+        d.rectangle([sx + 60 + j * 70, sy - 2, sx + 100 + j * 70, sy + 4], fill=(120, 220, 255))
+    # explosion and a power capsule
+    d.polygon(star_pts(W * 0.62, H * 0.42, 30, 12, 9), fill=(255, 190, 60))
+    d.polygon(star_pts(W * 0.62, H * 0.42, 15, 7, 7), fill=(255, 255, 220))
+    d.ellipse([W * 0.40 - 14, H * 0.30 - 10, W * 0.40 + 14, H * 0.30 + 10], fill=(220, 40, 40), outline=(255, 220, 220), width=2)
+    d.text((W * 0.40, H * 0.30), "P", font=font("sans", 14), fill=(255, 255, 255), anchor="mm")
+    # HUD
+    d.rectangle([0, H - 34, W, H], fill=(0, 0, 0))
+    d.text((16, H - 17), "1P 0052300", font=font("mono", 18), fill=(255, 255, 255), anchor="lm")
+    d.text((W / 2 + 40, H - 17), "HI 0100000", font=font("mono", 18), fill=(255, 80, 80), anchor="mm")
+    for j in range(3):
+        d.polygon([(W - 90 + j * 26, H - 24), (W - 70 + j * 26, H - 17), (W - 90 + j * 26, H - 10)], fill=(220, 226, 236))
+    d.text((W / 2, 18), "STAGE 2", font=font("sans", 16), fill=(255, 230, 80), anchor="mm")
+    return down(img, SW, SH)
 
 
 def scr_football():
@@ -756,46 +770,62 @@ def scr_football():
     return down(img, SW, SH)
 
 
-def tile(d, x, y, s, c):
-    hi = tuple(min(255, int(v * 1.35 + 30)) for v in c)
-    lo = tuple(int(v * 0.55) for v in c)
-    d.rectangle([x, y, x + s - 1, y + s - 1], fill=lo)
-    d.polygon([(x, y), (x + s - 1, y), (x + s - 5, y + 4), (x + 4, y + 4), (x + 4, y + s - 5), (x, y + s - 1)], fill=hi)
-    d.rectangle([x + 4, y + 4, x + s - 5, y + s - 5], fill=c)
-
-
-def scr_puzzle():
+def scr_bowling():
+    """Trackball bowling: a lane in perspective, the ten pins, the ball, a ten-frame score sheet."""
     k = 2
     W, H = SW * k, SH * k
-    img = Image.new("RGB", (W, H), (50, 20, 80))
+    img = to_img(vgrad(W, H, [(0, (10, 6, 30)), (1, (24, 10, 44))]))
     d = ImageDraw.Draw(img)
-    for yy in range(0, H, 40):
-        for xx in range(0, W, 40):
-            if (xx // 40 + yy // 40) % 2 == 0:
-                d.rectangle([xx, yy, xx + 39, yy + 39], fill=(64, 28, 100))
-    cols = [(230, 40, 40), (40, 110, 230), (240, 200, 30), (40, 190, 80), (200, 60, 210), (250, 130, 30)]
-    s = 36
-    gx, gy = W / 2 - 4 * s, 30
-    d.rectangle([gx - 8, gy - 8, gx + 8 * s + 8, gy + 12 * s + 8], fill=(220, 220, 230))
-    d.rectangle([gx, gy, gx + 8 * s, gy + 12 * s], fill=(10, 10, 24))
-    r = rng(306)
-    heights = [5, 6, 4, 7, 6, 3, 5, 6]
-    for c in range(8):
-        for rr in range(heights[c]):
-            tile(d, gx + c * s, gy + (11 - rr) * s, s, cols[int(r.integers(0, 6))])
-    for (c, rr) in ((3, 1), (4, 1), (4, 2), (5, 2)):
-        tile(d, gx + c * s, gy + rr * s, s, cols[0])
-    # side panels
-    d.rectangle([24, 40, 170, 170], fill=(10, 10, 24), outline=(220, 220, 230), width=3)
-    d.text((97, 66), "SCORE", font=font("sans", 18), fill=(255, 230, 60), anchor="mm")
-    d.text((97, 100), "004250", font=font("mono", 22), fill=(255, 255, 255), anchor="mm")
-    d.text((97, 134), "LINES 23", font=font("sans", 16), fill=(120, 220, 255), anchor="mm")
-    d.rectangle([W - 170, 40, W - 24, 200], fill=(10, 10, 24), outline=(220, 220, 230), width=3)
-    d.text((W - 97, 66), "NEXT", font=font("sans", 18), fill=(255, 230, 60), anchor="mm")
-    for (c, rr) in ((0, 0), (1, 0), (1, 1), (2, 1)):
-        tile(d, W - 150 + c * 30, 100 + rr * 30, 30, cols[3])
-    d.text((W - 97, 240), "LEVEL", font=font("sans", 18), fill=(255, 230, 60), anchor="mm")
-    d.text((W - 97, 272), "07", font=font("mono", 26), fill=(255, 255, 255), anchor="mm")
+    r = rng(356)
+    # blacklight neon on the masking wall
+    for j, c in enumerate([(255, 60, 180), (60, 230, 255), (255, 230, 60)]):
+        d.arc([W * 0.1 - j * 30, H * 0.10 - j * 10, W * 0.9 + j * 30, H * 0.62 + j * 10], 190, 350, fill=c, width=5)
+    for j in range(40):
+        x, y = r.uniform(0, W), r.uniform(H * 0.15, H * 0.45)
+        d.ellipse([x, y, x + 3, y + 3], fill=(200, 200, 255))
+    hy = H * 0.40
+    def lx(t, off):
+        half = 46 + (W * 0.58 - 46) * t
+        return W / 2 + off * half, hy + (H - hy) * t
+    # gutters then the lane boards
+    d.polygon([lx(0, -1.25), lx(0, 1.25), lx(1, 1.25), lx(1, -1.25)], fill=(40, 40, 50))
+    for b in range(16):
+        o0, o1 = -1 + b / 8.0, -1 + (b + 1) / 8.0
+        c = (205, 150, 90) if b % 2 else (190, 136, 80)
+        d.polygon([lx(0, o0), lx(0, o1), lx(1, o1), lx(1, o0)], fill=c)
+    # aiming arrows and dots
+    for j in range(-3, 4):
+        x, y = lx(0.62, j * 0.25)
+        d.polygon([(x, y - 14), (x - 6, y + 6), (x + 6, y + 6)], fill=(110, 60, 30))
+    # pin deck and pins (back to front)
+    d.polygon([lx(0, -1), lx(0, 1), lx(0.07, 1), lx(0.07, -1)], fill=(230, 200, 150))
+    rows = [(-0.6, -0.2, 0.2, 0.6), (-0.4, 0.0, 0.4), (-0.2, 0.2), (0.0,)]
+    for ri, row in enumerate(rows):
+        t = 0.012 + ri * 0.016
+        for o in row:
+            x, y = lx(t, o * 0.8)
+            ph = 30 + ri * 2
+            d.ellipse([x - 6, y - ph, x + 6, y - ph * 0.55], fill=(250, 250, 245))
+            d.ellipse([x - 8, y - ph * 0.6, x + 8, y], fill=(250, 250, 245))
+            d.rectangle([x - 5, y - ph * 0.66, x + 5, y - ph * 0.58], fill=(220, 30, 30))
+    # the ball, rolling with a hook
+    bx, by = lx(0.45, 0.18)
+    d.ellipse([bx - 24, by - 40, bx + 24, by + 6], fill=(30, 60, 200))
+    d.arc([bx - 18, by - 34, bx + 10, by - 6], 200, 340, fill=(130, 170, 255), width=4)
+    d.ellipse([bx - 12, by - 30, bx - 2, by - 22], fill=(10, 10, 30))
+    # score sheet across the top
+    d.rectangle([10, 8, W - 10, 66], fill=(240, 240, 230))
+    fw = (W - 20) / 10.0
+    marks = ["X", "9 /", "8 1", "X", "7 /", "", "", "", "", ""]
+    tot = ["20", "38", "47", "67", "", "", "", "", "", ""]
+    for j in range(10):
+        x0 = 10 + j * fw
+        d.rectangle([x0, 8, x0 + fw, 66], outline=(30, 30, 60), width=2)
+        d.text((x0 + fw / 2, 16), str(j + 1), font=font("sans", 11), fill=(30, 30, 90), anchor="mm")
+        d.text((x0 + fw / 2, 34), marks[j], font=font("mono", 16), fill=(200, 20, 20), anchor="mm")
+        d.text((x0 + fw / 2, 55), tot[j], font=font("mono", 15), fill=(20, 20, 20), anchor="mm")
+    d.text((20, H - 22), "PLAYER 1", font=font("sans", 18), fill=(255, 230, 60), anchor="lm", stroke_width=2, stroke_fill=(0, 0, 0))
+    d.text((W - 20, H - 22), "FRAME 6", font=font("sans", 18), fill=(255, 255, 255), anchor="rm", stroke_width=2, stroke_fill=(0, 0, 0))
     return down(img, SW, SH)
 
 
@@ -907,7 +937,7 @@ def crt_finish(img, seed):
     return to_img(a)
 
 
-SCREENS = [scr_fighter, scr_brawler, scr_gun, scr_shooter, scr_football, scr_puzzle, scr_racer, scr_bricks]
+SCREENS = [scr_fighter, scr_brawler, scr_gun, scr_sidescroller, scr_football, scr_bowling, scr_racer, scr_bricks]
 
 
 def paint_screens():
@@ -1063,31 +1093,34 @@ def mq_football():
     return down(img, MW, MH)
 
 
-def mq_tiles():
+def mq_lanes():
     k = 2
     W, H = MW * k, MH * k
-    img = to_img(vgrad(W, H, [(0, (250, 250, 255)), (1, (210, 225, 250))]))
+    img = to_img(vgrad(W, H, [(0, (8, 4, 24)), (1, (40, 8, 60))]))
     d = ImageDraw.Draw(img)
-    cols = [(230, 40, 40), (40, 110, 230), (240, 200, 30), (40, 190, 80), (200, 60, 210), (250, 130, 30)]
-    r = rng(315)
-    for i in range(36):
-        x, y = r.uniform(0, W), r.uniform(0, H)
-        s = r.uniform(24, 50)
-        a = r.uniform(0, 1.5)
-        pts = [(x + s * math.cos(a + j * 1.5708), y + s * math.sin(a + j * 1.5708)) for j in range(4)]
-        c = cols[int(r.integers(0, 6))]
-        d.polygon(pts, fill=tuple(int(v * 0.5 + 127) for v in c))
-    word = "TUMBLE TILES"
-    f = fit("pop", word, W * 0.80, 140)
-    tw = sum(d.textlength(ch, font=f) for ch in word)
-    x = W / 2 - tw / 2
-    for j, ch in enumerate(word):
-        cw = d.textlength(ch, font=f)
-        if ch != " ":
-            c = cols[j % 6]
-            img = fancy_text(img, (x + cw / 2, H * 0.50 + (8 if j % 2 else -8)), ch, f, tuple(min(255, v + 60) for v in c), c,
-                             stroke_col=(20, 20, 40), stroke=9, shadow=(6, 6), anchor="mm")
-        x += cw
+    for j, c in enumerate([(255, 60, 180), (60, 230, 255), (255, 230, 60)]):
+        d.arc([-200 + j * 20, 30 + j * 26, W + 200 - j * 20, H * 2.2], 200, 340, fill=c, width=8)
+    # pins scattering at the right, a ball hitting them
+    r = rng(357)
+    for j in range(7):
+        x, y = W - 210 + r.uniform(-60, 120), H * 0.30 + r.uniform(0, 140)
+        ang = r.uniform(-0.9, 0.9)
+        pin = Image.new("RGBA", (40, 110), (0, 0, 0, 0))
+        pd = ImageDraw.Draw(pin)
+        pd.ellipse([10, 0, 30, 34], fill=(250, 250, 245, 255))
+        pd.ellipse([4, 30, 36, 108], fill=(250, 250, 245, 255))
+        pd.rectangle([10, 30, 30, 38], fill=(220, 30, 30, 255))
+        pin = pin.rotate(math.degrees(ang), expand=True, resample=Image.BICUBIC)
+        img.paste(pin, (int(x), int(y)), pin)
+    d = ImageDraw.Draw(img)
+    d.ellipse([W - 330, H * 0.38, W - 210, H * 0.38 + 120], fill=(30, 60, 210))
+    d.arc([W - 318, H * 0.38 + 10, W - 250, H * 0.38 + 80], 200, 330, fill=(140, 180, 255), width=7)
+    for j in range(3):
+        d.ellipse([W - 300 + j * 22, H * 0.38 + 30 + (j % 2) * 10, W - 288 + j * 22, H * 0.38 + 42 + (j % 2) * 10], fill=(8, 8, 20))
+    img = fancy_text(img, (W * 0.38, H * 0.44), "LUCKY LANES", fit("popi", "LUCKY LANES", W * 0.60, 140), (255, 250, 210), (255, 70, 170),
+                     stroke_col=(20, 0, 30), stroke=9, glow=(255, 40, 170), glow_r=16, inner=(255, 255, 255, 150))
+    d = ImageDraw.Draw(img)
+    d.text((W * 0.38, H * 0.85), "TRACKBALL BOWLING", font=font("sans", 30), fill=(120, 240, 255), anchor="mm")
     return down(img, MW, MH)
 
 
@@ -1132,7 +1165,7 @@ def mq_paddle():
     return down(img, MW, MH)
 
 
-MARQUEES = [mq_thunder, mq_alley, mq_bullseye, mq_orbit, mq_football, mq_tiles, mq_redline, mq_paddle]
+MARQUEES = [mq_thunder, mq_alley, mq_bullseye, mq_orbit, mq_football, mq_lanes, mq_redline, mq_paddle]
 
 
 def paint_marquees():
@@ -1146,13 +1179,13 @@ def paint_marquees():
 # =================================================================== bezels
 def paint_bezels():
     atlas = Image.new("RGB", (1024, 512), (10, 10, 12))
-    accents = [(250, 180, 30), (250, 200, 40), (240, 60, 40), (120, 160, 255), (250, 250, 250), (230, 40, 40), (250, 120, 20), (250, 200, 40)]
+    accents = [(250, 180, 30), (250, 200, 40), (240, 60, 40), (120, 160, 255), (250, 250, 250), (255, 70, 180), (250, 120, 20), (250, 200, 40)]
     lines = [("INSERT TOKEN - PUSH 1 OR 2 PLAYER START", "WINNER STAYS ON"),
              ("UP TO 4 PLAYERS - JOIN IN ANY TIME", "1 TOKEN PER PLAYER"),
              ("PULL TRIGGER TO SHOOT - SHOOT OFF SCREEN TO RELOAD", "1 OR 2 PLAYERS"),
-             ("1 OR 2 PLAYERS - ALTERNATING", "BONUS SHIP AT 50,000"),
+             ("1 OR 2 PLAYERS - ALTERNATING", "COLLECT POWER PODS"),
              ("PUSH START - CHOOSE YOUR TEAM", "BUY IN AT ANY TIME"),
-             ("ROTATE BALL TO MOVE - BUTTON TO TURN", "1 OR 2 PLAYERS"),
+             ("ROLL THE TRACKBALL TO BOWL", "UP TO 4 PLAYERS TAKE TURNS"),
              ("STEER - SHIFT - FLOOR IT", "CONTINUE? INSERT TOKEN"),
              ("TURN KNOB TO MOVE PADDLE", "BONUS PADDLE EVERY 20,000")]
     for i, s in enumerate(STY):
@@ -1202,7 +1235,7 @@ PANEL_BG = {
     2: [(0, (16, 40, 110)), (1, (30, 70, 160))],
     3: [(0, (24, 10, 40)), (1, (60, 20, 90))],
     4: [(0, (14, 14, 16)), (1, (34, 34, 38))],
-    5: [(0, (240, 236, 222)), (1, (220, 214, 196))],
+    5: [(0, (12, 8, 24)), (1, (40, 12, 56))],
     6: [(0, (20, 20, 22)), (1, (60, 10, 12))],
     7: [(0, (60, 40, 22)), (1, (90, 60, 30))],
 }
@@ -1217,7 +1250,7 @@ def paint_panels():
         TH = 192 * k
         img = to_img(vgrad(W, H, PANEL_BG[i]))
         d = ImageDraw.Draw(img)
-        light = i == 5
+        light = False
         ink = (30, 30, 34) if light else (235, 235, 235)
         px = lambda x: (x + Wp / 2) / Wp * W
         py = lambda sv: (1 - sv / Ls) * TH
@@ -1249,12 +1282,9 @@ def paint_panels():
                 d.line([(j, 0), (j, TH)], fill=(60, 60, 64), width=3)
             d.text((W / 2, TH * 0.88), "PASS / TACKLE       JUMP / BLOCK       TURBO", font=font("cond", 18), fill=(200, 200, 200), anchor="mm")
         elif i == 5:
-            cols = [(230, 40, 40), (40, 110, 230), (240, 200, 30), (40, 190, 80)]
-            r = rng(335)
-            for j in range(40):
-                x, y = r.uniform(0, W), r.uniform(0, TH)
-                c = cols[j % 4]
-                d.rectangle([x, y, x + 22, y + 22], fill=tuple(int(v * 0.35 + 165) for v in c))
+            for j, c in enumerate([(255, 60, 180), (60, 230, 255), (255, 230, 60)]):
+                d.arc([-W * 0.2, TH * (0.25 + j * 0.12), W * 1.2, TH * 2.4], 200, 340, fill=c, width=6)
+            d.text((W / 2, TH * 0.86), "1 TO 4 PLAYERS  -  ROLL HARDER FOR MORE SPEED", font=font("cond", 18), fill=(230, 230, 240), anchor="mm")
         elif i == 6:
             for j in range(0, W, 28):
                 if (j // 28) % 2 == 0:
@@ -1293,7 +1323,7 @@ def paint_panels():
             elif kind == "ball":
                 rr = 0.062 / Wp * W
                 d.ellipse([cx - rr, cy - rr, cx + rr, cy + rr], fill=(20, 20, 20), outline=(200, 40, 40), width=6)
-                d.text((cx, cy - rr - 18), "ROLL TO MOVE", font=font("cond", 16), fill=(40, 40, 40), anchor="mm")
+                d.text((cx, cy - rr - 18), "ROLL TO BOWL", font=font("cond", 16), fill=(240, 240, 240), anchor="mm")
             elif kind == "spin":
                 rr = 0.045 / Wp * W
                 d.ellipse([cx - rr, cy - rr, cx + rr, cy + rr], fill=(20, 14, 8), outline=(250, 200, 40), width=5)
@@ -1376,13 +1406,13 @@ def woodgrain(w, h, seed, base=(96, 60, 34)):
     return a
 
 
-SIDE_BASE = {0: (22, 22, 24), 1: (40, 41, 46), 2: (28, 62, 140), 3: (40, 24, 64), 5: (230, 223, 204), 6: (168, 20, 26)}
+SIDE_BASE = {0: (22, 22, 24), 1: (24, 24, 27), 2: (28, 62, 140), 3: (20, 16, 28), 4: (22, 22, 24), 5: (20, 18, 26), 6: (168, 20, 26)}
 
 
 def side_art(i, s, W, H, px, py):
     """Returns the side art (RGB image W x H, full cell, z -> x, y -> up)."""
-    if i in (4, 7):
-        img = to_img(woodgrain(W, H, 800 + i, (112, 70, 38) if i == 4 else (128, 82, 44)))
+    if i == 7:
+        img = to_img(woodgrain(W, H, 800 + i, (128, 82, 44)))
     else:
         b = np.array(SIDE_BASE[i], np.float32) / 255.0
         n = fbm(W, H, 810 + i, (60, 16, 4), (0.5, 0.3, 0.2))
@@ -1448,24 +1478,45 @@ def side_art(i, s, W, H, px, py):
             yy = py(1.5 - j * 0.12)
             d.line([(px(0.1), yy + 40), (px(D), yy)], fill=(140, 210, 255), width=3)
     elif i == 4:
-        # a small die-cut sticker of the kit's football on plain wood-grain vinyl
-        cx, cy = px(D * 0.6), py(1.15)
-        d.ellipse([cx - 52, cy - 32, cx + 52, cy + 32], fill=(240, 240, 235))
-        d.ellipse([cx - 46, cy - 27, cx + 46, cy + 27], fill=(120, 60, 30))
-        d.line([(cx - 22, cy), (cx + 22, cy)], fill=(245, 245, 240), width=3)
+        # a large die-cut kit decal on the black laminate: turf, yard lines, a football
+        z0, z1 = px(s["kz"] + 0.06), px(D - 0.07)
+        y0, y1 = py(1.32), py(0.30)
+        m = Image.new("L", (W, H), 0)
+        ImageDraw.Draw(m).rounded_rectangle([z0, y0, z1, y1], radius=26, fill=255)
+        turf = Image.new("RGB", (W, H), (34, 120, 44))
+        td = ImageDraw.Draw(turf)
+        for q in range(0, H, 34):
+            td.rectangle([0, q, W, q + 17], fill=(42, 134, 52))
+            td.line([(0, q), (W, q)], fill=(235, 240, 230), width=3)
+        img = Image.composite(turf, img, m)
+        d = ImageDraw.Draw(img)
+        d.rounded_rectangle([z0, y0, z1, y1], radius=26, outline=(240, 240, 240), width=5)
+        d.rounded_rectangle([z0 + 8, y0 + 8, z1 - 8, y1 - 8], radius=20, outline=(200, 30, 30), width=3)
+        cx, cy = (z0 + z1) / 2, py(0.88)
+        d.ellipse([cx - 62, cy - 38, cx + 62, cy + 38], fill=(110, 56, 28), outline=(20, 10, 4), width=3)
+        d.line([(cx - 28, cy), (cx + 28, cy)], fill=(245, 245, 240), width=4)
         for q in range(-2, 3):
-            d.line([(cx + q * 8, cy - 6), (cx + q * 8, cy + 6)], fill=(245, 245, 240), width=3)
+            d.line([(cx + q * 10, cy - 8), (cx + q * 10, cy + 8)], fill=(245, 245, 240), width=3)
+        for q in range(3):
+            d.polygon([(0, py(1.55 + q * 0.05)), (W, py(1.70 + q * 0.05)), (W, py(1.72 + q * 0.05)), (0, py(1.57 + q * 0.05))],
+                      fill=[(200, 30, 30), (240, 240, 240), (200, 30, 30)][q])
     elif i == 5:
-        cols = [(230, 40, 40), (40, 110, 230), (240, 200, 30), (40, 190, 80), (200, 60, 210), (250, 130, 30)]
-        for j, c in enumerate(cols):
-            d.polygon([(0, py(0.5 + j * 0.05)), (W, py(1.0 + j * 0.05)), (W, py(1.04 + j * 0.05)), (0, py(0.54 + j * 0.05))], fill=c)
+        # blacklight-bowling side: neon arcs, a ball and pins
+        for j, c in enumerate([(255, 60, 180), (60, 230, 255), (255, 230, 60)]):
+            d.arc([-W * 0.9, py(1.75) - j * 22, W * 1.6, py(0.2) + 300 - j * 22], 190, 300, fill=c, width=7)
+        for (pz, py_, sc) in ((0.55, 0.55, 1.0), (0.66, 0.50, 0.9), (0.45, 0.47, 0.9), (0.75, 0.62, 0.8)):
+            x, y = px(D * pz), py(py_)
+            d.ellipse([x - 9 * sc, y - 70 * sc, x + 9 * sc, y - 42 * sc], fill=(250, 250, 245))
+            d.ellipse([x - 14 * sc, y - 46 * sc, x + 14 * sc, y], fill=(250, 250, 245))
+            d.rectangle([x - 9 * sc, y - 48 * sc, x + 9 * sc, y - 42 * sc], fill=(220, 30, 30))
+        bx, by = px(D * 0.32), py(0.34)
+        d.ellipse([bx - 38, by - 38, bx + 38, by + 38], fill=(40, 70, 220))
+        d.arc([bx - 28, by - 28, bx + 20, by + 20], 200, 330, fill=(150, 190, 255), width=5)
+        for q in range(3):
+            d.ellipse([bx - 12 + q * 10, by - 16 + (q % 2) * 6, bx - 4 + q * 10, by - 8 + (q % 2) * 6], fill=(10, 10, 30))
         for j in range(30):
             x, y = r.uniform(0, W), r.uniform(0, H)
-            sz = r.uniform(12, 30)
-            ang = r.uniform(0, 1.5)
-            c = cols[int(r.integers(0, 6))]
-            pts = [(x + sz * math.cos(ang + q * 1.5708), y + sz * math.sin(ang + q * 1.5708)) for q in range(4)]
-            d.polygon(pts, fill=c, outline=(30, 30, 40))
+            poly(d, star_pts(x, y, 5, 2, 4), (255, 255, 200) if j % 2 else (120, 240, 255))
     elif i == 6:
         sq = 16
         for q in range(-20, 40):
@@ -1527,9 +1578,110 @@ def paint_sides():
         px = lambda z: (0.004 + z / D * 0.992) * W
         py = lambda y: (0.004 + (1 - y / Hh) * 0.992) * H
         img = side_art(i, s, W, H, px, py)
-        img = wear_side(img, i, s, W, H, px, py, i == 5)
+        img = wear_side(img, i, s, W, H, px, py, False)
         atlas.paste(img, ((i % 4) * 256, (i // 4) * 512))
     save(atlas, "video_sides.png", colors=256)
+
+
+FRONT_BASE = {0: (20, 20, 22), 1: (24, 24, 27), 2: (20, 20, 22), 3: (20, 18, 26), 4: (20, 20, 22), 5: (20, 18, 26), 6: (168, 20, 26), 7: (18, 18, 20)}
+
+
+def paint_fronts():
+    """Lower-front panel art (video_fronts.png, 4 x 2 cells of 256 x 256), framing the coin door."""
+    atlas = Image.new("RGB", (1024, 512), (0, 0, 0))
+    for i, s in enumerate(STY):
+        k = 2
+        W = H = 256 * k
+        Wi = s["W"] - 2 * T
+        kh, lo = s["kh"], s["lo"]
+        px = lambda x: (x + Wi / 2) / Wi * W
+        py = lambda y: (1 - (y - kh) / (lo - kh)) * H
+        b = np.array(FRONT_BASE[i], np.float32) / 255.0
+        n = fbm(W, H, 1000 + i, (60, 16, 4), (0.5, 0.3, 0.2))
+        img = to_img(b[None, None, :] * (0.94 + 0.12 * n)[:, :, None])
+        d = ImageDraw.Draw(img)
+        r = rng(1010 + i)
+        band = (py(0.30), H)            # below the coin door
+        title_y = (band[0] + H) / 2 + 6
+        tcol = (255, 210, 60)
+        if i == 0:
+            for j in range(40):
+                x = r.uniform(0, W)
+                hgt = r.uniform(80, 260)
+                wdt = r.uniform(20, 40)
+                for c, sc in (((200, 30, 10), 1.0), ((250, 120, 20), 0.7), ((255, 220, 80), 0.4)):
+                    d.polygon([(x - wdt * sc, H), (x + wdt * sc, H), (x + r.uniform(-10, 10), H - hgt * sc)], fill=c)
+            for x in (0, W):
+                for j in range(4):
+                    y = py(0.70 - j * 0.09)
+                    d.polygon([(x, y), (W / 2 + (x - W / 2) * 0.62, y - 50), (W / 2 + (x - W / 2) * 0.62, y - 30), (x, y + 20)], fill=(150, 16, 12))
+            tcol = (255, 240, 160)
+        elif i == 1:
+            for j in range(-2, 30):
+                x = j * 40
+                d.polygon([(x, H - 70), (x + 20, H - 70), (x - 10, H), (x - 30, H)], fill=(240, 200, 30))
+            d.rectangle([0, H - 74, W, H - 66], fill=(10, 10, 10))
+            title_y = band[0] + 30
+        elif i == 2:
+            for j, c in enumerate([(240, 240, 235), (210, 20, 20), (240, 240, 235), (210, 20, 20)]):
+                rr = 210 - j * 45
+                for cx in (-40, W + 40):
+                    d.ellipse([cx - rr, H * 0.55 - rr, cx + rr, H * 0.55 + rr], fill=c)
+            for j in range(3):
+                d.rectangle([0, H - 60 + j * 16, W, H - 52 + j * 16], fill=(40, 90, 200))
+        elif i == 3:
+            a = to_arr(img)
+            for cx, cy, rr, c in ((W * 0.15, H * 0.5, 240, (160, 40, 160)), (W * 0.85, H * 0.7, 240, (40, 90, 200))):
+                a += (radial(W, H, cx, cy, rr) ** 2)[:, :, None] * np.array(c, np.float32)[None, None, :] / 255.0 * 0.6
+            img = to_img(a)
+            d = ImageDraw.Draw(img)
+            for j in range(120):
+                x, y = r.uniform(0, W), r.uniform(0, H)
+                d.rectangle([x, y, x + 2, y + 2], fill=(220, 220, 255))
+            tcol = (150, 210, 255)
+        elif i == 4:
+            for q in range(0, 140, 28):
+                d.rectangle([0, H - 140 + q, W, H - 126 + q], fill=(40, 130, 50))
+                d.rectangle([0, H - 126 + q, W, H - 112 + q], fill=(34, 118, 44))
+            for x in range(0, W, 64):
+                d.line([(x, H - 140), (x, H)], fill=(235, 240, 230), width=3)
+            tcol = (255, 255, 255)
+            title_y = band[0] + 22
+        elif i == 5:
+            for j, c in enumerate([(255, 60, 180), (60, 230, 255), (255, 230, 60)]):
+                d.arc([-W * 0.3, H * 0.62 + j * 22, W * 1.3, H * 2.0], 195, 345, fill=c, width=7)
+            tcol = (255, 120, 200)
+            title_y = band[0] + 26
+        elif i == 6:
+            sq = 24
+            for q in range(W // sq + 1):
+                for rr in range(3):
+                    c = (240, 240, 240) if (q + rr) % 2 == 0 else (14, 14, 14)
+                    d.rectangle([q * sq, H - 3 * sq + rr * sq, q * sq + sq, H - 2 * sq + rr * sq], fill=c)
+            tcol = (255, 230, 60)
+            title_y = H - 3 * sq - 30
+        elif i == 7:
+            for j, c in enumerate([(250, 220, 40), (250, 150, 30), (230, 80, 30), (190, 30, 40)]):
+                d.rectangle([0, H - 110 + j * 20, W, H - 96 + j * 20], fill=c)
+            tcol = (250, 200, 60)
+            title_y = H - 140
+        img = fancy_text(img, (W / 2, title_y), s["title"], fit("condo", s["title"], W * 0.8, 46), tcol, tuple(int(v * 0.8) for v in tcol),
+                         stroke_col=(10, 10, 10), stroke=4)
+        # wear: shoe scuffs low, grime toward the floor
+        a = to_arr(img)
+        yy = np.mgrid[0:H, 0:W][0].astype(np.float32)
+        sc = (n > 0.60) * np.clip((yy - H * 0.82) / (H * 0.18), 0, 1)
+        a = a * (1 - sc[:, :, None] * 0.22) + 0.30 * sc[:, :, None] * 0.22
+        a *= (1 - 0.15 * np.clip((yy - H * 0.85) / (H * 0.15), 0, 1))[:, :, None]
+        img = to_img(a)
+        d = ImageDraw.Draw(img)
+        for j in range(40):
+            x, y = r.uniform(0, W), r.uniform(H * 0.6, H)
+            L = r.uniform(4, 30)
+            v = int(r.integers(90, 150))
+            d.line([(x, y), (x + L, y + r.uniform(-4, 4))], fill=(v, v, v), width=1)
+        atlas.paste(down(img, 256, 256), ((i % 4) * 256, (i // 4) * 256))
+    save(atlas, "video_fronts.png", colors=256)
 
 
 def main():
@@ -1547,6 +1699,7 @@ def main():
     paint_bezels()
     paint_panels()
     paint_sides()
+    paint_fronts()
     tot = 0
     for f in sorted(os.listdir(OUT)):
         if f.startswith("video_") and f.endswith(".png"):

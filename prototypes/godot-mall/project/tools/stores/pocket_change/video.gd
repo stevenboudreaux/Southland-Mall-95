@@ -6,9 +6,9 @@
 ##   0  2-player fighting upright (black, 6 buttons a player)        THUNDER DOJO
 ##   1  4-player wide brawler kit (2 coin doors)                     IRON ALLEY
 ##   2  light-gun cabinet, two holstered guns on armoured cables     BULLSEYE PATROL
-##   3  vertical-monitor space shooter                               ORBIT RAIDER
-##   4  conversion kit: black front, wood-grain vinyl sides          FOURTH & GOAL
-##   5  trackball puzzle (cream laminate, short)                     TUMBLE TILES
+##   3  side-scrolling space shooter (landscape 25" CRT)             ORBIT RAIDER
+##   4  black conversion kit, 25" monitor, side decal                FOURTH & GOAL
+##   5  trackball bowling, black cabinet                             LUCKY LANES
 ##   6  tall dedicated racer: flared marquee, wheel, shifter, pedal  RED LINE RUSH
 ##   7  early-80s wood-grain cabinet kept on the floor (spinner)     PADDLE PANIC
 ## All titles and art are invented. Every number below is metres in the machine frame:
@@ -37,7 +37,7 @@ const STYLES = [
   ["start", -0.030, 0.255, "w"], ["start", 0.030, 0.255, "w"]]},
 {"title": "IRON ALLEY", "W": 1.06, "D": 0.92, "H": 1.90, "kz": 0.16, "kh": 0.11, "lo": 0.79,
  "cp": [0.85, 0.95, 0.36, 1.00], "bz": [0.48, 1.53], "mq": [0.36, 1.60, 0.34, 1.85], "top": [0.35, 1.90],
- "scr": [0.52, 0.39, 0.08], "vert": false, "flare": 0, "body": "#2a2b2f", "tm": "#d8b020", "cpc": "#18181a",
+ "scr": [0.52, 0.39, 0.08], "vert": false, "flare": 0, "body": "#1a1a1d", "tm": "#d8b020", "cpc": "#18181a",
  "doors": [-0.22, 0.22],
  "ctl": [["stick", -0.455, 0.150, "#c8201c"], ["btn", -0.390, 0.165, "#c8201c"], ["btn", -0.350, 0.172, "#c8201c"], ["btn", -0.310, 0.165, "#c8201c"],
   ["stick", -0.195, 0.150, "#1f4fc0"], ["btn", -0.130, 0.165, "#1f4fc0"], ["btn", -0.090, 0.172, "#1f4fc0"], ["btn", -0.050, 0.165, "#1f4fc0"],
@@ -46,16 +46,16 @@ const STYLES = [
   ["start", -0.350, 0.285, "r"], ["start", -0.090, 0.285, "b"], ["start", 0.170, 0.285, "y"], ["start", 0.430, 0.285, "g"]]},
 {"title": "BULLSEYE PATROL", "W": 0.76, "D": 0.94, "H": 1.92, "kz": 0.14, "kh": 0.10, "lo": 0.80,
  "cp": [0.86, 0.93, 0.30, 0.97], "bz": [0.44, 1.56], "mq": [0.30, 1.64, 0.27, 1.88], "top": [0.30, 1.92],
- "scr": [0.53, 0.40, 0.10], "vert": false, "flare": 0, "body": "#1d3f8c", "tm": "#d8d8dc", "cpc": "#141418",
+ "scr": [0.53, 0.40, 0.10], "vert": false, "flare": 0, "body": "#18181a", "tm": "#d8d8dc", "cpc": "#141418",
  "doors": [0.0],
  "ctl": [["gun", -0.275, 0.150, "#d0401c"], ["gun", 0.275, 0.150, "#2a5ad0"],
   ["start", -0.075, 0.140, "r"], ["start", 0.075, 0.140, "b"]]},
-{"title": "ORBIT RAIDER", "W": 0.62, "D": 0.82, "H": 1.80, "kz": 0.12, "kh": 0.10, "lo": 0.79,
+{"title": "ORBIT RAIDER", "W": 0.64, "D": 0.82, "H": 1.80, "kz": 0.12, "kh": 0.10, "lo": 0.79,
  "cp": [0.85, 0.94, 0.27, 0.98], "bz": [0.38, 1.52], "mq": [0.27, 1.57, 0.25, 1.76], "top": [0.27, 1.80],
- "scr": [0.31, 0.41, 0.08], "vert": true, "flare": 0, "body": "#2a1840", "tm": "#7a3cc0", "cpc": "#141018",
+ "scr": [0.48, 0.36, 0.09], "vert": false, "flare": 0, "body": "#18181a", "tm": "#7a3cc0", "cpc": "#141018",
  "doors": [0.0],
- "ctl": [["stick", -0.195, 0.130, "#111114"], ["btn", -0.120, 0.140, "#e8c018"], ["btn", -0.075, 0.150, "#2ea040"],
-  ["stick", 0.070, 0.130, "#111114"], ["btn", 0.145, 0.140, "#e8c018"], ["btn", 0.190, 0.150, "#2ea040"],
+ "ctl": [["stick", -0.205, 0.130, "#111114"], ["btn", -0.130, 0.140, "#e8c018"], ["btn", -0.085, 0.150, "#2ea040"],
+  ["stick", 0.075, 0.130, "#111114"], ["btn", 0.150, 0.140, "#e8c018"], ["btn", 0.195, 0.150, "#2ea040"],
   ["start", -0.020, 0.235, "w"], ["start", 0.025, 0.235, "w"]]},
 {"title": "FOURTH & GOAL", "W": 0.66, "D": 0.84, "H": 1.86, "kz": 0.12, "kh": 0.12, "lo": 0.80,
  "cp": [0.86, 0.94, 0.29, 0.97], "bz": [0.36, 1.50], "mq": [0.22, 1.55, 0.22, 1.80], "top": [0.22, 1.86],
@@ -64,14 +64,12 @@ const STYLES = [
  "ctl": [["stick", -0.225, 0.130, "#c4161c"], ["btn", -0.150, 0.140, "#1f4fb4"], ["btn", -0.108, 0.148, "#c4161c"], ["btn", -0.066, 0.140, "#e8c018"],
   ["stick", 0.085, 0.130, "#c4161c"], ["btn", 0.160, 0.140, "#1f4fb4"], ["btn", 0.202, 0.148, "#c4161c"], ["btn", 0.244, 0.140, "#e8c018"],
   ["start", -0.025, 0.245, "w"], ["start", 0.025, 0.245, "w"]]},
-{"title": "TUMBLE TILES", "W": 0.62, "D": 0.80, "H": 1.76, "kz": 0.12, "kh": 0.10, "lo": 0.78,
- "cp": [0.84, 0.93, 0.28, 0.97], "bz": [0.38, 1.47], "mq": [0.28, 1.52, 0.26, 1.72], "top": [0.28, 1.76],
- "scr": [0.40, 0.30, 0.11], "vert": false, "flare": 0, "body": "#e6dfcc", "tm": "#c41e24", "cpc": "#1a1a1c",
+{"title": "LUCKY LANES", "W": 0.66, "D": 0.82, "H": 1.80, "kz": 0.12, "kh": 0.10, "lo": 0.78,
+ "cp": [0.84, 0.93, 0.28, 0.97], "bz": [0.39, 1.50], "mq": [0.29, 1.55, 0.27, 1.76], "top": [0.29, 1.80],
+ "scr": [0.48, 0.36, 0.10], "vert": false, "flare": 0, "body": "#18181a", "tm": "#c41e24", "cpc": "#1a1a1c",
  "doors": [0.0],
  "ctl": [["ball", 0.0, 0.150, "#c81e2a"],
-  ["btn", -0.200, 0.140, "#2ea040"], ["btn", -0.145, 0.150, "#e8c018"],
-  ["btn", 0.145, 0.150, "#2ea040"], ["btn", 0.200, 0.140, "#e8c018"],
-  ["start", -0.170, 0.245, "w"], ["start", 0.170, 0.245, "w"]]},
+  ["start", -0.175, 0.150, "y"], ["start", 0.175, 0.150, "y"]]},
 {"title": "RED LINE RUSH", "W": 0.72, "D": 0.94, "H": 1.96, "kz": 0.18, "kh": 0.10, "lo": 0.78,
  "cp": [0.84, 0.95, 0.34, 1.00], "bz": [0.45, 1.52], "mq": [0.33, 1.58, 0.30, 1.96], "top": [0.30, 1.96],
  "scr": [0.48, 0.36, 0.09], "vert": false, "flare": 0.90, "body": "#a8141a", "tm": "#151517", "cpc": "#141416",
@@ -186,7 +184,10 @@ static func build(b, g, o, f, opts = {}):
 			"kick":
 				_q(b, g, "pc_video_kick", xf, p, fr.N, uv01)
 			"lower":
-				_q(b, g, lam, xf, p, fr.N, [])
+				# lower-front art panel (video_fronts.png, 4 x 2 cells of 256 x 256)
+				var fc = si % 4
+				var frw = si / 4
+				_q(b, g, "pc_video_front", xf, p, fr.N, [_uv_cell(4, 2, fc, frw, 0, 1), _uv_cell(4, 2, fc, frw, 1, 1), _uv_cell(4, 2, fc, frw, 1, 0), _uv_cell(4, 2, fc, frw, 0, 0)])
 			"hid":
 				_q(b, g, "pc_video_cpside", xf, p, fr.N, [])
 			"bezel":
@@ -688,6 +689,8 @@ static func fill_mat(m, key, b):
 			m.albedo_texture = b.tex("pc/video_sides.png"); m.roughness = 0.5
 		"kick":
 			m.albedo_texture = b.tex("pc/video_kick.png"); m.roughness = 0.45; m.metallic = 0.5
+		"front":
+			m.albedo_texture = b.tex("pc/video_fronts.png"); m.roughness = 0.5
 		"door":
 			m.albedo_texture = b.tex("pc/video_door.png"); m.roughness = 0.5; m.metallic = 0.35
 		"entry":

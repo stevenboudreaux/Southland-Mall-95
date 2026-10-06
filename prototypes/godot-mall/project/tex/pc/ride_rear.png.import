@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cv5i0g6axjtqt"
-path="res://.godot/imported/ride_hazard.png-e1fb1262b058f38e72a313b303b09bfe.ctex"
+uid="uid://csgbvghf6vuyh"
+path="res://.godot/imported/ride_rear.png-3843e0b8bb9e2bd6c03590ac87fc278a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://tex/pc/ride_hazard.png"
-dest_files=["res://.godot/imported/ride_hazard.png-e1fb1262b058f38e72a313b303b09bfe.ctex"]
+source_file="res://tex/pc/ride_rear.png"
+dest_files=["res://.godot/imported/ride_rear.png-3843e0b8bb9e2bd6c03590ac87fc278a.ctex"]
 
 [params]
 

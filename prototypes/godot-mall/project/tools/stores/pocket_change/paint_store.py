@@ -33,7 +33,7 @@ def tile():
     N = 512
     px = N / 1.2
     rng = random.Random(7)
-    base = np.array([158, 196, 200], np.float32)   # pale blue-green (photo, corrected for the dim exposure)
+    base = np.array([176, 208, 207], np.float32)   # pale powder blue-green (photo, corrected for the dim exposure)
     img = np.zeros((N, N, 3), np.float32)
     for j in range(4):
         for i in range(4):
@@ -48,12 +48,12 @@ def tile():
             d = np.sqrt((xx - cx) ** 2 + (yy - cy) ** 2) / (N / 4)
             img[y0:y1, x0:x1] += (np.clip(1 - d, 0, 1) ** 2 * 6)[..., None]
     img += noise(N, N, 2.0, 3)[..., None]
-    g = int(round(0.004 * px)) + 1     # ~3 mm grout
+    g = int(round(0.003 * px)) + 1     # ~5 mm light grout, clearly visible in the photo
     for k in range(5):
         c = int(k * N / 4)
         for o in range(-g, g):
-            img[:, (c + o) % N] = [176, 182, 180]
-            img[(c + o) % N, :] = [176, 182, 180]
+            img[:, (c + o) % N] = [214, 216, 210]
+            img[(c + o) % N, :] = [214, 216, 210]
     save(Image.fromarray(np.clip(img, 0, 255).astype(np.uint8)), "tile")
 
 
@@ -68,10 +68,10 @@ def glassblock():
     # the face's wave pattern: soft vertical flutes plus the dome's light falloff
     wave = 0.5 + 0.5 * np.sin(bx * math.pi * 7 + np.sin(by * math.pi * 2) * 0.8)
     dome = 1 - (((bx - 0.5) * 2) ** 2 + ((by - 0.5) * 2) ** 2) * 0.35
-    v = 120 + wave * 35 * dome + dome * 30
-    img[..., 0] = v * 0.96
+    v = 135 + wave * 70 * dome + dome * 35
+    img[..., 0] = v * 0.94
     img[..., 1] = v * 1.0
-    img[..., 2] = v * 0.98
+    img[..., 2] = v * 0.99
     # the block's pressed rim (darker, then a bright edge)
     rim = np.minimum(np.minimum(bx, 1 - bx), np.minimum(by, 1 - by))
     img *= np.clip(0.75 + rim * 6, 0.75, 1.0)[..., None]

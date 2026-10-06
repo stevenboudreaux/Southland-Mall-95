@@ -133,7 +133,7 @@ static func build(b, g, o, f, opts = {}):
 		q(b, g, "pc_skee_sidetext", xf, [Vector3(x, ya, za), Vector3(x, ya, zb), Vector3(x, yb, zb), Vector3(x, yb, za)],
 			Vector3(sx, 0, 0), [Vector2(u0, 1), Vector2(u1, 1), Vector2(u1, 0), Vector2(u0, 0)], true)
 
-	# ---------------------------------------------------------------- rail caps (yellow) with a bevel on the outer edge
+	# ---------------------------------------------------------------- rail caps (chrome-grey) with a bevel on the outer edge
 	var rail_pts = [0.10, Z_LANE, 2.18]
 	for sx in [-1.0, 1.0]:
 		for i in 2:
@@ -155,7 +155,7 @@ static func build(b, g, o, f, opts = {}):
 			q(b, g, "pc_skee_edge", xf, [Vector3(sx * RX, a.y, a.x), Vector3(sx * SX, a.y, a.x), Vector3(sx * SX, c.y, c.x), Vector3(sx * RX, c.y, c.x)],
 				Vector3(0, 1, -0.2))
 
-	# ---------------------------------------------------------------- front face, aluminium cap, trough
+	# ---------------------------------------------------------------- front face, black powder-coated cap, trough
 	q(b, g, fk, xf, [Vector3(-SX, 0.28, 0), Vector3(SX, 0.28, 0), Vector3(SX, 0.80, 0), Vector3(-SX, 0.80, 0)], FW,
 		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)])
 	b.box(g, "pc_skee_metal", Vector3(0, 0.8525, 0.045), Vector3(W + 0.02, 0.105, 0.11), xf)
@@ -166,7 +166,7 @@ static func build(b, g, o, f, opts = {}):
 		U, [Vector2(0, 0.1), Vector2(0.78, 0.1), Vector2(0.78, 0.2), Vector2(0, 0.2)])
 	q(b, g, "pc_skee_metal", xf, [Vector3(-SX - 0.01, 0.915, 0.09), Vector3(SX + 0.01, 0.915, 0.09), Vector3(SX + 0.01, 0.905, 0.10), Vector3(-SX - 0.01, 0.905, 0.10)],
 		Vector3(0, 1, 1), [Vector2(0, 0.3), Vector2(0.78, 0.3), Vector2(0.78, 0.32), Vector2(0, 0.32)])
-	# aluminium angle on the two front vertical corners (as on real alleys)
+	# steel angle (black) on the two front vertical corners
 	for sx in [-1.0, 1.0]:
 		b.box(g, "pc_skee_metal", Vector3(sx * (SX - 0.007), 0.54, -0.003), Vector3(0.03, 0.52, 0.006), xf)
 		b.box(g, "pc_skee_metal", Vector3(sx * (SX + 0.003), 0.54, 0.012), Vector3(0.006, 0.52, 0.03), xf)
@@ -403,7 +403,7 @@ static func sphere(b, s, xf, c, r, yaw):
 			var fn = (n[0] + n[1] + n[2] + n[3]).normalized()
 			qn(b, s, xf, p, n, uv, fn)
 
-const TINT = [Color(1, 1, 1), Color(0.95, 0.99, 1.03), Color(1.04, 0.97, 0.94), Color(0.98, 0.96, 0.98)]
+const TINT = [Color(1, 1, 1), Color(0.94, 0.98, 1.04), Color(1.05, 1.0, 0.95), Color(0.97, 0.97, 0.99)]
 
 ## Material "pc_skee_<key>": fill m and return true, or return false for an unknown key.
 ## Textured emissives keep `emission` BLACK: Godot's ADD operator emits (emission + texture) * energy,
@@ -423,9 +423,9 @@ static func fill_mat(m, key, b):
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
 		"rail":
-			m.albedo_texture = b.tex("pc/skee_rail.png"); m.roughness = 0.38; m.metallic_specular = 0.6
+			m.albedo_texture = b.tex("pc/skee_rail.png"); m.roughness = 0.35; m.metallic = 0.45
 		"lane":
-			m.albedo_texture = b.tex("pc/skee_lane.png"); m.roughness = 0.32; m.metallic_specular = 0.6
+			m.albedo_texture = b.tex("pc/skee_lane.png"); m.roughness = 0.4; m.metallic_specular = 0.5
 		"board":
 			m.albedo_texture = b.tex("pc/skee_board.png"); m.roughness = 0.45
 		"rim":
@@ -469,8 +469,8 @@ static func fill_mat(m, key, b):
 			m.emission_enabled = true; m.emission = Color("#ffc020"); m.emission_energy_multiplier = 2.4
 			m.set_meta("e_day", 2.4); m.set_meta("e_night", 2.4)
 		"metal":
-			m.albedo_texture = b.tex("pc/skee_metal.png"); m.albedo_color = Color(0.92, 0.92, 0.94)
-			m.metallic = 0.6; m.roughness = 0.38
+			m.albedo_texture = b.tex("pc/skee_metal.png"); m.albedo_color = Color(0.16, 0.16, 0.18)   # black powder-coated steel cap
+			m.metallic = 0.4; m.roughness = 0.5
 		"chrome":
 			m.albedo_color = Color("#d8d8dc"); m.metallic = 0.95; m.roughness = 0.18
 		"steel":

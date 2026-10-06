@@ -18,8 +18,9 @@ from fontTools.pens.basePen import BasePen
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONT = "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf"
 TEXT = "POCKET CHANGE"
-CAP_H = 0.35          # metres: the caps are ~0.35 m (photo: the letters against the 20 cm glass blocks at both ends)
-TRACK = 0.02          # extra letter spacing, in cap heights (the photo's letters sit a little apart)
+CAP_H = 0.37          # metres: ~0.35-0.37 m caps against the 20 cm glass blocks at both ends of the fascia (photo)
+TRACK = 0.0           # the photo's letters are set tight
+SPACE = 0.45          # and the word gap is narrow: a fraction of the font's space
 STEPS = 8             # segments per curve
 
 
@@ -94,7 +95,7 @@ def main():
         gname = cmap[ord(ch)]
         adv = hmtx[gname][0] * s
         if ch == " ":
-            x += adv
+            x += adv * SPACE
             continue
         pen = FlatPen(gs)
         gs[gname].draw(pen)

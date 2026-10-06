@@ -1,5 +1,5 @@
 ## Pocket Change: the deluxe enclosed two-seat motion-ride cabinet that stood in the middle
-## of the arcade (a dinosaur-safari light-gun game, 1994 era). The machine TYPE only: the
+## of the arcade (a dinosaur light-gun game, 1994 era). The machine TYPE only: the
 ## title "TALON CREEK" and all its art are original (tools/stores/pocket_change/README.md).
 ##
 ## Form factor (mid-90s deluxe motion cabins): a fibreglass capsule on a motion base,
@@ -9,6 +9,8 @@
 ## (z = depth), with a mounted light gun and a START button each. Outside: painted side
 ## art, a backlit marquee over the entry, rubber bumpers, a bellows skirt over the motion
 ## base, a token door, a safety placard and a "2 PLAYERS" sign.
+## Livery (after the Oct 5 IP review): sunset-orange gloss upper body, charcoal lower body,
+## chrome trim lines and door edge, purple accents; canyon art with generic dinosaurs.
 ## Textures: tools/stores/pocket_change/paint_ride.py -> tex/pc/ride_*.png.
 ##   tools/qa/preview.sh ride /home/claude/southland-mall-95/.scratch/preview/ride/v "0,1.6,3.6,0,-8;-0.3,1.55,-1.0,0,-6"
 
@@ -211,7 +213,7 @@ static func build(b, g, o, f, _opts = {}):
 	_front(b, g, xf)
 	b.cur_color = Color.WHITE
 	# one small light inside the cabin: the screen's glow on the riders and out of the door
-	var l = b.add_omni(xf * Vector3(0, 1.50, 1.60), 0.8, 2.3, Color(0.72, 0.95, 0.80), true)
+	var l = b.add_omni(xf * Vector3(0, 1.50, 1.60), 0.8, 2.3, Color(0.95, 0.78, 0.82), true)
 	b.tag(l, "", 0.8, 0.8)
 	var c0 = xf * Vector3(-W * 0.5, 0, 0)
 	var c1 = xf * Vector3(W * 0.5, 0, D)
@@ -256,6 +258,12 @@ static func _shell(b, g, xf):
 				for v in p:
 					uv.append(Vector2((v.z - ART_Z0) / (ART_Z1 - ART_Z0), (1.80 - v.y) / (1.80 - BOT)))
 				sq(b, g, "pc_ride_side", xf, p, n, uv)
+			elif k == 0 or k == ns - 2:
+				# flat sides of the bevel and the nose: the two-tone end-wall paint, by height
+				var uv3 = []
+				for v in p:
+					uv3.append(Vector2(v.z, (2.10 - v.y) / 1.76))
+				sq(b, g, "pc_ride_rear", xf, p, n, uv3)
 			else:
 				var uv2 = [Vector2(S[i][k], za), Vector2(S[i][k + 1], za), Vector2(S[i + 1][k + 1], zb), Vector2(S[i + 1][k], zb)]
 				sq(b, g, "pc_ride_paint", xf, p, n, uv2)
@@ -263,7 +271,11 @@ static func _shell(b, g, xf):
 	q(b, g, "pc_ride_frame", xf, [Vector3(-0.80, BOT, 0.30), Vector3(0.80, BOT, 0.30), Vector3(0.80, BOT, 2.50), Vector3(-0.80, BOT, 2.50)], Vector3.DOWN)
 	# front cap
 	var F = ring(ST[-1][1], ST[-1][2], BOT, ST[-1][3])[0]
-	fan(b, g, "pc_ride_paint", xf, F, ST[-1][0], Vector3(0, 0, 1), Vector2(0, 1.0), 0.0, 1.0, 0.0, 1.0)
+	fan(b, g, "pc_ride_rear", xf, F, ST[-1][0], Vector3(0, 0, 1), Vector2(0, 1.0), 0.0, 1.0, 2.10, 1.0 / 1.76)
+	# chrome trim lines along both sides: top of the art and the orange / charcoal break
+	for sx in [-1.0, 1.0]:
+		for yy in [0.72, 1.80]:
+			bx(b, g, "pc_ride_trim", Vector3(sx * (HW + 0.004), yy, (ART_Z0 + ART_Z1) * 0.5), Vector3(0.010, 0.020, ART_Z1 - ART_Z0), xf)
 	# title decals on both sides (vinyl, alpha-scissored), read correctly from outside
 	for sx in [-1.0, 1.0]:
 		var x = sx * (HW + 0.004)
@@ -305,16 +317,16 @@ static func _base(b, g, xf):
 		# rear corner bumpers either side of the step
 		bx(b, g, "pc_ride_rubber", Vector3(sx * 0.70, 0.40, 0.285), Vector3(0.34, 0.12, 0.05), xf, [], false, 2.0)
 	bx(b, g, "pc_ride_rubber", Vector3(0, 0.40, 2.615), Vector3(1.40, 0.12, 0.05), xf, [], false, 2.0)
-	# the entry step: black steel box, carpet tread, diamond-plate nosing, hazard tape
+	# the entry step: black steel box, carpet tread, diamond-plate nosing, red rubber nosing strip
 	bx(b, g, "pc_ride_frame", Vector3(0, 0.10, 0.16), Vector3(1.00, 0.20, 0.28), xf, ["+y"])
 	q(b, g, "pc_ride_carpet", xf, [Vector3(-0.50, 0.20, 0.08), Vector3(0.50, 0.20, 0.08), Vector3(0.50, 0.20, 0.30), Vector3(-0.50, 0.20, 0.30)], Vector3.UP,
 		[Vector2(0, 0.44), Vector2(2, 0.44), Vector2(2, 0), Vector2(0, 0)])
 	q(b, g, "pc_ride_tread", xf, [Vector3(-0.50, 0.201, 0.02), Vector3(0.50, 0.201, 0.02), Vector3(0.50, 0.201, 0.08), Vector3(-0.50, 0.201, 0.08)], Vector3.UP,
 		[Vector2(0, 0.24), Vector2(4, 0.24), Vector2(4, 0), Vector2(0, 0)])
-	q(b, g, "pc_ride_hazard", xf, [Vector3(-0.50, 0.15, 0.018), Vector3(0.50, 0.15, 0.018), Vector3(0.50, 0.198, 0.018), Vector3(-0.50, 0.198, 0.018)], Vector3.FORWARD,
+	q(b, g, "pc_ride_redrub", xf, [Vector3(-0.50, 0.15, 0.018), Vector3(0.50, 0.15, 0.018), Vector3(0.50, 0.198, 0.018), Vector3(-0.50, 0.198, 0.018)], Vector3.FORWARD,
 		[Vector2(0, 1), Vector2(2, 1), Vector2(2, 0), Vector2(0, 0)])
 
-## The rear (entry) end: wall with the doorway, rubber edge trim, hazard tape, threshold,
+## The rear (entry) end: wall with the doorway, rubber jamb, chrome edge trim, threshold,
 ## token door, safety placard, "2 PLAYERS", grab handles, the curtain.
 static func _rear(b, g, xf):
 	var A = ring(ST[0][1], ST[0][2], BOT, ST[0][3])[0]
@@ -322,7 +334,7 @@ static func _rear(b, g, xf):
 	var Dp = dr[0]
 	var Dn = dr[1]
 	var I = ring(IN_HW, IN_TOP, FLOOR, IN_RT)[0]
-	var E = ring(DOOR[0] + 0.045, DOOR[1] + 0.045, FLOOR, DOOR[2] + 0.045)[0]
+	var E = ring(DOOR[0] + 0.035, DOOR[1] + 0.035, FLOOR, DOOR[2] + 0.035)[0]
 	var sD = arclen(Dp)
 	var a3 = []
 	var d3 = []
@@ -348,8 +360,8 @@ static func _rear(b, g, xf):
 		nb.append(Vector3(0, 0, -1))
 		nf.append(Vector3(0, 0, 1))
 		nj.append(Vector3(-Dn[k].x, -Dn[k].y, 0))
-		ua.append(Vector2(A[k].x, -A[k].y))
-		ud.append(Vector2(Dp[k].x, -Dp[k].y))
+		ua.append(Vector2(A[k].x, (2.10 - A[k].y) / 1.76))
+		ud.append(Vector2(Dp[k].x, (2.10 - Dp[k].y) / 1.76))
 		udi.append(Vector2(Dp[k].x * 2.0, -Dp[k].y * 2.0))
 		ui.append(Vector2(I[k].x * 2.0, -I[k].y * 2.0))
 		uh0.append(Vector2(sD[k] * 2.0, 1))
@@ -357,10 +369,10 @@ static func _rear(b, g, xf):
 	var d3h = []
 	for v in d3:
 		d3h.append(v - Vector3(0, 0, 0.003))
-	strip(b, g, "pc_ride_paint", xf, a3, d3, nb, nb, ua, ud)
+	strip(b, g, "pc_ride_rear", xf, a3, d3, nb, nb, ua, ud)
 	strip(b, g, "pc_ride_rubber", xf, d3, d3i, nj, nj, uh0, uh1)
 	strip(b, g, "pc_ride_wall", xf, i3, d3i, nf, nf, ui, udi)
-	strip(b, g, "pc_ride_hazard", xf, d3h, e3, nb, nb, uh1, uh0)
+	strip(b, g, "pc_ride_trim", xf, d3h, e3, nb, nb, uh1, uh0)
 	# under the door: riser and diamond-plate threshold
 	q(b, g, "pc_ride_frame", xf, [Vector3(-DOOR[0], BOT, z0), Vector3(DOOR[0], BOT, z0), Vector3(DOOR[0], FLOOR, z0), Vector3(-DOOR[0], FLOOR, z0)], Vector3.FORWARD)
 	q(b, g, "pc_ride_tread", xf, [Vector3(-DOOR[0], FLOOR + 0.002, 0.28), Vector3(DOOR[0], FLOOR + 0.002, 0.28), Vector3(DOOR[0], FLOOR + 0.002, 0.44), Vector3(-DOOR[0], FLOOR + 0.002, 0.44)], Vector3.UP,
@@ -619,8 +631,13 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#d4d6da"); m.metallic = 0.9; m.roughness = 0.18
 		"tread":
 			m.albedo_texture = b.tex("pc/ride_tread.png"); m.metallic = 0.7; m.roughness = 0.38
-		"hazard":
-			m.albedo_texture = b.tex("pc/ride_hazard.png"); m.roughness = 0.6
+		"rear":
+			m.albedo_texture = b.tex("pc/ride_rear.png"); m.roughness = 0.26; m.metallic_specular = 0.65
+		"trim":
+			# polished aluminium trim: reads bright even without a reflection probe
+			m.albedo_color = Color("#c9ccd2"); m.metallic = 0.55; m.roughness = 0.28
+		"redrub":
+			m.albedo_color = Color("#9a1c1a"); m.roughness = 0.7
 		"dash":
 			m.albedo_texture = b.tex("pc/ride_dash.png"); m.roughness = 0.7
 		"console":

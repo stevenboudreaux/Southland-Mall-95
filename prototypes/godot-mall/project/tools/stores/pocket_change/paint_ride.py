@@ -1,8 +1,9 @@
 """Paints the textures of the Pocket Change motion-ride cabinet (ride.gd) into tex/pc/ride_*.png.
 
 The machine is the TYPE that stood in mid-90s arcades: a deluxe enclosed two-seat motion
-cabin with a dinosaur-safari light-gun game. Everything here is original: the invented
-title "TALON CREEK", the painted jungle, the generic theropod and the safari jeep.
+cabin with a dinosaur light-gun game. Everything here is original: the invented title
+"TALON CREEK", a sunset-orange / charcoal / chrome body, and painted canyon art with generic
+dinosaurs of several kinds (no vehicles, no chase).
 No real game's title, logo, characters or artwork.
 
 Every texture is drawn at the physical size of the face it covers (see the sizes noted
@@ -24,7 +25,8 @@ F_COND = "/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed-Bold.ttf"
 F_REG = "/usr/share/fonts/truetype/dejavu/DejaVuSansCondensed.ttf"
 F_HEAVY = "/usr/share/fonts/opentype/inter/Inter-Black.otf"
 
-PAINT = (28, 58, 44)       # the cabin's deep jungle-green fibreglass
+PAINT = (206, 94, 36)      # the cabin's sunset-orange gloss fibreglass (lower body charcoal)
+CHAR = (34, 34, 37)
 
 
 def R(seed):
@@ -119,209 +121,6 @@ def text_c(d, xy, s, f, fill, anchor="mm", **kw):
 
 
 # ------------------------------------------------------------------ logo
-def logo(w, h, seed=3, sub=True):
-    """The invented title, 90s-style: claw slashes, gradient letters, double outline."""
-    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
-    s = h / 256.0
-    # three claw slashes behind the letters
-    sl = Image.new("L", (w, h), 0)
-    ds = ImageDraw.Draw(sl)
-    for i in range(3):
-        x0 = w * (0.60 + i * 0.07)
-        pts = []
-        for t in np.linspace(0, 1, 24):
-            x = x0 - t * w * 0.16 + math.sin(t * 3.1) * 6 * s
-            y = h * 0.04 + t * h * 0.62
-            wd = (math.sin(t * math.pi) ** 0.7) * 15 * s + 1
-            pts.append((x, y, wd))
-        for (x, y, wd) in pts:
-            ds.ellipse([x - wd, y - wd * 0.6, x + wd, y + wd * 0.6], fill=255)
-    sl = sl.filter(ImageFilter.GaussianBlur(1.2 * s))
-    slash = Image.new("RGBA", (w, h), (120, 18, 14, 255))
-    im.paste(slash, (0, 0), sl)
-    # title letters
-    txt = "TALON CREEK"
-    fs = int(150 * s)
-    f = font(F_LOGO, fs)
-    while f.getbbox(txt)[2] - f.getbbox(txt)[0] > w * 0.94:
-        fs -= 2
-        f = font(F_LOGO, fs)
-    cy = h * (0.40 if sub else 0.5)
-    m = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(m).text((w / 2, cy), txt, font=f, fill=255, anchor="mm")
-    # outer cream outline, inner black outline, drop shadow
-    outer = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(outer).text((w / 2, cy), txt, font=f, fill=255, anchor="mm", stroke_width=int(12 * s))
-    inner = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(inner).text((w / 2, cy), txt, font=f, fill=255, anchor="mm", stroke_width=int(6 * s))
-    shadow = outer.filter(ImageFilter.GaussianBlur(5 * s))
-    sh = Image.new("RGBA", (w, h), (0, 0, 0, 200))
-    im.paste(sh, (int(7 * s), int(8 * s)), shadow)
-    im.paste(Image.new("RGBA", (w, h), (246, 232, 196, 255)), (0, 0), outer)
-    im.paste(Image.new("RGBA", (w, h), (24, 14, 8, 255)), (0, 0), inner)
-    bb = m.getbbox()
-    g = grad_v(w, h, [(0, (255, 246, 150)), (bb[1] / h, (255, 236, 90)), ((bb[1] + bb[3]) / 2 / h, (255, 150, 30)), (bb[3] / h, (196, 40, 18)), (1, (150, 20, 10))])
-    # a little bark/stone texture in the fill
-    tx = fbm(w, h, seed, 18, 3)
-    g = mul(g, 0.82 + 0.3 * tx)
-    im.paste(g.convert("RGBA"), (0, 0), m)
-    # a highlight along the letter tops
-    hl = ImageChops.subtract(m, ImageChops.offset(m, 0, int(4 * s))).filter(ImageFilter.GaussianBlur(1))
-    im.paste(Image.new("RGBA", (w, h), (255, 255, 230, 255)), (0, 0), hl.point(lambda v: int(v * 0.8)))
-    if sub:
-        # green ribbon with the subtitle
-        ry0, ry1 = h * 0.70, h * 0.93
-        rib = Image.new("L", (w, h), 0)
-        dr = ImageDraw.Draw(rib)
-        dr.polygon([(w * 0.17, ry0), (w * 0.83, ry0), (w * 0.80, (ry0 + ry1) / 2), (w * 0.83, ry1), (w * 0.17, ry1), (w * 0.20, (ry0 + ry1) / 2)], fill=255)
-        rib_o = rib.filter(ImageFilter.MaxFilter(int(5 * s) | 1))
-        im.paste(Image.new("RGBA", (w, h), (20, 12, 6, 255)), (0, 0), rib_o)
-        gr = grad_v(w, h, [(0, (60, 150, 70)), (ry0 / h, (90, 180, 80)), (ry1 / h, (24, 90, 40)), (1, (20, 70, 30))])
-        im.paste(gr.convert("RGBA"), (0, 0), rib)
-        f2 = font(F_HEAVY, int(34 * s))
-        ImageDraw.Draw(im).text((w / 2, (ry0 + ry1) / 2), "D I N O S A U R   S A F A R I", font=f2, fill=(255, 244, 200), anchor="mm",
-                                stroke_width=int(2 * s), stroke_fill=(16, 40, 18))
-    return im
-
-
-# ------------------------------------------------------------------ painted scene parts
-def theropod_poly():
-    """A generic big theropod in side view facing right, in a 1000 x 500 box."""
-    return [(30, 262), (120, 236), (230, 200), (330, 166), (420, 140), (500, 132), (570, 146), (620, 160),
-            (660, 146), (700, 118), (735, 98), (790, 88), (845, 96), (885, 112), (905, 126), (900, 136),
-            (870, 140), (830, 150), (790, 160), (772, 168), (800, 182), (850, 196), (874, 206), (868, 216),
-            (820, 222), (770, 220), (735, 214), (700, 232), (668, 262), (650, 290), (660, 300), (690, 318),
-            (702, 336), (690, 334), (668, 322), (640, 312), (606, 320), (572, 330), (576, 360), (566, 392),
-            (540, 420), (528, 444), (552, 470), (590, 480), (602, 490), (500, 492), (494, 478), (502, 452),
-            (498, 432), (520, 400), (504, 372), (466, 350), (420, 330), (300, 298), (190, 284), (100, 276)]
-
-
-def far_leg_poly():
-    return [(470, 330), (480, 372), (452, 410), (432, 440), (444, 468), (476, 480), (484, 490), (400, 490),
-            (396, 476), (404, 448), (402, 426), (420, 396), (406, 360), (420, 334)]
-
-
-def far_arm_poly():
-    return [(630, 296), (650, 318), (664, 334), (652, 334), (628, 316), (612, 304)]
-
-
-def map_pts(pts, x0, y0, sx, sy, flip=False):
-    if flip:
-        return [(x0 + (1000 - p[0]) * sx, y0 + p[1] * sy) for p in pts]
-    return [(x0 + p[0] * sx, y0 + p[1] * sy) for p in pts]
-
-
-def paint_dino(im, x0, y0, sx, sy, seed, base=(104, 92, 58), rim=(236, 150, 70), detail=True):
-    w, h = im.size
-    d = ImageDraw.Draw(im)
-    # far leg and arm, darker
-    for poly in (far_leg_poly(), far_arm_poly()):
-        d.polygon(map_pts(poly, x0, y0, sx, sy), fill=tuple(int(c * 0.55) for c in base))
-    body = map_pts(theropod_poly(), x0, y0, sx, sy)
-    m = Image.new("L", (w, h), 0)
-    ImageDraw.Draw(m).polygon(body, fill=255)
-    bb = m.getbbox()
-    # belly lighter, back darker
-    g = grad_v(w, h, [(0, tuple(int(c * 0.55) for c in base)), (bb[1] / h, tuple(int(c * 0.6) for c in base)),
-                      ((bb[1] * 0.6 + bb[3] * 0.4) / h, base), ((bb[1] * 0.3 + bb[3] * 0.7) / h, tuple(min(255, int(c * 1.35)) for c in base)),
-                      (1, tuple(int(c * 0.7) for c in base))])
-    g = mul(g, 0.75 + 0.45 * fbm(w, h, seed, 30 * sx, 4))
-    im.paste(g, (0, 0), m)
-    if detail:
-        # dorsal stripes
-        rng = R(seed)
-        st = Image.new("L", (w, h), 0)
-        ds = ImageDraw.Draw(st)
-        for i in range(16):
-            t = 0.08 + i * 0.05
-            x = x0 + (100 + t * 600) * sx
-            ds.polygon([(x, y0), (x + 30 * sx, y0), (x + 6 * sx + rng.uniform(-6, 6) * sx, y0 + (210 + rng.uniform(-30, 30)) * sy), (x - 10 * sx, y0 + 200 * sy)], fill=150)
-        st = ImageChops.multiply(st, m).filter(ImageFilter.GaussianBlur(2 * sx))
-        im.paste(Image.new("RGB", (w, h), tuple(int(c * 0.42) for c in base)), (0, 0), st)
-        # scales: dark speckle
-        sp = (noise(w, h, seed + 5, 2.5 * sx) > 0.72).astype(np.uint8) * 90
-        spm = ImageChops.multiply(Image.fromarray(sp), m)
-        im.paste(Image.new("RGB", (w, h), tuple(int(c * 0.5) for c in base)), (0, 0), spm)
-        # mouth interior, teeth, eye, nostril
-        mouth = map_pts([(772, 168), (830, 150), (870, 140), (900, 136), (896, 146), (860, 160), (835, 180), (850, 196), (800, 182)], x0, y0, sx, sy)
-        d.polygon(mouth, fill=(92, 20, 22))
-        d.polygon(map_pts([(790, 172), (850, 168), (860, 188), (820, 186)], x0, y0, sx, sy), fill=(150, 50, 52))
-        for i in range(9):
-            t = i / 8.0
-            ux, uy = 800 + t * 96, 157 - t * 19
-            p = map_pts([(ux - 5, uy), (ux + 5, uy - 2), (ux + 1, uy + 14)], x0, y0, sx, sy)
-            d.polygon(p, fill=(236, 226, 196))
-        for i in range(7):
-            t = i / 6.0
-            lx, ly = 806 + t * 62, 186 + t * 12
-            p = map_pts([(lx - 5, ly), (lx + 5, ly + 2), (lx + 1, ly - 13)], x0, y0, sx, sy)
-            d.polygon(p, fill=(228, 216, 184))
-        ex, ey = map_pts([(790, 116)], x0, y0, sx, sy)[0]
-        r = 9 * sx
-        d.ellipse([ex - r * 1.3, ey - r * 1.0, ex + r * 1.3, ey + r * 1.0], fill=(40, 30, 16))
-        d.ellipse([ex - r, ey - r * 0.75, ex + r, ey + r * 0.75], fill=(236, 190, 40))
-        d.ellipse([ex - r * 0.22, ey - r * 0.7, ex + r * 0.22, ey + r * 0.7], fill=(10, 8, 4))
-        d.line([map_pts([(760, 104)], x0, y0, sx, sy)[0], map_pts([(810, 100)], x0, y0, sx, sy)[0]], fill=tuple(int(c * 0.35) for c in base), width=max(2, int(5 * sx)))
-        nx, ny = map_pts([(880, 118)], x0, y0, sx, sy)[0]
-        d.ellipse([nx - 5 * sx, ny - 3 * sx, nx + 5 * sx, ny + 3 * sx], fill=(30, 22, 12))
-        # claws
-        for (cx, cy) in [(598, 484), (572, 488), (548, 488)]:
-            p = map_pts([(cx - 6, cy - 6), (cx + 14, cy + 2), (cx - 4, cy + 4)], x0, y0, sx, sy)
-            d.polygon(p, fill=(216, 206, 176))
-    # sunset rim light along the top edges, a dark core shadow along the bottom
-    top = ImageChops.subtract(m, ImageChops.offset(m, 0, max(2, int(9 * sy)))).filter(ImageFilter.GaussianBlur(3 * sx))
-    im.paste(Image.new("RGB", (w, h), rim), (0, 0), top.point(lambda v: int(v * 0.85)))
-    bot = ImageChops.subtract(m, ImageChops.offset(m, 0, -max(2, int(14 * sy)))).filter(ImageFilter.GaussianBlur(5 * sx))
-    im.paste(Image.new("RGB", (w, h), (20, 16, 10)), (0, 0), bot.point(lambda v: int(v * 0.6)))
-    # outline
-    d.line(body + [body[0]], fill=(26, 20, 12), width=max(1, int(2.5 * sx)), joint="curve")
-    return m
-
-
-def paint_jeep(im, x0, y0, s, flip=False):
-    """A generic open-top safari 4x4, side view facing right; (x0, y0) = rear bottom; s = px per unit."""
-    d = ImageDraw.Draw(im)
-
-    def P(pts):
-        return [(x0 + (-x if flip else x) * s, y0 - y * s) for (x, y) in pts]
-    khaki, khaki_d, khaki_l = (170, 150, 96), (110, 96, 60), (214, 196, 140)
-
-    def E(a, b, fill):
-        (ax, ay), (bx, by) = a, b
-        d.ellipse([min(ax, bx), min(ay, by), max(ax, bx), max(ay, by)], fill=fill)
-    # roll bar and spare wheel behind
-    d.line(P([(0.55, 0.95), (0.62, 1.55), (1.25, 1.55), (1.30, 0.95)]), fill=(40, 40, 38), width=int(0.07 * s), joint="curve")
-    E(P([(-0.12, 1.10)])[0], P([(0.18, 0.62)])[0], (26, 24, 22))
-    # body
-    body = [(0.0, 0.42), (0.0, 1.00), (1.55, 1.00), (1.75, 0.98), (2.55, 0.86), (2.95, 0.80), (3.05, 0.70), (3.05, 0.42)]
-    d.polygon(P(body), fill=khaki)
-    d.polygon(P([(0.0, 0.42), (0.0, 0.62), (3.05, 0.62), (3.05, 0.42)]), fill=khaki_d)
-    d.line(P([(0.0, 0.98), (1.55, 0.98), (1.75, 0.96), (2.55, 0.84)]), fill=khaki_l, width=max(2, int(0.035 * s)))
-    # windshield frame
-    d.line(P([(1.72, 0.97), (1.95, 1.48)]), fill=(46, 44, 40), width=int(0.06 * s))
-    d.line(P([(1.95, 1.48), (2.03, 1.47)]), fill=(46, 44, 40), width=int(0.06 * s))
-    d.polygon(P([(1.76, 0.98), (1.97, 1.44), (2.02, 1.43), (1.82, 0.97)]), fill=(150, 190, 200))
-    # door cut, stripe, hood vents, headlamp
-    d.line(P([(1.02, 0.98), (1.02, 0.55), (1.60, 0.55), (1.70, 0.96)]), fill=khaki_d, width=max(2, int(0.025 * s)))
-    d.polygon(P([(0.05, 0.70), (3.0, 0.70), (3.0, 0.76), (0.05, 0.76)]), fill=(186, 70, 30))
-    E(P([(2.92, 0.80)])[0], P([(3.06, 0.68)])[0], (250, 240, 200))
-    for i in range(4):
-        d.line(P([(2.25 + i * 0.1, 0.84), (2.32 + i * 0.1, 0.92)]), fill=khaki_d, width=max(1, int(0.02 * s)))
-    # mounted searchlight on the roll bar
-    E(P([(1.12, 1.70)])[0], P([(1.30, 1.55)])[0], (60, 60, 58))
-    # wheels with arches
-    for wx in (0.55, 2.45):
-        E(P([(wx - 0.48, 0.92)])[0], P([(wx + 0.48, -0.02)])[0], (52, 46, 30))
-        E(P([(wx - 0.42, 0.42 + 0.42)])[0], P([(wx + 0.42, 0.0)])[0], (18, 18, 18))
-        E(P([(wx - 0.22, 0.42 + 0.22)])[0], P([(wx + 0.22, 0.20)])[0], (150, 146, 130))
-        E(P([(wx - 0.08, 0.50)])[0], P([(wx + 0.08, 0.34)])[0], (70, 66, 58))
-    # two riders: dark silhouettes of heads and shoulders, one aiming back
-    for (hx, hy) in [(0.95, 1.30), (1.45, 1.28)]:
-        E(P([(hx - 0.13, hy + 0.15)])[0], P([(hx + 0.13, hy - 0.12)])[0], (36, 30, 24))
-        d.polygon(P([(hx - 0.22, 0.98), (hx - 0.18, 1.18), (hx + 0.18, 1.18), (hx + 0.24, 0.98)]), fill=(70, 74, 50))
-    d.line(P([(0.95, 1.15), (0.25, 1.30)]), fill=(30, 30, 30), width=int(0.05 * s))
-
-
 def foliage(im, seed, y_base, count, col, size, spread_y=0.0, kind="fern"):
     """Fern fronds and palm crowns as dark painted silhouettes."""
     rng = R(seed)
@@ -351,83 +150,327 @@ def foliage(im, seed, y_base, count, col, size, spread_y=0.0, kind="fern"):
             d.line([(cx, cy), (cx + rng.uniform(-20, 20), h + 10)], fill=c, width=int(size * 0.08))
 
 
+def logo(w, h, seed=3, sub=True):
+    """The invented title in a 90s chrome-and-sunset style: chrome letters split by a
+    horizon line, a purple keyline, an orange glow, a purple subtitle bar."""
+    im = Image.new("RGBA", (w, h), (0, 0, 0, 0))
+    s = h / 256.0
+    txt = "TALON CREEK"
+    fs = int(150 * s)
+    f = font(F_LOGO, fs)
+    while f.getbbox(txt)[2] - f.getbbox(txt)[0] > w * 0.92:
+        fs -= 2
+        f = font(F_LOGO, fs)
+    cy = h * (0.40 if sub else 0.5)
+
+    def mask(stroke):
+        m = Image.new("L", (w, h), 0)
+        ImageDraw.Draw(m).text((w / 2, cy), txt, font=f, fill=255, anchor="mm", stroke_width=stroke)
+        return m
+    m = mask(0)
+    outer = mask(int(13 * s))
+    inner = mask(int(6 * s))
+    glow = outer.filter(ImageFilter.GaussianBlur(9 * s))
+    im.paste(Image.new("RGBA", (w, h), (255, 110, 30, 255)), (0, 0), glow.point(lambda v: int(min(255, v * 1.3))))
+    im.paste(Image.new("RGBA", (w, h), (255, 150, 50, 255)), (0, 0), outer)
+    im.paste(Image.new("RGBA", (w, h), (38, 14, 60, 255)), (0, 0), inner)
+    bb = m.getbbox()
+    t0, t1 = bb[1] / h, bb[3] / h
+    hz = t0 + (t1 - t0) * 0.56
+    g = grad_v(w, h, [(0, (240, 246, 255)), (t0, (236, 244, 255)), (t0 + (t1 - t0) * 0.35, (150, 172, 214)), (hz - 0.01, (90, 104, 150)),
+                      (hz, (44, 28, 70)), (hz + 0.02, (255, 214, 130)), (t1, (214, 84, 40)), (1, (180, 60, 30))])
+    im.paste(g.convert("RGBA"), (0, 0), m)
+    hl = ImageChops.subtract(m, ImageChops.offset(m, 0, int(3 * s))).filter(ImageFilter.GaussianBlur(0.8))
+    im.paste(Image.new("RGBA", (w, h), (255, 255, 255, 255)), (0, 0), hl.point(lambda v: int(v * 0.9)))
+    # a few star glints on the chrome
+    d = ImageDraw.Draw(im)
+    rng = R(seed)
+    for _ in range(3):
+        x, y = rng.uniform(bb[0], bb[2]), bb[1] + rng.uniform(0.05, 0.3) * (bb[3] - bb[1])
+        r = 12 * s
+        d.line([(x - r, y), (x + r, y)], fill=(255, 255, 255, 255), width=max(1, int(2 * s)))
+        d.line([(x, y - r), (x, y + r)], fill=(255, 255, 255, 255), width=max(1, int(2 * s)))
+    if sub:
+        ry0, ry1 = h * 0.72, h * 0.94
+        d.rectangle([w * 0.16 - 4 * s, ry0 - 4 * s, w * 0.84 + 4 * s, ry1 + 4 * s], fill=(255, 140, 40, 255))
+        bar = grad_v(w, h, [(0, (120, 60, 180)), (ry0 / h, (120, 60, 180)), (ry1 / h, (52, 20, 90)), (1, (52, 20, 90))])
+        bm = Image.new("L", (w, h), 0)
+        ImageDraw.Draw(bm).rectangle([w * 0.16, ry0, w * 0.84, ry1], fill=255)
+        im.paste(bar.convert("RGBA"), (0, 0), bm)
+        f2 = font(F_HEAVY, int(30 * s))
+        d.text((w / 2, (ry0 + ry1) / 2), "A  PREHISTORIC  MOTION  RIDE", font=f2, fill=(255, 236, 200), anchor="mm")
+    return im
+
+
+# ------------------------------------------------------------------ painted creatures
+def bez(p0, p1, p2, n=14):
+    return [((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * p1[0] + t * t * p2[0], (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * p1[1] + t * t * p2[1])
+            for t in np.linspace(0, 1, n)]
+
+
+def tube(spine, w0, w1):
+    """Polygon round a spine polyline, half-width tapering w0 -> w1."""
+    left, right = [], []
+    n = len(spine)
+    for i, (x, y) in enumerate(spine):
+        a, b = spine[max(i - 1, 0)], spine[min(i + 1, n - 1)]
+        dx, dy = b[0] - a[0], b[1] - a[1]
+        L = math.hypot(dx, dy) or 1.0
+        nx, ny = -dy / L, dx / L
+        w = w0 + (w1 - w0) * i / (n - 1)
+        left.append((x + nx * w, y + ny * w))
+        right.append((x - nx * w, y - ny * w))
+    return left + right[::-1]
+
+
+def creature(kind):
+    """Generic dinosaurs in side view facing right, in a 1000 x 500 box:
+    (near shapes, far-side shapes, bone shapes, eye). Shapes: ("poly", pts) / ("ell", box)."""
+    if kind == "cera":    # a horned, frilled plant-eater
+        near = [("ell", (260, 170, 720, 390)),
+                ("poly", tube(bez((310, 250), (150, 300), (40, 350)), 62, 6)),
+                ("poly", [(650, 130), (675, 62), (735, 30), (790, 52), (800, 120), (770, 200), (720, 250), (660, 250)]),
+                ("poly", [(730, 160), (820, 168), (900, 215), (952, 266), (944, 298), (900, 312), (820, 302), (748, 282), (690, 250)]),
+                ("poly", [(620, 320), (700, 320), (712, 466), (650, 470)]), ("ell", (636, 450, 722, 482)),
+                ("poly", [(320, 300), (430, 300), (440, 466), (360, 470)]), ("ell", (346, 450, 452, 482))]
+        far = [("poly", [(560, 330), (620, 330), (628, 458), (578, 460)]), ("poly", [(420, 320), (480, 320), (490, 452), (440, 456)])]
+        bone = [("poly", [(818, 186), (958, 142), (826, 208)]), ("poly", [(796, 192), (924, 162), (806, 214)]),
+                ("poly", [(904, 238), (926, 202), (934, 250)]), ("poly", [(936, 270), (974, 288), (944, 304)])]
+        return near, far, bone, (832, 214)
+    if kind == "sauro":   # a long-necked giant
+        near = [("ell", (300, 200, 640, 340)),
+                ("poly", tube(bez((600, 250), (720, 210), (800, 50)), 42, 15)), ("ell", (782, 26, 852, 62)),
+                ("poly", tube(bez((330, 262), (160, 300), (10, 330)), 46, 3)),
+                ("poly", [(560, 300), (612, 300), (616, 470), (566, 470)]), ("poly", [(340, 290), (410, 290), (420, 470), (352, 470)])]
+        far = [("poly", [(510, 310), (556, 310), (560, 462), (516, 462)]), ("poly", [(400, 300), (452, 300), (458, 462), (408, 462)])]
+        return near, far, [], (830, 40)
+    if kind == "hadro":   # a crested duck-billed herd animal
+        near = [("ell", (330, 170, 640, 320)),
+                ("poly", tube(bez((360, 235), (200, 225), (40, 195)), 56, 4)),
+                ("poly", tube(bez((610, 232), (680, 190), (718, 130)), 42, 22)),
+                ("poly", [(690, 105), (760, 108), (810, 132), (832, 150), (800, 162), (740, 160), (700, 150)]),
+                ("poly", tube(bez((712, 116), (660, 66), (596, 58)), 14, 5)),
+                ("poly", tube([(470, 270), (505, 370), (472, 458)], 50, 18)), ("poly", [(440, 452), (520, 452), (530, 474), (436, 474)]),
+                ("poly", tube([(610, 285), (640, 350), (650, 452)], 15, 9))]
+        far = [("poly", tube([(420, 280), (440, 380), (418, 458)], 40, 14)), ("poly", tube([(580, 290), (600, 360), (606, 452)], 12, 8))]
+        return near, far, [], (742, 128)
+    raise ValueError(kind)
+
+
+def _shape_mask(shapes, size, P):
+    m = Image.new("L", size, 0)
+    d = ImageDraw.Draw(m)
+    for kind, data in shapes:
+        if kind == "poly":
+            d.polygon([P(p) for p in data], fill=255)
+        else:
+            a, b = P((data[0], data[1])), P((data[2], data[3]))
+            d.ellipse([min(a[0], b[0]), min(a[1], b[1]), max(a[0], b[0]), max(a[1], b[1])], fill=255)
+    return m
+
+
+def paint_creature(im, kind, x0, y0, s, seed, base, rim=(250, 160, 80), flip=False, detail=True, outline=True):
+    w, h = im.size
+
+    def P(p):
+        return (x0 + ((1000 - p[0]) if flip else p[0]) * s, y0 + p[1] * s)
+    near, far, bone, eye = creature(kind)
+    fm = _shape_mask(far, (w, h), P)
+    im.paste(Image.new("RGB", (w, h), tuple(int(c * 0.5) for c in base)), (0, 0), fm)
+    m = _shape_mask(near, (w, h), P)
+    bb = m.getbbox()
+    if bb is None:
+        return
+    y_a, y_b = bb[1] / h, bb[3] / h
+    g = grad_v(w, h, [(0, tuple(int(c * 0.6) for c in base)), (y_a, tuple(int(c * 0.62) for c in base)),
+                      (y_a + (y_b - y_a) * 0.45, base), (y_a + (y_b - y_a) * 0.7, tuple(min(255, int(c * 1.3)) for c in base)),
+                      (1, tuple(int(c * 0.7) for c in base))])
+    if detail:
+        g = mul(g, 0.8 + 0.4 * fbm(w, h, seed, max(2.0, 24 * s), 4))
+    im.paste(g, (0, 0), m)
+    d = ImageDraw.Draw(im)
+    if detail:
+        rng = R(seed)
+        # mottled skin: soft darker blotches and pale speckle
+        bl = Image.new("L", (w, h), 0)
+        db = ImageDraw.Draw(bl)
+        for _ in range(int(60 + 400 * s)):
+            x, y = rng.uniform(bb[0], bb[2]), rng.uniform(bb[1], bb[1] + (bb[3] - bb[1]) * 0.6)
+            r = rng.uniform(3, 14) * s * 2
+            db.ellipse([x - r, y - r * 0.6, x + r, y + r * 0.6], fill=int(rng.uniform(40, 110)))
+        bl = ImageChops.multiply(bl.filter(ImageFilter.GaussianBlur(2 * s + 0.5)), m)
+        im.paste(Image.new("RGB", (w, h), tuple(int(c * 0.45) for c in base)), (0, 0), bl)
+        if kind == "cera":
+            # frill colour patch
+            fr = _shape_mask([("ell", (676, 56, 786, 196))], (w, h), P).filter(ImageFilter.GaussianBlur(6 * s))
+            im.paste(Image.new("RGB", (w, h), (170, 70, 50)), (0, 0), ImageChops.multiply(fr, m).point(lambda v: int(v * 0.6)))
+        bm = _shape_mask(bone, (w, h), P)
+        im.paste(Image.new("RGB", (w, h), (226, 214, 184)), (0, 0), bm)
+        ex, ey = P(eye)
+        r = max(1.5, 8 * s)
+        d.ellipse([ex - r, ey - r * 0.8, ex + r, ey + r * 0.8], fill=(24, 18, 10))
+        d.ellipse([ex - r * 0.35, ey - r * 0.5, ex + r * 0.15, ey], fill=(220, 200, 150))
+    top = ImageChops.subtract(m, ImageChops.offset(m, 0, max(2, int(10 * s)))).filter(ImageFilter.GaussianBlur(max(1, 3 * s)))
+    im.paste(Image.new("RGB", (w, h), rim), (0, 0), top.point(lambda v: int(v * 0.8)))
+    bot = ImageChops.subtract(m, ImageChops.offset(m, 0, -max(2, int(16 * s)))).filter(ImageFilter.GaussianBlur(max(1, 5 * s)))
+    im.paste(Image.new("RGB", (w, h), (24, 14, 20)), (0, 0), bot.point(lambda v: int(v * 0.6)))
+    if outline:
+        edge = ImageChops.subtract(m.filter(ImageFilter.MaxFilter(3)), m)
+        im.paste(Image.new("RGB", (w, h), (28, 16, 24)), (0, 0), edge)
+
+
+def pterosaur(im, cx, cy, s, col, flip=False):
+    d = ImageDraw.Draw(im)
+    k = -1 if flip else 1
+
+    def P(x, y):
+        return (cx + k * x * s, cy + y * s)
+    d.polygon([P(-10, 0), P(-120, -60), P(-260, -40), P(-150, -10), P(-60, 20)], fill=col)
+    d.polygon([P(10, 0), P(110, -70), P(250, -60), P(140, -12), P(60, 18)], fill=col)
+    d.ellipse([min(P(-40, -10)[0], P(40, 14)[0]), P(-40, -10)[1], max(P(-40, -10)[0], P(40, 14)[0]), P(40, 14)[1]], fill=col)
+    d.polygon([P(30, -6), P(110, 2), P(36, 8)], fill=col)
+    d.polygon([P(36, -4), P(10, -36), P(26, -2)], fill=col)
+
+
+def lightning(im, x0, y0, x1, y1, seed, width=3):
+    rng = R(seed)
+    pts = [(x0, y0)]
+    n = 12
+    for i in range(1, n):
+        t = i / n
+        pts.append((x0 + (x1 - x0) * t + rng.uniform(-28, 28), y0 + (y1 - y0) * t + rng.uniform(-8, 8)))
+    pts.append((x1, y1))
+    glow = Image.new("L", im.size, 0)
+    dg = ImageDraw.Draw(glow)
+    dg.line(pts, fill=255, width=width * 6, joint="curve")
+    br = pts[5]
+    bp = [br, (br[0] + 40, br[1] + 40), (br[0] + 30, br[1] + 90)]
+    dg.line(bp, fill=200, width=width * 4)
+    glow = glow.filter(ImageFilter.GaussianBlur(width * 4))
+    im.paste(Image.new("RGB", im.size, (190, 150, 255)), (0, 0), glow.point(lambda v: int(v * 0.7)))
+    d = ImageDraw.Draw(im)
+    d.line(pts, fill=(250, 246, 255), width=width, joint="curve")
+    d.line(bp, fill=(236, 226, 255), width=max(1, width - 1))
+
+
+def mesa(im, pts, seed, base=(196, 92, 52), shade=(110, 44, 46), rim=(255, 170, 90), strata=True):
+    """A layered sandstone butte; lit from the sunset on its left edge."""
+    w, h = im.size
+    m = Image.new("L", (w, h), 0)
+    ImageDraw.Draw(m).polygon(pts, fill=255)
+    bb = m.getbbox()
+    rng = np.random.default_rng(seed)
+    yy = np.arange(h)[:, None]
+    band = 0.84 + 0.16 * np.sin(yy / 7.0 + rng.random() * 6) * np.sin(yy / 23.0)
+    xx = np.arange(w)[None, :]
+    shadef = np.clip((xx - (bb[0] + (bb[2] - bb[0]) * 0.55)) / ((bb[2] - bb[0]) * 0.3 + 1), 0, 1)
+    a = np.zeros((h, w, 3), np.float32)
+    for c in range(3):
+        a[:, :, c] = (base[c] * (1 - shadef) + shade[c] * shadef) * (band if strata else 1)
+    a *= (0.85 + 0.3 * fbm(w, h, seed + 3, 20, 3))[:, :, None]
+    im.paste(Image.fromarray(a.clip(0, 255).astype(np.uint8)), (0, 0), m)
+    top = ImageChops.subtract(m, ImageChops.offset(m, 0, 5)).filter(ImageFilter.GaussianBlur(1.5))
+    im.paste(Image.new("RGB", (w, h), rim), (0, 0), top)
+
+
+def canyon_sky(W, H, horizon):
+    im = grad_v(W, H, [(0, (26, 14, 52)), (horizon * 0.45, (66, 30, 96)), (horizon * 0.8, (190, 70, 96)), (horizon, (250, 150, 70)), (1, (250, 150, 70))])
+    d = ImageDraw.Draw(im)
+    rng = R(int(W + horizon * 100))
+    for _ in range(int(W / 12)):
+        y = rng.uniform(0.04, 0.6) * horizon * H
+        x = rng.uniform(-80, W)
+        L = rng.uniform(60, 240) * W / 1024
+        t = y / (horizon * H)
+        c = (int(40 + 120 * t), int(22 + 40 * t), int(60 + 30 * t))
+        d.line([(x, y), (x + L, y + rng.uniform(-5, 5))], fill=c, width=int(rng.uniform(5, 16) * W / 1024) + 1)
+    return im
+
+
 # ------------------------------------------------------------------ textures
 def side_art():
-    """Side panel art: covers the flat side, 2.07 m (z) x 1.40 m (y) -> 1024 x 692. Front of the
-    machine (screen end) is at the right edge (u = 1); the left side shows it mirrored."""
+    """Side panel: covers the flat side, 1.965 m (z) x 1.46 m (y = 1.80 .. 0.34) -> 1024 x 692.
+    Art down to y = 0.72 (row 512); charcoal lower body below (chrome strip on the line).
+    Front of the machine (screen end) at u = 1; the left side shows it mirrored."""
     W, H = 1024, 692
-    im = grad_v(W, H, [(0, (26, 44, 70)), (0.22, (60, 70, 96)), (0.42, (176, 96, 66)), (0.56, (238, 150, 66)), (0.66, (250, 196, 110)), (1, (120, 80, 50))])
+    ART = 512
+    hz = 300
+    im = canyon_sky(W, H, hz / H)
     d = ImageDraw.Draw(im)
-    # sun and clouds
-    d.ellipse([560, 300, 700, 440], fill=(255, 226, 150))
-    rng = R(11)
-    for _ in range(60):
-        y = rng.uniform(80, 330)
-        x = rng.uniform(-50, W)
-        L = rng.uniform(80, 260)
-        t = (y - 80) / 250
-        c = (int(90 + 140 * t), int(70 + 60 * t), int(90 - 20 * t))
-        d.line([(x, y), (x + L, y + rng.uniform(-6, 6))], fill=c, width=int(rng.uniform(5, 14)))
-    # volcano with a smoke plume
-    d.polygon([(120, 470), (250, 300), (300, 290), (330, 300), (470, 470)], fill=(78, 58, 86))
-    d.polygon([(250, 300), (300, 290), (330, 300), (300, 330)], fill=(230, 110, 40))
-    for i in range(40):
-        t = i / 40
-        x = 290 - t * 160 + rng.uniform(-20, 20)
-        y = 290 - t * 240
-        r = 18 + t * 60
-        g = int(90 + 40 * t)
-        d.ellipse([x - r, y - r * 0.6, x + r, y + r * 0.6], fill=(g, g - 10, g + 6))
-    # distant ridge and mid jungle
-    d.polygon([(0, 470)] + [(x, 430 + 20 * math.sin(x / 70.0) + 10 * math.sin(x / 23.0)) for x in range(0, W + 1, 16)] + [(W, 470)], fill=(62, 70, 80))
-    im = im.filter(ImageFilter.GaussianBlur(1.5))
-    foliage(im, 21, 470, 14, (40, 70, 62), 120, 30, kind="palm")
+    d.ellipse([600, 250, 700, 350], fill=(255, 214, 140))
+    lightning(im, 720, 40, 790, 250, 7, 3)
+    lightning(im, 150, 70, 110, 240, 8, 2)
+    # distant volcano with a lava glow and ash plume
     d = ImageDraw.Draw(im)
-    d.rectangle([0, 480, W, H], fill=(44, 62, 40))
-    # dirt track
-    d.polygon([(0, 600), (W, 560), (W, 640), (0, 680)], fill=(150, 112, 70))
-    d.polygon([(0, 640), (W, 600), (W, 612), (0, 652)], fill=(120, 90, 56))
-    foliage(im, 22, 520, 16, (30, 58, 40), 100, 40)
-    # the dinosaur: big, mid-left, roaring toward the front
-    paint_dino(im, 20, 150, 0.82, 0.98, 31)
-    # dust behind the jeep, the jeep
+    rng = R(12)
     for i in range(30):
-        x = 640 + rng.uniform(-60, 80)
-        y = 600 - rng.uniform(0, 80)
-        r = rng.uniform(16, 40)
-        c = int(rng.uniform(170, 210))
-        d.ellipse([x - r, y - r * 0.7, x + r, y + r * 0.7], fill=(c, int(c * 0.85), int(c * 0.65)))
-    paint_jeep(im, 700, 640, 92)
-    # foreground ferns, darkest
-    foliage(im, 23, 700, 18, (14, 34, 22), 150, 10)
-    foliage(im, 24, 690, 8, (20, 44, 28), 110, 20)
+        t = i / 30
+        x = 430 + t * 120 + rng.uniform(-14, 14)
+        y = 196 - t * 170
+        r = 14 + t * 46
+        c = int(70 + 30 * t)
+        d.ellipse([x - r, y - r * 0.6, x + r, y + r * 0.6], fill=(c, c - 20, c + 20))
+    d.polygon([(320, 320), (410, 210), (446, 196), (470, 202), (560, 320)], fill=(92, 54, 96))
+    d.polygon([(410, 210), (446, 196), (470, 202), (452, 230), (430, 260)], fill=(250, 110, 40))
+    im = im.filter(ImageFilter.GaussianBlur(1.2))
+    # buttes and the canyon walls
+    mesa(im, [(-10, 330), (-10, 170), (90, 160), (200, 168), (210, 190), (250, 330)], 21)
+    mesa(im, [(560, 330), (610, 230), (700, 220), (720, 240), (760, 330)], 22, base=(176, 84, 60), rim=(250, 160, 100))
+    mesa(im, [(770, 340), (800, 150), (900, 140), (1034, 150), (1034, 340)], 23)
+    d = ImageDraw.Draw(im)
+    # canyon floor and river
+    d.rectangle([0, 320, W, ART], fill=(176, 112, 70))
+    d.polygon([(0, 330), (W, 322), (W, 344), (0, 352)], fill=(140, 84, 64))
+    d.polygon([(330, 335), (560, 335), (700, 380), (1024, 400), (1024, 440), (640, 420), (420, 380), (300, 350)], fill=(150, 110, 170))
+    d.polygon([(380, 345), (540, 345), (650, 380), (900, 405), (650, 395), (430, 368)], fill=(236, 170, 140))
+    # far giants, herd, a big horned plant-eater in front, fliers
+    for (x, s, fl) in [(330, 0.10, False), (440, 0.08, True)]:
+        paint_creature(im, "sauro", x, 286, s, 31, (120, 82, 112), rim=(250, 170, 120), flip=fl, detail=False, outline=False)
+    for i, (x, y, s) in enumerate([(640, 300, 0.20), (760, 316, 0.22), (880, 300, 0.19)]):
+        paint_creature(im, "hadro", x, y, s, 40 + i, (150, 104, 70), rim=(255, 190, 120), flip=True, detail=True)
+    paint_creature(im, "cera", 40, 214, 0.58, 50, (118, 104, 70), rim=(255, 176, 96))
+    for (x, y, s, fl) in [(560, 110, 0.18, False), (640, 80, 0.12, True), (930, 210, 0.10, False)]:
+        pterosaur(im, x, y, s, (34, 18, 40), fl)
+    # foreground cycads and boulders
+    d = ImageDraw.Draw(im)
+    for (x, y, r) in [(560, 500, 40), (980, 492, 50), (300, 506, 30)]:
+        d.ellipse([x - r * 1.4, y - r, x + r * 1.4, y + r], fill=(84, 46, 44))
+        d.ellipse([x - r * 1.2, y - r * 0.95, x + r * 0.6, y - r * 0.2], fill=(140, 76, 60))
+    foliage(im, 24, ART + 10, 10, (36, 44, 30), 120, 8)
     im = im.filter(ImageFilter.ModeFilter(3))
     im = brushwork(im, 41, 16000, 4, 12, 2, 4, 8, angle=-0.2, spread=1.4)
     im = im.filter(ImageFilter.SMOOTH)
-    # frame: yellow pinstripe top, dark band and orange stripe at the bottom
+    # lower body charcoal, chrome line, top silver pinstripe
+    a = np.asarray(im).astype(np.float32)
+    ch = (34 + 10 * fbm(W, H - ART, 61, 30, 3))
+    a[ART:, :, 0] = ch
+    a[ART:, :, 1] = ch
+    a[ART:, :, 2] = ch * 1.06
+    im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
     d = ImageDraw.Draw(im)
-    d.rectangle([0, 0, W, 6], fill=PAINT)
-    d.rectangle([0, 7, W, 13], fill=(232, 182, 40))
-    d.rectangle([0, H - 40, W, H], fill=(18, 20, 18))
-    d.rectangle([0, H - 52, W, H - 42], fill=(222, 104, 30))
-    # wear: scuffs low down and at the entry (rear) edge, chips to white gelcoat, a faded patch
+    for i, c in enumerate([(120, 120, 126), (210, 212, 218), (250, 250, 252), (170, 172, 178), (90, 90, 96)]):
+        d.line([(0, ART - 4 + i * 2), (W, ART - 4 + i * 2)], fill=c, width=2)
+    d.rectangle([0, ART + 20, W, ART + 24], fill=(120, 60, 170))
+    for i, c in enumerate([(150, 150, 156), (240, 240, 244), (130, 130, 136)]):
+        d.line([(0, i * 2), (W, i * 2)], fill=c, width=2)
+    # wear: scuffs on the lower body, chips at the bottom, a faded patch
     wear = Image.new("L", (W, H), 0)
     dw = ImageDraw.Draw(wear)
-    for _ in range(150):
+    for _ in range(90):
         x = rng.uniform(0, W)
-        y = H - 56 - abs(rng.gauss(0, 40))
-        if rng.random() < 0.3:
+        y = H - abs(rng.gauss(0, 60)) - 4
+        if rng.random() < 0.25:
             x = abs(rng.gauss(0, 40))
-            y = rng.uniform(200, H - 40)
+            y = rng.uniform(ART - 100, H)
         L = rng.uniform(4, 24)
-        a = rng.uniform(-0.4, 0.4)
-        dw.line([(x, y), (x + math.cos(a) * L, y + math.sin(a) * L)], fill=int(rng.uniform(30, 100)), width=1)
-    for _ in range(26):
-        x, y = rng.uniform(0, W), rng.uniform(H - 140, H - 44)
-        r = rng.uniform(1.5, 4)
-        dw.ellipse([x - r, y - r, x + r, y + r], fill=230)
-    im.paste(Image.new("RGB", (W, H), (208, 204, 190)), (0, 0), wear)
-    fade = (fbm(W, H, 77, 200, 2) * 0.12).astype(np.float32)
+        an = rng.uniform(-0.4, 0.4)
+        dw.line([(x, y), (x + math.cos(an) * L, y + math.sin(an) * L)], fill=int(rng.uniform(20, 70)), width=1)
+    for _ in range(14):
+        x, y = rng.uniform(0, W), rng.uniform(H - 50, H - 4)
+        r = rng.uniform(1.0, 2.5)
+        dw.ellipse([x - r, y - r, x + r, y + r], fill=110)
+    im.paste(Image.new("RGB", (W, H), (190, 188, 182)), (0, 0), wear)
+    fade = (fbm(W, H, 77, 200, 2) * 0.10).astype(np.float32)
     a = np.asarray(im).astype(np.float32)
     a = a * (1 - fade[:, :, None]) + 200 * fade[:, :, None]
     im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
@@ -435,9 +478,8 @@ def side_art():
 
 
 def title_decal():
-    """Title decal on each side: 1.40 x 0.35 m -> 1024 x 256 RGBA (alpha-scissored)."""
+    """Title decal on each side and the screen end: 1.40 x 0.35 m -> 1024 x 256 RGBA (alpha-scissored)."""
     im = logo(1024, 256, sub=True)
-    # vinyl decal wear: a few nicks in the alpha
     rng = R(5)
     a = im.getchannel("A")
     d = ImageDraw.Draw(a)
@@ -445,78 +487,73 @@ def title_decal():
         x, y = rng.uniform(0, 1024), rng.uniform(0, 256)
         d.ellipse([x - 2, y - 1, x + 2, y + 1], fill=0)
     im.putalpha(a)
-    save(im, "ride_title.png", colors=96)
+    save(im, "ride_title.png", colors=128)
 
 
 def marquee():
     """Backlit translucent marquee: 1.20 x 0.30 m -> 1024 x 256."""
     W, H = 1024, 256
-    im = grad_v(W, H, [(0, (40, 30, 70)), (0.45, (210, 90, 50)), (0.75, (250, 180, 90)), (1, (240, 210, 140))])
-    foliage(im, 51, 250, 22, (24, 44, 32), 90, 10, kind="palm")
-    im = im.filter(ImageFilter.GaussianBlur(1))
-    # a small dinosaur silhouette on the left, the jeep on the right
-    sil = Image.new("RGB", (W, H), 0)
-    paint_dino(im, 0, 64, 0.30, 0.38, 52, base=(40, 36, 30), rim=(250, 170, 90), detail=False)
-    paint_jeep(im, 1010, 236, 34, flip=True)
+    im = canyon_sky(W, H, 0.82)
+    lightning(im, 120, 0, 70, 150, 9, 3)
+    lightning(im, 930, 0, 980, 120, 10, 2)
+    mesa(im, [(-10, 256), (-10, 150), (60, 140), (150, 150), (170, 256)], 51, base=(120, 50, 60), shade=(60, 24, 40), strata=False)
+    mesa(im, [(850, 256), (880, 130), (960, 124), (1034, 130), (1034, 256)], 52, base=(120, 50, 60), shade=(60, 24, 40), strata=False)
+    paint_creature(im, "sauro", 840, 120, 0.26, 53, (40, 24, 40), rim=(255, 170, 110), flip=True, detail=False)
+    paint_creature(im, "cera", -30, 132, 0.24, 54, (40, 24, 40), rim=(255, 170, 110), detail=False)
+    pterosaur(im, 180, 40, 0.14, (30, 14, 36))
+    pterosaur(im, 860, 50, 0.10, (30, 14, 36), True)
     lg = logo(820, 205, sub=True)
-    im.paste(lg, (102, 8), lg)
-    # "2 PLAYERS" tag
-    d = ImageDraw.Draw(im)
-    # lightbox: two fluorescent tubes behind, darker edges
+    im.paste(lg, (102, 14), lg)
     yy = np.linspace(0, 1, H)[:, None]
     xx = np.linspace(0, 1, W)[None, :]
-    tubes = 0.80 + 0.22 * np.exp(-((yy - 0.3) / 0.12) ** 2) + 0.22 * np.exp(-((yy - 0.72) / 0.12) ** 2)
+    tubes = 0.84 + 0.18 * np.exp(-((yy - 0.3) / 0.12) ** 2) + 0.18 * np.exp(-((yy - 0.72) / 0.12) ** 2)
     edge = np.minimum(1, np.minimum(xx, 1 - xx) * 14) * 0.25 + 0.75
     im = mul(im, (tubes * edge).astype(np.float32))
-    save(gamma(im, 1.1), "ride_marquee.png", colors=200)
+    save(gamma(im, 1.1), "ride_marquee.png", colors=220)
 
 
 def screen():
-    """The game on the projection screen: 1.00 x 0.75 m (4:3) -> 512 x 384. An original jungle chase."""
+    """The game on the projection screen: 1.00 x 0.75 m (4:3) -> 512 x 384. An original canyon
+    river level: fliers swooping, a horned plant-eater on the far bank. No vehicle."""
     W, H = 512, 384
-    im = grad_v(W, H, [(0, (40, 90, 150)), (0.35, (150, 180, 160)), (0.5, (70, 110, 60)), (1, (40, 60, 26))])
+    im = canyon_sky(W, H, 0.45)
+    lightning(im, 400, 0, 430, 120, 11, 2)
+    mesa(im, [(-10, 200), (-10, 90), (80, 80), (140, 90), (160, 200)], 61)
+    mesa(im, [(360, 200), (380, 100), (470, 96), (522, 100), (522, 200)], 62)
     d = ImageDraw.Draw(im)
-    # hazy distant trees
-    foliage(im, 61, 190, 18, (60, 100, 70), 70, 12, kind="palm")
-    im = im.filter(ImageFilter.GaussianBlur(1.2))
-    foliage(im, 62, 200, 14, (30, 64, 34), 80, 10, kind="palm")
+    d.rectangle([0, 172, W, H], fill=(170, 110, 70))
+    # the river coming toward the viewer
+    d.polygon([(220, 176), (300, 176), (480, H), (40, H)], fill=(110, 90, 160))
+    d.polygon([(246, 178), (276, 178), (330, H), (190, H)], fill=(200, 150, 170))
+    paint_creature(im, "cera", 320, 132, 0.15, 63, (124, 108, 70), rim=(255, 190, 120), flip=True)
+    paint_creature(im, "hadro", 30, 148, 0.10, 64, (150, 104, 70), rim=(255, 190, 120))
+    pterosaur(im, 250, 120, 0.42, (60, 34, 50))
+    pterosaur(im, 120, 70, 0.18, (50, 30, 50), True)
+    # foreground rocks (the riders are in a boat-less canyon gully: just rocks and ferns)
+    for (x, y, r) in [(40, 370, 70), (470, 362, 80), (140, 384, 50)]:
+        d.ellipse([x - r * 1.3, y - r, x + r * 1.3, y + r], fill=(90, 50, 46))
+        d.ellipse([x - r * 1.1, y - r * 0.95, x + r * 0.5, y - r * 0.2], fill=(150, 86, 64))
+    foliage(im, 65, H + 20, 5, (30, 50, 30), 110, 0)
     d = ImageDraw.Draw(im)
-    # the track in perspective
-    d.polygon([(236, 196), (276, 196), (470, H), (40, H)], fill=(150, 116, 74))
-    d.polygon([(250, 196), (262, 196), (300, H), (210, H)], fill=(126, 98, 62))
-    # a dinosaur coming out of the trees ahead
-    paint_dino(im, 170, 128, 0.20, 0.24, 63, base=(110, 96, 64), rim=(220, 230, 200), detail=True)
-    foliage(im, 64, 250, 8, (36, 70, 36), 110, 10)
-    foliage(im, 65, H + 20, 6, (20, 44, 20), 120, 0)
-    d = ImageDraw.Draw(im)
-    # the jeep's hood at the bottom
-    d.polygon([(0, H), (60, 330), (452, 330), (W, H)], fill=(140, 124, 80))
-    d.polygon([(60, 330), (452, 330), (440, 338), (72, 338)], fill=(196, 180, 130))
-    d.line([(256, 330), (256, H)], fill=(110, 96, 60), width=3)
-    # crosshairs P1 (red) on the dinosaur's head, P2 (blue)
-    for (x, y, c) in [(282, 160, (255, 60, 40)), (180, 220, (60, 140, 255))]:
+    for (x, y, c) in [(258, 112, (255, 60, 40)), (180, 250, (60, 140, 255))]:
         d.ellipse([x - 14, y - 14, x + 14, y + 14], outline=c, width=3)
         for dx, dy in [(-22, 0), (22, 0), (0, -22), (0, 22)]:
             d.line([(x + dx * 0.4, y + dy * 0.4), (x + dx, y + dy)], fill=c, width=3)
-    # hit flash
-    d.ellipse([272, 146, 296, 164], fill=(255, 240, 160))
-    # HUD
+    d.ellipse([248, 102, 268, 120], fill=(255, 240, 160))
     f = font(F_COND, 18)
     fs = font(F_COND, 13)
     d.text((14, 8), "1P", font=f, fill=(255, 80, 60))
     d.text((40, 8), "0042650", font=f, fill=(255, 250, 230))
     d.text((W - 14, 8), "2P", font=f, fill=(90, 150, 255), anchor="ra")
     d.text((W - 44, 8), "0018300", font=f, fill=(255, 250, 230), anchor="ra")
-    text_c(d, (W / 2, 18), "STAGE 2  RIVER CROSSING", fs, (255, 230, 120))
+    text_c(d, (W / 2, 18), "STAGE 2  RED CANYON", fs, (255, 230, 120))
     for i in range(8):
         d.rectangle([14 + i * 9, 34, 20 + i * 9, 48], fill=(255, 210, 60) if i < 6 else (90, 70, 30))
         d.rectangle([W - 20 - i * 9, 34, W - 14 - i * 9, 48], fill=(255, 210, 60) if i < 3 else (90, 70, 30))
-    # danger meter
     d.rectangle([150, 360, 362, 372], outline=(255, 255, 255), width=2)
     d.rectangle([152, 362, 290, 370], fill=(240, 60, 30))
     text_c(d, (W / 2, 352), "DANGER", fs, (255, 255, 255))
     im = im.filter(ImageFilter.SMOOTH)
-    # CRT: scanlines, slight bloom, vignette
     a = np.asarray(im).astype(np.float32)
     lines = np.where(np.arange(H) % 3 == 2, 0.68, 1.0)[:, None, None]
     yy = np.linspace(-1, 1, H)[:, None]
@@ -526,7 +563,7 @@ def screen():
     im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
     bloom = im.filter(ImageFilter.GaussianBlur(4))
     im = ImageChops.add(im, bloom.point(lambda v: int(v * 0.25)))
-    save(gamma(im, 1.0), "ride_screen.png", colors=180)
+    save(im, "ride_screen.png", colors=180)
 
 
 def grille(d, x0, y0, x1, y1, pitch=5, r=1.4, col=(6, 6, 7), plate=(40, 40, 44)):
@@ -651,9 +688,9 @@ def decals():
     d = ImageDraw.Draw(im)
     d.polygon([(256, 384), (226, 384), (256, 356)], fill=(30, 30, 30))
     # --- 2 PLAYERS sign
-    d.rectangle([256, 0, 511, 85], fill=(232, 182, 40))
-    d.rectangle([262, 6, 505, 79], outline=(20, 20, 20), width=3)
-    text_c(d, (384, 44), "2 PLAYERS", font(F_HEAVY, 46), (20, 20, 20))
+    d.rectangle([256, 0, 511, 85], fill=(88, 40, 140))
+    d.rectangle([262, 6, 505, 79], outline=(255, 150, 50), width=3)
+    text_c(d, (384, 44), "2 PLAYERS", font(F_HEAVY, 46), (255, 240, 214))
     # --- coin door: black steel frame, chrome inserts, two token slots with lamps, coin returns
     x0, y0, x1, y1 = 256, 96, 447, 447
     d.rectangle([x0, y0, x1, y1], fill=(24, 24, 26))
@@ -711,8 +748,8 @@ def paint_tex():
         L = rng.uniform(4, 16)
         a = rng.uniform(-0.6, 0.6)
         c = int(rng.uniform(38, 52))
-        d.line([(x, y), (x + math.cos(a) * L, y + math.sin(a) * L)], fill=(c, c + 14, c + 6), width=1)
-    save(im, "ride_paint.png", colors=48)
+        d.line([(x, y), (x + math.cos(a) * L, y + math.sin(a) * L)], fill=(min(255, c * 5), c * 3, c * 2), width=1)
+    save(im, "ride_paint.png", colors=64)
 
 
 def skirt():
@@ -756,7 +793,7 @@ def felt():
 
 
 def vinyl():
-    """Seat vinyl, tiles every 0.33 m -> 256 px: oxblood, pleated channels (2 per tile),
+    """Seat vinyl, tiles every 0.33 m -> 256 px: deep purple, pleated channels (2 per tile),
     fine grain, rubbed-pale creases where riders slide in."""
     S = 256
     x = np.arange(S)[None, :].astype(np.float32)
@@ -765,7 +802,7 @@ def vinyl():
     g = noise(S, S, 141, 1.2)
     big = fbm(S, S, 142, 60, 2)
     k = ch * seam * (0.94 + 0.10 * g) * (0.85 + 0.3 * big)
-    base = np.array([92, 22, 24], np.float32)
+    base = np.array([70, 34, 98], np.float32)
     a = base[None, None, :] * k[:, :, None]
     # pale rubbed creases
     cr = np.zeros((S, S), np.float32)
@@ -800,17 +837,30 @@ def tread():
     save(im, "ride_tread.png", colors=32)
 
 
-def hazard():
-    """Yellow/black safety stripe tape, 0.5 m x 0.05 m -> 256 x 32 (tiles along u)."""
-    W, H = 256, 32
-    im = Image.new("RGB", (W, H), (236, 190, 30))
-    d = ImageDraw.Draw(im)
-    for i in range(-2, 10):
-        x = i * 32
-        d.polygon([(x, H), (x + 16, H), (x + 16 + H, 0), (x + H, 0)], fill=(20, 18, 16))
-    a = np.asarray(im).astype(np.float32) * (0.8 + 0.25 * fbm(W, H, 161, 10, 2))[:, :, None]
+def rear_tex():
+    """Two-tone end walls (rear and screen end) and the shell's flat lower sides:
+    u = x in metres (tiles), v = (2.10 - y) / 1.76 -> 256 x 512. Orange above y = 0.72
+    (row 401), a chrome line and purple pinstripe, charcoal below."""
+    W, H = 256, 512
+    cut = int((2.10 - 0.72) / 1.76 * H)
+    n = fbm(W, H, 181, 64, 2)
+    peel = noise(W, H, 182, 1.5)
+    a = np.zeros((H, W, 3), np.float32)
+    for c in range(3):
+        a[:cut, :, c] = PAINT[c] * (0.9 + 0.16 * n[:cut] + 0.05 * peel[:cut])
+        a[cut:, :, c] = CHAR[c] * (0.9 + 0.3 * n[cut:])
     im = Image.fromarray(a.clip(0, 255).astype(np.uint8))
-    save(im, "ride_hazard.png", colors=24)
+    d = ImageDraw.Draw(im)
+    d.rectangle([0, cut - 12, W, cut - 9], fill=(120, 60, 170))
+    for i, c in enumerate([(120, 120, 126), (210, 212, 218), (250, 250, 252), (170, 172, 178), (90, 90, 96)]):
+        d.line([(0, cut - 4 + i * 2), (W, cut - 4 + i * 2)], fill=c, width=2)
+    rng = R(183)
+    for _ in range(60):
+        x, y = rng.uniform(0, W), rng.uniform(cut + 8, H)
+        L = rng.uniform(3, 16)
+        c = int(rng.uniform(60, 100))
+        d.line([(x, y), (x + L, y + rng.uniform(-2, 2))], fill=(c, c, c), width=1)
+    save(im, "ride_rear.png", colors=64)
 
 
 if __name__ == "__main__":
@@ -827,6 +877,9 @@ if __name__ == "__main__":
     felt()
     vinyl()
     tread()
-    hazard()
+    rear_tex()
+    old = os.path.join(OUT, "ride_hazard.png")   # retired with the green/hazard look
+    if os.path.exists(old):
+        os.remove(old)
     tot = sum(os.path.getsize(os.path.join(OUT, f)) for f in os.listdir(OUT) if f.startswith("ride_"))
     print("total %.0f KB" % (tot / 1024))
