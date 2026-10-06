@@ -26,6 +26,13 @@ var fx = false            # while true, geometry goes to the switchable "fixture
 var cur_color = Color.WHITE
 var atlas_index = {}       # store id -> atlas cell
 var fronts = {}            # "x,z|x,z" of a store edge -> captured front (fronts.json)
+## The live game's flat storefront paintings on the Godot fronts (Phase 4a) are off: Steven
+## (Oct 5, 18:51) prefers the plain storefronts with the vendor's sign until each store is
+## built in full 3D from its photos, as Corn Dog 7 is.
+const USE_FRONT_ART = false
+## Stores built in full 3D: their footprint (x0, z0, x1, z1 in metres) is kept clear of the
+## generic interiors of neighbouring stores, which would otherwise run through them.
+const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
@@ -222,9 +229,8 @@ func mat(name):
 					m.emission = Color.WHITE; m.emission_energy_multiplier = 2.5
 					m.set_meta("e_day", 2.5); m.set_meta("e_night", 3.0)
 				elif key == "menu":
-					m.emission_enabled = true; m.emission_texture = m.albedo_texture
-					m.emission = Color.WHITE; m.emission_energy_multiplier = 1.4
-					m.set_meta("e_day", 1.4); m.set_meta("e_night", 1.6)
+					# a lit screen shows its picture as is
+					m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 				elif key == "floor":
 					m.roughness = 0.55; m.metallic_specular = 0.45
 			elif name.begins_with("floorz_"):
@@ -1010,7 +1016,7 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		return
 	var pil = 0.4 if Ln > 2.5 else 0.25
 	var anchor = sd.anchor
-	var deep = clamp(float(e.depth), 3.0, 14.0 if anchor else 9.0)
+	var deep = clip_deep(a, b, n, clamp(float(e.depth), 3.0, 14.0 if anchor else 9.0))
 	for ee in [0.0, Ln - pil]:
 		var c0 = a + t * (ee + pil * 0.5)
 		box(g, "stone", c0 + Vector3(0, 0.45, 0) + n * 0.06, abs_size(t, pil, 0.9, 0.12, n))
@@ -1075,6 +1081,28 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 	interior(g, e, a, n, t, Ln, sd, p0, p1, width, deep)
 	if sd.name.contains("CINEMA"):
 		cinema_front(g, a, n, t, Ln)
+
+## How deep a store's generic interior may run before it would enter a store built in full 3D.
+func clip_deep(a, b, n, deep):
+	var into = -n
+	for nm in BUILT_RECTS:
+		var r = BUILT_RECTS[nm]
+		# the strip from the frontage a..b running `deep` metres along `into`
+		var lo_x = min(a.x, b.x); var hi_x = max(a.x, b.x)
+		var lo_z = min(a.z, b.z); var hi_z = max(a.z, b.z)
+		if abs(into.z) > 0.5:
+			if hi_x <= r[0] + 0.01 or lo_x >= r[2] - 0.01:
+				continue
+			var gap = (r[1] - a.z) if into.z > 0 else (a.z - r[3])
+			if gap >= -0.01:
+				deep = min(deep, max(gap - 0.05, 0.5))
+		else:
+			if hi_z <= r[1] + 0.01 or lo_z >= r[3] - 0.01:
+				continue
+			var gap2 = (r[0] - a.x) if into.x > 0 else (a.x - r[2])
+			if gap2 >= -0.01:
+				deep = min(deep, max(gap2 - 0.05, 0.5))
+	return deep
 
 func edge_key(pa, pb):
 	return "%.1f,%.1f|%.1f,%.1f" % [pa[0], pa[1], pb[0], pb[1]]
@@ -1662,7 +1690,7 @@ func make_env(mode):
 func build():
 	seed(1995)
 	L = JSON.parse_string(FileAccess.get_file_as_string("res://layout_mall.json"))
-	if FileAccess.file_exists("res://fronts.json"):
+	if USE_FRONT_ART and FileAccess.file_exists("res://fronts.json"):
 		var fj = JSON.parse_string(FileAccess.get_file_as_string("res://fronts.json"))
 		fronts_px = float(fj.atlas.px_per_tile)
 		for key in fj.fronts:
