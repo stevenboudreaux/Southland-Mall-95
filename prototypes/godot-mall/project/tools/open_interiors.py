@@ -18,6 +18,9 @@ OPEN = {
     "s52b": [(93, 96, 130, 149)],
     # Kay-Bee Toys (s18, tiles x 131-142, y 71-73, faces east): the whole store
     "s18": [(131, 142, 71, 73)],
+    # Gumballs (s8, tiles x 138-142, y 118-123, a corner open to the east hall and the
+    # Dillard's court): the whole store
+    "s8": [(138, 142, 118, 123)],
 }
 
 

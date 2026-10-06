@@ -34,7 +34,7 @@ const USE_FRONT_ART = false
 ## Stores built in full 3D: their footprint (x0, z0, x1, z1 in metres) is kept clear of the
 ## generic interiors of neighbouring stores, which would otherwise run through them.
 const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE": [-110.0, 60.0, -102.0, 100.0],
-	"KAY-BEE TOYS": [-34.0, -58.0, -10.0, -52.0]}
+	"KAY-BEE TOYS": [-34.0, -58.0, -10.0, -52.0], "GUMBALLS": [-20.0, 36.0, -10.0, 48.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
@@ -252,6 +252,10 @@ func mat(name):
 				var parts = name.substr(3).split("_", true, 1)
 				var mp = "res://tools/stores/pocket_change/%s.gd" % parts[0]
 				if parts.size() < 2 or not ResourceLoader.exists(mp) or not load(mp).fill_mat(m, parts[1], self):
+					push_error("unknown material " + name)
+			elif name.begins_with("gb_"):
+				# Gumballs: tools/stores/gumballs/store.gd's fill_mat(m, key, b)
+				if not load("res://tools/stores/gumballs/store.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
 			elif name.begins_with("kb_"):
 				# Kay-Bee Toys: tools/stores/kay_bee/store.gd's fill_mat(m, key, b)
@@ -1053,6 +1057,11 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# built in full 3D: the front from Steven's photo of the Southland store, the inside from
 		# the 1993 Kay-Bee home video he chose (design/storefronts/kay-bee-toys.md)
 		load("res://tools/stores/kay_bee/store.gd").build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name == "GUMBALLS" and not inner_call:
+		# built in full 3D on the court corner: the sign and the inside from the 1995 North East
+		# Mall video Steven chose (design/storefronts/gumballs.md); both frontage edges come here
+		load("res://tools/stores/gumballs/store.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	if sd.name == "CORN DOG 7" and not inner_call:
 		# built in full 3D from the photographs of the unchanged shop (Phase 4b)
