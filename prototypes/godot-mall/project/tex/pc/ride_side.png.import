@@ -15,9 +15,9 @@ dest_files=["res://.godot/imported/ride_side.png-467d7ae98939f808c9d4c562f28a35a
 
 [params]
 
-compress/mode=0
+compress/mode=1
 compress/high_quality=false
-compress/lossy_quality=0.7
+compress/lossy_quality=0.85
 compress/uastc_level=0
 compress/rdo_quality_loss=0.0
 compress/hdr_compression=1
