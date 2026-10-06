@@ -99,8 +99,11 @@ static func fourway(b, c, rot, row):
 	for k in 4:
 		var f = bs * Vector3(sin(k * PI * 0.5), 0, cos(k * PI * 0.5))
 		var r = f.cross(UP)
-		b.box(S, "ap_chrome", c + f * 0.36 + UP * 1.42, (r.abs() * 0.025 + f.abs() * 0.62 + UP * 0.025), Transform3D.IDENTITY, [], true)
-		b.box(S, "ap_chrome", c + f * 0.3 + UP * 0.02, (r.abs() * 0.04 + f.abs() * 0.5 + UP * 0.04), Transform3D.IDENTITY, [], true)
+		# each arm and foot in the arm's own frame: sized on the world axes, a turned rack's
+		# bars came out as wide slabs (Steven, Oct 6: "the areas with hanging shirts is messed up")
+		var xf = Transform3D(Basis(UP, rot + k * PI * 0.5), c)
+		b.box(S, "ap_chrome", Vector3(0, 1.42, 0.36), Vector3(0.025, 0.025, 0.62), xf, [], true)
+		b.box(S, "ap_chrome", Vector3(0, 0.02, 0.3), Vector3(0.04, 0.04, 0.5), xf, [], true)
 		# the garments hang across the arm: a block 0.6 long, 0.45 deep, from 0.6 to 1.4 m
 		var o = c + f * 0.08 - r * 0.22
 		var va = row / 4.0
@@ -148,9 +151,8 @@ static func faceout_wall(b, a, t, n, wall_u, face, d0, d1, row, rng, slat = "gb_
 			var h = tier[1] - tier[0]
 			fq(b, "ap_faceout", "ap_faceouts", o, r, face, x, x + 0.48, tier[0], tier[0] + h, 0.32 + rng.randf() * 0.02,
 				cell / 8.0, row * 0.5, (cell + 1) / 8.0, row * 0.5 + (0.5 if pants else 0.4), true)
-			b.cur_color = Color("#c8c8cc")
-			lbox(b, "ap_small", "vcolor", o, r, face, x + 0.23, tier[1] - 0.04, 0.0, 0.02, 0.02, 0.34, [], true)
-			b.cur_color = Color.WHITE
+			# the waterfall arm, chrome (it was plain grey and went black at night)
+			lbox(b, "ap_small", "ap_chrome", o, r, face, x + 0.23, tier[1] - 0.04, 0.0, 0.02, 0.02, 0.34, [], true)
 		x += 0.62
 		k += 1
 	# the top shelf with folded stacks
@@ -355,6 +357,11 @@ static func fill_mat(m, key, b):
 		"chrome":
 			# bright metal: half metallic so it reads light even where the probe is dim
 			m.albedo_color = Color("#e4e6e8"); m.metallic = 0.5; m.roughness = 0.25
+			# racks and arms are probe-lit, and the night probes by the black slatwall are dark:
+			# a faint glow of their own keeps them reading as chrome, not black
+			m.emission_enabled = true; m.emission = Color("#9ea2a8")
+			m.emission_energy_multiplier = 0.45
+			m.set_meta("e_day", 0.15); m.set_meta("e_night", 0.45)
 		"black":
 			m.albedo_color = Color("#1c1c1e"); m.roughness = 0.5
 		"charcoal":
