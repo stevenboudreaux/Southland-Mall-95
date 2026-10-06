@@ -4,7 +4,7 @@
 
 ## What it does
 - **Signs covered:**
-  - the marquee title of every upright video cabinet in Pocket Change (72, ids `pc.video.01` to `pc.video.72`, numbered in build order);
+  - the marquee title of every upright video cabinet in Pocket Change (72, ids `pc.video.01` to `pc.video.72`, numbered in build order), of the four basketball games (`pc.hoops.1`–`4`) and of the three claw machines (`pc.crane.1`–`3`);
   - the eight Kay-Bee department boards (`kb.dept.1` to `kb.dept.8`; both faces of a board change together).
 - **Who is the owner:** any browser where the mall editor has been unlocked (localStorage `southland-editor` = `1`, set by the main game's secret code), or any visit with `?owner=1` added to the play URL. Being the owner only shows the buttons; publishing still needs a GitHub token with write access.
 - **Editing:**
