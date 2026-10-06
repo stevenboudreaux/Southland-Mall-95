@@ -41,8 +41,10 @@ static func P(a, t, n, u, y, d):
 
 static func build(b, g, e, a, bb, n, t, Ln, sd):
 	var G = "pc_shell"
-	front(b, g, a, t, n)
-	letters(b, g, a, t, n)
+	# the front gets the finer props texel (its glass blocks and tile steps are small), and
+	# the letters are dynamic: too small for clean lightmap texels, the probes light them evenly
+	front(b, "pcf_props", a, t, n)
+	letters(b, "pcf_props", a, t, n)
 	room(b, G, a, t, n)
 	lights(b, G, a, t, n)
 	machines(b, a, t, n)
@@ -132,7 +134,7 @@ static func letters(b, g, a, t, n):
 	var X = func(p, d): return P(a, t, n, TEXT_U0 - float(p[0]), TEXT_Y + float(p[1]), d)
 	for L in J.letters:
 		var tr = L.tris
-		var s = b.st(g, "pc_store_letterface")
+		var s = b.st(g, "pc_store_letterface", true)
 		for i in range(0, tr.size(), 3):
 			var p0 = X.call(tr[i], d_face)
 			var p1 = X.call(tr[i + 1], d_face)
@@ -150,7 +152,7 @@ static func letters(b, g, a, t, n):
 				# outward in the letter's plane: (dy, -dx) for counter-clockwise outers and clockwise holes
 				var nn = (-t * (dy / ln) + Vector3.UP * (-dx / ln)).normalized()
 				b.quad(g, "pc_store_letterside", [X.call(q0, d_back), X.call(q1, d_back), X.call(q1, d_face), X.call(q0, d_face)], nn,
-					[Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0)])
+					[Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), Vector2(0, 0)], true)
 
 # ------------------------------------------------------------------ the room
 static func room(b, G, a, t, n):
