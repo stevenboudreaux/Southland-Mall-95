@@ -217,14 +217,20 @@ static func lights(b, G, a, t, n):
 			b.cur_color = Color("#101012")
 			b.cyl(G, "vcolor", c - Vector3(0, 0.02, 0), 0.09, 0.09, 0.02, 12, false, true, true)
 			b.cur_color = Color.WHITE
-			b.disc_down(G, c - Vector3(0, 0.021, 0), 0.06)
-			var l = b.add_spot(c - Vector3(0, 0.05, 0), Vector3.DOWN, 0.9, 5.0, 38.0, Color(1.0, 0.86, 0.66))
-			b.tag(l, "", 0.9, 0.9)
+			# the lamp's face is what lights the bake (Godot 4.7 lights mostly from emission)
+			var s = b.st(G, "pc_store_can")
+			for k in 12:
+				var a0 = TAU * k / 12
+				var a1 = TAU * (k + 1) / 12
+				var cc = c - Vector3(0, 0.021, 0)
+				b.tri(s, cc, cc + Vector3(cos(a0), 0, sin(a0)) * 0.07, cc + Vector3(cos(a1), 0, sin(a1)) * 0.07, Vector2(0.5, 0.5), Vector2(0, 0), Vector2(1, 0), Vector3.DOWN)
+			var l = b.add_spot(c - Vector3(0, 0.05, 0), Vector3.DOWN, 2.5, 6.0, 50.0, Color(1.0, 0.86, 0.66))
+			b.tag(l, "", 2.5, 2.5)
 		d += 5.0
 	# brighter over the redemption counter and the prize wall
 	for dd in [3.6, 5.6, 7.6]:
-		var l2 = b.add_spot(P(a, t, n, 6.7, CEIL - 0.05, dd), Vector3.DOWN, 1.3, 5.0, 50.0, Color(1.0, 0.93, 0.82))
-		b.tag(l2, "", 1.3, 1.3)
+		var l2 = b.add_spot(P(a, t, n, 6.7, CEIL - 0.05, dd), Vector3.DOWN, 3.0, 5.0, 55.0, Color(1.0, 0.93, 0.82))
+		b.tag(l2, "", 3.0, 3.0)
 
 # ------------------------------------------------------------------ the machines
 ## Plush piles and the skee-ball rings are thousands of tiny faces: in the lightmap each
@@ -355,20 +361,34 @@ static func fill_mat(m, key, b):
 		"black":
 			m.albedo_color = Color("#0e0e12"); m.roughness = 0.8
 		"letterface":
-			# brushed aluminium faces read near-white in the photo, against the darker tile
-			m.albedo_color = Color("#f4f5f6"); m.metallic = 0.15; m.roughness = 0.35
+			# brushed aluminium faces read near-white in the photo, against the darker tile; the
+			# letters are lit by probes (dynamic), so a little emission stands in for the hall's light
+			m.albedo_color = Color("#f4f5f6"); m.metallic = 0.1; m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#e8eaec"); m.emission_energy_multiplier = 0.45
+			m.set_meta("e_day", 0.55); m.set_meta("e_night", 0.4)
 		"letterside":
-			m.albedo_color = Color("#7c8084"); m.metallic = 0.3; m.roughness = 0.45
+			m.albedo_color = Color("#7c8084"); m.metallic = 0.2; m.roughness = 0.45
+			m.emission_enabled = true; m.emission = Color("#6a6e72"); m.emission_energy_multiplier = 0.3
+			m.set_meta("e_day", 0.35); m.set_meta("e_night", 0.25)
 		"carpet":
+			# blacklight-reactive arcade carpet: the confetti glows, the black ground stays black
 			m.albedo_texture = b.tex("pc/store_carpet.png"); m.roughness = 0.95; m.metallic_specular = 0.2
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture
+			m.emission = Color.WHITE; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission_energy_multiplier = 0.45
+			m.set_meta("e_day", 0.45); m.set_meta("e_night", 0.45)
+		"can":
+			m.albedo_color = Color("#fff4e0")
+			m.emission_enabled = true; m.emission = Color("#ffe6c0"); m.emission_energy_multiplier = 10.0
+			m.set_meta("e_day", 10.0); m.set_meta("e_night", 10.0)
 		"ceiling":
 			m.albedo_texture = b.tex("pc/store_ceiling.png"); m.roughness = 0.95
 		"wall":
 			m.albedo_texture = b.tex("pc/store_wall.png"); m.roughness = 0.85
 		"neon":
 			m.albedo_color = Color("#3a6cff")
-			m.emission_enabled = true; m.emission = Color("#3f6dff"); m.emission_energy_multiplier = 3.0
-			m.set_meta("e_day", 3.0); m.set_meta("e_night", 3.0)
+			m.emission_enabled = true; m.emission = Color("#3f6dff"); m.emission_energy_multiplier = 5.0
+			m.set_meta("e_day", 5.0); m.set_meta("e_night", 5.0)
 		_:
 			return false
 	return true
