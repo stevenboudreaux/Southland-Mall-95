@@ -209,23 +209,38 @@ def troffer():
 
 
 def menu_board():
-    """A TV menu board: dark blue, yellow headings, white items and prices (16:9)."""
-    im = Image.new("RGB", (1280, 720), (22, 32, 92))
+    """A 1995 backlit menu box panel (the 2024 photos show TVs; in 1995 it was a lightbox): a yellow header
+    with the name in navy, a translucent white field with navy items. Prices are guesses for 1995."""
+    import cairosvg, io
+    W, H = 1280, 720
+    im = Image.new("RGB", (W, H), (250, 248, 238))
     d = ImageDraw.Draw(im)
-    fh = ImageFont.truetype(FONT_C, 52)
-    fi = ImageFont.truetype(FONT_C, 38)
-    cols = [("CORN DOGS", [("Corn Dog", "2.49"), ("Cheese on a Stick", "2.79"), ("Jumbo Dog", "3.29"), ("Chili Cheese Dog", "3.49")]),
-            ("SIDES", [("Seasoned Fries", "1.99"), ("Chili Cheese Fries", "2.99"), ("Onion Rings", "2.49"), ("Frito Pie", "2.99")]),
-            ("DRINKS", [("Fresh Lemonade", "1.79"), ("Fountain Drink", "1.49"), ("Funnel Cake", "2.99"), ("Combo", "5.49")])]
+    d.rectangle([0, 0, W, 150], fill=YEL)
+    d.rectangle([0, 150, W, 162], fill=NAVY)
+    L = json.load(open(os.path.join(HERE, "cd7_letters.json")))
+    t = L["CD7"]["t"]
+    hp = 100; wp = int(t["w"] / t["h"] * hp)
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" width="%d" height="%d" viewBox="0 0 %s %s">'
+           '<path d="%s" fill="#1b2466" fill-rule="evenodd"/></svg>') % (wp, hp, t["w"], t["h"], t["p"])
+    g = Image.open(io.BytesIO(cairosvg.svg2png(bytestring=svg.encode()))).convert("RGBA")
+    im.paste(g, ((W - wp) // 2, 25), g)
+    fh = ImageFont.truetype(FONT_C, 44)
+    fi = ImageFont.truetype(FONT_C, 31)
+    cols = [("CORN DOGS", [("Corn Dog", "1.29"), ("Cheese Stick", "1.49"), ("Jumbo Dog", "1.79")]),
+            ("FRIES", [("Seasoned Fries", ".99"), ("Large Fries", "1.29"), ("Chili Fries", "1.79")]),
+            ("DRINKS", [("Fresh Lemonade", ".99"), ("Lg. Lemonade", "1.39"), ("Soft Drinks", ".89")])]
     for ci, (head, items) in enumerate(cols):
-        x = 40 + ci * 410
-        d.text((x, 30), head, font=fh, fill=YEL)
-        d.line([x, 95, x + 380, 95], fill=YEL, width=4)
+        x = 40 + ci * 415
+        d.text((x, 200), head, font=fh, fill=(200, 32, 44))
         for k, (nm, pr) in enumerate(items):
-            y = 120 + k * 70
-            d.text((x, y), nm, font=fi, fill=(240, 240, 236))
-            d.text((x + 300, y), pr, font=fi, fill=(240, 240, 236))
-    d.rectangle([0, 0, 1279, 719], outline=(10, 10, 12), width=24)
+            y = 275 + k * 70
+            d.text((x, y), nm, font=fi, fill=NAVY)
+            tw = d.textlength(pr, font=fi)
+            d.text((x + 370 - tw, y), pr, font=fi, fill=NAVY)
+    d.rectangle([0, 600, W, 720], fill=NAVY)
+    fb = ImageFont.truetype(FONT_B, 46)
+    msg = "COMBO: CORN DOG, FRIES & LEMONADE  2.99"
+    d.text(((W - d.textlength(msg, font=fb)) / 2, 630), msg, font=fb, fill=YEL)
     save(im, "menu.png")
 
 

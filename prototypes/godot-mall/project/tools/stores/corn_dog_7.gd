@@ -275,7 +275,7 @@ static func partition(b, g, a, t, n):
 		uu += 1.2
 	b.cur_color = Color.WHITE
 	b.quad("cd7_glass", "cd7_glass", [P(a, t, n, u0, 1.15, d), P(a, t, n, u1, 1.15, d), P(a, t, n, u1, 2.4, d), P(a, t, n, u0, 2.4, d)], n, [], true)
-	# two TV menu boards hung over the right end of the counter, angled down toward the queue
+	# two backlit menu boxes hung over the right end of the counter, angled down toward the queue
 	for um in [7.9, 8.95]:
 		var c = P(a, t, n, um, 2.5, d - 0.35)
 		var w = 0.9
@@ -287,8 +287,9 @@ static func partition(b, g, a, t, n):
 		var pC = c + t * (w * 0.5) + hv
 		var pD = c - t * (w * 0.5) + hv
 		b.quad("cd7_screens", "cd7_menu", [pA, pB, pC, pD], (tilt * n).normalized(), [Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
-		b.cur_color = Color("#101012")
-		b.box(g, "vcolor", Vector3.ZERO, Vector3(0.95, 0.56, 0.05), Transform3D(Basis.looking_at(-n, Vector3.UP) * Basis(Vector3.RIGHT, -0.3), c - (tilt * n) * 0.03), [], true)
+		# the lightbox's brushed aluminium case behind the panel (1995: a backlit menu box, not a TV)
+		b.cur_color = Color("#b8bcc2")
+		b.box(g, "vcolor", Vector3.ZERO, Vector3(0.96, 0.57, 0.12), Transform3D(Basis.looking_at(-n, Vector3.UP) * Basis(Vector3.RIGHT, 0.3), c - (tilt * n) * 0.065), [], true)
 		b.cur_color = Color.WHITE
 	# the kitchen beyond: dim walls, stainless shelving, the fryers' glow
 	var kd0 = d + 0.1

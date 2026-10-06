@@ -6,8 +6,9 @@ front, a tall shot from the left, a counter/floor close-up, a dining-room wall s
 photos (food, tabletops). The shop is unchanged since the 1990s, so 2024–25 photos stand for 1995. The sign's
 lettering comes from the vector trace made from Steven's photo (index.html, `CD7` / `CD7O`).
 Accuracy level: 3 (depth-accurate) — several angles; not yet 4 (Steven has not confirmed the build).
-Not from photos (guessed): the kitchen beyond the partition, the menu board text and prices (1995 prices
-unknown — placeholders), the exact count of booths and tables.
+Not from photos (guessed): the kitchen beyond the partition, the 1995 menu boxes and their prices (corn dog
+$1.29, fries $.99, lemonade $.99, combo $2.99 — guesses; a dated photo or receipt would fix them), the exact
+count of booths and tables.
 
 Frame: `u` runs along the frontage from the store's north end (the mall viewer's left) to its south end
 (12 m in the layout: z = 68 → 80 at x = −138); `d` runs into the store (east); `y` up.
@@ -45,8 +46,9 @@ Frame: `u` runs along the frontage from the store's north end (the mall viewer's
   0.55 m deep, stainless frames, lit inside. Brushed stainless hood canopy over the back counter (u 6.0–8.6,
   d 3.6–4.4, y 2.0–2.6).
 - Back-bar partition at d 4.5, u 5.2 → 11.7: oak-framed glass panels (y 1.1 → 2.4) over solid oak below,
-  oak posts every 1.2 m; two TV menu boards (black bezel, yellow/white text on dark blue) at u 7.9 and 8.95,
-  y 2.25–2.75, angled down toward the queue; paper notices on the glass. The kitchen beyond is dim: stainless shelving,
+  oak posts every 1.2 m; two backlit menu boxes (brushed aluminium case; yellow header with the traced
+  CORN DOG 7, white panel with navy items) at u 7.9 and 8.95, y 2.25–2.75, angled down toward the queue —
+  the 2024 photos show TVs there, which would be wrong for 1995; paper notices on the glass. The kitchen beyond is dim: stainless shelving,
   fryers' glow, a red-shirted crew.
 - Dining room: u 0.3 → 5.0, d 3 → 11. Along the left wall five booths (oak ends and benches, dark oxblood
   vinyl seats, butcher-block tables), each 1.3 m long, from d 3.0; each divider rises as an oak frame with
