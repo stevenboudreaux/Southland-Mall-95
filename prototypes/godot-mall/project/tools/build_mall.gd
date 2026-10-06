@@ -226,8 +226,8 @@ func mat(name):
 					m.metallic = 0.4; m.roughness = 0.3; m.albedo_color = Color(1.1, 1.1, 1.12)
 				elif key == "troffer":
 					m.emission_enabled = true; m.emission_texture = m.albedo_texture
-					m.emission = Color.WHITE; m.emission_energy_multiplier = 2.5
-					m.set_meta("e_day", 2.5); m.set_meta("e_night", 3.0)
+					m.emission = Color.WHITE; m.emission_energy_multiplier = 1.4
+					m.set_meta("e_day", 1.4); m.set_meta("e_night", 1.5)
 				elif key == "menu":
 					# a lit screen shows its picture as is
 					m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED

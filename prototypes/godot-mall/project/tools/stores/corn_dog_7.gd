@@ -71,8 +71,8 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 			var c = P(a, t, n, uu, CEIL - 0.01, dd)
 			b.quad(g, "cd7_troffer", [c - t * 0.3 - n * 0.6, c - t * 0.3 + n * 0.6, c + t * 0.3 + n * 0.6, c + t * 0.3 - n * 0.6], Vector3.DOWN,
 				[Vector2(0, 0), Vector2(0, 1), Vector2(1, 1), Vector2(1, 0)])
-			var l = b.add_omni(c + Vector3(0, -0.3, 0), 0.5, 5.0, Color(1.0, 0.98, 0.92))
-			b.tag(l, "", 0.5, 0.7)
+			var l = b.add_omni(c + Vector3(0, -0.3, 0), 0.3, 4.5, Color(1.0, 0.97, 0.9))
+			b.tag(l, "", 0.3, 0.4)
 			uu += 2.4
 		dd += 2.4
 	# ---- the counter: tiled front with a chamfered left end, stainless top, cases, hood
@@ -208,11 +208,17 @@ static func counter(b, g, a, t, n):
 		b.box(g, "cd7_steel", cc + Vector3(0, -0.26, 0), b.abs_size(t, 1.2, 0.02, 0.55, n))
 		for side in [-1.0, 1.0]:
 			b.box(g, "cd7_steel", cc + t * (0.6 * side), b.abs_size(t, 0.03, 0.5, 0.55, n))
-		# food inside: trays of corn dogs and fries, a warm light
-		b.cur_color = Color("#b8732e")
-		b.box(g, "vcolor_matte", cc + Vector3(0, -0.14, 0), b.abs_size(t, 0.9, 0.12, 0.38, n))
-		b.cur_color = Color("#e8b84a")
-		b.box(g, "vcolor_matte", cc + Vector3(0, -0.06, 0) + t * 0.2, b.abs_size(t, 0.35, 0.06, 0.3, n))
+		# food inside: corn dogs standing in a steel holder, a pan of fries
+		b.box(g, "cd7_steel", cc + Vector3(0, -0.23, 0) - t * 0.15, b.abs_size(t, 0.8, 0.04, 0.4, n))
+		for ri in 2:
+			for ci in 7:
+				var dp = cc - t * 0.5 + t * (0.1 * ci) - n * (-0.1 + 0.2 * ri) + Vector3(0, -0.21, 0)
+				b.cur_color = Color("#a8662a")
+				b.cyl(g, "vcolor_matte", dp, 0.024, 0.02, 0.15, 8, true)
+				b.cur_color = Color("#e8d2a0")
+				b.cyl(g, "vcolor_matte", dp + Vector3(0, 0.15, 0), 0.004, 0.004, 0.07, 4, true)
+		b.cur_color = Color("#d9a43a")
+		b.box(g, "vcolor_matte", cc + Vector3(0, -0.19, 0) + t * 0.42, b.abs_size(t, 0.26, 0.09, 0.32, n))
 		b.cur_color = Color.WHITE
 		var cl = b.add_omni(cc + Vector3(0, 0.18, 0), 0.25, 1.6, Color(1.0, 0.9, 0.7))
 		b.tag(cl, "", 0.25, 0.4)
@@ -305,7 +311,7 @@ static func booth(b, g, a, t, n, u0, d0):
 	var L = 1.3
 	var tw = 1.2   # table + benches across (into the room from the wall)
 	# benches at both ends of the table run along u (against the wall the booth's back is the wall)
-	b.cur_color = Color("#8a2a24")
+	b.cur_color = Color("#4e2a22")   # dark oxblood vinyl
 	for off in [0.0, L - 0.45]:
 		b.box(g, "vcolor_matte", P(a, t, n, u0 + 0.65, 0.42, d0 + off + 0.225), b.abs_size(t, 1.1, 0.12, 0.45, n))     # seat
 		b.box(g, "vcolor_matte", P(a, t, n, u0 + 0.65, 0.75, d0 + off + (0.06 if off == 0.0 else 0.39)), b.abs_size(t, 1.1, 0.55, 0.1, n))  # back
