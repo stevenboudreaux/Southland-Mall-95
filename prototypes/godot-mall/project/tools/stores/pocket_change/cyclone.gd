@@ -587,6 +587,13 @@ static func fill_mat(m, key, b):
 			m.albedo_texture = b.tex("pc/cyclone_dome.png"); m.roughness = 0.05; m.metallic_specular = 0.9
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
+			# The dome is probe-lit (dynamic, transparent), and in the dark arcade the probes see
+			# almost nothing, so it vanished at night (Steven, Oct 6). The ring lamps' glow on the
+			# acrylic stands in: the texture's streaks and lip glow faintly, more at night.
+			m.emission_enabled = true; m.emission = Color(0.82, 0.9, 1.0)
+			m.emission_texture = b.tex("pc/cyclone_dome.png")
+			m.emission_energy_multiplier = 0.9
+			m.set_meta("e_day", 0.6); m.set_meta("e_night", 0.9)
 		_:
 			return false
 	return true

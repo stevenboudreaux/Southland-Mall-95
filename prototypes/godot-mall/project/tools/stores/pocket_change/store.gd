@@ -37,8 +37,10 @@ const LETTER_OFF = 0.04     # on stand-offs: they throw a shadow on the tile
 const LETTER_D = 0.07
 const RIGHT_BACK = 3.0  # the right-hand line of machines starts this much further in (Steven, Oct 6)
 const CENTRE_U = 3.7    # the centre aisle's line, where the feature games stand
-const CYC_D = 2.9       # the cyclone game's front edge, just inside the door
-const PUSH_D = 6.5      # the coin pusher's front edge, behind it
+const CYC_D = 2.0       # the cyclone game's front edge, just inside the door (Steven, Oct 6 18:30: a few feet nearer the mall)
+const PUSH_D = 7.4      # the coin pusher's middle, behind it, turned lengthwise down the room
+const PUSH_U = 3.7      # the pusher's centre line across the room
+const BACK_10FT = 3.05  # Steven (Oct 6 18:30): everything from the skee-ball back moves ~10 ft deeper; the claws stay
 
 static func P(a, t, n, u, y, d):
 	return a + t * u - n * d + Vector3(0, y, 0)
@@ -327,7 +329,7 @@ static func machines(b, a, t, n):
 	# 12:22): the whole line starts about 10 ft further back than first built
 	var d = WALL_T + 0.05 + RIGHT_BACK
 	d = wall_run(b, a, t, n, "crane", [{"style": 0}, {"style": 1}, {"style": 2}], u0, "-u", d, 0.02)
-	d = wall_run(b, a, t, n, "skee", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1)
+	d = wall_run(b, a, t, n, "skee", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1 + BACK_10FT)
 	d = wall_run(b, a, t, n, "hoops", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1)
 	wall_row(b, a, t, n, [0, 3, 4, 5, 2, 6, 1, 7, 0, 4, 3, 2, 5, 6], u0, "-u", d + 0.15, DEPTH - 1.9)
 	# --- left wall past the prize wall: video games, the twin racers, more video games,
@@ -339,12 +341,14 @@ static func machines(b, a, t, n):
 	wall_row(b, a, t, n, [0, 3, 5, 2], u1, "+u", d + 0.2, DEPTH - 2.2)
 	# --- the feature game dead centre as you walk in (Steven, Oct 6): the cyclone-style
 	# light-ring ticket game, and the coin pusher behind it, both facing the entrance
-	for m in [["cyclone", CYC_D], ["pusher", PUSH_D]]:
-		if ResourceLoader.exists("res://tools/stores/pocket_change/%s.gd" % m[0]):
-			put(b, a, t, n, m[0], CENTRE_U, m[1], "+d", {}, 0.2)
+	put(b, a, t, n, "cyclone", CENTRE_U, CYC_D, "+d", {}, 0.2)
+	# the coin pusher turned lengthwise (Steven, Oct 6 18:30): its three positions face the
+	# left aisle and the redemption counter, its back to the claw machines
+	var ps = fp("pusher")
+	put(b, a, t, n, "pusher", PUSH_U + ps.y * 0.5, PUSH_D, "-u", {}, 0.2)
 	# --- the middle: the sit-in dinosaur ride, its doorway toward the entrance (you can step in)
-	var ru = 4.3
-	var rd = 11.4
+	var ru = 4.45
+	var rd = 11.4 + BACK_10FT
 	var k0 = b.obstacles.size()
 	put(b, a, t, n, "ride", ru, rd, "+d", {})
 	b.obstacles.resize(k0)
@@ -354,7 +358,7 @@ static func machines(b, a, t, n):
 		var q1 = P(a, t, n, ru - r[1], 0, rd + r[3])
 		b.obst(["rect", min(q0.x, q1.x) - 0.1, min(q0.z, q1.z) - 0.1, max(q0.x, q1.x) + 0.1, max(q0.z, q1.z) + 0.1])
 	# --- an island of back-to-back uprights
-	d = 18.6
+	d = 18.6 + BACK_10FT
 	for pr in [[0, 4], [2, 5], [3, 0]]:
 		var sa = fp("video", {"style": pr[0]})
 		var sb = fp("video", {"style": pr[1]})
@@ -364,7 +368,7 @@ static func machines(b, a, t, n):
 		d += wdt + 0.03
 	# --- two air hockey tables in the open middle at the back, end to end down the room
 	for i in 2:
-		put(b, a, t, n, "airhockey", 4.0, 25.6 + i * 5.2, "+d", {"number": i + 1})
+		put(b, a, t, n, "airhockey", 4.0, 25.6 + BACK_10FT + i * 5.2, "+d", {"number": i + 1})
 	# --- a few uprights on the back wall, right of the back door
 	for i in 3:
 		var s = [3, 0, 2][i]

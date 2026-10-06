@@ -775,6 +775,20 @@ def paint_dome():
     """Dome acrylic: alpha-only smudges and fine scratches, 256 x 256 (u = round, v = up)."""
     S = 256
     im = Image.new("RGBA", (S, S), (235, 242, 255, 26))
+    # Steven (Oct 6): the dome vanished at night. Give the acrylic body: a frosted band near the
+    # flange (v = 1 is the base), soft window-light streaks (u wraps twice round the dome), and
+    # a thin bright lip where it sits in the yellow ring. cyclone.gd lets this texture glow a little.
+    a = np.zeros((S, S), np.float32)
+    v = np.linspace(0.0, 1.0, S)[:, None]
+    a += 34.0 * np.clip((v - 0.55) / 0.45, 0.0, 1.0) ** 1.6          # frosting toward the base
+    u = np.linspace(0.0, 1.0, S)[None, :]
+    for c, w, k in [(0.12, 0.035, 90.0), (0.20, 0.015, 55.0), (0.62, 0.035, 90.0), (0.70, 0.015, 55.0)]:
+        a = a + k * np.exp(-((u - c) / w) ** 2) * np.clip(1.0 - np.abs(v - 0.45) / 0.45, 0.0, 1.0)
+    a[S - 6:, :] += 110.0                                              # the lip at the flange
+    lay = np.zeros((S, S, 4), np.uint8)
+    lay[..., 0] = 255; lay[..., 1] = 255; lay[..., 2] = 255
+    lay[..., 3] = np.clip(a, 0, 255).astype(np.uint8)
+    im.alpha_composite(Image.fromarray(lay, "RGBA"))
     im = smudges(im, 121, 30, (0, S * 0.55, S, S), col=(255, 255, 255), alpha=30, rmax=10, blur=2)
     im = scuffs(im, 122, 70, None, col=(255, 255, 255), alpha=34, lmax=16)
     save(im, "dome")
