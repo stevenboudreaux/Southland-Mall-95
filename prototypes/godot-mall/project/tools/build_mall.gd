@@ -51,7 +51,9 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 	"ORANGE JULIUS": [10.0, 10.0, 16.0, 16.0], "GORDON'S JEWELERS": [2.0, -18.0, 12.0, -10.0],
 	"CUCOS BORDER CAFE": [22.0, -86.0, 36.0, -70.0], "CLAIRE'S BOUTIQUES": [12.0, -16.0, 20.0, -6.0],
 	"MITCHELL'S FORMAL WEAR": [20.0, -18.0, 24.0, -6.0], "TEE TAI'S": [16.0, 6.0, 22.0, 14.0],
-	"OPTICAL OUTLET": [22.0, 6.0, 30.0, 16.0], "SAADI'S": [2.0, 66.0, 16.0, 74.0], "GOLDEN CHAIN GANG": [-74.0, 60.0, -68.0, 68.0]}
+	"OPTICAL OUTLET": [22.0, 6.0, 30.0, 16.0], "SAADI'S": [2.0, 66.0, 16.0, 74.0], "GOLDEN CHAIN GANG": [-74.0, 60.0, -68.0, 68.0],
+	"SOLARIUM": [-18.0, -86.0, -10.0, -80.0], "RAVE": [-22.0, -80.0, -10.0, -72.0], "CONCEPTS": [-68.0, 60.0, -58.0, 74.0],
+	"COUNTRY FAIR": [-124.0, 60.0, -118.0, 70.0], "LION'S SHARE RESTAURANT": [-50.0, 36.0, -38.0, 48.0], "AMERICAN BANK": [-46.0, -86.0, -36.0, -78.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
@@ -277,6 +279,10 @@ func mat(name):
 			elif name.begins_with("gb_"):
 				# Gumballs: tools/stores/gumballs/store.gd's fill_mat(m, key, b)
 				if not load("res://tools/stores/gumballs/store.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("w9_"):
+				# the Wave 9 shops: tools/stores/small/wave9.gd's fill_mat
+				if not load("res://tools/stores/small/wave9.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
 			elif name.begins_with("w8_"):
 				# the Wave 8 shops: tools/stores/small/wave8.gd's fill_mat
@@ -1121,6 +1127,12 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# stock from the video, the layouts guessed (design/storefronts/jw.md, 579.md, county-seat.md)
 		var mod = {"JW": "jw", "5-7-9": "s579", "COUNTY SEAT": "county_seat"}[sd.name]
 		load("res://tools/stores/apparel/%s.gd" % mod).build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name in ["SOLARIUM", "RAVE", "CONCEPTS", "COUNTRY FAIR", "LION'S SHARE RESTAURANT", "AMERICAN BANK"] and not inner_call:
+		# built in full 3D from the Southland facade records and the game's flat fronts; insides
+		# guessed (design/storefronts/: solarium, rave, concepts, country-fair, lions-share,
+		# american-bank)
+		load("res://tools/stores/small/wave9.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	if sd.name in ["CUCOS BORDER CAFE", "CLAIRE'S BOUTIQUES", "MITCHELL'S FORMAL WEAR", "TEE TAI'S", "OPTICAL OUTLET",
 			"SAADI'S", "GOLDEN CHAIN GANG"] and not inner_call:
