@@ -40,6 +40,13 @@ OPEN = {
     "s17": [(129, 142, 74, 79)],
     "n35": [(117, 122, 112, 123)],
     "s50": [(82, 86, 110, 123)],
+    # Wave 5 small shops (tools/stores/small/store.gd): Coach House Gifts (s21), GNC (s21c),
+    # MasterCuts (s24mc) facing west onto the east hall, Wicks 'N' Sticks (s44), Chick-fil-A (s64)
+    "s21": [(149, 160, 108, 112)],
+    "s21c": [(149, 155, 117, 118)],
+    "s24mc": [(149, 155, 76, 77)],
+    "s44": [(129, 131, 118, 123)],
+    "s64": [(97, 100, 130, 137)],
 }
 
 
