@@ -2,6 +2,9 @@
 ## Phone: drag on the left half to walk, drag on the right half to look.
 ## Desktop: WASD / arrow keys to walk, drag with the mouse to look.
 ## URL ?cam=x,z,yaw,pitch places the camera (used for test screenshots).
+## Wings (design/godot-wings.md): the mall ships as two game files; near the seam between them a
+## prompt offers the other wing (E / Enter, a gamepad's A, a click or a tap), and the page reloads
+## into that wing's file at the same spot, facing the same way, behind a fade to black.
 extends Node3D
 
 @export var obstacles: Array = []
@@ -30,9 +33,26 @@ var hint: Label
 var stick: Control
 var fps_t := 0.0
 var debug := false
+# wings
+var wing := 0
+var seam := []              # [x0, z, x1]: the seam line; the other wing lies on other_side
+var other_side := 1.0
+var prompt: Button
+var prompt_key: Label
+var prompt_text: Label
+var fade: ColorRect
+var leaving := false
+var input_kind := "kb"      # "kb", "pad" or "touch": which glyph the prompt shows
+const SEAM_NEAR := 2.6      # metres from the seam at which the prompt shows
+const WING_NAMES := {1: "Wing 1 · Sears & the main entrance", 2: "Wing 2 · Dillard's & JCPenney"}
 
 func _ready() -> void:
 	position = Vector3(33.0, 0, 0.0)
+	var gen: String = get_parent().get_meta("gen", "res://gen/") if get_parent() else "res://gen/"
+	wing = int(get_parent().get_meta("wing", 0)) if get_parent() else 0
+	var wj = null
+	if FileAccess.file_exists(gen + "wing.json"):
+		wj = JSON.parse_string(FileAccess.get_file_as_string(gen + "wing.json"))
 	# the walkable grid comes from the layout file the mall was built from
 	if walk_rows.is_empty() and FileAccess.file_exists("res://layout_mall.json"):
 		var lay = JSON.parse_string(FileAccess.get_file_as_string("res://layout_mall.json"))
@@ -40,8 +60,18 @@ func _ready() -> void:
 			walk_rows = PackedStringArray(lay.get("walk", []))
 			map_origin = Vector2(lay.origin[0], lay.origin[1])
 			map_scale = float(lay.scale)
-	if FileAccess.file_exists("res://gen/collide.json"):
-		var col = JSON.parse_string(FileAccess.get_file_as_string("res://gen/collide.json"))
+	if wj is Dictionary:
+		# this wing's walk grid: the other wing's tiles are closed, so the seam is a wall
+		walk_rows = PackedStringArray(wj.get("walk", walk_rows))
+		seam = wj.get("seam", [])
+		other_side = float(wj.get("other_side", 1.0))
+		var sp: Array = wj.get("spawn", [])
+		if sp.size() >= 4:
+			position = Vector3(float(sp[0]), 0, float(sp[1]))
+			yaw = deg_to_rad(float(sp[2]))
+			pitch = deg_to_rad(float(sp[3]))
+	if FileAccess.file_exists(gen + "collide.json"):
+		var col = JSON.parse_string(FileAccess.get_file_as_string(gen + "collide.json"))
 		if col is Dictionary:
 			obstacles = col.get("static", obstacles)
 			fx_obstacles = col.get("fixtures", [])
@@ -59,6 +89,8 @@ func _ready() -> void:
 			buttons[0].button_pressed = false
 		if str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('time') || ''")) == "day":
 			buttons[2].button_pressed = false
+		if str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('fx') || ''")) == "1":
+			buttons[1].button_pressed = true
 		var q = JavaScriptBridge.eval("new URLSearchParams(location.search).get('cam') || ''")
 		if q is String and q != "":
 			var v: PackedStringArray = q.split(",")
@@ -68,7 +100,16 @@ func _ready() -> void:
 				if v.size() >= 4:
 					pitch = deg_to_rad(float(v[3]))
 				hint.visible = false
+	elif Engine.has_meta("mall_xfer"):
+		# arrived from the other wing in this same run (not on the web: the editor or a test)
+		var x: Dictionary = Engine.get_meta("mall_xfer")
+		Engine.remove_meta("mall_xfer")
+		position = Vector3(x.x, 0, x.z)
+		yaw = x.yaw
+		pitch = x.pitch
+		hint.visible = false
 	_apply_rot()
+	_build_wing_ui()
 
 func _build_hud() -> void:
 	var cl := CanvasLayer.new()
@@ -95,7 +136,10 @@ func _build_hud() -> void:
 		if rt:
 			rt.set_time("night" if night else "day"), ["day", "night"])
 	# the day lighting ships separately; hide the switch until it's baked
-	if not ResourceLoader.exists("res://main_day.lmbake"):
+	var scn := get_tree().current_scene
+	if scn == null:
+		scn = get_parent()
+	if scn and not ResourceLoader.exists(load("res://scripts/time_of_day.gd").lightmap_path(scn, "day")):
 		buttons[2].visible = false
 	_cl = cl
 	hint = Label.new()
@@ -143,6 +187,24 @@ func _add_button(name: String, on: bool, top: int, cb: Callable, words := ["off"
 
 func _input(e: InputEvent) -> void:
 	var half := get_viewport().get_visible_rect().size.x * 0.5
+	if e is InputEventJoypadButton or (e is InputEventJoypadMotion and abs(e.axis_value) > 0.4):
+		input_kind = "pad"
+	elif e is InputEventKey or e is InputEventMouseButton:
+		input_kind = "kb"
+	elif e is InputEventScreenTouch:
+		input_kind = "touch"
+	if prompt and prompt.visible and not leaving:
+		var go := false
+		if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode in [KEY_E, KEY_ENTER, KEY_KP_ENTER]:
+			go = true
+		elif e is InputEventJoypadButton and e.pressed and e.button_index == JOY_BUTTON_A:
+			go = true
+		elif e is InputEventScreenTouch and e.pressed and prompt.get_global_rect().has_point(e.position):
+			go = true
+		if go:
+			get_viewport().set_input_as_handled()
+			_cross()
+			return
 	if e is InputEventScreenTouch:
 		# touches don't reach buttons (mouse emulation is off), so tap it here
 		if e.pressed:
@@ -197,6 +259,8 @@ func _process(dt: float) -> void:
 	if move_touch != -1:
 		iv = move_vec
 	iv = iv.limit_length(1.0)
+	if leaving:
+		iv = Vector2.ZERO
 	if iv.length() > 0.05:
 		hint.visible = false
 		var fwd := -transform.basis.z
@@ -205,6 +269,7 @@ func _process(dt: float) -> void:
 		var step := (right * iv.x - fwd * iv.y) * SPEED * run * dt
 		_try_move(Vector3(step.x, 0, 0))
 		_try_move(Vector3(0, 0, step.z))
+	_update_prompt()
 	fps_t += dt
 	if fps_t > 0.5:
 		fps_t = 0.0
@@ -243,3 +308,125 @@ func _hits(list: Array, x: float, z: float) -> bool:
 			if x > o[1] and x < o[3] and z > o[2] and z < o[4]:
 				return true
 	return false
+
+# ------------------------------------------------------------------ wings
+## The prompt (bottom middle, as in Fallout: a key cap and where it leads) and the fade.
+func _build_wing_ui() -> void:
+	fade = ColorRect.new()
+	fade.color = Color(0, 0, 0, 1)
+	fade.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var arriving := Engine.has_meta("mall_arrived")
+	if OS.has_feature("web"):
+		arriving = str(JavaScriptBridge.eval("(function(){try{var v=sessionStorage.getItem('mall-xfer')||'';sessionStorage.removeItem('mall-xfer');return v}catch(e){return ''}})()")) != ""
+	if Engine.has_meta("mall_arrived"):
+		Engine.remove_meta("mall_arrived")
+	fade.modulate.a = 1.0 if arriving else 0.0
+	var top := CanvasLayer.new()
+	top.layer = 20
+	add_child(top)
+	if wing == 0 or seam.size() < 3:
+		if arriving:
+			top.add_child(fade)
+			create_tween().tween_property(fade, "modulate:a", 0.0, 0.6).set_delay(0.25)
+		return
+	prompt = Button.new()
+	prompt.focus_mode = Control.FOCUS_NONE
+	prompt.visible = false
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.08, 0.06, 0.05, 0.78)
+	sb.border_color = Color(0.93, 0.85, 0.66, 0.85)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(10)
+	sb.content_margin_left = 14; sb.content_margin_right = 18
+	sb.content_margin_top = 8; sb.content_margin_bottom = 8
+	for st_name in ["normal", "hover", "pressed", "focus"]:
+		prompt.add_theme_stylebox_override(st_name, sb)
+	prompt.set_anchors_and_offsets_preset(Control.PRESET_CENTER_BOTTOM)
+	prompt.custom_minimum_size = Vector2(340, 58)
+	prompt.offset_left = -170; prompt.offset_right = 170
+	prompt.offset_top = -132; prompt.offset_bottom = -74
+	var row := HBoxContainer.new()
+	row.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
+	row.offset_left = 14; row.offset_right = -14
+	row.alignment = BoxContainer.ALIGNMENT_CENTER
+	row.add_theme_constant_override("separation", 12)
+	row.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	prompt.add_child(row)
+	prompt_key = Label.new()
+	prompt_key.custom_minimum_size = Vector2(38, 34)
+	prompt_key.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	prompt_key.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	prompt_key.add_theme_font_size_override("font_size", 17)
+	prompt_key.add_theme_color_override("font_color", Color(0.1, 0.08, 0.06))
+	var kb := StyleBoxFlat.new()
+	kb.bg_color = Color(0.95, 0.89, 0.74)
+	kb.set_corner_radius_all(6)
+	prompt_key.add_theme_stylebox_override("normal", kb)
+	prompt_key.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(prompt_key)
+	prompt_text = Label.new()
+	prompt_text.add_theme_font_size_override("font_size", 16)
+	prompt_text.add_theme_color_override("font_color", Color(1, 0.97, 0.9))
+	prompt_text.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	row.add_child(prompt_text)
+	prompt.pressed.connect(_cross)
+	top.add_child(prompt)
+	top.add_child(fade)
+	if arriving:
+		create_tween().tween_property(fade, "modulate:a", 0.0, 0.6).set_delay(0.25)
+
+## Distance from the player to the seam line, or a large number when not beside it.
+func _seam_dist() -> float:
+	if seam.size() < 3:
+		return 1e9
+	var x0 := float(seam[0]); var z := float(seam[1]); var x1 := float(seam[2])
+	if position.x < x0 - 0.6 or position.x > x1 + 0.6:
+		return 1e9
+	# only from this wing's side
+	var d := (z - position.z) * other_side
+	return d if d >= -0.2 else 1e9
+
+func _update_prompt() -> void:
+	if prompt == null:
+		return
+	var near := _seam_dist() < SEAM_NEAR and not leaving
+	if near != prompt.visible:
+		prompt.visible = near
+	if near:
+		var other := 3 - wing
+		prompt_key.text = {"pad": "A", "touch": "Tap", "kb": "E"}[input_kind]
+		prompt_key.custom_minimum_size.x = 50 if input_kind == "touch" else 38
+		prompt_text.text = "Enter " + WING_NAMES[other]
+
+## Walk across the seam: fade to black, then load the other wing at the same spot (1.3 m past the
+## seam), facing the same way, with the same lighting and toggles.
+func _cross() -> void:
+	if leaving or wing == 0:
+		return
+	leaving = true
+	prompt.visible = false
+	var other := 3 - wing
+	var tz := float(seam[1]) + other_side * 1.3
+	var tx := clampf(position.x, float(seam[0]) + 0.5, float(seam[2]) - 0.5)
+	var tw := create_tween()
+	tw.tween_property(fade, "modulate:a", 1.0, 0.35)
+	tw.tween_callback(func():
+		var day: bool = not buttons[2].button_pressed
+		if OS.has_feature("web"):
+			var cam_s := "%.2f,%.2f,%.1f,%.1f" % [tx, tz, rad_to_deg(yaw), rad_to_deg(pitch)]
+			var js := "(function(){try{sessionStorage.setItem('mall-xfer','%d')}catch(e){}var u=new URL(location.href);var p=u.searchParams;p.set('wing','%d');p.set('cam','%s');" % [other, other, cam_s]
+			js += "p.set('time','%s');" % ("day" if day else "night")
+			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not buttons[0].button_pressed else "false")
+			js += "if(%s)p.set('fx','1');else p.delete('fx');" % ("true" if buttons[1].button_pressed else "false")
+			js += "if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
+			JavaScriptBridge.eval(js, true)
+		else:
+			Engine.set_meta("mall_xfer", {"x": tx, "z": tz, "yaw": yaw, "pitch": pitch})
+			Engine.set_meta("mall_arrived", true)
+			var path := "res://wing%d.tscn" % other
+			if ResourceLoader.exists(path):
+				get_tree().change_scene_to_file(path)
+			else:
+				leaving = false
+				fade.modulate.a = 0.0)

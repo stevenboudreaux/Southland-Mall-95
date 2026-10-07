@@ -1,6 +1,14 @@
-## Builds res://main.tscn: the whole mall (1995 map) from layout_mall.json.
-## Run: godot --headless --path . --script res://tools/build_mall.gd
+## Builds one wing of the mall (1995 map) from layout_mall.json: res://wing1.tscn or res://wing2.tscn.
+## Run: godot --headless --path . --script res://tools/build_mall.gd -- --wing=1   (and --wing=2)
 ## Units are metres. +x east, +z south, +y up. Map tile (148, 100) is the origin.
+##
+## The wings (Steven, Oct 7: design/godot-wings.md): the game ships as two files so each stays
+## well under GitHub's 100 MB file limit. Wing 1 is Sears down the east halls to the floor change
+## at z = 48 where the east hall meets the Dillard's court, with Gumballs; Wing 2 is the Dillard's
+## court, the Concourse and JCPenney. Each wing is built for real; the other wing is a stand-in:
+## its halls and courts built as usual (coarser lightmap), every storefront a picture captured
+## from the other wing's own baked build (tools/capture_standin.gd -> tex/standin/), so looking
+## across the seam shows the mall as it is. --wing=0 builds the whole mall into res://main.tscn.
 extends SceneTree
 
 const LANE_H = 4.6         # flat ceiling over the store lanes
@@ -43,8 +51,8 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 	"LANE BRYANT": [-34.0, -72.0, -10.0, -64.0], "MILLER'S OUTPOST": [-38.0, -52.0, -10.0, -40.0],
 	"GADZOOKS": [-62.0, 24.0, -50.0, 48.0], "THE LIMITED": [-132.0, 20.0, -122.0, 48.0],
 	"COACH HOUSE GIFTS": [2.0, 16.0, 26.0, 26.0], "GENERAL NUTRITION CENTER": [2.0, 34.0, 16.0, 38.0],
-	"MASTERCUTS": [2.0, -48.0, 16.0, -44.0], "WICKS 'N' STICKS": [-38.0, 36.0, -32.0, 48.0],
-	"CHICK-FIL-A": [-102.0, 60.0, -94.0, 76.0], "RADIO SHACK": [2.0, 26.0, 18.0, 34.0],
+	"MASTERCUTS": [2.0, -48.0, 16.0, -44.0], "WICKS 'N' STICKS": [-37.0, 36.0, -32.0, 48.0],
+	"CHICK-FIL-A": [-102.0, 60.0, -94.0, 76.0], "RADIO SHACK": [2.0, 26.0, 18.0, 32.4],
 	"B. DALTON BOOKSELLER": [-110.0, 28.0, -102.0, 48.0], "KARMELKORN": [-36.0, 60.0, -20.0, 70.0],
 	"ZALES": [-154.0, 68.0, -146.0, 78.0], "MERRY-GO-ROUND": [-102.0, 28.0, -94.0, 48.0],
 	"JEAN NICOLE": [-34.0, -40.0, -10.0, -30.0], "CHAMPS SPORTS": [-122.0, 24.0, -110.0, 48.0],
@@ -55,8 +63,26 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 	"MITCHELL'S FORMAL WEAR": [20.0, -18.0, 24.0, -6.0], "TEE TAI'S": [16.0, 6.0, 22.0, 14.0],
 	"OPTICAL OUTLET": [22.0, 6.0, 30.0, 16.0], "SAADI'S": [2.0, 66.0, 16.0, 74.0], "GOLDEN CHAIN GANG": [-74.0, 60.0, -68.0, 68.0],
 	"SOLARIUM": [-18.0, -86.0, -10.0, -80.0], "RAVE": [-22.0, -80.0, -10.0, -72.0], "CONCEPTS": [-68.0, 60.0, -58.0, 74.0],
-	"COUNTRY FAIR": [-124.0, 60.0, -118.0, 70.0], "LION'S SHARE RESTAURANT": [-50.0, 36.0, -38.0, 48.0], "AMERICAN BANK": [-46.0, -86.0, -36.0, -78.0]}
+	"COUNTRY FAIR": [-124.0, 60.0, -118.0, 70.0], "LION'S SHARE RESTAURANT": [-50.0, 36.0, -40.7, 48.0], "COMING SOON": [-40.7, 44.0, -37.0, 48.0], "AMERICAN BANK": [-46.0, -86.0, -36.0, -78.0],
+	"SOUTHLAND CINEMA": [-70.0, -86.0, -46.0, -76.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
+# ------------------------------------------------------------------ wings
+var WING = 0               # 1 or 2: the wing being built (0: the whole mall, previews)
+var GEN = "res://gen/"     # where this build's meshes and data go (res://gen/w1/, res://gen/w2/)
+## The zones of Wing 2; every other zone is Wing 1.
+const WING2_ZONES = ["C3", "H8", "H5", "C4", "H6", "H7"]
+## Stores whose wing is not the zone their front faces: Gumballs opens on both the east hall
+## (Wing 1) and the Dillard's court, and belongs to Wing 1 (Steven, Oct 7).
+const STORE_WING = {"GUMBALLS": 1}
+## The seam between the wings: a line on the floor (x0, z, x1) at the east hall's floor change,
+## running on across Gumballs' door onto the Dillard's court. Wing 2 is the +z side.
+const SEAM = [-20.0, 48.0, 2.0]
+## Stand-in storefront pictures: pixels per metre in the capture atlas (fitted at build time)
+const STANDIN_ATLAS = Vector2i(4096, 2048)
+const STANDIN_OUT = 1.25   # the capture camera stands this far out from the front, in the hall
+var zone_wing = {}
+var standin_slots = []     # [{key, a, t, n, s0, s1, rect}], written to GEN/standin.json
+var standin_pxm = 0.0
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
 const ATLAS_COLS = 8
@@ -322,6 +348,16 @@ func mat(name):
 				# Kay-Bee Toys: tools/stores/kay_bee/store.gd's fill_mat(m, key, b)
 				if not load("res://tools/stores/kay_bee/store.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
+			elif name.begins_with("cin_"):
+				# Southland Cinema's front: tools/stores/cinema/front.gd's fill_mat
+				if not load("res://tools/stores/cinema/front.gd").fill_mat(m, name.substr(4), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("sp_"):
+				# the sports stores' stock: tools/stores/small/sports.gd's fill_mat
+				if not load("res://tools/stores/small/sports.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("standin_w"):
+				m = standin_mat(name)
 			elif name.begins_with("floorz_"):
 				# bake-time stand-in; the runtime swaps in the procedural floor shader
 				m.albedo_color = Color("#d4c4aa"); m.roughness = 0.14; m.metallic_specular = 0.6
@@ -996,6 +1032,166 @@ func zone_at(x, z):
 			return zid
 	return "misc"
 
+# ------------------------------------------------------------------ wings
+func wing_of_zone(zid):
+	return 2 if zid in WING2_ZONES else 1
+
+## The wing a frontage belongs to: the zone it faces, unless its store is listed in STORE_WING.
+func edge_wing(e):
+	if e.has("store") and e.store != null and L.stores.has(e.store) and STORE_WING.has(L.stores[e.store].name):
+		return STORE_WING[L.stores[e.store].name]
+	var eb = edge_basics(e)
+	var mid = (eb[0] + eb[1]) * 0.5
+	var zid = zone_at(mid.x + eb[2].x * 1.0, mid.z + eb[2].z * 1.0)
+	if zid == "misc":
+		return 2 if (mid.z > SEAM[1] or mid.x < SEAM[0]) else 1
+	return wing_of_zone(zid)
+
+## True when this build makes the thing in wing w for real (else it is the stand-in, or left out).
+func in_wing(w):
+	return WING == 0 or w == WING
+
+## The wing of a store by name (the wing of its first frontage).
+var _store_wing_cache = {}
+func store_name_wing(nm):
+	if _store_wing_cache.has(nm):
+		return _store_wing_cache[nm]
+	var w = 0
+	if STORE_WING.has(nm):
+		w = STORE_WING[nm]
+	else:
+		for e in L.edges:
+			if e.has("store") and e.store != null and L.stores.has(e.store) and L.stores[e.store].name == nm:
+				w = edge_wing(e)
+				break
+	_store_wing_cache[nm] = w
+	return w
+
+## The wing of one walkable map tile: its zone, a leftover's side of the seam, or the store built
+## over it (BUILT_RECTS), else the side of the seam.
+func tile_wing(tx, ty):
+	var x = (tx - float(L.origin[0]) + 0.5) * float(L.scale)
+	var z = (ty - float(L.origin[1]) + 0.5) * float(L.scale)
+	for zid in zones:
+		var r = zones[zid].rect
+		if x >= r[0] and x <= r[2] and z >= r[1] and z <= r[3]:
+			return wing_of_zone(zid)
+	for nm in BUILT_RECTS:
+		var r = BUILT_RECTS[nm]
+		if x >= r[0] and x <= r[2] and z >= r[1] and z <= r[3]:
+			var w = store_name_wing(nm)
+			if w != 0:
+				return w
+	return 2 if (z > SEAM[1] or x < SEAM[0]) else 1
+
+## The player's walk grid for this wing: the layout's grid with the other wing's tiles closed.
+func wing_walk():
+	var out = []
+	for ty in L.walk.size():
+		var row = L.walk[ty]
+		var s = ""
+		for tx in row.length():
+			if row[tx] == "1" and tile_wing(tx, ty) == WING:
+				s += "1"
+			else:
+				s += "0"
+		out.append(s)
+	return out
+
+## A storefront of the other wing, as the stand-in: the frontage cut into slots of the capture
+## atlas (tools/capture_standin.gd fills them from that wing's baked build), each a picture on the
+## frontage plane, unshaded; plus the light a lit shop throws into the hall, for this wing's bake.
+func standin_edge(e):
+	var eb = edge_basics(e)
+	var a = eb[0]; var b2 = eb[1]; var n = eb[2]; var t = eb[3]; var Ln = eb[4]
+	if e.kind != "store":
+		build_edge(e)
+		return
+	var sd = L.stores[e.store]
+	var maxlen = 30.0   # long anchor frontages go in several slots
+	var parts = max(1, int(ceil(Ln / maxlen)))
+	for k in parts:
+		var s0 = Ln * k / parts
+		var s1 = Ln * (k + 1) / parts
+		var slot = {"key": edge_key(e.a, e.b) + "#%d" % k, "a": [a.x, a.z], "t": [t.x, t.z], "n": [n.x, n.z], "s0": s0, "s1": s1, "store": sd.name}
+		standin_slots.append(slot)
+	if not sd.vacant:
+		var sl = add_omni(a + t * Ln * 0.5 - n * 1.2 + Vector3(0, OPEN_H - 0.4, 0), 0.45, 6.0, Color(1.0, 0.96, 0.9))
+		tag(sl, "", 0.45, 1.2)
+		if Ln >= 2.0:
+			tag(add_spot(a + t * Ln * 0.5 - n * 0.4 + Vector3(0, OPEN_H - 0.15, 0), n * 0.9 + Vector3.DOWN * 1.0, 1.6, 7.0, 55.0, Color("#FFF1DC")), "night")
+
+## Packs the stand-in slots into the atlas: rows of equal height (the lane height), the largest
+## pixels-per-metre that fits. Deterministic from the layout, so the stand-in's UVs never depend on
+## the pictures: a new capture only replaces the atlas images.
+func pack_standin():
+	var pxm = 96.0
+	while pxm > 8.0:
+		var ok = _try_pack(pxm)
+		if ok:
+			break
+		pxm -= 2.0
+	standin_pxm = pxm
+	return pxm
+
+func _try_pack(pxm):
+	var h = int(ceil(LANE_H * pxm)) + 4
+	var x = 0
+	var y = 0
+	for s in standin_slots:
+		var w = int(ceil((s.s1 - s.s0) * pxm)) + 4
+		if w > STANDIN_ATLAS.x:
+			return false
+		if x + w > STANDIN_ATLAS.x:
+			x = 0
+			y += h
+		if y + h > STANDIN_ATLAS.y:
+			return false
+		s.rect = [x + 2, y + 2, w - 4, h - 4]
+		x += w
+	return true
+
+func standin_quads():
+	var other = 3 - WING
+	var mname = "standin_w%d" % other
+	for s in standin_slots:
+		var a = Vector3(s.a[0], 0, s.a[1])
+		var t = Vector3(s.t[0], 0, s.t[1])
+		var n = Vector3(s.n[0], 0, s.n[1])
+		var r = s.rect
+		var u0 = float(r[0]) / STANDIN_ATLAS.x
+		var u1 = float(r[0] + r[2]) / STANDIN_ATLAS.x
+		var v0 = float(r[1]) / STANDIN_ATLAS.y
+		var v1 = float(r[1] + r[3]) / STANDIN_ATLAS.y
+		var p0 = a + t * s.s0 + n * 0.005
+		var p1 = a + t * s.s1 + n * 0.005
+		quad("standin", mname, [p0, p1, p1 + Vector3(0, LANE_H, 0), p0 + Vector3(0, LANE_H, 0)], n,
+			[Vector2(u0, v1), Vector2(u1, v1), Vector2(u1, v0), Vector2(u0, v0)], true)
+
+## The stand-in pictures: captured with a linear tone curve at half exposure (capture_standin.gd),
+## shown unshaded at twice the brightness so the game's own tone mapping and glow apply once, as
+## they do to the real shops. The day pictures swap in with the day lighting (time_of_day.gd).
+func standin_mat(name):
+	var other = name.substr(9).to_int()
+	var m = StandardMaterial3D.new()
+	m.resource_name = name
+	var night = "res://tex/standin/from_w%d_night.png" % other
+	var day = "res://tex/standin/from_w%d_day.png" % other
+	if FileAccess.file_exists(night):
+		m.albedo_texture = tex("standin/from_w%d_night.png" % other)
+	else:
+		# not captured yet: a dim grey until tools/capture_standin.gd has run (the game loads the
+		# pictures by path at start, time_of_day.gd, so no rebuild is needed after a capture)
+		var im = Image.create(4, 4, false, Image.FORMAT_RGB8)
+		im.fill(Color(0.12, 0.11, 0.1))
+		m.albedo_texture = ImageTexture.create_from_image(im)
+	m.set_meta("tex_night", night)
+	m.set_meta("tex_day", day)
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.albedo_color = Color(1.353, 1.353, 1.353)   # sRGB 1.353 = linear 2.0
+	m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+	return m
+
 ## An owner-editable sign (scripts/signs.gd draws its text live over a blank copy of the
 ## art). `faces`: [[p0, p1, p2, p3], [uv0..uv3], normal] per face, p0->p1 along the text,
 ## p0->p3 up, with an optional 4th element: a dict of per-face overrides copied into the
@@ -1202,6 +1398,14 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# the facade and sign in 3D from Steven's photos (sign pass, Oct 7); the generic
 		# interior behind until the store is built (tools/stores/signs/fronts.gd)
 		load("res://tools/stores/signs/fronts.gd").build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name == "SOUTHLAND CINEMA" and not inner_call:
+		# the front from Steven's photos (Oct 7): white brick, bronze arches, the box office, lanterns,
+		# poster cases; a dim lobby behind for now (tools/stores/cinema/front.gd)
+		load("res://tools/stores/cinema/front.gd").build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name == "COMING SOON":
+		coming_soon(g, a, b, n, t, Ln)
 		return
 	var fa = fronts.get(edge_key(e.a, e.b))
 	if fa != null and not inner_call:
@@ -1438,6 +1642,27 @@ func front_art(g, e, a, b, n, t, Ln, sd, fa):
 	var in0 = pw
 	var in1 = Ln - pw
 	interior(g, e, a, n, t, Ln, sd, a + t * in0, a + t * in1, in1 - in0, deep)
+
+## A closed stall (narrow_stores.py, Oct 7): the room freed when stores were narrowed, behind a
+## painted barricade as malls put up while a space is fitted out: the hall's bulkhead and piers,
+## a cream panel floor to bulkhead with a maroon band, "Coming Soon" in the mall's serif.
+func coming_soon(g, a, b, n, t, Ln):
+	var mid = a + t * Ln * 0.5
+	var pil = 0.3
+	for ee in [0.0, Ln - pil]:
+		var c0 = a + t * (ee + pil * 0.5)
+		box(g, "stone", c0 + Vector3(0, 0.45, 0) + n * 0.06, abs_size(t, pil, 0.9, 0.12, n))
+		box(g, "cream", c0 + Vector3(0, (OPEN_H + 0.9) * 0.5, 0) + n * 0.03, abs_size(t, pil, OPEN_H - 0.9, 0.06, n))
+	box(g, "bulkhead", mid + Vector3(0, (OPEN_H + LANE_H) * 0.5, 0) + n * 0.08, abs_size(t, Ln, LANE_H - OPEN_H, 0.16, n))
+	var w = Ln - 2.0 * pil
+	box(g, "bulkhead", mid + Vector3(0, OPEN_H * 0.5, 0) - n * 0.02, abs_size(t, w, OPEN_H, 0.06, n))
+	cur_color = Color("#5b2a3a")
+	for y in [0.45, 2.55]:
+		box(g, "vcolor_matte", mid + Vector3(0, y, 0) + n * 0.015, abs_size(t, w, 0.08, 0.02, n))
+	cur_color = Color("#a98a62")
+	box(g, "vcolor_matte", mid + Vector3(0, 0.08, 0) + n * 0.02, abs_size(t, w, 0.16, 0.04, n))
+	cur_color = Color.WHITE
+	label("Coming Soon", "serif", "#5b2a3a", mid + Vector3(0, 1.55, 0) + n * 0.03, n, w * 0.85, 0.5)
 
 func kb_wall(g, a, b, n, t):
 	var Lw = a.distance_to(b)
@@ -1729,6 +1954,8 @@ func place_fixtures(avoid):
 	fx = true
 	var count = 0
 	for z in L.zones:
+		if not in_wing(wing_of_zone(z.id)):
+			continue
 		if z.type == "hall" and float(z.vault_half) > 0.0:
 			var sp = hall_span(z)
 			var lo = sp[0]
@@ -1894,8 +2121,19 @@ func make_env(mode):
 	return env
 
 # ------------------------------------------------------------------ build
+func _parse_wing():
+	for a in OS.get_cmdline_user_args():
+		if a.begins_with("--wing="):
+			WING = int(a.substr(7))
+	if OS.get_environment("MALL_WING") != "":
+		WING = int(OS.get_environment("MALL_WING"))
+	if WING != 0:
+		GEN = "res://gen/w%d/" % WING
+
 func build():
 	seed(1995)
+	_parse_wing()
+	print("building wing ", WING, " into ", GEN)
 	L = JSON.parse_string(FileAccess.get_file_as_string("res://layout_mall.json"))
 	if USE_FRONT_ART and FileAccess.file_exists("res://fronts.json"):
 		var fj = JSON.parse_string(FileAccess.get_file_as_string("res://fronts.json"))
@@ -1910,6 +2148,7 @@ func build():
 			facade_levels[sid] = int(fr.stores[sid].level)
 	for z in L.zones:
 		zones[z.id] = z
+		zone_wing[z.id] = wing_of_zone(z.id)
 	var ids = L.stores.keys()
 	ids.sort()
 	var ci = 0
@@ -1932,7 +2171,13 @@ func build():
 		quad("misc", "floorz_left", [Vector3(r[0], 0, r[1]), Vector3(r[2], 0, r[1]), Vector3(r[2], 0, r[3]), Vector3(r[0], 0, r[3])], Vector3.UP)
 		quad("misc", "lane_ceiling", [Vector3(r[0], LANE_H, r[1]), Vector3(r[2], LANE_H, r[1]), Vector3(r[2], LANE_H, r[3]), Vector3(r[0], LANE_H, r[3])], Vector3.DOWN)
 	for e in L.edges:
-		build_edge(e)
+		if in_wing(edge_wing(e)):
+			build_edge(e)
+		else:
+			standin_edge(e)
+	if WING != 0:
+		print("stand-in: ", standin_slots.size(), " storefront slots at ", pack_standin(), " px/m")
+		standin_quads()
 	var avoid = kiosks()
 	place_fixtures(avoid)
 	# K&B's mall-facing wall: pink with plum stripes instead of a full storefront
@@ -1959,7 +2204,7 @@ func build():
 
 	var static_root = Node3D.new(); static_root.name = "Static"
 	mall.add_child(static_root); static_root.owner = mall
-	DirAccess.make_dir_recursive_absolute("res://gen")
+	DirAccess.make_dir_recursive_absolute(GEN)
 	for gname in acc:
 		var am = ArrayMesh.new()
 		for mname in acc[gname]:
@@ -1976,12 +2221,15 @@ func build():
 			texel = TEXEL * 0.6
 		elif gname == "outside":
 			texel = TEXEL * 4.0
+		elif zones.has(gname) and not in_wing(zone_wing[gname]):
+			# the other wing's halls and courts (the stand-in): seen from across the seam only
+			texel = TEXEL * 2.5
 		if am.lightmap_unwrap(Transform3D.IDENTITY, texel) != OK:
 			push_error("unwrap failed " + gname)
-		ResourceSaver.save(am, "res://gen/" + gname + ".res")
+		ResourceSaver.save(am, GEN + gname + ".res")
 		var mi = MeshInstance3D.new()
 		mi.name = gname
-		mi.mesh = load("res://gen/" + gname + ".res")
+		mi.mesh = load(GEN + gname + ".res")
 		mi.gi_mode = GeometryInstance3D.GI_MODE_STATIC
 		static_root.add_child(mi); mi.owner = mall
 	var dyn_root = Node3D.new(); dyn_root.name = "Dynamic"
@@ -1995,10 +2243,10 @@ func build():
 			# the traced sign letters too (Oct 7): dense outlines, the download crossed 100 MB without it
 			s.commit(am, Mesh.ARRAY_FLAG_COMPRESS_ATTRIBUTES if gname.begins_with("pc") or gname.contains("_sign") else 0)
 			am.surface_set_material(am.get_surface_count() - 1, mat(mname))
-		ResourceSaver.save(am, "res://gen/dyn_" + gname + ".res")
+		ResourceSaver.save(am, GEN + "dyn_" + gname + ".res")
 		var mi = MeshInstance3D.new()
 		mi.name = "dyn_" + gname
-		mi.mesh = load("res://gen/dyn_" + gname + ".res")
+		mi.mesh = load(GEN + "dyn_" + gname + ".res")
 		mi.gi_mode = GeometryInstance3D.GI_MODE_DYNAMIC
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		dyn_root.add_child(mi); mi.owner = mall
@@ -2035,12 +2283,25 @@ func build():
 		if c is Label3D:
 			c.owner = mall
 
-	var sf = FileAccess.open("res://gen/signs.json", FileAccess.WRITE)
+	var sf = FileAccess.open(GEN + "signs.json", FileAccess.WRITE)
 	sf.store_string(JSON.stringify({"signs": signs}))
 	sf.close()
-	var cf = FileAccess.open("res://gen/collide.json", FileAccess.WRITE)
+	var cf = FileAccess.open(GEN + "collide.json", FileAccess.WRITE)
 	cf.store_string(JSON.stringify({"static": obstacles, "fixtures": fx_obstacles}))
 	cf.close()
+	mall.set_meta("wing", WING)
+	mall.set_meta("gen", GEN)
+	if WING != 0:
+		# the wing's walk grid, its seam and where a fresh start stands (scripts/player.gd)
+		var wf = FileAccess.open(GEN + "wing.json", FileAccess.WRITE)
+		wf.store_string(JSON.stringify({"wing": WING, "seam": SEAM, "other_side": 1.0 if WING == 1 else -1.0,
+			"spawn": [33.0, 0.0, 90.0, 3.0] if WING == 1 else [-9.0, 61.0, 90.0, 3.0], "walk": wing_walk()}))
+		wf.close()
+		# the stand-in's atlas slots, for tools/capture_standin.gd (it fills the other wing's pictures)
+		var jf = FileAccess.open(GEN + "standin.json", FileAccess.WRITE)
+		jf.store_string(JSON.stringify({"wing": WING, "from": 3 - WING, "atlas": [STANDIN_ATLAS.x, STANDIN_ATLAS.y], "pxm": standin_pxm,
+			"lane_h": LANE_H, "out": STANDIN_OUT, "slots": standin_slots}, " "))
+		jf.close()
 	var player = load("res://scripts/player.gd").new()
 	player.name = "Player"
 	player.set("obstacles", obstacles)
@@ -2059,7 +2320,9 @@ func build():
 
 	var ps = PackedScene.new()
 	ps.pack(mall)
-	ResourceSaver.save(ps, "res://main.tscn")
+	var scene_path = "res://main.tscn" if WING == 0 else "res://wing%d.tscn" % WING
+	ResourceSaver.save(ps, scene_path)
+	print("saved ", scene_path)
 	var lights = light_root.get_child_count()
 	print("BUILD OK static groups=", acc.size(), " dynamic=", dyn_acc.size(), " lights=", lights, " labels=", mall.get_children().filter(func(c): return c is Label3D).size())
 

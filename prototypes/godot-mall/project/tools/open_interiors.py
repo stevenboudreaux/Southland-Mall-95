@@ -45,19 +45,18 @@ OPEN = {
     "s21": [(149, 160, 108, 112)],
     "s21c": [(149, 155, 117, 118)],
     "s24mc": [(149, 155, 76, 77)],
-    "s44": [(129, 131, 118, 123)],
+    "s44": [(130, 131, 118, 123)],   # narrowed Oct 7
     "s64": [(97, 100, 130, 137)],
     # Wave 6 (tools/stores/small/store2.gd): Radio Shack (s21b), B. Dalton (s48), and the
     # corner shops Karmelkorn (s57) and Zales (s7), open on two halls
-    "s21b": [(149, 156, 113, 116)],
+    "s21b": [(149, 156, 113, 115)],   # narrowed Oct 7
     "s48": [(93, 96, 114, 123)],
     "s57": [(130, 137, 130, 134)],
     "s7": [(71, 74, 134, 138)],
     # Wave 7 (tools/stores/small/wave7.gd), from the facade records
     "s47": [(97, 100, 114, 123)],
     "s16": [(131, 142, 80, 84)],
-    "s49": [(87, 92, 112, 123)],
-    "s8b": [(135, 137, 118, 123)],
+    # Champs Sports (s49) and Sports Avenue (s8b): shut for now, see narrow_stores.py
     "smuopv1vy0": [(132, 134, 118, 123)],
     "s60": [(119, 122, 130, 137)],
     "n56": [(128, 129, 130, 135)],
@@ -81,7 +80,7 @@ OPEN = {
     "n9": [(137, 142, 60, 63)],
     "s61": [(114, 118, 130, 136)],
     "n42": [(86, 88, 130, 134)],
-    "n36": [(123, 128, 118, 123)],
+    "n36": [(123, 126, 118, 123)],   # narrowed Oct 7 (narrow_stores.py)
 }
 
 

@@ -78,8 +78,10 @@ var sys_tags := []      # owner-only labels naming each playable cabinet's syste
 
 func _ready() -> void:
 	web = OS.has_feature("web")
-	if FileAccess.file_exists("res://gen/signs.json"):
-		var J = JSON.parse_string(FileAccess.get_file_as_string("res://gen/signs.json"))
+	# each wing's build writes its own list (res://gen/w1/signs.json, ...; tools/build_mall.gd)
+	var gen: String = get_parent().get_meta("gen", "res://gen/") if get_parent() else "res://gen/"
+	if FileAccess.file_exists(gen + "signs.json"):
+		var J = JSON.parse_string(FileAccess.get_file_as_string(gen + "signs.json"))
 		if J is Dictionary:
 			for r in J.get("signs", []):
 				recs[r.id] = r

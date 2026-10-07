@@ -322,10 +322,13 @@ static func lions_share(b, a, t, n, W, D, rng):
 		K.ob(b, P(a, t, n, seg[0], 0, 0), P(a, t, n, seg[1], 0, pd), 0.0)
 	# the dining room: booths along the back wall, tables with white cloths, candles, sconces
 	var WL = load("res://tools/stores/woolworth/store.gd")
-	for k in 4:
+	# (laid out for the map's 12 m; Oct 7 the front was narrowed to 9.3 m, narrow_stores.py:
+	# as many booths as fit, the tables spaced across the room's width)
+	var ks = W / 12.0
+	for k in int((W - 0.6) / 2.9):
 		WL.booth(b, G, P(a, t, n, 1.6 + k * 2.9, 0, D - SIDE), t, n, rng)
 	for c in [[2.4, 5.8], [5.4, 5.8], [8.6, 5.8], [3.9, 8.0], [7.2, 8.0], [10.2, 8.0]]:
-		var tc = P(a, t, n, c[0], 0, c[1])
+		var tc = P(a, t, n, c[0] * ks, 0, c[1])
 		b.cur_color = Color("#2a2a2c")
 		b.cyl(G, "vcolor", tc, 0.22, 0.22, 0.03, 12, true, false)
 		b.cyl(G, "vcolor", tc, 0.04, 0.04, 0.72, 8, false, false)
@@ -341,7 +344,7 @@ static func lions_share(b, a, t, n, W, D, rng):
 			b.box("w9l_small", "w8_copper", wc + s[1] * 0.05, Vector3(0.08, 0.16, 0.08))
 			b.cyl("w9l_small", "w8_bulb", wc + s[1] * 0.1 + UP * 0.08, 0.05, 0.07, 0.1, 10, true, false)
 	for c in [[3.0, 6.9], [9.0, 6.9]]:
-		var l = b.add_omni(P(a, t, n, c[0], 2.3, c[1]), 0.45, 6.0, Color(1.0, 0.78, 0.5))
+		var l = b.add_omni(P(a, t, n, c[0] * ks, 2.3, c[1]), 0.45, 6.0, Color(1.0, 0.78, 0.5))
 		b.tag(l, "", 0.35, 0.5)
 
 # ------------------------------------------------------------------ American Bank

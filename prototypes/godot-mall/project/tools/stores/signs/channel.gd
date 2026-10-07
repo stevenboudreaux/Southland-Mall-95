@@ -161,9 +161,10 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#e9dfcb"); m.roughness = 0.6
 		# Foot Locker: red letters edged in gold on diagonal wood, a white portal, the oval runner
 		"fl_face":
+			# lit from behind a little (Steven, Oct 7: "a little bit of backlight ... not too much")
 			m.albedo_color = Color("#b3141a"); m.roughness = 0.35
-			m.emission_enabled = true; m.emission = Color("#ff2018"); m.emission_energy_multiplier = 0.3
-			m.set_meta("e_day", 0.2); m.set_meta("e_night", 0.35)
+			m.emission_enabled = true; m.emission = Color("#ff2018"); m.emission_energy_multiplier = 0.6
+			m.set_meta("e_day", 0.4); m.set_meta("e_night", 0.75)
 		"fl_gold":
 			m.albedo_color = Color("#e0a845"); m.roughness = 0.3; m.metallic = 0.55
 			m.emission_enabled = true; m.emission = Color("#ffc060"); m.emission_energy_multiplier = 0.15
@@ -354,6 +355,16 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#a3163c"); m.roughness = 0.3; m.metallic_specular = 0.7
 		"s579_red_dark":
 			m.albedo_color = Color("#5a0a20"); m.roughness = 0.4
+		# 5-7-9's pink front (Oct 7, photos/579/01, 04): polished steel, hot pink walls and risers
+		"s579_steel":
+			m.albedo_color = Color("#d4d6d8"); m.metallic = 0.85; m.roughness = 0.14; m.metallic_specular = 0.8
+		"s579_pink":
+			m.albedo_color = Color("#e0367e"); m.roughness = 0.45
+		"s579_pinkwall":
+			m.albedo_color = Color("#e8509a"); m.roughness = 0.6
+		"s579_slat":
+			m.albedo_texture = b.tex("gb/slat_white.png")
+			m.albedo_color = Color("#f07ab2"); m.roughness = 0.55
 		# Rave
 		"rave_box":
 			m.albedo_color = Color("#141414"); m.roughness = 0.35; m.metallic = 0.3
@@ -460,6 +471,58 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#c8141a"); m.roughness = 0.35
 			m.emission_enabled = true; m.emission = Color("#ff1a12"); m.emission_energy_multiplier = 0.35
 			m.set_meta("e_day", 0.2); m.set_meta("e_night", 0.5)
+		# Cucos (Oct 7): brick-red script, neon tubes round each letter, the blue MEXICAN CAFE band
+		"cu_face":
+			m.albedo_texture = b.tex("sg/cu_name_face.png"); m.albedo_color = Color("#a8361e"); m.roughness = 0.4
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#ff4a22"); m.emission_energy_multiplier = 0.3
+			m.set_meta("e_day", 0.2); m.set_meta("e_night", 0.4)
+		"cu_return":
+			m.albedo_color = Color("#3a1410"); m.roughness = 0.5
+		"cu_neon":
+			m.albedo_color = Color("#ff7a52"); m.roughness = 0.2
+			m.emission_enabled = true; m.emission = Color("#ff5a2e"); m.emission_energy_multiplier = 2.2
+			m.set_meta("e_day", 1.0); m.set_meta("e_night", 1.7)
+		"cu_glow":
+			_glow(m, b.tex("sg/cu_name_glow.png"), 0.35)
+		"cu_band":
+			m.albedo_color = Color("#34488f"); m.roughness = 0.35; m.metallic_specular = 0.6
+		"cu_white_trim":
+			m.albedo_color = Color("#e8ecf4"); m.roughness = 0.3
+		"cu_white":
+			m.albedo_texture = b.tex("sg/cu_sub_face.png"); m.albedo_color = Color("#ffffff"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#f4f8ff"); m.emission_energy_multiplier = 1.0
+			m.set_meta("e_day", 0.7); m.set_meta("e_night", 1.2)
+		"cu_sub_glow":
+			_glow(m, b.tex("sg/cu_sub_glow.png"), 0.2)
+		# Great American Cookie Co. (Oct 7): red neon script, white lit capitals, a black fascia
+		"gac_neon":
+			m.albedo_texture = b.tex("sg/gac_script_face.png"); m.albedo_color = Color("#ff3a2a"); m.roughness = 0.25
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#ff2a1e"); m.emission_energy_multiplier = 2.0
+			m.set_meta("e_day", 1.4); m.set_meta("e_night", 2.4)
+		"gac_neon_ret":
+			m.albedo_color = Color("#5a0e0a"); m.roughness = 0.4
+		"gac_glow":
+			_glow(m, b.tex("sg/gac_script_glow.png"), 0.6)
+		"gac_white":
+			m.albedo_texture = b.tex("sg/gac_name_face.png"); m.albedo_color = Color("#fffdf6"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#fffaf0"); m.emission_energy_multiplier = 1.2
+			m.set_meta("e_day", 0.8); m.set_meta("e_night", 1.4)
+		"gac_white_ret":
+			m.albedo_color = Color("#2a2a2c"); m.roughness = 0.4; m.metallic = 0.3
+		"gac_name_glow":
+			_glow(m, b.tex("sg/gac_name_glow.png"), 0.3)
+		"gac_black":
+			m.albedo_color = Color("#141214"); m.roughness = 0.4; m.metallic_specular = 0.5
+		"gac_check":
+			m.albedo_texture = b.tex("sg/gac_check.png"); m.roughness = 0.4
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+		# Foot Locker's backlight (Oct 7): a soft red halo behind the letters
+		"fl_glow":
+			_glow(m, b.tex("sg/fl_glow.png"), 0.28)
 		# placeholders from the 8-bit game (Steven, Oct 7): the hand-drawn panels, crisp pixels, lit
 		"ph_felgers", "ph_tgmc":
 			m.albedo_texture = b.tex("sg/%s_8bit.png" % ("felgers" if key == "ph_felgers" else "tgmc"))

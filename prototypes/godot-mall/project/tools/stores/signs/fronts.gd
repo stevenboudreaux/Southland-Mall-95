@@ -63,7 +63,7 @@ static func foot_locker(b, g, e, a, n, t, Ln, sd, U):
 	var tw = float(JSON.parse_string(FileAccess.get_file_as_string(S + "fl_logo.json")).width)
 	var ow = float(JSON.parse_string(FileAccess.get_file_as_string(S + "fl_oval_logo.json")).width)
 	var x0 = mid - (tw + 0.24 + ow) * 0.5
-	CH.build(b, "flf_sign", S + "fl_logo.json", P(a, t, n, U.call(x0 + tw * 0.5), 3.8, 0.0), n, "sg_fl_face", "sg_fl_return", "sg_fl_gold", 0.03, 0.07, 0.022)
+	CH.build(b, "flf_sign", S + "fl_logo.json", P(a, t, n, U.call(x0 + tw * 0.5), 3.8, 0.0), n, "sg_fl_face", "sg_fl_return", "sg_fl_gold", 0.03, 0.07, 0.022, "sg_fl_glow")
 	var oc = x0 + tw + 0.24 + ow * 0.5
 	CH.build(b, "flf_sign", S + "fl_oval_logo.json", P(a, t, n, U.call(oc), 3.78, 0.0), n, "sg_fl_cream", "sg_fl_black", "sg_fl_black", 0.03, 0.05, 0.028)
 	CH.build(b, "flf_sign", S + "fl_fig_logo.json", P(a, t, n, U.call(oc), 3.78, 0.0), n, "sg_fl_black", "sg_fl_black", "", 0.084, 0.004, 0.0)

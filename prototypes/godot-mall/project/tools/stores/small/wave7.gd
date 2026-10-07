@@ -15,6 +15,7 @@ const AK = preload("res://tools/stores/apparel/kit.gd")
 const M2 = preload("res://tools/stores/apparel/more.gd")
 const S1 = preload("res://tools/stores/small/store.gd")
 const S2 = preload("res://tools/stores/small/store2.gd")
+const SP = preload("res://tools/stores/small/sports.gd")
 const UP = Vector3.UP
 const SIDE = 0.12
 const LET = "res://tools/stores/small/"
@@ -153,8 +154,9 @@ static func champs(b, a, t, n, W, D, rng):
 	K.ob(b, P(a, t, n, 0.6, 0, 0.1), P(a, t, n, 2.6, 0, 0.5), 0.05)
 	AK.mannequin(b, P(a, t, n, 3.2, 0.0, 0.8), -n, "#2aa8a0", "#2e2e34")
 	M2.soffit(b, F, a, t, n, W, head, "sg_cs_steel")
-	var c = {"group": "w7c_shell", "cash": "left", "seed": 49, "slat": "gb_slat_black", "door": 11.0, "fit": 2, "cols": [4.0, 7.6], "cards": [8, 9], "floor": "a2_carpet_grey", "wall": "md_wall", "rows": [2.0, 6.0, 9.4]}
-	apparel(b, a, t, n, W, D, c, rng)
+	# the inside: sports stock, seen through the glass; not walkable yet (Steven, Oct 7)
+	M2.shell2(b, "w7c_shell", a, t, n, W, D, 3.2, 0.0, "a2_carpet_grey", 1.0, "md_wall", "kb_ceiling", [2.0, 6.0, 9.4], 11.0)
+	SP.inside(b, "w7c_fix", a, t, n, W, D, 3.2, rng)
 
 # ------------------------------------------------------------------ Sports Avenue
 ## The front hangs off a gold goalpost: a red padded post at the door, a goose-neck up to the
@@ -214,10 +216,8 @@ static func sports_avenue(b, a, t, n, W, D, rng):
 	b.box(F, "w7_royal", P(a, t, n, g0, head * 0.5, -0.02), b.abs_size(t, 0.06, head, 0.08, n))
 	K.ob(b, P(a, t, n, g0, 0, -0.1), P(a, t, n, W, 0, 0.1), 0.05)
 	M2.shell2(b, "w7s_shell", a, t, n, W, D, 3.0, 0.0, "a2_carpet_grey", 1.0, "md_wall", "kb_ceiling", [1.6, 4.0], 5.0)
-	var c = {"cash": "right", "seed": 8, "slat": "gb_slat_white", "door": 5.0, "fit": 1, "cols": [3.0], "cards": [8], "floor": "a2_carpet_grey", "wall": "md_wall", "rows": [1.6]}
-	M2.inside(b, a, t, n, W, D, c, rng)
-	# jerseys pinned in a grid on the back wall of the window
-	AK.faceout_wall(b, a, t, n, W - 0.2, -t, 0.3, 1.2, 0, rng, "gb_slat_white")
+	# the inside: sports stock, seen through the glass; not walkable yet (Steven, Oct 7)
+	SP.inside(b, "w7s_fix", a, t, n, W, D, 3.0, rng, {"d0": 1.2, "first": 3.0})
 
 ## A gold pipe from p to q.
 static func _pipe(b, F, p, q, r):
@@ -274,10 +274,23 @@ static func cookie(b, a, t, n, W, D, rng):
 	var G = "w7k_fix"
 	var head = 2.7
 	S1.upper(b, F, a, t, n, W, head, "w7_white_tile", 0.12)
-	K.lbox(b, F, "w7_cream", P(a, t, n, 0, 0, 0), t, n, 0.7, head + 0.15, 0.12, W - 1.4, 1.35, 0.12)
+	# the sign (Steven, Oct 7: his photo of a Great American Cookie Co. mall store): a black fascia
+	# with red-and-white checkerboard stepping down from its top corners, "Great American" in red
+	# neon script over COOKIE CO. in white lit capitals, all 3D
+	var LH = b.LANE_H
+	b.box(F, "sg_gac_black", P(a, t, n, W * 0.5, (head + 0.1 + LH) * 0.5, -0.2), b.abs_size(t, W, LH - head - 0.1, 0.16, n), Transform3D.IDENTITY, ["-y"])
 	var rv = (-n).cross(UP)
-	var o = P(a, t, n, W * 0.5, 0, -0.245) - rv * ((W - 1.5) * 0.5)
-	K.fq(b, F, "w7_cookie_sign", o, rv, n, 0.0, W - 1.5, head + 0.2, head + 1.45, 0.0)
+	var sq = 0.15   # the checker squares
+	for side in [0, 1]:
+		for step in [[0.0, 1.5, 0], [0.0, 0.75, 1]]:
+			var x0 = step[0] if side == 0 else W - step[1]
+			var x1 = step[1] if side == 0 else W - step[0]
+			var y1 = LH - 0.04 - step[2] * 0.3
+			var y0 = y1 - 0.3
+			var o = P(a, t, n, x0, 0, -0.281)
+			K.fq(b, "w7kf_sign", "sg_gac_check", o, t, n, 0.0, x1 - x0, y0, y1, 0.0, 0.0, 0.0, (x1 - x0) / (sq * 8.0), 0.3 / (sq * 8.0), true)
+	CH.build(b, "w7kf_sign", "res://tools/stores/signs/gac_script_logo.json", P(a, t, n, W * 0.5, head + 0.98, -0.28), n, "sg_gac_neon", "sg_gac_neon_ret", "", 0.03, 0.03, 0.0, "sg_gac_glow")
+	CH.build(b, "w7kf_sign", "res://tools/stores/signs/gac_name_logo.json", P(a, t, n, W * 0.5, head + 0.3, -0.28), n, "sg_gac_white", "sg_gac_white_ret", "", 0.02, 0.07, 0.0, "sg_gac_name_glow")
 	M2.shell2(b, "w7k_shell", a, t, n, W, D, 3.0, 0.0, "wl_floor", 1.22, "w7_white_tile", "kb_ceiling", [1.6, 4.0], 1.0)
 	M2.soffit(b, F, a, t, n, W, head, "w7_cream")
 	# the red check course round the walls at counter height

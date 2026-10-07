@@ -69,12 +69,13 @@ static func radio_shack(b, a, t, n, W, D, rng):
 		"sg_rs_face", "sg_rs_return", "sg_rs_trim", 0.02, 0.12, 0.012, "sg_rs_glow")
 	b.quad(F, "sg_rs_fascia", [P(a, t, n, 0.2, head, -0.3), P(a, t, n, W - 0.2, head, -0.3), P(a, t, n, W - 0.2, head, 0.0), P(a, t, n, 0.2, head, 0.0)], Vector3.DOWN)
 	# the glass front in black frames on a low black base, the door left of centre
-	b.box(F, "sg_rs_fascia", P(a, t, n, 4.9, 0.12, -0.05), b.abs_size(t, 5.8, 0.24, 0.2, n), Transform3D.IDENTITY, ["-y"])
+	b.box(F, "sg_rs_fascia", P(a, t, n, (W + 1.8) * 0.5, 0.12, -0.05), b.abs_size(t, W - 2.2, 0.24, 0.2, n), Transform3D.IDENTITY, ["-y"])
 	b.quad("glass", "glass", [P(a, t, n, 2.0, 0.24, -0.03), P(a, t, n, W - 0.2, 0.24, -0.03), P(a, t, n, W - 0.2, head, -0.03), P(a, t, n, 2.0, head, -0.03)], n,
 		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
-	for u in [0.2, 2.0, 4.6, 6.2, W - 0.2]:
+	# (mullions spaced for the front: narrowed from 8 m to 6.4 m on Oct 7, narrow_stores.py)
+	for u in [0.2, 2.0, 2.0 + (W - 2.2) * 0.45, 2.0 + (W - 2.2) * 0.75, W - 0.2]:
 		b.box(F, "sg_rs_fascia", P(a, t, n, u + 0.03, head * 0.5, -0.03), b.abs_size(t, 0.06, head, 0.08, n))
-	b.box(F, "sg_rs_fascia", P(a, t, n, 4.9, head - 0.04, -0.03), b.abs_size(t, 5.8, 0.08, 0.08, n))
+	b.box(F, "sg_rs_fascia", P(a, t, n, (W + 1.8) * 0.5, head - 0.04, -0.03), b.abs_size(t, W - 2.2, 0.08, 0.08, n))
 	b.box(F, "sg_rs_pier", P(a, t, n, 0.1, head * 0.5, -0.1), b.abs_size(t, 0.2, head, 0.2, n), Transform3D.IDENTITY, ["-y"])
 	K.ob(b, P(a, t, n, 2.0, 0, -0.15), P(a, t, n, W, 0, 0.1), 0.05)
 	# the window dressed with electronics on stepped risers
@@ -82,9 +83,9 @@ static func radio_shack(b, a, t, n, W, D, rng):
 		K.lbox(b, G, "md_black", P(a, t, n, 2.1, 0, 0.15 + k * 0.35), t, -n, 0.0, 0.0, 0.0, W - 2.3, 0.5 + k * 0.35, 0.35)
 		K.stock_row(b, G, P(a, t, n, W - 0.2, 0, 0.15 + k * 0.35), -t, n, 0.02, W - 2.3, 0.5 + k * 0.35, 0.3, -0.05, "boxes", rng)
 	K.ob(b, P(a, t, n, 2.0, 0, 0.1), P(a, t, n, W, 0, 0.9), 0.05)
-	M2.shell2(b, "s6r_shell", a, t, n, W, D, 3.0, 0.0, "a2_carpet_grey", 1.0, "md_wall", "kb_ceiling", [2.0, 5.4], 6.8)
+	M2.shell2(b, "s6r_shell", a, t, n, W, D, 3.0, 0.0, "a2_carpet_grey", 1.0, "md_wall", "kb_ceiling", [2.0, W - 2.6], W - 1.2)
 	S1.side_bays(b, G, a, t, n, W, 1.2, D - 2.5, ["acc"], ["boxes", "acc"], rng, "kb_pegboard")
-	K.gondola(b, G, G, P(a, t, n, 5.2, 0, 6.0), -t, n, 1.22, 2, [0.45, 0.85, 1.25], ["acc", "boxes"], rng, 0.3)
+	K.gondola(b, G, G, P(a, t, n, W * 0.62, 0, 6.0), -t, n, 1.22, 2, [0.45, 0.85, 1.25], ["acc", "boxes"], rng, 0.3)
 	K.counter(b, G, "s6r_small", P(a, t, n, W - 1.0, 0, D - 2.2), -t, n, W - 2.4, "md_bb_counter", rng)
 
 # ------------------------------------------------------------------ B. Dalton

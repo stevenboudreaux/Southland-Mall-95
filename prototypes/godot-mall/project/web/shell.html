@@ -79,6 +79,14 @@ body {
 #load-tip { font: 14px/1.5 -apple-system, system-ui, sans-serif; color: #8a7560; margin-top: 28px; }
 
 #status-progress { display: none !important; }
+/* crossing between the wings: a dark screen instead of the cream card (scripts/player.gd) */
+body.xfer #status { background: #000; color: #e9dfcb; }
+body.xfer #load-title { font-size: clamp(22px, 4.5vw, 34px); color: #efe6d3; }
+body.xfer #load-sub { color: #b8a88f; margin-bottom: 18px; }
+body.xfer #load-track { background: #2a2420; height: 4px; width: min(260px, 60vw); }
+body.xfer #load-bar { background: #e9dfcb; }
+body.xfer #load-mb, body.xfer #load-tip { color: #8c7d68; }
+body.xfer #load-tip { display: none; }
 
 #status-notice {
 	background-color: #5b3943;
@@ -207,7 +215,12 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 // Two builds of the game, the same except for texture formats: "desktop" (S3TC and BPTC,
 // computer GPUs) and "mobile" (ETC2 and ASTC: phones, tablets, VR headsets). Each device
 // downloads only its own. tools/export_web.sh fills in the sizes. Override with ?pack=.
-const PACK_SIZES = {"desktop": 0, "mobile": 0}; // PACK_SIZES
+// The mall ships as two wings (design/godot-wings.md), each its own pair of files:
+// w1.desktop.pck / w1.mobile.pck (Sears and the east halls, with Gumballs) and w2.* (the
+// Dillard's court, the Concourse, JCPenney). ?wing=1|2 picks the wing; the game sets it when you
+// cross the seam. While you walk one wing, the other wing's file is fetched into this browser's
+// cache (Cache Storage), so crossing over does not download it again.
+const PACK_SIZES = {"w1": {"desktop": 0, "mobile": 0}, "w2": {"desktop": 0, "mobile": 0}}; // PACK_SIZES
 function mallPackKind() {
 	try { const q = new URLSearchParams(location.search).get('pack'); if (q === 'desktop' || q === 'mobile') { return q; } } catch (e) { /* ignore */ }
 	try { const s = localStorage.getItem('southland-pack'); if (s === 'desktop' || s === 'mobile') { return s; } } catch (e) { /* ignore */ }
@@ -226,9 +239,46 @@ function mallPackKind() {
 	return /iPhone|iPad|Android|Quest|OculusBrowser|Mobile/.test(navigator.userAgent) ? 'mobile' : 'desktop';
 }
 window.__mallPack = mallPackKind();
-GODOT_CONFIG['mainPack'] = 'index.' + window.__mallPack + '.pck';
+window.__mallWing = (function () {
+	try { const w = new URLSearchParams(location.search).get('wing'); if (w === '2') { return 2; } } catch (e) { /* ignore */ }
+	return 1;
+}());
+const MALL_PACK = (w) => 'w' + w + '.' + window.__mallPack + '.pck';
+GODOT_CONFIG['mainPack'] = MALL_PACK(window.__mallWing);
 GODOT_CONFIG['fileSizes'] = GODOT_CONFIG['fileSizes'] || {};
-if (PACK_SIZES[window.__mallPack]) { GODOT_CONFIG['fileSizes'][GODOT_CONFIG['mainPack']] = PACK_SIZES[window.__mallPack]; }
+const mallSize = (w) => (PACK_SIZES['w' + w] || {})[window.__mallPack] || 0;
+if (mallSize(window.__mallWing)) { GODOT_CONFIG['fileSizes'][GODOT_CONFIG['mainPack']] = mallSize(window.__mallWing); }
+// one cache per build (the pack sizes change with every export), older ones are removed
+const MALL_CACHE = 'mall-wings-' + [mallSize(1), mallSize(2)].join('-');
+const mallPackUrl = (w) => new URL(MALL_PACK(w), location.href).toString();
+if ('caches' in window) {
+	const netFetch = window.fetch.bind(window);
+	window.fetch = function (input, init) {
+		const url = typeof input === 'string' ? input : (input && input.url) || '';
+		if (/w[12]\.(desktop|mobile)\.pck(\?|$)/.test(url)) {
+			const abs = new URL(url, location.href).toString();
+			return caches.open(MALL_CACHE).then((c) => c.match(abs)).then((r) => r || netFetch(input, init)).catch(() => netFetch(input, init));
+		}
+		return netFetch(input, init);
+	};
+}
+window.mallPrefetchOther = function () {
+	if (!('caches' in window)) { return; }
+	const other = 3 - window.__mallWing;
+	caches.keys().then((ks) => Promise.all(ks.filter((k) => k.indexOf('mall-wings-') === 0 && k !== MALL_CACHE).map((k) => caches.delete(k))))
+		.then(() => caches.open(MALL_CACHE))
+		.then((c) => c.match(mallPackUrl(other)).then((r) => (r ? null : c.add(mallPackUrl(other)))))
+		.catch((e) => console.warn('could not keep the other wing for later:', e));
+};
+// the game calls this when you cross the seam (scripts/player.gd _cross)
+window.mallGoWing = function (url) { location.replace(url); };
+let mallXfer = '';
+try { mallXfer = sessionStorage.getItem('mall-xfer') || ''; } catch (e) { /* ignore */ }
+if (mallXfer) {
+	document.body.classList.add('xfer');
+	document.getElementById('load-title').textContent = window.__mallWing === 2 ? 'Wing 2' : 'Wing 1';
+	document.getElementById('load-sub').textContent = window.__mallWing === 2 ? "Dillard's & JCPenney" : 'Sears & the main entrance';
+}
 const engine = new Engine(GODOT_CONFIG);
 
 (function () {
@@ -346,6 +396,8 @@ const engine = new Engine(GODOT_CONFIG);
 			},
 		}).then(() => {
 			setStatusMode('hidden');
+			// fetch the other wing once this one is running and has settled
+			setTimeout(window.mallPrefetchOther, 6000);
 		}, displayFailureNotice);
 	}
 }());

@@ -253,22 +253,24 @@ static func wicks(b, a, t, n, W, D, rng):
 		var s2 = b.st(F, "sm_flame", true)
 		b.tri(s2, fl + rv2 * -0.05, fl + rv2 * 0.05, fl + UP * 0.16, Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), n)
 		b.tri(s2, fl + rv2 * -0.05, fl + rv2 * 0.05, fl - UP * 0.04, Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), n)
-	# cedar piers, the bay window with oak tiers of candles, the open door bay on the right
-	for s in [[0.0, 0.3], [3.9, 4.2], [W - 0.3, W]]:
+	# cedar piers, the bay window with oak tiers of candles, the open door bay on the right (1.8 m:
+	# the window takes the rest; Oct 7 the front was narrowed from 6 m to 5 m, narrow_stores.py)
+	var wx = W - 2.1
+	for s in [[0.0, 0.3], [wx, wx + 0.3], [W - 0.3, W]]:
 		b.box(F, "sm_cedar", P(a, t, n, (s[0] + s[1]) * 0.5, head * 0.5, -0.08), b.abs_size(t, s[1] - s[0], head, 0.16, n), Transform3D.IDENTITY, ["-y"])
-	b.box(F, "sm_cedar", P(a, t, n, 2.1, 0.3, -0.05), b.abs_size(t, 3.6, 0.6, 0.2, n), Transform3D.IDENTITY, ["-y"])
-	b.quad("glass", "glass", [P(a, t, n, 0.3, 0.6, -0.04), P(a, t, n, 3.9, 0.6, -0.04), P(a, t, n, 3.9, head, -0.04), P(a, t, n, 0.3, head, -0.04)], n,
+	b.box(F, "sm_cedar", P(a, t, n, (0.3 + wx) * 0.5, 0.3, -0.05), b.abs_size(t, wx - 0.3, 0.6, 0.2, n), Transform3D.IDENTITY, ["-y"])
+	b.quad("glass", "glass", [P(a, t, n, 0.3, 0.6, -0.04), P(a, t, n, wx, 0.6, -0.04), P(a, t, n, wx, head, -0.04), P(a, t, n, 0.3, head, -0.04)], n,
 		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
 	for k in 3:
 		var y = 0.6 + k * 0.35
-		K.lbox(b, G, "sm_oak", P(a, t, n, 0.35, 0, 0.1 + k * 0.3), t, -n, 0.0, 0.0, 0.0, 3.5, y, 0.3)
-		K.stock_row(b, G, P(a, t, n, 3.85, 0, 0.1 + k * 0.3), -t, n, 0.0, 3.5, y, 0.3, -0.05, "candles", rng)
-	K.ob(b, P(a, t, n, 0.0, 0, -0.15), P(a, t, n, 4.2, 0, 1.1), 0.05)
+		K.lbox(b, G, "sm_oak", P(a, t, n, 0.35, 0, 0.1 + k * 0.3), t, -n, 0.0, 0.0, 0.0, wx - 0.4, y, 0.3)
+		K.stock_row(b, G, P(a, t, n, wx - 0.05, 0, 0.1 + k * 0.3), -t, n, 0.0, wx - 0.4, y, 0.3, -0.05, "candles", rng)
+	K.ob(b, P(a, t, n, 0.0, 0, -0.15), P(a, t, n, wx + 0.3, 0, 1.1), 0.05)
 	M2.shell2(b, "smw_shell", a, t, n, W, D, 2.9, 0.0, "a2_carpet_mauve", 1.0, "sm_oak_wall", "kb_ceiling", [1.6, 4.0], 1.0, 0.9)
 	side_bays(b, G, a, t, n, W, 1.4, D - 2.3, ["candles"], ["candles", "gifts"], rng, "sm_oak", [0.4, 0.75, 1.1, 1.45, 1.8], 0.36, "sm_oak")
 	# tiered tables of candles in the middle: three stepped oak tiers each
 	for dd in [3.5, 6.6]:
-		var c0 = P(a, t, n, 3.0, 0, dd)
+		var c0 = P(a, t, n, W * 0.5, 0, dd)
 		for k in 3:
 			var w = 1.4 - k * 0.4
 			b.box(G, "sm_oak", c0 + UP * (0.35 + k * 0.25), b.abs_size(t, w, 0.04, w * 0.6, n))

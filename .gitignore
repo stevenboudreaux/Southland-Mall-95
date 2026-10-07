@@ -33,3 +33,11 @@ prototypes/godot-mall/play/index.*
 prototypes/godot-mall/project/main_*.exr
 prototypes/godot-mall/project/main_*.exr.import
 prototypes/godot-mall/project/main_*.lmbake
+# Since Demo 16 the mall ships in two wings (design/godot-wings.md): the wing files, their
+# lightmaps and the stand-in pictures live on godot-build too (play/, lightmaps/, standin/)
+prototypes/godot-mall/play/w1.*
+prototypes/godot-mall/play/w2.*
+prototypes/godot-mall/project/wing*_night.*
+prototypes/godot-mall/project/wing*_day.*
+prototypes/godot-mall/project/tex/standin/*.png
+prototypes/godot-mall/project/tex/standin/*.stamp

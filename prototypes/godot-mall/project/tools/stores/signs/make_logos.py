@@ -761,9 +761,39 @@ def batch4():
     write("sa_star", "star", [letter("*", [star(0.11, 0.11, 0.11, 0.045)])], 0.22, (0, 0, 0), 0.1, "a corner star", top=0.22, tex=False)
 
 
+def batch5():
+    """Demo 16 (Steven, Oct 7): Cucos, Great American Cookie Co., Foot Locker's backlight."""
+    SRC = os.path.join(HERE, "src")
+    # --- Cucos (Steven's two photos: the lit flat sign at night, the neon script on the street
+    # front): the script traced from the night photo (src/cucos_mask.png, 8 px per photo pixel;
+    # the small c and o redrawn where the photo is too soft), neon tubes run along
+    # its outline (apparel/kit.gd neon); 2.7 m across on the 1.7 m parapet. MEXICAN CAFE in Source Sans 3 Bold (OFL) on the blue band.
+    m = cv2.imread(os.path.join(SRC, "cucos_mask.png"), 0) > 127
+    ys, xs = np.where(m)
+    write("cu_name", "Cucos", trace_mask(m, "Cucos", 2.7, ys.max(), smooth=2.0), 2.7, (255, 90, 50), 0.3,
+          "traced from Steven's night photo of the Cucos sign")
+    L, w = set_text(os.path.join(SRC, "SourceSans3-Bold.ttf"), "MEXICAN CAFE", 0.17, 0.04)
+    write("cu_sub", "MEXICAN CAFE", L, w, (240, 245, 255), 0.15, "Source Sans 3 Bold, spaced, after Steven's photo")
+    # --- Great American Cookie Co. (Steven's photo of a mall store): "Great American" in red neon
+    # script, Kaushan Script (OFL, the photo's brush script), over COOKIE CO. in white lit
+    # capitals, Poppins Black (OFL, the photo's heavy geometric sans)
+    L, w = set_text(os.path.join(SRC, "KaushanScript-Regular.ttf"), "Great American", 0.36, 0.0)
+    x0, y0, x1, y1 = bbox(L)
+    k = 3.4 / (x1 - x0)
+    L = [{"ch": l["ch"], "tris": [[(p[0] - x0) * k, (p[1] - y0) * k] for p in l["tris"]], "loops": [[[(p[0] - x0) * k, (p[1] - y0) * k] for p in lp] for lp in l["loops"]]} for l in L]
+    write("gac_script", "Great American", L, 3.4, (255, 50, 40), 0.25, "Kaushan Script, after Steven's photo")
+    L, w = set_text(os.path.join(SRC, "Poppins-Black.ttf"), "COOKIE CO.", 0.42, 0.03)
+    write("gac_name", "COOKIE CO.", L, w, (255, 250, 240), 0.2, "Poppins Black, after Steven's photo")
+    # --- Foot Locker: a soft halo behind the red letters (the letters themselves are main()'s)
+    J = json.load(open(os.path.join(HERE, "fl_logo.json")))
+    textures("fl", J["letters"], J["width"], J["cap_h"], (255, 70, 50), 0.22)
+    print("fl: halo")
+
+
 if __name__ == "__main__":
     main()
     kb()
     more()
     batch3()
     batch4()
+    batch5()
