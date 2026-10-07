@@ -46,8 +46,20 @@ def inside(pt, c):
     return n
 
 
+SIMPLIFY = 0.0012     # metres: outline points closer than this to the line are dropped (download size)
+
+
+def simplify(c):
+    if len(c) < 8:
+        return c
+    a = np.array(c, dtype=np.float32).reshape(-1, 1, 2)
+    out = cv2.approxPolyDP(a, SIMPLIFY, True).reshape(-1, 2)
+    return [(float(p[0]), float(p[1])) for p in out] if len(out) >= 3 else c
+
+
 def letter(ch, cons):
     """Contours (metres, y up) -> {ch, tris, loops}: outers counter-clockwise, holes clockwise."""
+    cons = [simplify(c) for c in cons]
     outers, holes = [], []
     for c in cons:
         d = sum(1 for o in cons if o is not c and inside(c[0], o))

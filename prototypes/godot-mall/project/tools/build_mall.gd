@@ -1992,7 +1992,8 @@ func build():
 			var s = dyn_acc[gname][mname]
 			s.index()
 			# the arcade's many small machine parts: compressed vertex attributes halve the download
-			s.commit(am, Mesh.ARRAY_FLAG_COMPRESS_ATTRIBUTES if gname.begins_with("pc") else 0)
+			# the traced sign letters too (Oct 7): dense outlines, the download crossed 100 MB without it
+			s.commit(am, Mesh.ARRAY_FLAG_COMPRESS_ATTRIBUTES if gname.begins_with("pc") or gname.contains("_sign") else 0)
 			am.surface_set_material(am.get_surface_count() - 1, mat(mname))
 		ResourceSaver.save(am, "res://gen/dyn_" + gname + ".res")
 		var mi = MeshInstance3D.new()
