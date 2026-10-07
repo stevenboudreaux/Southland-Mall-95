@@ -256,8 +256,10 @@ static func fill_mat(m, key, b):
 		"mauve":
 			m.albedo_color = Color("#8a5a78"); m.roughness = 0.4; m.metallic_specular = 0.5
 		"silver":
-			m.albedo_color = Color("#a8acb4"); m.metallic = 0.7; m.roughness = 0.35
-			K.emit(m, Color("#9a9ea6"), 0.25)
+			m.albedo_color = Color("#b4b8c0"); m.metallic = 0.35; m.roughness = 0.35
+			# probe-lit (the letters are dynamic): metal reads near black at night without its own glow
+			m.emission_enabled = true; m.emission = Color("#b8bcc4"); m.emission_energy_multiplier = 0.7
+			m.set_meta("e_day", 0.3); m.set_meta("e_night", 0.7)
 		"jewels":
 			m.albedo_texture = b.tex("sm/jewels.png"); m.roughness = 0.2; m.metallic_specular = 0.8
 			K.emit_tex(m, 0.6)
