@@ -47,6 +47,12 @@ OPEN = {
     "s24mc": [(149, 155, 76, 77)],
     "s44": [(129, 131, 118, 123)],
     "s64": [(97, 100, 130, 137)],
+    # Wave 6 (tools/stores/small/store2.gd): Radio Shack (s21b), B. Dalton (s48), and the
+    # corner shops Karmelkorn (s57) and Zales (s7), open on two halls
+    "s21b": [(149, 156, 113, 116)],
+    "s48": [(93, 96, 114, 123)],
+    "s57": [(130, 137, 130, 134)],
+    "s7": [(71, 74, 134, 138)],
 }
 
 

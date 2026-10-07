@@ -223,8 +223,62 @@ def sm_stock(sheet, kind, seed, size_w, size_h):
     save(Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)), "stock_" + sheet, 192, out=MD_OUT)
 
 
+# ------------------------------------------------------------------ Wave 6 (store2.gd)
+def marble_green():
+    """Radio Shack's green marble plinth, 0.6 m square."""
+    N = 256
+    a = np.zeros((N, N, 3), np.float32) + np.array([40, 84, 64], np.float32)
+    v = kb.noise(N, N, 30, 92, blur=6)
+    a += (np.abs(v) < 6)[..., None] * np.array([90, 110, 96], np.float32) * 0.6
+    a += kb.noise(N, N, 5, 93, blur=2)[..., None]
+    save(Image.fromarray(np.clip(a, 0, 255).astype(np.uint8)), "marble_green", 48)
+
+
+def popcorn():
+    """Karmelkorn's caramel corn heaped in a case, 0.5 m square."""
+    N = 256
+    rng = random.Random(94)
+    im = Image.new("RGB", (N, N), (150, 80, 20))
+    d = ImageDraw.Draw(im)
+    for _ in range(900):
+        x, y, r = rng.uniform(0, N), rng.uniform(0, N), rng.uniform(4, 9)
+        c = rng.choice([(226, 150, 50), (240, 180, 70), (210, 120, 30), (250, 230, 170)])
+        d.ellipse([x - r, y - r, x + r, y + r], fill=c)
+    save(kb.grain(im, 3, 95), "popcorn", 48)
+
+
+def jewels():
+    """Zales' case trays: navy velvet with rows of rings, chains and watches, 1.0 m x 0.5 m."""
+    W, H = 512, 256
+    rng = random.Random(96)
+    im = Image.new("RGB", (W, H), (30, 40, 80))
+    d = ImageDraw.Draw(im)
+    for j in range(4):
+        for i in range(12):
+            cx, cy = 20 + i * 41, 30 + j * 62
+            k = rng.choice(["ring", "ring", "watch", "chain"])
+            gold = rng.choice([(230, 190, 90), (220, 220, 226), (240, 200, 110)])
+            if k == "ring":
+                d.ellipse([cx - 9, cy - 9, cx + 9, cy + 9], outline=gold, width=3)
+                d.ellipse([cx - 3, cy - 14, cx + 3, cy - 8], fill=(240, 250, 255))
+            elif k == "watch":
+                d.rectangle([cx - 3, cy - 18, cx + 3, cy + 18], fill=gold)
+                d.ellipse([cx - 8, cy - 8, cx + 8, cy + 8], fill=gold)
+                d.ellipse([cx - 6, cy - 6, cx + 6, cy + 6], fill=(240, 240, 236))
+            else:
+                d.arc([cx - 14, cy - 20, cx + 14, cy + 16], 0, 180, fill=gold, width=2)
+    save(kb.grain(im, 2, 97), "jewels", 64)
+
+
+def wave6():
+    marble_green(); popcorn(); jewels()
+
+
 if __name__ == "__main__":
     stone(); terrazzo(); slat_green(); cedar(); tan_diag(); stripes(); cards()
     sm_stock("gifts", "gift", 700, (0.08, 0.16), (0.10, 0.22))
     sm_stock("candles", "candle", 701, (0.07, 0.13), (0.10, 0.25))
+    wave6()
     print("wrote tex/sm/*.png and tex/md/stock_{gifts,candles}.png")
+
+

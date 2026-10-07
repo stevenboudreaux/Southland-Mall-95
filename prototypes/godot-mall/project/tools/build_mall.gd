@@ -42,7 +42,9 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 	"GADZOOKS": [-62.0, 24.0, -50.0, 48.0], "THE LIMITED": [-132.0, 20.0, -122.0, 48.0],
 	"COACH HOUSE GIFTS": [2.0, 16.0, 26.0, 26.0], "GENERAL NUTRITION CENTER": [2.0, 34.0, 16.0, 38.0],
 	"MASTERCUTS": [2.0, -48.0, 16.0, -44.0], "WICKS 'N' STICKS": [-38.0, 36.0, -32.0, 48.0],
-	"CHICK-FIL-A": [-102.0, 60.0, -94.0, 76.0]}
+	"CHICK-FIL-A": [-102.0, 60.0, -94.0, 76.0], "RADIO SHACK": [2.0, 26.0, 18.0, 34.0],
+	"B. DALTON BOOKSELLER": [-110.0, 28.0, -102.0, 48.0], "KARMELKORN": [-36.0, 60.0, -20.0, 70.0],
+	"ZALES": [-154.0, 68.0, -146.0, 78.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
@@ -268,6 +270,10 @@ func mat(name):
 			elif name.begins_with("gb_"):
 				# Gumballs: tools/stores/gumballs/store.gd's fill_mat(m, key, b)
 				if not load("res://tools/stores/gumballs/store.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("s6_"):
+				# the Wave 6 shops: tools/stores/small/store2.gd's fill_mat
+				if not load("res://tools/stores/small/store2.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
 			elif name.begins_with("sm_"):
 				# the Wave 5 small shops: tools/stores/small/store.gd's fill_mat
@@ -1100,6 +1106,11 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# stock from the video, the layouts guessed (design/storefronts/jw.md, 579.md, county-seat.md)
 		var mod = {"JW": "jw", "5-7-9": "s579", "COUNTY SEAT": "county_seat"}[sd.name]
 		load("res://tools/stores/apparel/%s.gd" % mod).build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name in ["RADIO SHACK", "B. DALTON BOOKSELLER", "KARMELKORN", "ZALES"] and not inner_call:
+		# built in full 3D from the facade records and the Hammond 1993 commercial, insides
+		# guessed (design/storefronts/radio-shack.md, b-dalton.md, karmelkorn.md, zales.md)
+		load("res://tools/stores/small/store2.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	if sd.name in ["COACH HOUSE GIFTS", "GENERAL NUTRITION CENTER", "MASTERCUTS", "WICKS 'N' STICKS", "CHICK-FIL-A"] and not inner_call:
 		# built in full 3D from the facade records and the Hammond 1993 commercial, insides

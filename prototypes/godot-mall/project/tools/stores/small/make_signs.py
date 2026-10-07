@@ -44,3 +44,24 @@ for out, font, text, cap, track, space in SIGNS:
     ml.SPACE = space
     ml.main()
     shutil.move(os.path.join(HERE, "letters.json"), os.path.join(HERE, out))
+
+# Wave 6 (store2.gd): Radio Shack's red wordmark, B. Dalton's white script, Karmelkorn's red
+# slab-serif capitals with a big K, Zales' silver capitals
+MORE = [
+    ("rs_letters.json", DJ + "DejaVuSerif-BoldItalic.ttf", "Radio Shack", 0.30, 0.0, 0.6),
+    ("bd_letters.json", os.path.join(HERE, "..", "gumballs", "MrDafoe-Regular.ttf"), "B. Dalton", 0.5, 0.0, 0.5),
+    ("bd_sub_letters.json", DJ + "DejaVuSerif.ttf", "BOOKSELLER", 0.09, 0.2, 0.9),
+    ("kk_letters.json", os.path.join(HERE, "..", "woolworth", "RobotoSlab-ExtraBold.ttf"), "Karmelkorn", 0.62, 0.0, 0.5),
+    ("zl_letters.json", "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", "ZALES", 0.34, 0.06, 0.5),
+    ("zl_sub_letters.json", "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", "JEWELERS", 0.11, 0.2, 0.5),
+]
+if __name__ == "__main__":
+    for out, font, text, cap, track, space in MORE:
+        ml.HERE = HERE
+        ml.FONT = font
+        ml.TEXT = text
+        ml.CAP_H = cap
+        ml.TRACK = track
+        ml.SPACE = space
+        ml.main()
+        shutil.move(os.path.join(HERE, "letters.json"), os.path.join(HERE, out))

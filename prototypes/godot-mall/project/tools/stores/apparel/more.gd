@@ -65,7 +65,8 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 	b.light_root.add_child(rp)
 
 ## kit.gd's shell with the ceiling's material as a parameter (Gadzooks' red grid).
-static func shell2(b, G, a, t, n, W, D, ceil, d_front, floor_mat, floor_tile, wall_mat, ceil_mat, rows, door_u, light = 1.3):
+## `open_u1`: leave the u = W side open (a corner shop with a second front there).
+static func shell2(b, G, a, t, n, W, D, ceil, d_front, floor_mat, floor_tile, wall_mat, ceil_mat, rows, door_u, light = 1.3, open_u1 = false):
 	var u0 = SIDE
 	var u1 = W - SIDE
 	var dB = D - SIDE
@@ -91,7 +92,8 @@ static func shell2(b, G, a, t, n, W, D, ceil, d_front, floor_mat, floor_tile, wa
 		dd += 2.44
 		j += 1
 	b.quad(G, wall_mat, [P(a, t, n, u0, 0, 0), P(a, t, n, u0, 0, dB), P(a, t, n, u0, ceil, dB), P(a, t, n, u0, ceil, 0)], t)
-	b.quad(G, wall_mat, [P(a, t, n, u1, 0, dB), P(a, t, n, u1, 0, 0), P(a, t, n, u1, ceil, 0), P(a, t, n, u1, ceil, dB)], -t)
+	if not open_u1:
+		b.quad(G, wall_mat, [P(a, t, n, u1, 0, dB), P(a, t, n, u1, 0, 0), P(a, t, n, u1, ceil, 0), P(a, t, n, u1, ceil, dB)], -t)
 	b.quad(G, wall_mat, [P(a, t, n, u1, 0, dB), P(a, t, n, u0, 0, dB), P(a, t, n, u0, ceil, dB), P(a, t, n, u1, ceil, dB)], n)
 	b.cur_color = Color("#8c8a86")
 	b.box(G, "vcolor", P(a, t, n, door_u, 1.05, dB - 0.02), b.abs_size(t, 0.95, 2.1, 0.04, n))
