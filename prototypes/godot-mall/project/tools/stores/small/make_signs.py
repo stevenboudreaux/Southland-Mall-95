@@ -65,3 +65,27 @@ if __name__ == "__main__":
         ml.SPACE = space
         ml.main()
         shutil.move(os.path.join(HERE, "letters.json"), os.path.join(HERE, out))
+
+# Wave 7 (wave7.gd)
+W7 = [
+    ("mgr_merry.json", os.path.join(HERE, "..", "media", "Nunito-Black.ttf"), "MERRY", 0.42, 0.02, 0.5),
+    ("mgr_go.json", os.path.join(HERE, "..", "media", "Nunito-Black.ttf"), "GO", 0.42, 0.02, 0.5),
+    ("mgr_round.json", os.path.join(HERE, "..", "media", "Nunito-Black.ttf"), "ROUND", 0.42, 0.02, 0.5),
+    ("jn_letters.json", os.path.join(HERE, "..", "gumballs", "MrDafoe-Regular.ttf"), "Jean Nicole", 0.55, 0.0, 0.5),
+    ("champs_letters.json", DJ + "DejaVuSerif-Bold.ttf", "CHAMPS", 0.32, 0.04, 0.5),
+    ("champs_sub.json", "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", "SPORTS", 0.12, 0.25, 0.5),
+    ("avenue_letters.json", DJ + "DejaVuSerif-Bold.ttf", "AVENUE", 0.24, 0.12, 0.5),
+    ("regis_letters.json", "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", "REGIS", 0.42, 0.06, 0.5),
+    ("oj_letters.json", os.path.join(HERE, "..", "gumballs", "MrDafoe-Regular.ttf"), "Orange Julius", 0.40, 0.0, 0.5),
+    ("at_letters.json", "/usr/share/fonts/opentype/inter/Inter-Light.otf", "afterthoughts", 0.30, 0.01, 0.5),
+]
+if __name__ == "__main__":
+    for out, font, text, cap, track, space in W7:
+        ml.HERE = HERE
+        ml.FONT = font
+        ml.TEXT = text
+        ml.CAP_H = cap
+        ml.TRACK = track
+        ml.SPACE = space
+        ml.main()
+        shutil.move(os.path.join(HERE, "letters.json"), os.path.join(HERE, out))
