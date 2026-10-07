@@ -40,12 +40,14 @@ with sync_playwright() as p:
         pg.on("console", lambda m: logs.append(m.text))
         pg.goto(f"http://127.0.0.1:8765/{path}?cam=-90,62.5,180,2&time=night")
         t0 = time.time(); got = None
-        while time.time() - t0 < 180:
+        # the wrong-guess case reloads once with the other pack: wait for that switch, not just the
+        # first load (on a slow 2-CPU container the first load finishes long before the switch)
+        while time.time() - t0 < (400 if preset else 180):
             try:
                 st = pg.evaluate("[window.__mallPack, document.querySelector('#status') ? getComputedStyle(document.querySelector('#status')).visibility : 'gone']")
             except Exception:
                 time.sleep(1); continue
-            if st[1] in ("gone", "hidden"):
+            if st[1] in ("gone", "hidden") and (preset is None or st[0] == want):
                 got = st[0]; break
             time.sleep(1)
         time.sleep(10)
@@ -53,7 +55,7 @@ with sync_playwright() as p:
             got = pg.evaluate("window.__mallPack"); remembered = pg.evaluate("localStorage.getItem('southland-pack')")
         except Exception:
             remembered = None
-        pg.screenshot(path=f"{out}-{name}.png")
+        pg.screenshot(path=f"{out}-{name}.png", timeout=180000)   # SwiftShader on 2 CPUs is slow
         # errors from the final page only (the wrong guess's first load is expected to fail)
         n = len(logs)
         time.sleep(1)
