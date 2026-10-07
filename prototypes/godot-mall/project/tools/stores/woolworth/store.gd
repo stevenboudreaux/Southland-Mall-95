@@ -1,8 +1,8 @@
 ## Woolworth (store s13), the five-and-dime on the east hall, built to
 ## design/storefronts/woolworth.md.
 ##
-## The front follows the Southland facade record: a red panel fascia, a white light-box with
-## red slab-serif letters shadowed in gold, a wide open front. The inside follows the 1991
+## The front follows Steven's photo of the sign (Oct 7): a dark fascia with WOOLWORTH in lit
+## orange-red slab-serif channel letters, cream piers, a wide open front. The inside follows the 1991
 ## Signal Hill Mall (Statesville, NC) video Steven chose as "the exact Woolworth layout":
 ## glossy off-white vinyl with a red stripe along the main aisles, a white lay-in ceiling
 ## with long rows of troffers, plain square columns, a red band of department names high on
@@ -15,6 +15,7 @@
 ## right) to z = 22 (u = 36). d runs into the store (-x); the room is 36 m deep.
 
 const K = preload("res://tools/stores/media/kit.gd")
+const CH = preload("res://tools/stores/signs/channel.gd")
 const UNIT = 36.0
 const DEPTH = 36.0
 const SIDE = 0.12
@@ -59,13 +60,15 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 static func front(b, G, a, t, n):
 	var LH = b.LANE_H
 	var o = P(a, t, n, 0, 0, 0)
-	# the red panel fascia across the whole frontage, standing out over the hall
-	K.lbox(b, G, "wl_red_panel", o, t, n, 0.0, HEAD, 0.0, UNIT, FTOP - HEAD, PROUD, ["-z"])
+	# the dark fascia across the whole frontage, standing out over the hall (Steven's photo,
+	# Oct 7: design/storefronts/refs/woolworth-front.png)
+	K.lbox(b, G, "sg_wl_fascia", o, t, n, 0.0, HEAD, 0.0, UNIT, FTOP - HEAD, PROUD, ["-z"])
 	b.quad(G, "md_fascia_white", [P(a, t, n, 0, FTOP, 0), P(a, t, n, UNIT, FTOP, 0), P(a, t, n, UNIT, LH, 0), P(a, t, n, 0, LH, 0)], n)
-	# the white light-box with the name, over the middle of the store's opening
-	var lc = 22.5
-	K.lbox(b, G, "md_fascia_white", o, t, n, lc - 4.0, HEAD + 0.1, PROUD, 8.0, 1.2, 0.18, ["-z"])
-	K.fq(b, G, "wl_lightbox", P(a, t, n, UNIT, 0, 0), -t, n, UNIT - lc - 4.0, UNIT - lc + 4.0, HEAD + 0.1, HEAD + 1.3, PROUD + 0.182)
+	# WOOLWORTH in lit channel letters on the fascia, over the middle of the store's opening
+	# (tools/stores/signs: the photo's letters, 0.78 m capitals)
+	var lc = (R_U + WALL_T + UNIT) * 0.5
+	CH.build(b, "wlf_sign", "res://tools/stores/signs/wl_logo.json", P(a, t, n, lc, 3.31, -PROUD), n,
+		"sg_wl_face", "sg_wl_return", "sg_wl_trim", 0.02, 0.12, 0.012, "sg_wl_glow")
 	# the restaurant's own front (u 0..9): a bulkhead, glass, an open door with an aluminium frame
 	var al = "wl_alum"
 	K.lbox(b, G, "md_fascia_white", o, t, n, 0.0, 0.0, -0.12, R_U, 0.45, 0.12)
@@ -85,8 +88,10 @@ static func front(b, G, a, t, n):
 		K.lbox(b, G, al, hinge, -n, t * s[1], 0.0, 0.0, 0.0, 0.8, 2.2, 0.05)
 	# the "Restaurant" plate on the fascia over its door (guess: the record shows none)
 	K.fq(b, G, "wl_signs", P(a, t, n, UNIT, 0, 0), -t, n, UNIT - 6.5, UNIT - 2.5, HEAD + 0.25, HEAD + 1.15, PROUD + 0.01, 0.0, 0.5, 0.5, 1.0)
-	# the pier between the restaurant and the store
-	K.lbox(b, G, "wl_red_panel", o, t, n, R_U, 0.0, -0.05, WALL_T, HEAD, 0.2, ["-y"])
+	# the cream pier between the restaurant and the store, and one at the store's far end
+	K.lbox(b, G, "sg_wl_cream", o, t, n, R_U, 0.0, -0.05, WALL_T, HEAD, 0.2, ["-y"])
+	K.lbox(b, G, "sg_wl_cream", o, t, n, UNIT - 0.45, 0.0, -0.05, 0.45, HEAD, 0.2, ["-y"])
+	K.ob_local(b, o, t, -n, UNIT - 0.45, -0.15, UNIT, 0.6)
 	K.ob_local(b, o, t, -n, R_U, -0.15, R_U + WALL_T, 0.6)
 	# the store's open front: a soffit just inside, a pier at the left end
 	b.quad(G, "md_fascia_white", [P(a, t, n, R_U + WALL_T, HEAD, 0), P(a, t, n, UNIT - SIDE, HEAD, 0), P(a, t, n, UNIT - SIDE, HEAD, 0.8), P(a, t, n, R_U + WALL_T, HEAD, 0.8)], Vector3.DOWN)

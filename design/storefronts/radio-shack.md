@@ -10,9 +10,11 @@
 
 **Frame.** An 8 m front facing west onto the east hall (x = 2, z 26–34), between Coach House Gifts and GNC. Map tiles x 149–156, y 113–116.
 
-## Front
-- A deep brown fascia box with "Radio Shack" in red lit letters (DejaVu Serif Bold Italic) on black returns, and a lit soffit strip under it.
-- Glass in aluminium frames on a green marble plinth, an open door at the left, and the window dressed with boxed electronics on black risers.
+## Front (rebuilt Oct 7, 2026: Steven's sign pass)
+- **Steven (Oct 7):** "the overall building facade needs to be that one" (refs/radio-shack-front.png); the other four photos (refs/radio-shack-letters-1..4.png) show how the 3D letters are built. Two words, "Radio Shack".
+- A black fascia band, 1.9 m deep, with the red channel letters: the logo traced from refs/radio-shack-letters-1.png (warped square-on onto the frontal photo), 4.2 m across, red acrylic faces lit from inside, dark returns 12 cm deep, a darker red trim cap, and a red halo on the fascia. Built by `tools/stores/signs/` (make_logos.py → rs_logo.json, channel.gd).
+- Glass in black frames on a low black base, the door at the left, a pale stone pier at the end; the window dressed with boxed electronics on black risers.
+- **Superseded:** the deep brown fascia, aluminium frames and green marble plinth from the facade record.
 
 ## Inside (walkable)
 - Grey carpet, white walls.
@@ -20,4 +22,4 @@
 - The counter with a register at the back.
 
 ## Files
-`tools/stores/small/store2.gd` (the four Wave 6 shops, materials `s6_*`), `paint.py` → `tex/sm/`, `make_signs.py` → `rs_letters.json`.
+`tools/stores/small/store2.gd` (the four Wave 6 shops, materials `s6_*`), `paint.py` → `tex/sm/`; the sign: `tools/stores/signs/` (materials `sg_rs_*`). `rs_letters.json` is no longer used.

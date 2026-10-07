@@ -280,6 +280,10 @@ func mat(name):
 				# Gumballs: tools/stores/gumballs/store.gd's fill_mat(m, key, b)
 				if not load("res://tools/stores/gumballs/store.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
+			elif name.begins_with("sg_"):
+				# the traced channel-letter signs: tools/stores/signs/channel.gd's fill_mat
+				if not load("res://tools/stores/signs/channel.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
 			elif name.begins_with("w9_"):
 				# the Wave 9 shops: tools/stores/small/wave9.gd's fill_mat
 				if not load("res://tools/stores/small/wave9.gd").fill_mat(m, name.substr(3), self):

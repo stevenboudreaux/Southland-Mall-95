@@ -1,0 +1,164 @@
+## Channel letters: the 3D shop signs, built from a logo traced off a photo
+## (tools/stores/signs/make_logos.py writes <id>_logo.json and tex/sg/<id>_face.png,
+## <id>_glow.png).
+##
+## Each letter is a real can: a lit face set forward of the fascia, returns (the sides) in
+## painted metal with smooth shading round the curves, and a thin trim cap edging the face.
+## The face carries the logo's face texture (lamps inside: brighter along each stroke's middle),
+## and a soft halo of the letters' colour lies on the fascia behind them.
+##
+## Materials are "sg_<key>" (build_mall.gd's mat() calls fill_mat).
+
+const UP = Vector3.UP
+
+## Builds the logo in `path` centred on c (the baseline's middle, on the fascia's face), facing nn.
+## face/ret/trim: material names; standoff: gap behind the cans; depth: the cans' depth;
+## trim_w: the trim cap's width; glow: material name for the halo ("" for none).
+static func build(b, g, path, c, nn, face, ret, trim, standoff = 0.02, depth = 0.11, trim_w = 0.012, glow = "", dyn = true):
+	var J = JSON.parse_string(FileAccess.get_file_as_string(path))
+	var rv = (-nn).cross(UP)
+	var wv = float(J.width)
+	var hv = float(J.cap_h)
+	var X = func(p, d): return c - rv * (wv * 0.5) + rv * float(p.x) + UP * float(p.y) + nn * d
+	var zf = standoff + depth
+	var sf = b.st(g, face, dyn)
+	var sr = b.st(g, ret, dyn)
+	var stm = b.st(g, trim, dyn)
+	for Lt in J.letters:
+		var tr = Lt.tris
+		for i in range(0, tr.size(), 3):
+			var q = [Vector2(tr[i][0], tr[i][1]), Vector2(tr[i + 1][0], tr[i + 1][1]), Vector2(tr[i + 2][0], tr[i + 2][1])]
+			b.tri(sf, X.call(q[0], zf), X.call(q[1], zf), X.call(q[2], zf),
+				Vector2(q[0].x / wv, 1.0 - q[0].y / hv), Vector2(q[1].x / wv, 1.0 - q[1].y / hv), Vector2(q[2].x / wv, 1.0 - q[2].y / hv), nn)
+		for lp in Lt.loops:
+			var pts = []
+			for q in lp:
+				pts.append(Vector2(float(q[0]), float(q[1])))
+			_can_side(b, sr, stm, pts, X, rv, nn, standoff, zf, trim_w)
+	if glow != "":
+		var pad = float(J.get("glow_pad", 0.3))
+		var x0 = c - rv * (wv * 0.5 + pad)
+		var x1 = c + rv * (wv * 0.5 + pad)
+		b.quad(g + "_glow", glow, [x0 - UP * pad + nn * 0.004, x1 - UP * pad + nn * 0.004, x1 + UP * (hv + pad) + nn * 0.004, x0 + UP * (hv + pad) + nn * 0.004], nn,
+			[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
+
+## One outline: the returns (smooth where the outline curves, creased at corners) and the trim
+## cap, a flat band just inside the face's edge standing 4 mm proud, with a lip over the return.
+static func _can_side(b, sr, stm, pts, X, rv, nn, z0, z1, tw):
+	var n = pts.size()
+	if n < 3:
+		return
+	# outward normal of each edge (outer loops run counter-clockwise, holes clockwise: the
+	# material is always on the left, so outward is the right-hand normal)
+	var en = []
+	for i in n:
+		var d = (pts[(i + 1) % n] - pts[i])
+		if d.length() < 1e-6:
+			en.append(Vector2.ZERO)
+		else:
+			d = d.normalized()
+			en.append(Vector2(d.y, -d.x))
+	var W3 = func(v2): return (rv * v2.x + UP * v2.y).normalized()
+	var lip = 0.004
+	for i in n:
+		var j = (i + 1) % n
+		if en[i] == Vector2.ZERO:
+			continue
+		# smooth the normal into a neighbour when the turn is gentle (< 35 degrees)
+		var ni = en[i]
+		var nj = en[i]
+		var prv = en[(i - 1 + n) % n]
+		var nxt = en[j]
+		if prv != Vector2.ZERO and prv.dot(en[i]) > 0.82:
+			ni = (prv + en[i]).normalized()
+		if nxt != Vector2.ZERO and nxt.dot(en[i]) > 0.82:
+			nj = (nxt + en[i]).normalized()
+		var p0 = X.call(pts[i], z0)
+		var p1 = X.call(pts[j], z0)
+		var p2 = X.call(pts[j], z1 - 0.006)
+		var p3 = X.call(pts[i], z1 - 0.006)
+		var u0 = 0.0
+		var u1 = pts[i].distance_to(pts[j])
+		var fn = W3.call(en[i])
+		b._tri_n(sr, [p0, p1, p2], [W3.call(ni), W3.call(nj), W3.call(nj)], [Vector2(u0, 1), Vector2(u1, 1), Vector2(u1, 0)], fn)
+		b._tri_n(sr, [p0, p2, p3], [W3.call(ni), W3.call(nj), W3.call(ni)], [Vector2(u0, 1), Vector2(u1, 0), Vector2(u0, 0)], fn)
+		# the trim cap's lip: the last 6 mm of the return plus 4 mm proud of the face
+		var q0 = X.call(pts[i], z1 - 0.006)
+		var q1 = X.call(pts[j], z1 - 0.006)
+		var q2 = X.call(pts[j], z1 + lip)
+		var q3 = X.call(pts[i], z1 + lip)
+		b._tri_n(stm, [q0, q1, q2], [W3.call(ni), W3.call(nj), W3.call(nj)], [Vector2(0, 0), Vector2(1, 0), Vector2(1, 1)], fn)
+		b._tri_n(stm, [q0, q2, q3], [W3.call(ni), W3.call(nj), W3.call(ni)], [Vector2(0, 0), Vector2(1, 1), Vector2(0, 1)], fn)
+	# the cap's flat band on the face, inset by tw (mitred, clamped at sharp corners)
+	var inset = []
+	for i in n:
+		var a0 = en[(i - 1 + n) % n]
+		var a1 = en[i]
+		var m = a0 + a1
+		if m.length() < 1e-4:
+			m = a1
+		m = m.normalized()
+		var cosh = max(0.35, m.dot(a1 if a1 != Vector2.ZERO else m))
+		inset.append(pts[i] - m * (tw / cosh))
+	for i in n:
+		var j = (i + 1) % n
+		if en[i] == Vector2.ZERO:
+			continue
+		b.tri(stm, X.call(pts[i], z1 + lip), X.call(pts[j], z1 + lip), X.call(inset[j], z1 + lip), Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), nn)
+		b.tri(stm, X.call(pts[i], z1 + lip), X.call(inset[j], z1 + lip), X.call(inset[i], z1 + lip), Vector2(0, 0), Vector2(1, 1), Vector2(0, 1), nn)
+		# the band's inner edge drops back to the face
+		b.tri(stm, X.call(inset[i], z1 + lip), X.call(inset[j], z1 + lip), X.call(inset[j], z1), Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), -W3.call(en[i]))
+		b.tri(stm, X.call(inset[i], z1 + lip), X.call(inset[j], z1), X.call(inset[i], z1), Vector2(0, 0), Vector2(1, 1), Vector2(0, 1), -W3.call(en[i]))
+
+## "sg_<key>" (build_mall.gd's mat() calls this).
+static func fill_mat(m, key, b):
+	match key:
+		# Radio Shack: red acrylic faces lit from inside, dark returns, a darker red trim cap
+		"rs_face":
+			m.albedo_texture = b.tex("sg/rs_face.png"); m.albedo_color = Color("#d8141a"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#ff1208"); m.emission_energy_multiplier = 1.3
+			m.set_meta("e_day", 1.1); m.set_meta("e_night", 1.5)
+		"rs_trim":
+			m.albedo_color = Color("#8e1218"); m.roughness = 0.35; m.metallic_specular = 0.6
+			m.emission_enabled = true; m.emission = Color("#ff2a2e"); m.emission_energy_multiplier = 0.25
+			m.set_meta("e_day", 0.15); m.set_meta("e_night", 0.3)
+		"rs_return":
+			m.albedo_color = Color("#1c1414"); m.roughness = 0.42; m.metallic = 0.35
+		"rs_glow":
+			_glow(m, b.tex("sg/rs_glow.png"), 0.55)
+		"rs_pier":
+			m.albedo_color = Color("#cfcbc3"); m.roughness = 0.7
+		"rs_fascia":
+			m.albedo_color = Color("#141313"); m.roughness = 0.55; m.metallic_specular = 0.45
+		# Woolworth: orange-red faces, dark bronze returns and trim
+		"wl_face":
+			m.albedo_texture = b.tex("sg/wl_face.png"); m.albedo_color = Color("#dc2e16"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#ff2c10"); m.emission_energy_multiplier = 1.3
+			m.set_meta("e_day", 1.1); m.set_meta("e_night", 1.5)
+		"wl_trim":
+			m.albedo_color = Color("#7a2416"); m.roughness = 0.35; m.metallic_specular = 0.6
+			m.emission_enabled = true; m.emission = Color("#ff5a32"); m.emission_energy_multiplier = 0.25
+			m.set_meta("e_day", 0.15); m.set_meta("e_night", 0.3)
+		"wl_return":
+			m.albedo_color = Color("#2a1712"); m.roughness = 0.45; m.metallic = 0.3
+		"wl_glow":
+			_glow(m, b.tex("sg/wl_glow.png"), 0.5)
+		"wl_fascia":
+			m.albedo_color = Color("#4a221d"); m.roughness = 0.5; m.metallic_specular = 0.5
+		"wl_cream":
+			m.albedo_color = Color("#e9dfcb"); m.roughness = 0.6
+		_:
+			return false
+	return true
+
+## The halo: unshaded, added over the fascia, no shadow, not in the bake.
+static func _glow(m, tx, e):
+	m.albedo_texture = tx
+	m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+	m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+	m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+	m.albedo_color = Color(e, e, e, 1.0)
+	m.no_depth_test = false
+	m.cull_mode = BaseMaterial3D.CULL_BACK

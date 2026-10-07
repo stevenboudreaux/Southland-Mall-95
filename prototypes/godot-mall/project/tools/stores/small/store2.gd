@@ -14,6 +14,7 @@ const K = preload("res://tools/stores/media/kit.gd")
 const AK = preload("res://tools/stores/apparel/kit.gd")
 const M2 = preload("res://tools/stores/apparel/more.gd")
 const S1 = preload("res://tools/stores/small/store.gd")
+const CH = preload("res://tools/stores/signs/channel.gd")
 const UP = Vector3.UP
 const SIDE = 0.12
 
@@ -54,23 +55,27 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 	b.light_root.add_child(rp)
 
 # ------------------------------------------------------------------ Radio Shack
-## A deep brown fascia box with the lit red wordmark standing off it on dark returns, a bright
-## soffit, and an aluminium-and-glass front on a green marble plinth (record; Hammond 23.9 s);
-## inside, pegboard walls of parts, shelves of boxed electronics, the counter at the back.
+## The front Steven chose (Oct 7: design/storefronts/refs/radio-shack-front.png): a black
+## fascia band with the red "Radio Shack" channel letters, traced from his photos of the real
+## letters (tools/stores/signs), over a glass front in black frames, a pale stone pier at the
+## end; inside, pegboard walls of parts, shelves of boxed electronics, the counter at the back.
 static func radio_shack(b, a, t, n, W, D, rng):
 	var G = "s6r_fix"
 	var F = "s6rf_props"
 	var head = 2.7
-	S1.upper(b, F, a, t, n, W, head, "s6_brown", 0.3)
-	AK.letters(b, F, "res://tools/stores/small/rs_letters.json", P(a, t, n, W * 0.5, head + 0.55, -0.3), n, "sm_red_letter", "md_black", 0.04, 0.07)
-	b.quad(F, "md_glowstrip", [P(a, t, n, 0.2, head, -0.3), P(a, t, n, W - 0.2, head, -0.3), P(a, t, n, W - 0.2, head, 0.0), P(a, t, n, 0.2, head, 0.0)], Vector3.DOWN)
-	# the glass front on a green marble plinth, an aluminium-framed door left of centre
-	b.box(F, "s6_marble", P(a, t, n, 4.9, 0.25, -0.05), b.abs_size(t, 5.8, 0.5, 0.2, n), Transform3D.IDENTITY, ["-y"])
-	b.quad("glass", "glass", [P(a, t, n, 2.0, 0.5, -0.03), P(a, t, n, W - 0.2, 0.5, -0.03), P(a, t, n, W - 0.2, head, -0.03), P(a, t, n, 2.0, head, -0.03)], n,
+	S1.upper(b, F, a, t, n, W, head, "sg_rs_fascia", 0.3)
+	# the letters: 4.2 m of the 8 m front, centred on the 1.9 m band
+	CH.build(b, "s6rf_sign", "res://tools/stores/signs/rs_logo.json", P(a, t, n, W * 0.5, 3.22, -0.3), n,
+		"sg_rs_face", "sg_rs_return", "sg_rs_trim", 0.02, 0.12, 0.012, "sg_rs_glow")
+	b.quad(F, "sg_rs_fascia", [P(a, t, n, 0.2, head, -0.3), P(a, t, n, W - 0.2, head, -0.3), P(a, t, n, W - 0.2, head, 0.0), P(a, t, n, 0.2, head, 0.0)], Vector3.DOWN)
+	# the glass front in black frames on a low black base, the door left of centre
+	b.box(F, "sg_rs_fascia", P(a, t, n, 4.9, 0.12, -0.05), b.abs_size(t, 5.8, 0.24, 0.2, n), Transform3D.IDENTITY, ["-y"])
+	b.quad("glass", "glass", [P(a, t, n, 2.0, 0.24, -0.03), P(a, t, n, W - 0.2, 0.24, -0.03), P(a, t, n, W - 0.2, head, -0.03), P(a, t, n, 2.0, head, -0.03)], n,
 		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
-	for u in [0.0, 0.2, 2.0, 4.6, W - 0.2]:
-		b.box(F, "wl_alum", P(a, t, n, u + 0.03, head * 0.5, -0.03), b.abs_size(t, 0.06, head, 0.08, n))
-	b.box(F, "s6_brown", P(a, t, n, 0.1, head * 0.5, -0.1), b.abs_size(t, 0.2, head, 0.2, n), Transform3D.IDENTITY, ["-y"])
+	for u in [0.2, 2.0, 4.6, 6.2, W - 0.2]:
+		b.box(F, "sg_rs_fascia", P(a, t, n, u + 0.03, head * 0.5, -0.03), b.abs_size(t, 0.06, head, 0.08, n))
+	b.box(F, "sg_rs_fascia", P(a, t, n, 4.9, head - 0.04, -0.03), b.abs_size(t, 5.8, 0.08, 0.08, n))
+	b.box(F, "sg_rs_pier", P(a, t, n, 0.1, head * 0.5, -0.1), b.abs_size(t, 0.2, head, 0.2, n), Transform3D.IDENTITY, ["-y"])
 	K.ob(b, P(a, t, n, 2.0, 0, -0.15), P(a, t, n, W, 0, 0.1), 0.05)
 	# the window dressed with electronics on stepped risers
 	for k in 2:

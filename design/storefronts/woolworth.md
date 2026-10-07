@@ -23,10 +23,12 @@ All packaging, food photos and menu lines are invented. The only real name shown
 - **d** runs into the store (−x).
 
 ## Front
-- **Fascia.** Red enamelled panels across the whole 36 m, 3.0–4.4 m high, standing 0.25 m out. White wall above.
-- **Light-box.** 8 m × 1.2 m, white, lit, with "Woolworth" in red slab-serif letters (Roboto Slab ExtraBold, Apache 2.0) and a gold drop shadow, over the middle of the store's opening.
+- **Steven (Oct 7):** the sign is the all-caps lit WOOLWORTH on a dark fascia with cream piers (refs/woolworth-front.png), not the mixed-case video frame (refs/woolworth-video.png). The restaurant's own sign is still to come from Steven.
+- **Fascia.** Dark maroon-brown across the whole 36 m, 3.0–4.4 m high, standing 0.25 m out. White wall above.
+- **Letters.** WOOLWORTH in lit orange-red channel letters straight on the fascia over the middle of the store's opening: 0.78 m capitals, 8.1 m across, the photo's letter widths and spacing with Coustard Black glyphs (OFL; the photo is too soft to trace), dark returns 12 cm deep, a trim cap, and a halo on the fascia. Built by `tools/stores/signs/` (wl_logo.json, channel.gd).
+- **Superseded (Oct 7):** the red panel fascia and the white light-box with Roboto Slab letters.
 - **The restaurant's front (u 0–9).** A white bulkhead, glass in aluminium frames, a 1.6 m door opening with both leaves held open, and a "Restaurant" plate (red letters on cream) on the fascia.
-- **A red pier** (u 9–9.6) between the restaurant and the store.
+- **Cream piers** between the restaurant and the store (u 9–9.6) and at the store's far end (u 35.55–36).
 - **The store's front (u 9.6–36).** Wide open, with a white soffit, downlights, a clock and an exit sign just inside (video 5:34).
 
 ## Inside (walkable)
