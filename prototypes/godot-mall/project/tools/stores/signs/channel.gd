@@ -460,6 +460,14 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#c8141a"); m.roughness = 0.35
 			m.emission_enabled = true; m.emission = Color("#ff1a12"); m.emission_energy_multiplier = 0.35
 			m.set_meta("e_day", 0.2); m.set_meta("e_night", 0.5)
+		# placeholders from the 8-bit game (Steven, Oct 7): the hand-drawn panels, crisp pixels, lit
+		"ph_felgers", "ph_tgmc":
+			m.albedo_texture = b.tex("sg/%s_8bit.png" % ("felgers" if key == "ph_felgers" else "tgmc"))
+			m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_NEAREST_WITH_MIPMAPS
+			m.roughness = 0.5
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission = Color.WHITE
+			m.emission_energy_multiplier = 0.12
+			m.set_meta("e_day", 0.05); m.set_meta("e_night", 0.2)
 		"sa_board":
 			m.albedo_color = Color("#0c0c0e"); m.roughness = 0.6
 		"sa_grid":

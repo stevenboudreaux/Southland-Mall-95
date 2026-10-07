@@ -31,6 +31,8 @@ var fronts = {}            # "x,z|x,z" of a store edge -> captured front (fronts
 ## (Oct 5, 18:51) prefers the plain storefronts with the vendor's sign until each store is
 ## built in full 3D from its photos, as Corn Dog 7 is.
 const USE_FRONT_ART = false
+## Signs taken from the 8-bit game as placeholders (Steven, Oct 7): material, width / height.
+const PLACEHOLDER_SIGNS = {"FELGER'S FOOTWEAR": ["sg_ph_felgers", 110.0 / 52.0], "TERREBONNE GENERAL OUTREACH": ["sg_ph_tgmc", 210.0 / 72.0]}
 ## Stores built in full 3D: their footprint (x0, z0, x1, z1 in metres) is kept clear of the
 ## generic interiors of neighbouring stores, which would otherwise run through them.
 const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE": [-110.0, 60.0, -102.0, 100.0],
@@ -124,12 +126,12 @@ func mat(name):
 		"vault_glow":
 			m.albedo_color = Color("#f3ead8"); m.roughness = 0.9
 			m.emission_enabled = true; m.emission = Color("#fff1d6"); m.emission_energy_multiplier = 1.0
-			m.set_meta("e_day", 0.55); m.set_meta("e_night", 0.10)
+			m.set_meta("e_day", 0.45); m.set_meta("e_night", 0.22)   # Oct 7: day a touch dimmer, night brighter (Steven)
 		"downlight":
 			m.albedo_color = Color.WHITE
 			m.emission_enabled = true; m.emission = Color("#fff3df"); m.emission_energy_multiplier = 8.0
 			# Godot 4.7 lights the halls mostly from these discs: dim them at night (moodier night, Steven Oct 5)
-			m.set_meta("e_day", 8.0); m.set_meta("e_night", 2.0)
+			m.set_meta("e_day", 6.8); m.set_meta("e_night", 3.4)   # Oct 7: day a touch dimmer, night brighter (Steven)
 		"stone":
 			m.albedo_texture = tex("stone.png"); m.roughness = 0.55
 		"bronze":
@@ -1218,6 +1220,18 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 	var text = sd.sign
 	if sd.vacant:
 		text = "For Lease" + ((" · Space %d" % int(sd.unit)) if sd.unit != null else "")
+	if PLACEHOLDER_SIGNS.has(sd.name):
+		# Steven (Oct 7): the 8-bit game's hand-drawn sign as a placeholder (tools/stores/signs, sg_ph_*)
+		var ph = PLACEHOLDER_SIGNS[sd.name]
+		var sh2 = 1.3
+		var sw2 = sh2 * ph[1]
+		var sc2 = mid + Vector3(0, OPEN_H + (LANE_H - OPEN_H) * 0.5, 0) + n * 0.2
+		box(g, "black", sc2, abs_size(t, sw2 + 0.06, sh2 + 0.06, 0.08, n))
+		var rv2 = (-n).cross(Vector3.UP)
+		var c2 = sc2 + n * 0.041
+		quad(g, ph[0], [c2 - rv2 * (sw2 * 0.5) - Vector3.UP * (sh2 * 0.5), c2 + rv2 * (sw2 * 0.5) - Vector3.UP * (sh2 * 0.5), c2 + rv2 * (sw2 * 0.5) + Vector3.UP * (sh2 * 0.5), c2 - rv2 * (sw2 * 0.5) + Vector3.UP * (sh2 * 0.5)], n,
+			[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)])
+		text = ""
 	if text != "" and not sd.noSign and Ln >= 1.5:
 		var sw = min(Ln - 0.8, max(1.6, min(Ln * 0.72, 9.0 if anchor else 6.5)))
 		var sh = 0.95 if anchor else 0.78
@@ -1862,11 +1876,13 @@ func make_env(mode):
 	env.background_mode = Environment.BG_SKY
 	env.sky = sky
 	env.ambient_light_source = Environment.AMBIENT_SOURCE_SKY if mode == "day" else Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("#2A2620")
-	env.ambient_light_energy = 0.3 if mode == "day" else 0.12
+	# Oct 7 (Steven): night was too dark: cream fixtures read black. Ambient only reaches the
+	# unbaked (dynamic) things, so it lifts fixtures and props without touching the baked rooms.
+	env.ambient_light_color = Color("#2A2620") if mode == "day" else Color("#4a4236")
+	env.ambient_light_energy = 0.3 if mode == "day" else 0.35
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_SKY
 	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.tonemap_exposure = 1.05 if mode == "day" else 0.7
+	env.tonemap_exposure = 0.95 if mode == "day" else 0.7
 	env.tonemap_white = 6.0 if mode == "day" else 4.0
 	env.glow_enabled = true
 	env.glow_intensity = 0.35
