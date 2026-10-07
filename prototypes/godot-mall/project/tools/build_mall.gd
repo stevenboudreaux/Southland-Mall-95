@@ -39,7 +39,16 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 	"BABBAGE'S": [-132.0, 60.0, -124.0, 68.0], "SOUND SHOP": [-34.0, -64.0, -10.0, -58.0],
 	"WOOLWORTH": [-46.0, -14.0, -10.0, 22.0], "LERNER SHOP": [-38.0, 22.0, -10.0, 36.0],
 	"LANE BRYANT": [-34.0, -72.0, -10.0, -64.0], "MILLER'S OUTPOST": [-38.0, -52.0, -10.0, -40.0],
-	"GADZOOKS": [-62.0, 24.0, -50.0, 48.0], "THE LIMITED": [-132.0, 20.0, -122.0, 48.0]}
+	"GADZOOKS": [-62.0, 24.0, -50.0, 48.0], "THE LIMITED": [-132.0, 20.0, -122.0, 48.0],
+	"COACH HOUSE GIFTS": [2.0, 16.0, 26.0, 26.0], "GENERAL NUTRITION CENTER": [2.0, 34.0, 16.0, 38.0],
+	"MASTERCUTS": [2.0, -48.0, 16.0, -44.0], "WICKS 'N' STICKS": [-38.0, 36.0, -32.0, 48.0],
+	"CHICK-FIL-A": [-102.0, 60.0, -94.0, 76.0], "RADIO SHACK": [2.0, 26.0, 18.0, 34.0],
+	"B. DALTON BOOKSELLER": [-110.0, 28.0, -102.0, 48.0], "KARMELKORN": [-36.0, 60.0, -20.0, 70.0],
+	"ZALES": [-154.0, 68.0, -146.0, 78.0], "MERRY-GO-ROUND": [-102.0, 28.0, -94.0, 48.0],
+	"JEAN NICOLE": [-34.0, -40.0, -10.0, -30.0], "CHAMPS SPORTS": [-122.0, 24.0, -110.0, 48.0],
+	"SPORTS AVENUE": [-26.0, 36.0, -20.0, 48.0], "GREAT AMERICAN COOKIE CO": [-32.0, 36.0, -26.0, 48.0],
+	"REGIS HAIRSTYLISTS": [-58.0, 60.0, -50.0, 76.0], "AFTERTHOUGHTS": [-40.0, 60.0, -36.0, 72.0],
+	"ORANGE JULIUS": [10.0, 10.0, 16.0, 16.0], "GORDON'S JEWELERS": [2.0, -18.0, 12.0, -10.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
@@ -265,6 +274,18 @@ func mat(name):
 			elif name.begins_with("gb_"):
 				# Gumballs: tools/stores/gumballs/store.gd's fill_mat(m, key, b)
 				if not load("res://tools/stores/gumballs/store.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("w7_"):
+				# the Wave 7 shops: tools/stores/small/wave7.gd's fill_mat
+				if not load("res://tools/stores/small/wave7.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("s6_"):
+				# the Wave 6 shops: tools/stores/small/store2.gd's fill_mat
+				if not load("res://tools/stores/small/store2.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("sm_"):
+				# the Wave 5 small shops: tools/stores/small/store.gd's fill_mat
+				if not load("res://tools/stores/small/store.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
 			elif name.begins_with("a2_"):
 				# the Wave 4 clothing stores: tools/stores/apparel/more.gd's fill_mat
@@ -1093,6 +1114,24 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# stock from the video, the layouts guessed (design/storefronts/jw.md, 579.md, county-seat.md)
 		var mod = {"JW": "jw", "5-7-9": "s579", "COUNTY SEAT": "county_seat"}[sd.name]
 		load("res://tools/stores/apparel/%s.gd" % mod).build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name in ["MERRY-GO-ROUND", "JEAN NICOLE", "CHAMPS SPORTS", "SPORTS AVENUE", "GREAT AMERICAN COOKIE CO",
+			"REGIS HAIRSTYLISTS", "AFTERTHOUGHTS", "ORANGE JULIUS", "GORDON'S JEWELERS"] and not inner_call:
+		# built in full 3D from the Southland facade records (Steven's photos); insides guessed
+		# (design/storefronts/: merry-go-round, jean-nicole, champs-sports, sports-avenue,
+		# great-american-cookie, regis, afterthoughts, orange-julius, gordons)
+		load("res://tools/stores/small/wave7.gd").build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name in ["RADIO SHACK", "B. DALTON BOOKSELLER", "KARMELKORN", "ZALES"] and not inner_call:
+		# built in full 3D from the facade records and the Hammond 1993 commercial, insides
+		# guessed (design/storefronts/radio-shack.md, b-dalton.md, karmelkorn.md, zales.md)
+		load("res://tools/stores/small/store2.gd").build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name in ["COACH HOUSE GIFTS", "GENERAL NUTRITION CENTER", "MASTERCUTS", "WICKS 'N' STICKS", "CHICK-FIL-A"] and not inner_call:
+		# built in full 3D from the facade records and the Hammond 1993 commercial, insides
+		# guessed (design/storefronts/coach-house.md, gnc.md, mastercuts.md, wicks-n-sticks.md,
+		# chick-fil-a.md)
+		load("res://tools/stores/small/store.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	if sd.name in ["LERNER SHOP", "LANE BRYANT", "MILLER'S OUTPOST", "GADZOOKS", "THE LIMITED"] and not inner_call:
 		# built in full 3D on the apparel kit from the regional videos Steven sent (Hammond

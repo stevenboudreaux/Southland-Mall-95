@@ -40,6 +40,29 @@ OPEN = {
     "s17": [(129, 142, 74, 79)],
     "n35": [(117, 122, 112, 123)],
     "s50": [(82, 86, 110, 123)],
+    # Wave 5 small shops (tools/stores/small/store.gd): Coach House Gifts (s21), GNC (s21c),
+    # MasterCuts (s24mc) facing west onto the east hall, Wicks 'N' Sticks (s44), Chick-fil-A (s64)
+    "s21": [(149, 160, 108, 112)],
+    "s21c": [(149, 155, 117, 118)],
+    "s24mc": [(149, 155, 76, 77)],
+    "s44": [(129, 131, 118, 123)],
+    "s64": [(97, 100, 130, 137)],
+    # Wave 6 (tools/stores/small/store2.gd): Radio Shack (s21b), B. Dalton (s48), and the
+    # corner shops Karmelkorn (s57) and Zales (s7), open on two halls
+    "s21b": [(149, 156, 113, 116)],
+    "s48": [(93, 96, 114, 123)],
+    "s57": [(130, 137, 130, 134)],
+    "s7": [(71, 74, 134, 138)],
+    # Wave 7 (tools/stores/small/wave7.gd), from the facade records
+    "s47": [(97, 100, 114, 123)],
+    "s16": [(131, 142, 80, 84)],
+    "s49": [(87, 92, 112, 123)],
+    "s8b": [(135, 137, 118, 123)],
+    "smuopv1vy0": [(132, 134, 118, 123)],
+    "s60": [(119, 122, 130, 137)],
+    "n56": [(128, 129, 130, 135)],
+    "s34": [(153, 155, 105, 107)],
+    "s29": [(149, 153, 91, 94)],
 }
 
 
