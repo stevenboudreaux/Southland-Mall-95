@@ -23,7 +23,7 @@ static func build(b, g, path, c, nn, face, ret, trim, standoff = 0.02, depth = 0
 	var zf = standoff + depth
 	var sf = b.st(g, face, dyn)
 	var sr = b.st(g, ret, dyn)
-	var stm = b.st(g, trim, dyn)
+	var stm = b.st(g, trim if trim != "" else ret, dyn)
 	for Lt in J.letters:
 		var tr = Lt.tris
 		for i in range(0, tr.size(), 3):
@@ -60,6 +60,7 @@ static func _can_side(b, sr, stm, pts, X, rv, nn, z0, z1, tw):
 			en.append(Vector2(d.y, -d.x))
 	var W3 = func(v2): return (rv * v2.x + UP * v2.y).normalized()
 	var lip = 0.004
+	var top = z1 - 0.006 if tw > 0.0 else z1
 	for i in n:
 		var j = (i + 1) % n
 		if en[i] == Vector2.ZERO:
@@ -75,13 +76,15 @@ static func _can_side(b, sr, stm, pts, X, rv, nn, z0, z1, tw):
 			nj = (nxt + en[i]).normalized()
 		var p0 = X.call(pts[i], z0)
 		var p1 = X.call(pts[j], z0)
-		var p2 = X.call(pts[j], z1 - 0.006)
-		var p3 = X.call(pts[i], z1 - 0.006)
+		var p2 = X.call(pts[j], top)
+		var p3 = X.call(pts[i], top)
 		var u0 = 0.0
 		var u1 = pts[i].distance_to(pts[j])
 		var fn = W3.call(en[i])
 		b._tri_n(sr, [p0, p1, p2], [W3.call(ni), W3.call(nj), W3.call(nj)], [Vector2(u0, 1), Vector2(u1, 1), Vector2(u1, 0)], fn)
 		b._tri_n(sr, [p0, p2, p3], [W3.call(ni), W3.call(nj), W3.call(ni)], [Vector2(u0, 1), Vector2(u1, 0), Vector2(u0, 0)], fn)
+		if tw <= 0.0:
+			continue
 		# the trim cap's lip: the last 6 mm of the return plus 4 mm proud of the face
 		var q0 = X.call(pts[i], z1 - 0.006)
 		var q1 = X.call(pts[j], z1 - 0.006)
@@ -89,6 +92,8 @@ static func _can_side(b, sr, stm, pts, X, rv, nn, z0, z1, tw):
 		var q3 = X.call(pts[i], z1 + lip)
 		b._tri_n(stm, [q0, q1, q2], [W3.call(ni), W3.call(nj), W3.call(nj)], [Vector2(0, 0), Vector2(1, 0), Vector2(1, 1)], fn)
 		b._tri_n(stm, [q0, q2, q3], [W3.call(ni), W3.call(nj), W3.call(ni)], [Vector2(0, 0), Vector2(1, 1), Vector2(0, 1)], fn)
+	if tw <= 0.0:
+		return
 	# the cap's flat band on the face, inset by tw (mitred, clamped at sharp corners)
 	var inset = []
 	for i in n:
@@ -149,6 +154,54 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#4a221d"); m.roughness = 0.5; m.metallic_specular = 0.5
 		"wl_cream":
 			m.albedo_color = Color("#e9dfcb"); m.roughness = 0.6
+		# Foot Locker: red letters edged in gold on diagonal wood, a white portal, the oval runner
+		"fl_face":
+			m.albedo_color = Color("#b3141a"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#ff2018"); m.emission_energy_multiplier = 0.3
+			m.set_meta("e_day", 0.2); m.set_meta("e_night", 0.35)
+		"fl_gold":
+			m.albedo_color = Color("#e0a845"); m.roughness = 0.3; m.metallic = 0.55
+			m.emission_enabled = true; m.emission = Color("#ffc060"); m.emission_energy_multiplier = 0.15
+			m.set_meta("e_day", 0.1); m.set_meta("e_night", 0.2)
+		"fl_return":
+			m.albedo_color = Color("#4a1210"); m.roughness = 0.5
+		"fl_wood":
+			m.albedo_texture = b.tex("sg/fl_wood.png"); m.roughness = 0.55; m.metallic_specular = 0.4
+		"fl_white":
+			m.albedo_color = Color("#efede7"); m.roughness = 0.45; m.metallic_specular = 0.5
+		"fl_cream":
+			m.albedo_color = Color("#e9e4d4"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#fff4dc"); m.emission_energy_multiplier = 0.15
+			m.set_meta("e_day", 0.1); m.set_meta("e_night", 0.2)
+		"fl_black":
+			m.albedo_color = Color("#141212"); m.roughness = 0.45
+		# The Athlete's Foot: a black sign box, yellow pinstripe and letters, the red winged foot
+		"af_box":
+			m.albedo_color = Color("#1d1513"); m.roughness = 0.4; m.metallic_specular = 0.5
+		"af_yellow":
+			m.albedo_color = Color("#f3cf1c"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#ffd42a"); m.emission_energy_multiplier = 0.45
+			m.set_meta("e_day", 0.35); m.set_meta("e_night", 0.6)
+		"af_red":
+			m.albedo_color = Color("#d8381c"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#ff3a18"); m.emission_energy_multiplier = 0.35
+			m.set_meta("e_day", 0.25); m.set_meta("e_night", 0.45)
+		"af_white":
+			m.albedo_color = Color("#f4f2ee"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#ffffff"); m.emission_energy_multiplier = 0.2
+			m.set_meta("e_day", 0.15); m.set_meta("e_night", 0.3)
+		"af_return":
+			m.albedo_color = Color("#3a2c12"); m.roughness = 0.5
+		"af_frame":
+			m.albedo_color = Color("#e4e4e0"); m.roughness = 0.35; m.metallic = 0.3
+		"af_pier":
+			m.albedo_color = Color("#eeece6"); m.roughness = 0.6
+		"af_base":
+			m.albedo_color = Color("#aaa69e"); m.roughness = 0.5; m.metallic_specular = 0.5
+		"af_spandrel":
+			m.albedo_color = Color("#2a313b"); m.roughness = 0.12; m.metallic = 0.4
+		"af_header":
+			m.albedo_color = Color("#e8e5de"); m.roughness = 0.8
 		_:
 			return false
 	return true

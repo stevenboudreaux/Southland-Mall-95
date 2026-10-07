@@ -80,16 +80,23 @@ def dedupe(pts):
 
 
 # ------------------------------------------------------------------ traced from a mask
-def trace_mask(mask, text, width_m, base_px):
+def trace_mask(mask, text, width_m, base_px, frame=None, smooth=0.0):
+    """frame: (x0_px, metres per px) to share one frame between several masks; else the
+    mask's own left edge and width_m. smooth: Gaussian sigma (px) applied to each shape alone."""
     ys, xs = np.where(mask)
-    x0, x1 = xs.min(), xs.max()
-    s = width_m / (x1 - x0)
+    if frame:
+        x0, s = frame
+    else:
+        x0, x1 = xs.min(), xs.max()
+        s = width_m / (x1 - x0)
     n, lab = cv2.connectedComponents(mask.astype(np.uint8), connectivity=4)
     comps = []
     for i in range(1, n):
         cm = lab == i
         if cm.sum() < 400:
             continue
+        if smooth > 0:
+            cm = cv2.GaussianBlur(cm.astype(np.float32), (0, 0), smooth) > 0.5
         path = potrace.Bitmap(~cm).trace(   # potracer fills False pixels
                                        turdsize=40, turnpolicy=potrace.POTRACE_TURNPOLICY_MINORITY,
                                        alphamax=1.15, opticurve=True, opttolerance=0.5)
@@ -111,7 +118,7 @@ def trace_mask(mask, text, width_m, base_px):
         comps.append((np.where(cm)[1].min(), cons))
     comps.sort(key=lambda t: t[0])
     chars = text.replace(" ", "")
-    return [letter(chars[k], cons) for k, (_, cons) in enumerate(comps)]
+    return [letter(chars[k] if k < len(chars) else "?", cons) for k, (_, cons) in enumerate(comps)]
 
 
 # ------------------------------------------------------------------ font glyphs fitted to boxes
@@ -173,6 +180,35 @@ def fit_glyphs(font, text, boxes, base_px, cap_m):
     return out
 
 
+def fit_words(font, words, frame_x0, base_px, s_px):
+    """words: [(text, (x, y, w, h) px)]: each word set in the font (its own spacing), its outline
+    stretched to the box; frame: metres = (px - frame_x0) * s_px across, (base_px - py) * s_px up."""
+    f = TTFont(font)
+    gs = f.getGlyphSet()
+    cmap = f.getBestCmap()
+    hmtx = f["hmtx"]
+    out = []
+    for text, (bx, by, bw, bh) in words:
+        glyphs = []
+        x = 0.0
+        for ch in text:
+            gname = cmap.get(ord(ch)) or cmap.get(ord("'"))
+            pen = FlatPen(gs)
+            gs[gname].draw(pen)
+            glyphs.append((ch, [[(p[0] + x, p[1]) for p in c] for c in pen.contours]))
+            x += hmtx[gname][0]
+        pts = [p for _, cs in glyphs for c in cs for p in c]
+        gx0, gx1 = min(p[0] for p in pts), max(p[0] for p in pts)
+        gy0, gy1 = min(p[1] for p in pts), max(p[1] for p in pts)
+        L, R = (bx - frame_x0) * s_px, (bx + bw - frame_x0) * s_px
+        B, T = (base_px - (by + bh)) * s_px, (base_px - by) * s_px
+        for ch, cs in glyphs:
+            if not cs:
+                continue
+            out.append(letter(ch, [[(L + (p[0] - gx0) / (gx1 - gx0) * (R - L), B + (p[1] - gy0) / (gy1 - gy0) * (T - B)) for p in c] for c in cs]))
+    return out
+
+
 # ------------------------------------------------------------------ textures
 def textures(lid, letters, width, top, glow_rgb, pad, face_lo=0.72):
     """face: UV (x / width, 1 - y / top); glow: covers the letters plus pad metres all round."""
@@ -204,12 +240,44 @@ def textures(lid, letters, width, top, glow_rgb, pad, face_lo=0.72):
     cv2.imwrite(os.path.join(TEX, lid + "_glow.png"), cv2.resize(rgba, (512, max(16, int(512 * rgba.shape[0] / rgba.shape[1]))), interpolation=cv2.INTER_AREA))
 
 
-def write(lid, text, letters, width, glow_rgb, pad, note):
-    top = max(p[1] for L in letters for lp in L["loops"] for p in lp)
+def write(lid, text, letters, width, glow_rgb, pad, note, top=None, tex=True):
+    """width/top: the frame the shapes sit in (channel.gd centres on width; face UVs span it)."""
+    if top is None:
+        top = max(p[1] for L in letters for lp in L["loops"] for p in lp)
     json.dump({"text": text, "cap_h": round(top, 4), "width": round(width, 4), "glow_pad": pad, "letters": letters, "note": note},
               open(os.path.join(HERE, lid + "_logo.json"), "w"))
-    textures(lid, letters, width, top, glow_rgb, pad)
+    if tex:
+        textures(lid, letters, width, top, glow_rgb, pad)
     print("%s: %d letters, %.2f x %.2f m, %d triangles" % (lid, len(letters), width, top, sum(len(L["tris"]) for L in letters) // 3))
+
+
+def wood_planks(path, base=(122, 74, 42)):
+    """Diagonal wood planks at 45 degrees, 1024 px = 1 m, tiling: grooves every 1/8 m along x + y
+    (planks 8.8 cm wide), each plank its own shade, grain along the plank (sums of whole-period
+    sines, so it tiles too)."""
+    N = 1024
+    y, x = np.mgrid[0:N, 0:N].astype(np.float32) / N
+    a = (x + y) * 8.0                       # across the planks: plank index = floor(a)
+    b = (x - y)                             # along the planks
+    k = np.floor(a) % 8
+    rng = np.random.default_rng(3)
+    shade = rng.uniform(0.82, 1.12, 8)[k.astype(int)]
+    grain = np.zeros_like(x)
+    for m, amp in ((53, 0.05), (97, 0.035), (181, 0.025)):
+        ph = rng.uniform(0, 6.28, 8)[k.astype(int)]
+        wob = 0.6 * np.sin(2 * np.pi * (2 * b) + ph) + 0.3 * np.sin(2 * np.pi * (5 * b) + 2 * ph)
+        grain += amp * np.sin(2 * np.pi * m * (x + y) + wob * 3.0 + ph)
+    fine = cv2.GaussianBlur(rng.normal(0, 1, (N, N)).astype(np.float32), (0, 0), 1.0)
+    groove = np.clip(np.abs((a % 1.0) - 0.5) * 2.0, 0, 1)      # 1 at the plank edges
+    groove = np.where(groove > 0.94, 0.6, 1.0)
+    v = shade * (1.0 + grain + fine * 0.03) * groove
+    img = np.dstack([np.clip(base[2] * v, 0, 255), np.clip(base[1] * v, 0, 255), np.clip(base[0] * v, 0, 255)]).astype(np.uint8)
+    cv2.imwrite(path, cv2.resize(img, (512, 512), interpolation=cv2.INTER_AREA))
+
+
+def rect_ring(x0, y0, x1, y1, w):
+    """A rectangular band of width w inside (x0, y0)-(x1, y1): one outline with one hole."""
+    return letter("#", [[(x0, y0), (x1, y0), (x1, y1), (x0, y1)], [(x0 + w, y0 + w), (x0 + w, y1 - w), (x1 - w, y1 - w), (x1 - w, y0 + w)]])
 
 
 def main():
@@ -225,6 +293,52 @@ def main():
     wl = fit_glyphs(os.path.join(HERE, "src", "Coustard-Black.ttf"), "WOOLWORTH", boxes, 130.5, 0.78)
     width = max(p[0] for L in wl for lp in L["loops"] for p in lp)
     write("wl", "WOOLWORTH", wl, width, (255, 60, 30), 0.35, "Coustard Black glyphs fitted to Steven's photo (make_logos.py)")
+
+    # Foot Locker (refs/foot-locker-front.jpg, levelled 1.79 degrees, 6 px per photo pixel): the
+    # photo's red-and-gold letters are too soft to trace, so each is Fredoka Bold (OFL, the best
+    # of 50 rounded and geometric faces) fitted to the letter's box; baseline row 260; the
+    # ascenders ('f', 'L', 'k') 0.56 m. The oval: 0.86 x 0.58 m (the photo's 460 x 308 px),
+    # with the runner traced from the photo (src/fl_figure.png, 10 px per photo pixel).
+    fl_boxes = [(86, 65, 105, 197), (219, 147, 134, 115), (379, 133, 133, 128), (530, 110, 92, 152), (758, 60, 106, 192),
+                (892, 137, 131, 115), (1040, 134, 110, 126), (1179, 70, 134, 191), (1333, 131, 106, 128), (1471, 138, 78, 117)]
+    fl_boxes = [(x, y, w, 260 - y) for (x, y, w, h) in fl_boxes]     # every letter sits on the baseline
+    asc = 260 - min(b[1] for b in fl_boxes)
+    fl = fit_glyphs(os.path.join(HERE, "src", "Fredoka-Bold.ttf"), "footLocker", fl_boxes, 260, 0.56 * (260 - 135) / asc)
+    width = max(p[0] for L in fl for lp in L["loops"] for p in lp)
+    write("fl", "foot Locker", fl, width, (255, 60, 40), 0.25, "Fredoka Bold glyphs fitted to Steven's photo (make_logos.py)", tex=False)
+    ow, oh = 0.86, 0.58
+    oval = [[ow * 0.5 + ow * 0.5 * np.cos(2 * np.pi * k / 72), oh * 0.5 + oh * 0.5 * np.sin(2 * np.pi * k / 72)] for k in range(72)]
+    write("fl_oval", "oval", [letter("O", [oval])], ow, (0, 0, 0), 0.1, "the logo plaque", top=oh, tex=False)
+    fig = cv2.imread(os.path.join(HERE, "src", "fl_figure.png"), 0) > 127
+    s_px = ow / 460.0
+    cx, cy = 267, 141
+    write("fl_fig", "runner", trace_mask(fig, "runner", ow, cy + 154, frame=(cx - 230, s_px), smooth=2.0), ow, (0, 0, 0), 0.1,
+          "the runner, traced from the photo", top=oh, tex=False)
+
+    # Foot Locker's white portal, a U round the opening with bevelled top corners (photos): 5.6 m
+    # wide, 3.3 m high, the opening 4.8 x 2.95 m; and the diagonal wood
+    W5, H5, c5, iw, ih, ic = 5.6, 3.3, 0.55, 0.4, 2.95, 0.45
+    U = [(0, 0), (iw, 0), (iw, ih - ic), (iw + ic, ih), (W5 - iw - ic, ih), (W5 - iw, ih - ic), (W5 - iw, 0), (W5, 0),
+         (W5, H5 - c5), (W5 - c5, H5), (c5, H5), (0, H5 - c5)]
+    write("fl_portal", "portal", [letter("U", [U])], W5, (0, 0, 0), 0.1, "Foot Locker's white portal (photos)", top=H5, tex=False)
+    wood_planks(os.path.join(TEX, "fl_wood.png"))
+
+    # The Athlete's Foot (refs/athletes-foot-front.jpg, levelled -2.84 degrees, 6 px per photo
+    # pixel): letters, foot and wing traced, in the frame of the sign's yellow border (src/
+    # af_frame.txt: left, top, right, bottom px), 2.9 m across.
+    L, T, R, B = [int(v) for v in open(os.path.join(HERE, "src", "af_frame.txt")).read().split()]
+    fw = 2.9
+    s_px = fw / (R - L)
+    fh = (B - T) * s_px
+    # the words: Fredoka Bold set to each word's box in the photo (the trace was too lumpy)
+    words = [("The", (226, 115, 262, 152)), ("Athlete\u2019s", (740, 125, 755, 176)), ("Foot", (1005, 326, 361, 178))]
+    write("af_text", "The Athlete's Foot", fit_words(os.path.join(HERE, "src", "Fredoka-Bold.ttf"), words, L, B, s_px), fw, (0, 0, 0), 0.1,
+          "Fredoka Bold words fitted to Steven's photo", top=fh, tex=False)
+    for part, sm in (("foot", 6.0), ("wing", 5.0)):
+        m = cv2.imread(os.path.join(HERE, "src", "af_%s.png" % part), 0) > 127
+        shapes = trace_mask(m, "TheAthlete'sFoot" if part == "text" else part, fw, B, frame=(L, s_px), smooth=sm)
+        write("af_" + part, part, shapes, fw, (0, 0, 0), 0.1, "traced from Steven's photo", top=fh, tex=False)
+    write("af_border", "border", [rect_ring(-0.01, -0.01, fw + 0.01, fh + 0.01, 0.022)], fw, (0, 0, 0), 0.1, "the yellow pinstripe", top=fh, tex=False)
 
 
 if __name__ == "__main__":
