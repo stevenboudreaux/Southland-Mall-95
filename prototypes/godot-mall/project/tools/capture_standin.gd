@@ -42,6 +42,11 @@ func _initialize() -> void:
 	slots = J.slots
 	print("capturing wing ", wing, " (", mode, "): ", slots.size(), " slots for ", jp)
 	scn = load("res://wing%d.tscn" % wing).instantiate()
+	# no player: its lighting switch would put the night setup back once it starts
+	var pl0 = scn.get_node_or_null("Player")
+	if pl0:
+		scn.remove_child(pl0)
+		pl0.free()
 	root.add_child(scn)
 	current_scene = scn
 	var tod = load("res://scripts/time_of_day.gd")
@@ -57,11 +62,6 @@ func _initialize() -> void:
 	env.glow_enabled = false
 	env.adjustment_enabled = false
 	envn.environment = env
-	# the player's HUD and camera are not wanted
-	var pl = scn.get_node_or_null("Player")
-	if pl:
-		pl.set_process(false)
-		pl.set_process_input(false)
 	atlas = Image.create(int(J.atlas[0]), int(J.atlas[1]), false, Image.FORMAT_RGB8)
 	atlas.fill(Color(0, 0, 0))
 	vp = SubViewport.new()
@@ -89,6 +89,12 @@ func _slot_setup(s: Dictionary) -> void:
 
 func _process(_dt: float) -> bool:
 	frames += 1
+	if frames == 10:
+		# once more, after everything has started: this mode's lightmap, lights and emission
+		var envn = scn.get_node("Env")
+		var keep: Environment = envn.environment
+		load("res://scripts/time_of_day.gd").apply(scn, mode)
+		envn.environment = keep
 	if frames < SETTLE:
 		return false
 	if k == -1:

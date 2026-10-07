@@ -1163,6 +1163,9 @@ func standin_quads():
 		var u1 = float(r[0] + r[2]) / STANDIN_ATLAS.x
 		var v0 = float(r[1]) / STANDIN_ATLAS.y
 		var v1 = float(r[1] + r[3]) / STANDIN_ATLAS.y
+		# the capture's left edge is the camera's left, looking at the front from the hall
+		if t.dot((-n).cross(Vector3.UP)) < 0.0:
+			var tmp = u0; u0 = u1; u1 = tmp
 		var p0 = a + t * s.s0 + n * 0.005
 		var p1 = a + t * s.s1 + n * 0.005
 		quad("standin", mname, [p0, p1, p1 + Vector3(0, LANE_H, 0), p0 + Vector3(0, LANE_H, 0)], n,

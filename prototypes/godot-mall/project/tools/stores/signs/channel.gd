@@ -486,7 +486,10 @@ static func fill_mat(m, key, b):
 		"cu_glow":
 			_glow(m, b.tex("sg/cu_name_glow.png"), 0.35)
 		"cu_band":
+			# lit a little from inside, so the blue still reads at night
 			m.albedo_color = Color("#34488f"); m.roughness = 0.35; m.metallic_specular = 0.6
+			m.emission_enabled = true; m.emission = Color("#3a56c8"); m.emission_energy_multiplier = 0.25
+			m.set_meta("e_day", 0.1); m.set_meta("e_night", 0.3)
 		"cu_white_trim":
 			m.albedo_color = Color("#e8ecf4"); m.roughness = 0.3
 		"cu_white":

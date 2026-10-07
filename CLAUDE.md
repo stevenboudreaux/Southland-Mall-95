@@ -57,6 +57,10 @@ Grep and read only the region you need. Key names: `render3`, `stepPlayer`,
 - **Reduced motion** turns off all marker and orb animation.
 - **Secrets never go in the repo**: the GitHub token lives only in the owner's
   browser; `ADMIN_KEY` lives only in the deployed script.
+- **The Godot mall ships in two wings** (`design/godot-wings.md`). Each wing shows the other across
+  the seam as captured pictures. After any change to a wing, rebake it and run
+  `tools/capture_standin.sh <wing>` before publishing. `tools/publish_build.sh` refuses a stale
+  stand-in; never bypass it.
 - **Visual changes are verified by looking**: open the game, check every affected
   view (3D, side, overhead; board open/closed; phone width), keep a screenshot.
 

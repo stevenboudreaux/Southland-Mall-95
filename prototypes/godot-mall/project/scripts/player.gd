@@ -201,6 +201,8 @@ func _input(e: InputEvent) -> void:
 			go = true
 		elif e is InputEventScreenTouch and e.pressed and prompt.get_global_rect().has_point(e.position):
 			go = true
+		if debug:
+			print("DBG prompt input ", e)
 		if go:
 			get_viewport().set_input_as_handled()
 			_cross()
@@ -405,6 +407,7 @@ func _cross() -> void:
 	if leaving or wing == 0:
 		return
 	leaving = true
+	print("crossing to wing ", 3 - wing)
 	prompt.visible = false
 	var other := 3 - wing
 	var tz := float(seam[1]) + other_side * 1.3
@@ -419,7 +422,7 @@ func _cross() -> void:
 			js += "p.set('time','%s');" % ("day" if day else "night")
 			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not buttons[0].button_pressed else "false")
 			js += "if(%s)p.set('fx','1');else p.delete('fx');" % ("true" if buttons[1].button_pressed else "false")
-			js += "if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
+			js += "console.log('crossing to '+u.toString());if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
 			JavaScriptBridge.eval(js, true)
 		else:
 			Engine.set_meta("mall_xfer", {"x": tx, "z": tz, "yaw": yaw, "pitch": pitch})

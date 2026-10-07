@@ -1,5 +1,9 @@
 # Godot mall build: how it is stored and served
 
+> **Since Demo 16 (Oct 7, 2026) the mall ships in two wings:** `w1.*.pck` and `w2.*.pck` instead of
+> `index.*.pck`, lightmaps `wing<n>_{night,day}.*` instead of `main_*`, and the stand-in pictures in
+> `standin/` on `godot-build`. See `design/godot-wings.md`, which supersedes the file names below.
+
 **Asked for (Steven, Oct 6, 2026):**
 - "get rid of all of the waste": the texture formats a device never uses, and the unused 8-bit front paintings;
 - "get rid of all of the clones in the repository and just have the one file each time that gets replaced";
