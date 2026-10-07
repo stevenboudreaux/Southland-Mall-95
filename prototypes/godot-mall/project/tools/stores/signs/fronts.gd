@@ -112,7 +112,7 @@ static func athletes_foot(b, g, e, a, n, t, Ln, sd, U):
 ## TOBACCO in lit letters between; display windows on a brick bulkhead, the doors, then glass
 ## to the floor. The logo from refs/kb-logo.jpg: purple face, gold rim, a red line, white K&B.
 static func kb(b, g, e, a, n, t, Ln, sd, U):
-	var G = "kbf_props"
+	var G = "knbf_props"
 	var LH = b.LANE_H
 	var head = 3.0
 	b.box(G, "sg_kb_fascia", P(a, t, n, U.call(Ln * 0.5), (head + LH) * 0.5, -0.12), b.abs_size(t, Ln, LH - head, 0.24, n), Transform3D.IDENTITY, ["+z", "-z"])
@@ -150,19 +150,19 @@ static func kb(b, g, e, a, n, t, Ln, sd, U):
 	var xt = xd + wd * 0.5 + gap + wt * 0.5
 	for x in [l0, l1]:
 		var c = P(a, t, n, U.call(x), 3.15, face)
-		CH.build(b, "kbf_sign", S + "kb_disc_logo.json", c, n, "sg_kb_purple", "sg_kb_can", "", 0.02, 0.2, 0.0)
-		CH.build(b, "kbf_sign", S + "kb_rim_logo.json", c, n, "sg_kb_gold", "sg_kb_can", "", 0.02, 0.235, 0.0)
-		CH.build(b, "kbf_sign", S + "kb_line_logo.json", c, n, "sg_kb_red", "sg_kb_can", "", 0.02, 0.21, 0.0)
-		CH.build(b, "kbf_sign", S + "kb_letters_logo.json", c, n, "sg_kb_white", "sg_kb_bevel", "sg_kb_bevel", 0.22, 0.03, 0.012)
+		CH.build(b, "knbf_sign", S + "kb_disc_logo.json", c, n, "sg_kb_purple", "sg_kb_can", "", 0.02, 0.2, 0.0)
+		CH.build(b, "knbf_sign", S + "kb_rim_logo.json", c, n, "sg_kb_gold", "sg_kb_can", "", 0.02, 0.235, 0.0)
+		CH.build(b, "knbf_sign", S + "kb_line_logo.json", c, n, "sg_kb_red", "sg_kb_can", "", 0.02, 0.21, 0.0)
+		CH.build(b, "knbf_sign", S + "kb_letters_logo.json", c, n, "sg_kb_white", "sg_kb_bevel", "sg_kb_bevel", 0.22, 0.03, 0.012)
 	for wv in [[xd, "drugs"], [xt, "tobacco"]]:
-		CH.build(b, "kbf_sign", S + "kb_%s_logo.json" % wv[1], P(a, t, n, U.call(wv[0]), 3.5, face), n, "sg_kb_letter", "sg_kb_return", "sg_kb_edge", 0.03, 0.1, 0.022, "sg_kb_glow_" + wv[1])
+		CH.build(b, "knbf_sign", S + "kb_%s_logo.json" % wv[1], P(a, t, n, U.call(wv[0]), 3.5, face), n, "sg_kb_letter", "sg_kb_return", "sg_kb_edge", 0.03, 0.1, 0.022, "sg_kb_glow_" + wv[1])
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.3, Ln - 0.3)
 
 ## Blockbuster Music (Steven, Oct 7: refs/blockbuster-music-*.jpg; the street fronts for the look):
 ## blue panelled fascia with the yellow-edged ticket and "music" lit magenta on a dark box, a lit
 ## white band under it, a glass front in dark frames with the doors open.
 static func blockbuster(b, g, e, a, n, t, Ln, sd, U):
-	var G = "bbf_props"
+	var G = "bbmf_props"
 	var LH = b.LANE_H
 	var head = 2.78
 	for x in [0.15, Ln - 0.15]:
@@ -184,13 +184,13 @@ static func blockbuster(b, g, e, a, n, t, Ln, sd, U):
 	# "music" on its dark box, right of centre; the ticket, tilted, at the upper left
 	var mx = Ln - 2.0
 	b.box(G, "sg_bb_box", P(a, t, n, U.call(mx), 3.81, -0.24), b.abs_size(t, 3.3, 1.56, 0.08, n))
-	CH.build(b, "bbf_sign", S + "bb_music_logo.json", P(a, t, n, U.call(mx), 3.1, -0.28), n, "sg_bb_music", "sg_bb_music_ret", "sg_bb_music_trim", 0.02, 0.08, 0.015, "sg_bb_glow")
+	CH.build(b, "bbmf_sign", S + "bb_music_logo.json", P(a, t, n, U.call(mx), 3.1, -0.28), n, "sg_bb_music", "sg_bb_music_ret", "sg_bb_music_trim", 0.02, 0.08, 0.015, "sg_bb_glow")
 	var tc = P(a, t, n, U.call(mx - 2.7), 3.88 - 0.52, -0.2)
 	var r = deg_to_rad(10.0)
-	CH.build(b, "bbf_sign", S + "bb_ticket_rim_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.05, 0.0, "", true, r)
-	CH.build(b, "bbf_sign", S + "bb_ticket_face_logo.json", tc, n, "sg_bb_blue", "sg_bb_ticket_ret", "", 0.12, 0.056, 0.0, "", true, r)
-	CH.build(b, "bbf_sign", S + "bb_ticket_frame_logo.json", tc, n, "sg_bb_yellow", "sg_bb_yellow", "", 0.12, 0.06, 0.0, "", true, r)
-	CH.build(b, "bbf_sign", S + "bb_ticket_text_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.068, 0.0, "", true, r)
+	CH.build(b, "bbmf_sign", S + "bb_ticket_rim_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.05, 0.0, "", true, r)
+	CH.build(b, "bbmf_sign", S + "bb_ticket_face_logo.json", tc, n, "sg_bb_blue", "sg_bb_ticket_ret", "", 0.12, 0.056, 0.0, "", true, r)
+	CH.build(b, "bbmf_sign", S + "bb_ticket_frame_logo.json", tc, n, "sg_bb_yellow", "sg_bb_yellow", "", 0.12, 0.06, 0.0, "", true, r)
+	CH.build(b, "bbmf_sign", S + "bb_ticket_text_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.068, 0.0, "", true, r)
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.3, Ln - 0.3)
 
 ## The Shoe Dept (Steven, Oct 7: "that's like the exact facade"; refs/shoe-dept-*.jpg): a dark
