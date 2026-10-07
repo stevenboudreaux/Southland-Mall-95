@@ -21,3 +21,7 @@
 
 ## Files
 `tools/stores/small/wave7.gd` (the nine Wave 7 shops, materials `w7_*`), `paint7.py` → `tex/w7/`, `make_signs.py` (letters). Hooks in `tools/build_mall.gd` and `tools/open_interiors.py`.
+
+## Sign pass (Oct 7, 2026)
+See design/storefronts/photos/ for Steven's photos; built with tools/stores/signs/ (make_logos.py batch4, channel.gd sg_* materials).
+The marquee now in 3D: a deep gold box, a field of lit bulbs, SPORTS raised in red with white edges (Francois One, OFL), red rails, gold stars at the corners; AVENUE and the goalpost frame as before (photos/sports-avenue).

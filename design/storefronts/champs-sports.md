@@ -21,3 +21,7 @@
 
 ## Files
 `tools/stores/small/wave7.gd` (the nine Wave 7 shops, materials `w7_*`), `paint7.py` → `tex/w7/`, `make_signs.py` (letters). Hooks in `tools/build_mall.gd` and `tools/open_interiors.py`.
+
+## Sign pass (Oct 7, 2026)
+See design/storefronts/photos/ for Steven's photos; built with tools/stores/signs/ (make_logos.py batch4, channel.gd sg_* materials).
+Steven: the blue badge logo (photos 03, 04), on the polished-steel front of photos 01, 02. The badge: navy, bowed top, a lobe below with SPORTS in a red-lined oval, a red edge, CHAMPS in white-cream (Old Standard Bold, OFL, widened, the end letters taller), hung on three rods; steel piers, a steel header band and steel-framed windows either side of the open middle. Replaces the red/navy box sign. The inside is still apparel; Steven: it should look like a sports store (later, with the interiors).

@@ -125,21 +125,34 @@ static func jean_nicole(b, a, t, n, W, D, rng):
 static func champs(b, a, t, n, W, D, rng):
 	var F = "w7cf_props"
 	var head = 2.8
-	S1.upper(b, F, a, t, n, W, head, "md_fascia_white", 0.16)
-	var o = P(a, t, n, 0, 0, 0)
-	K.lbox(b, F, "w7_red", o, t, n, W * 0.5 - 1.75, head + 0.2, 0.16, 3.5, 1.15, 0.05)
-	K.lbox(b, F, "w7_navy", o, t, n, W * 0.5 - 1.68, head + 0.27, 0.21, 3.36, 1.01, 0.04)
-	AK.letters(b, F, LET + "champs_letters.json", P(a, t, n, W * 0.5, head + 0.6, -0.25), n, "w7_cream_letter", "w7_cream_letter", 0.0, 0.03)
-	AK.letters(b, F, LET + "champs_sub.json", P(a, t, n, W * 0.5, head + 0.38, -0.25), n, "w7_cream_letter", "w7_cream_letter", 0.0, 0.02)
+	# Steven's sign pass (Oct 7: design/storefronts/photos/champs-sports): the blue badge logo
+	# (photos 03, 04) in 3D on the polished-steel framed front of photos 01, 02
+	S1.upper(b, F, a, t, n, W, head, "sg_cs_fascia", 0.16)
+	b.box(F, "sg_cs_steel", P(a, t, n, W * 0.5, head + 0.1, -0.2), b.abs_size(t, W, 0.2, 0.08, n))
+	var bc = P(a, t, n, W * 0.5, head + 0.28, -0.3)
+	CH.build(b, "w7cf_sign", "res://tools/stores/signs/cs_rim_logo.json", bc - UP * 0.06, n, "sg_cs_red", "sg_cs_red", "", 0.0, 0.1, 0.0)
+	CH.build(b, "w7cf_sign", "res://tools/stores/signs/cs_badge_logo.json", bc, n, "sg_cs_blue", "sg_cs_blue", "", 0.0, 0.115, 0.0)
+	CH.build(b, "w7cf_sign", "res://tools/stores/signs/cs_name_logo.json", bc, n, "sg_cs_cream", "sg_cs_red", "", 0.115, 0.03, 0.0, "sg_cs_glow")
+	CH.build(b, "w7cf_sign", "res://tools/stores/signs/cs_sub_logo.json", bc, n, "sg_cs_red", "sg_cs_red", "", 0.115, 0.012, 0.0)
+	for u in [W * 0.5 - 1.3, W * 0.5, W * 0.5 + 1.3]:
+		b.cyl(F, "sg_cs_navy", P(a, t, n, u, head + 1.36, -0.36), 0.025, 0.025, b.LANE_H - head - 1.36, 8, false, false)
+	# polished steel piers, glass in steel frames either side of the open middle
 	for s in [[0.0, 0.5], [W - 0.5, W]]:
-		b.box(F, "md_fascia_white", P(a, t, n, (s[0] + s[1]) * 0.5, head * 0.5, -0.08), b.abs_size(t, s[1] - s[0], head, 0.16, n), Transform3D.IDENTITY, ["-y"])
-		K.ob(b, P(a, t, n, s[0], 0, -0.16), P(a, t, n, s[1], 0, 0.0), 0.05)
+		b.box(F, "sg_cs_steel", P(a, t, n, (s[0] + s[1]) * 0.5, head * 0.5, -0.1), b.abs_size(t, s[1] - s[0], head, 0.2, n), Transform3D.IDENTITY, ["-y"])
+		K.ob(b, P(a, t, n, s[0], 0, -0.2), P(a, t, n, s[1], 0, 0.0), 0.05)
+	for s in [[0.5, 3.6], [W - 3.6, W - 0.5]]:
+		b.quad("glass", "glass", [P(a, t, n, s[0], 0.08, -0.04), P(a, t, n, s[1], 0.08, -0.04), P(a, t, n, s[1], head, -0.04), P(a, t, n, s[0], head, -0.04)], n,
+			[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
+		var inner = s[1] if s[0] < 1.0 else s[0]
+		b.box(F, "sg_cs_steel", P(a, t, n, inner, head * 0.5, -0.06), b.abs_size(t, 0.22, head, 0.16, n), Transform3D.IDENTITY, ["-y"])
+		b.box(F, "sg_cs_steel", P(a, t, n, (s[0] + s[1]) * 0.5, 0.04, -0.04), b.abs_size(t, s[1] - s[0], 0.08, 0.08, n), Transform3D.IDENTITY, ["-y"])
+		K.ob(b, P(a, t, n, s[0], 0, -0.2), P(a, t, n, s[1], 0, 0.05), 0.05)
 	# the WE KNOW GAME panel on a grey block plinth, left of the doors
 	b.box(F, "w7_grey_block", P(a, t, n, 1.6, 0.35, 0.3), b.abs_size(t, 2.0, 0.7, 0.4, n), Transform3D.IDENTITY, ["-y"])
 	b.box(F, "w7_navy", P(a, t, n, 1.6, 1.4, 0.3), b.abs_size(t, 2.0, 1.4, 0.06, n), Transform3D.IDENTITY, [])
 	K.ob(b, P(a, t, n, 0.6, 0, 0.1), P(a, t, n, 2.6, 0, 0.5), 0.05)
 	AK.mannequin(b, P(a, t, n, 3.2, 0.0, 0.8), -n, "#2aa8a0", "#2e2e34")
-	M2.soffit(b, F, a, t, n, W, head, "w7_royal")
+	M2.soffit(b, F, a, t, n, W, head, "sg_cs_steel")
 	var c = {"group": "w7c_shell", "cash": "left", "seed": 49, "slat": "gb_slat_black", "door": 11.0, "fit": 2, "cols": [4.0, 7.6], "cards": [8, 9], "floor": "a2_carpet_grey", "wall": "md_wall", "rows": [2.0, 6.0, 9.4]}
 	apparel(b, a, t, n, W, D, c, rng)
 
@@ -153,9 +166,17 @@ static func sports_avenue(b, a, t, n, W, D, rng):
 	var head = 2.7
 	S1.upper(b, F, a, t, n, W, head, "w7_royal", 0.12)
 	var rv = (-n).cross(UP)
-	var mc = P(a, t, n, W * 0.5, head + 0.85, -0.3)
-	K.fq(b, F, "w7_marquee", mc - UP * (head + 0.85) - rv * 1.6 + n * 0.005, rv, n, 0.0, 3.2, head + 0.3, head + 1.5, 0.0)
-	b.box(F, "w7_gold", mc + n * -0.03, b.abs_size(t, 3.3, 1.3, 0.06, n))
+	# Steven's sign pass (Oct 7: design/storefronts/photos/sports-avenue): the marquee in 3D: a deep
+	# gold box, a field of lit bulbs, SPORTS raised in red over them, a gold star at each corner
+	var mc = P(a, t, n, W * 0.5, head + 0.9, -0.3)
+	b.box(F, "w7_gold", mc - n * 0.12, b.abs_size(t, 3.4, 1.3, 0.3, n))
+	K.fq(b, F, "sg_sa_bulbs", mc - UP * (head + 0.9) - rv * 1.5 + n * 0.032, rv, n, 0.0, 3.0, head + 0.425, head + 1.375, 0.0)
+	b.box(F, "w7_red", mc - UP * 0.47 + n * 0.045, b.abs_size(t, 3.4, 0.06, 0.02, n))
+	b.box(F, "w7_red", mc + UP * 0.47 + n * 0.045, b.abs_size(t, 3.4, 0.06, 0.02, n))
+	CH.build(b, "w7sf_sign", "res://tools/stores/signs/sa_name_logo.json", mc - UP * 0.33 + n * 0.032, n, "sg_sa_red", "sg_sa_white", "sg_sa_white", 0.0, 0.07, 0.018, "sg_sa_glow")
+	for cx in [-1.55, 1.55]:
+		for cy in [-0.52, 0.42]:
+			CH.build(b, "w7sf_sign", "res://tools/stores/signs/sa_star_logo.json", mc + rv * cx + UP * cy + n * 0.032, n, "w7_gold", "w7_gold", "", 0.0, 0.03, 0.0)
 	AK.letters(b, F, LET + "avenue_letters.json", P(a, t, n, W * 0.5, head + 0.02, -0.3), n, "w7_gold", "w7_gold", 0.0, 0.04)
 	b.box(F, "w7_gold", P(a, t, n, W * 0.5, head - 0.02, -0.22), b.abs_size(t, 2.4, 0.03, 0.03, n))
 	# the goalpost: uprights with red flags, the crossbar, the padded post at the door

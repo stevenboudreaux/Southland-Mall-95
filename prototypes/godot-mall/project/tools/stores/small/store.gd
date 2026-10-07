@@ -10,6 +10,7 @@
 ## Frame: P(a, t, n, u, y, d) = a + t u - n d + y up, u along the frontage from the edge's
 ## start, d into the store.
 
+const CH = preload("res://tools/stores/signs/channel.gd")
 const K = preload("res://tools/stores/media/kit.gd")
 const AK = preload("res://tools/stores/apparel/kit.gd")
 const M2 = preload("res://tools/stores/apparel/more.gd")
@@ -163,20 +164,40 @@ static func coach_house(b, a, t, n, W, D, rng):
 	var G = "smc_fix"
 	var F = "smcf_props"
 	var head = 2.7
-	upper(b, F, a, t, n, W, head + 0.25, "sm_grey", 0.14)
-	b.box(F, "a2_gz_tile", P(a, t, n, W * 0.5, head + 0.125, -0.07), b.abs_size(t, W, 0.25, 0.14, n))
-	AK.letters(b, F, "res://tools/stores/small/ch_letters.json", P(a, t, n, W * 0.5, head + 0.55, -0.14), n, "ap_letterwhite", "ap_letterwhite", 0.02, 0.05)
-	for s in [[0.0, 0.4], [6.8, 7.0], [W - 0.4, W]]:
-		b.box(F, "a2_gz_tile", P(a, t, n, (s[0] + s[1]) * 0.5, head * 0.5, -0.07), b.abs_size(t, s[1] - s[0], head, 0.14, n), Transform3D.IDENTITY, ["-y"])
-	b.box(F, "a2_gz_tile", P(a, t, n, 3.6, 0.25, -0.02), b.abs_size(t, 6.4, 0.5, 0.14, n), Transform3D.IDENTITY, ["-y"])
-	b.quad("glass", "glass", [P(a, t, n, 0.4, 0.5, -0.02), P(a, t, n, 6.8, 0.5, -0.02), P(a, t, n, 6.8, head, -0.02), P(a, t, n, 0.4, head, -0.02)], n,
-		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
-	K.ob(b, P(a, t, n, 0.0, 0, -0.15), P(a, t, n, 7.0, 0, 0.1), 0.05)
+	# Steven's sign pass (Oct 7: design/storefronts/photos/coach-house): the structure of photo 01
+	# (columns either side of a centred entrance, an arched hood over it) in the colours of photo 02:
+	# all cream, dark mahogany on the columns only; COACH HOUSE GIFTS in white 3D letters, one line
+	upper(b, F, a, t, n, W, head + 0.25, "sg_ch_cream", 0.14)
+	b.box(F, "sg_ch_cream", P(a, t, n, W * 0.5, head + 0.125, -0.07), b.abs_size(t, W, 0.25, 0.14, n))
+	var hc = P(a, t, n, W * 0.5, head - 0.05, -0.14)
+	CH.build(b, "smcf_sign", "res://tools/stores/signs/ch_hood_logo.json", hc, n, "sg_ch_cream_lt", "sg_ch_cream", "", 0.0, 0.45, 0.0)
+	CH.build(b, "smcf_sign", "res://tools/stores/signs/ch_cornice_logo.json", hc, n, "sg_ch_trim", "sg_ch_trim", "", 0.0, 0.52, 0.0)
+	CH.build(b, "smcf_sign", "res://tools/stores/signs/ch_name_logo.json", hc + UP * 0.4 + n * 0.45, n, "sg_ch_white", "sg_ch_return", "", 0.0, 0.05, 0.0, "sg_ch_glow")
+	b.quad(F, "sg_ch_cream_lt", [P(a, t, n, W * 0.5 - 2.1, head - 0.05, -0.59), P(a, t, n, W * 0.5 + 2.1, head - 0.05, -0.59), P(a, t, n, W * 0.5 + 2.1, head - 0.05, -0.14), P(a, t, n, W * 0.5 - 2.1, head - 0.05, -0.14)], Vector3.DOWN)
+	# the columns: cream shafts, mahogany plinths and capitals
+	for u in [W * 0.5 - 1.85, W * 0.5 + 1.85]:
+		var cb = P(a, t, n, u, 0, -0.35)
+		b.box(F, "sg_ch_mahogany", cb + UP * 0.2, b.abs_size(t, 0.56, 0.4, 0.56, n))
+		b.cyl(F, "sg_ch_mahogany", cb + UP * 0.4, 0.25, 0.22, 0.08, 20, false, false)
+		b.cyl(F, "sg_ch_cream", cb + UP * 0.48, 0.2, 0.19, head - 0.05 - 0.48 - 0.3, 24, false, false)
+		b.cyl(F, "sg_ch_mahogany", cb + UP * (head - 0.35), 0.19, 0.26, 0.18, 20, false, false)
+		b.box(F, "sg_ch_mahogany", cb + UP * (head - 0.11), b.abs_size(t, 0.6, 0.12, 0.6, n))
+		K.ob(b, cb - t * 0.3 - n * 0.3, cb + t * 0.3 + n * 0.3, 0.05)
+	# cream piers at the ends, windows on low cream bases either side of the entrance
+	for s in [[0.0, 0.3], [W - 0.3, W]]:
+		b.box(F, "sg_ch_cream", P(a, t, n, (s[0] + s[1]) * 0.5, head * 0.5, -0.07), b.abs_size(t, s[1] - s[0], head, 0.14, n), Transform3D.IDENTITY, ["-y"])
+	for s in [[0.3, W * 0.5 - 1.6], [W * 0.5 + 1.6, W - 0.3]]:
+		b.box(F, "sg_ch_cream", P(a, t, n, (s[0] + s[1]) * 0.5, 0.25, -0.02), b.abs_size(t, s[1] - s[0], 0.5, 0.14, n), Transform3D.IDENTITY, ["-y"])
+		b.quad("glass", "glass", [P(a, t, n, s[0], 0.5, -0.02), P(a, t, n, s[1], 0.5, -0.02), P(a, t, n, s[1], head, -0.02), P(a, t, n, s[0], head, -0.02)], n,
+			[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
+		b.box(F, "sg_ch_mahogany", P(a, t, n, s[1] if s[0] < 1.0 else s[0], head * 0.5, -0.02), b.abs_size(t, 0.06, head, 0.08, n))
+		K.ob(b, P(a, t, n, s[0], 0, -0.15), P(a, t, n, s[1], 0, 0.1), 0.05)
 	M2.shell2(b, "smc_shell", a, t, n, W, D, 3.1, 0.0, "a2_carpet_grey", 1.0, "sm_slat_green", "kb_ceiling", [2.0, 5.0, 8.0], 1.2)
-	# a window display: a low white riser with gifts
-	K.lbox(b, G, "md_white", P(a, t, n, 0.5, 0, 0.3), t, -n, 0.0, 0.0, 0.0, 6.2, 0.45, 0.8)
-	K.stock_row(b, G, P(a, t, n, 6.6, 0, 0.3), -t, n, 0.05, 6.0, 0.45, 0.3, -0.4, "gifts", rng)
-	K.ob(b, P(a, t, n, 0.5, 0, 0.2), P(a, t, n, 6.7, 0, 1.1), 0.05)
+	# window displays either side of the entrance: low white risers with gifts
+	for s in [[0.5, W * 0.5 - 1.8], [W * 0.5 + 1.8, W - 0.5]]:
+		K.lbox(b, G, "md_white", P(a, t, n, s[0], 0, 0.3), t, -n, 0.0, 0.0, 0.0, s[1] - s[0], 0.45, 0.8)
+		K.stock_row(b, G, P(a, t, n, s[1] - 0.1, 0, 0.3), -t, n, 0.05, s[1] - s[0] - 0.2, 0.45, 0.3, -0.4, "gifts", rng)
+		K.ob(b, P(a, t, n, s[0], 0, 0.2), P(a, t, n, s[1], 0, 1.1), 0.05)
 	side_bays(b, G, a, t, n, W, 1.6, D - 2.4, ["gifts", "gcards"], ["gifts"], rng, "sm_slat_green")
 	# tables and towers of gifts down the middle (gondolas with gifts), the glass doll case
 	for row in [[3.0, 4.3], [3.0, 8.5], [6.6, 6.4], [6.6, 10.6], [3.0, 13.0], [6.6, 15.0]]:

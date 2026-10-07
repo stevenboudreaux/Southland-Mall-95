@@ -388,6 +388,82 @@ static func fill_mat(m, key, b):
 			m.set_meta("e_day", 0.5); m.set_meta("e_night", 1.0)
 		"cla_glow":
 			_glow(m, b.tex("sg/cla_name_glow.png"), 0.5)
+		# Coach House: cream, mahogany, white letters
+		"ch_cream":
+			m.albedo_color = Color("#e6dcc4"); m.roughness = 0.6
+		"ch_cream_lt":
+			m.albedo_color = Color("#f3ecdc"); m.roughness = 0.55
+		"ch_trim":
+			m.albedo_color = Color("#cdbb95"); m.roughness = 0.5
+		"ch_mahogany":
+			m.albedo_texture = b.tex("wood_dark.png"); m.albedo_color = Color(0.95, 0.62, 0.5); m.roughness = 0.35; m.metallic_specular = 0.6
+		"ch_white":
+			m.albedo_texture = b.tex("sg/ch_name_face.png"); m.albedo_color = Color("#ffffff"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#fffaf0"); m.emission_energy_multiplier = 0.7
+			m.set_meta("e_day", 0.45); m.set_meta("e_night", 0.9)
+		"ch_return":
+			m.albedo_color = Color("#8a8478"); m.roughness = 0.45
+		"ch_glow":
+			_glow(m, b.tex("sg/ch_name_glow.png"), 0.15)
+		# Footaction
+		"fa_dark":
+			m.albedo_color = Color("#2a2f33"); m.roughness = 0.5
+		"fa_band":
+			m.albedo_color = Color("#34413f"); m.roughness = 0.35; m.metallic_specular = 0.6
+		"fa_edge":
+			m.albedo_color = Color("#c8ccd0"); m.metallic = 0.6; m.roughness = 0.3
+		"fa_post":
+			m.albedo_color = Color("#23282e"); m.roughness = 0.4
+		"fa_white":
+			m.albedo_texture = b.tex("sg/fa_name_face.png"); m.albedo_color = Color("#ffffff"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#f4fbff"); m.emission_energy_multiplier = 1.2
+			m.set_meta("e_day", 0.9); m.set_meta("e_night", 1.4)
+		"fa_blue":
+			m.albedo_color = Color("#3a8cff"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#3a8cff"); m.emission_energy_multiplier = 1.6
+			m.set_meta("e_day", 1.2); m.set_meta("e_night", 2.0)
+		"fa_return":
+			m.albedo_color = Color("#20262c"); m.roughness = 0.5
+		"fa_glow":
+			_glow(m, b.tex("sg/fa_name_glow.png"), 0.3)
+		"fa_star_glow":
+			_glow(m, b.tex("sg/fa_star_glow.png"), 0.6)
+		# Champs Sports
+		"cs_fascia":
+			m.albedo_color = Color("#e4e2dc"); m.roughness = 0.6
+		"cs_steel":
+			m.albedo_color = Color("#e2e4e6"); m.metallic = 0.8; m.roughness = 0.18; m.metallic_specular = 0.8
+		"cs_blue":
+			m.albedo_color = Color("#23328a"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#2a3ca8"); m.emission_energy_multiplier = 0.3
+			m.set_meta("e_day", 0.2); m.set_meta("e_night", 0.4)
+		"cs_red":
+			m.albedo_color = Color("#c4202c"); m.roughness = 0.35
+		"cs_navy":
+			m.albedo_color = Color("#1c2470"); m.roughness = 0.4
+		"cs_cream":
+			m.albedo_texture = b.tex("sg/cs_name_face.png"); m.albedo_color = Color("#fff2dc"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#fff0d8"); m.emission_energy_multiplier = 0.9
+			m.set_meta("e_day", 0.6); m.set_meta("e_night", 1.1)
+		"cs_glow":
+			_glow(m, b.tex("sg/cs_name_glow.png"), 0.2)
+		# Sports Avenue
+		"sa_bulbs":
+			m.albedo_texture = b.tex("sg/sa_bulbs.png"); m.roughness = 0.4
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission = Color.WHITE
+			m.emission_energy_multiplier = 0.7
+			m.set_meta("e_day", 0.5); m.set_meta("e_night", 0.9)
+		"sa_red":
+			m.albedo_color = Color("#c8141a"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#ff1a12"); m.emission_energy_multiplier = 0.35
+			m.set_meta("e_day", 0.2); m.set_meta("e_night", 0.5)
+		"sa_white":
+			m.albedo_color = Color("#f4f4f0"); m.roughness = 0.4
+		"sa_glow":
+			_glow(m, b.tex("sg/sa_name_glow.png"), 0.1)
 		_:
 			return false
 	return true

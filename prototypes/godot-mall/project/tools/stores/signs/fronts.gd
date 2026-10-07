@@ -33,6 +33,8 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 			payless(b, g, e, a, n, t, Ln, sd, U)
 		"LADY FOOT LOCKER":
 			lady_foot_locker(b, g, e, a, n, t, Ln, sd, U)
+		"FOOTACTION USA":
+			footaction(b, g, e, a, n, t, Ln, sd, U)
 
 ## Wood planks on the front plane between x0..x1, y0..y1 (1 m texture tiles); mirror swaps the slant.
 static func wood(b, G, a, t, n, U, x0, x1, y0, y1, mirror):
@@ -249,6 +251,26 @@ static func lady_foot_locker(b, g, e, a, n, t, Ln, sd, U):
 	var nm = float(JSON.parse_string(FileAccess.get_file_as_string(S + "lfl_name_logo.json")).width)
 	CH.build(b, "lflf_sign", S + "lfl_name_logo.json", P(a, t, n, U.call(Ln * 0.5), head + 0.45, -0.52), n, "sg_lfl_green", "sg_lfl_green_dark", "", 0.0, 0.05, 0.0)
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.24, Ln - 0.24)
+
+## Footaction USA (Steven, Oct 7: design/storefronts/photos/footaction): a dark slate sign band
+## over a wide open front, FOOTACTION in white lit letters with the bar and USA under them, the
+## blue neon star at the right breaking over the band's edge; dark posts at the ends.
+static func footaction(b, g, e, a, n, t, Ln, sd, U):
+	var G = "faf_props"
+	var LH = b.LANE_H
+	var head = 2.85
+	b.box(G, "sg_fa_dark", P(a, t, n, U.call(Ln * 0.5), (head + LH) * 0.5, -0.06), b.abs_size(t, Ln, LH - head, 0.12, n))
+	b.box(G, "sg_fa_band", P(a, t, n, U.call(Ln * 0.5), head + 0.6, -0.27), b.abs_size(t, Ln - 0.5, 1.2, 0.3, n))
+	b.box(G, "sg_fa_edge", P(a, t, n, U.call(Ln * 0.5), head + 0.02, -0.27), b.abs_size(t, Ln - 0.5, 0.04, 0.32, n))
+	for x in [0.15, Ln - 0.15]:
+		b.box(G, "sg_fa_post", P(a, t, n, U.call(x), head * 0.5, -0.1), b.abs_size(t, 0.3, head, 0.2, n), Transform3D.IDENTITY, ["-y"])
+		K.ob(b, P(a, t, n, U.call(x - 0.15), 0, -0.2), P(a, t, n, U.call(x + 0.15), 0, 0.0), 0.05)
+	var face = -0.42
+	CH.build(b, "faf_sign", S + "fa_name_logo.json", P(a, t, n, U.call(Ln * 0.5 - 0.6), head + 0.25, face), n, "sg_fa_white", "sg_fa_return", "", 0.0, 0.04, 0.0, "sg_fa_glow")
+	var sc = P(a, t, n, U.call(Ln * 0.5 + 2.35), head + 0.0, face)
+	CH.build(b, "faf_sign", S + "fa_star_logo.json", sc, n, "sg_fa_blue", "sg_fa_return", "", 0.0, 0.05, 0.0, "sg_fa_star_glow")
+	CH.build(b, "faf_sign", S + "fa_star_in_logo.json", sc, n, "sg_fa_white", "sg_fa_return", "", 0.0, 0.06, 0.0)
+	_inside(b, g, e, a, n, t, Ln, sd, U, 0.3, Ln - 0.3)
 
 static func _glass(b, a, t, n, U, x0, x1, y0, y1):
 	b.quad("glass", "glass", [P(a, t, n, U.call(x0), y0, 0.0), P(a, t, n, U.call(x1), y0, 0.0), P(a, t, n, U.call(x1), y1, 0.0), P(a, t, n, U.call(x0), y1, 0.0)], n,

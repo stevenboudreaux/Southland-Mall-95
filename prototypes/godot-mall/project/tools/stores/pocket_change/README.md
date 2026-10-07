@@ -106,3 +106,6 @@ renders your module at the origin, facing −z (the player stands at +z). Yaw 0 
 - `lit` shows the textures. `dark` (only your own emission) is how it reads in the arcade.
 
 Finish with front, three-quarter and side views in both `lit` and `dark` that look right.
+
+## Oct 7, 2026: the floor opened up (Steven)
+A false back wall 3.05 m (10 ft) nearer (ROOM_D); nothing behind it. The middle, front to back: the cyclone, two coin pushers back to back, the dinosaur ride with a clear walk past it on the right, two air hockey tables side by side, lengthwise. The island of uprights behind the ride is gone. The right wall: claws, then the skee-ball alleys after the ride, 1.5 m, then the basketball, then video games. The left wall: three video games, a gap beside the ride, then as before. Front: the opening and fascia raised to match the neighbours (HEAD 2.9, FTOP 4.3).

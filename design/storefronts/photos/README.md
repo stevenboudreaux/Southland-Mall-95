@@ -71,3 +71,23 @@ Every store photo Steven sent in the Oct 7 session, one folder per store, kept f
 - `02-front-2.jpg`
 - `03-front-3.jpg`
 
+## coach-house
+- `01-front-structure.jpg` : the columns and arched hood used (Steven: not navy; cream with mahogany column accents)
+- `02-front-sign-and-colours.jpg` : the exact lettering and colours: COACH HOUSE GIFTS in white, one line, on cream; inside: gift shelving, flags, card racks
+
+## footaction
+- `01-front-1.jpg`
+- `02-front-2.jpg`
+- `03-tv-ad-front.jpg` : period TV ad: the curved lit sign band; inside: apparel walls
+- `04-front-4-wall-of-shoes.jpg` : inside: shoe wall
+
+## sports-avenue
+- `01-granite-run-1999.jpg` : Granite Run Mall 1999: jersey windows, red column, yellow pipe frame
+- `02-marquee-close.jpg`
+
+## champs-sports
+- `01-front-silver-frames-1.jpg` : the facade used: polished steel frames
+- `02-front-silver-frames-2.jpg`
+- `03-logo-blue-badge-1.jpg` : the logo used
+- `04-logo-blue-badge-2.jpg` : the logo used, straight on
+

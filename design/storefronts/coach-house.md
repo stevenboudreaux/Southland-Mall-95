@@ -24,3 +24,7 @@
 
 ## Files
 `tools/stores/small/store.gd`, `paint.py`, `make_signs.py` → `ch_letters.json`.
+
+## Sign pass (Oct 7, 2026)
+See design/storefronts/photos/ for Steven's photos; built with tools/stores/signs/ (make_logos.py batch4, channel.gd sg_* materials).
+Steven: the structure of photos/coach-house/01 (columns either side of a centred entrance, an arched hood with a cornice over it) in the colours of photo 02: all cream, dark mahogany only on the columns (plinths and capitals); COACH HOUSE GIFTS in white 3D letters on one line (Source Sans 3 Bold, OFL, after photo 02). The entrance is now centred, with a window either side. Replaces the grey fascia, tile piers and two-line serif letters.

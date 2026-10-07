@@ -627,8 +627,105 @@ def batch3():
     write("lfl_name", "Lady Foot Locker", lf, lw, (60, 220, 80), 0.2, "Fredoka Bold (the photo's rounded letters)")
 
 
+def star(cx, cy, ro, ri, rot=90.0):
+    return [(cx + (ro if k % 2 == 0 else ri) * np.cos(np.radians(rot + 36 * k)), cy + (ro if k % 2 == 0 else ri) * np.sin(np.radians(rot + 36 * k))) for k in range(10)]
+
+
+def ellipse(cx, cy, rx, ry, n=72, cw=False):
+    pts = [(cx + rx * np.cos(2 * np.pi * i / n), cy + ry * np.sin(2 * np.pi * i / n)) for i in range(n)]
+    return pts[::-1] if cw else pts
+
+
+def bulbs(path, w_m, h_m, pitch=0.075):
+    """A marquee's field of bulbs: warm white dots on near-black, w_m x h_m metres, 400 px per metre."""
+    k = 400
+    W, H = int(w_m * k), int(h_m * k)
+    img = np.zeros((H, W, 3), np.float32) + 6
+    r = pitch * k * 0.26
+    for y in np.arange(pitch * k / 2, H, pitch * k):
+        for x in np.arange(pitch * k / 2, W, pitch * k):
+            cv2.circle(img, (int(x), int(y)), int(r) + 2, (60, 90, 110), -1, cv2.LINE_AA)
+            cv2.circle(img, (int(x), int(y)), int(r), (170, 215, 245), -1, cv2.LINE_AA)
+    img = img + cv2.GaussianBlur(img, (0, 0), r * 0.8) * 0.25
+    cv2.imwrite(path, np.clip(img, 0, 255).astype(np.uint8))
+
+
+def batch4():
+    """Coach House Gifts, Footaction USA, Champs Sports, Sports Avenue (Steven's photos, Oct 7)."""
+    SRC = os.path.join(HERE, "src")
+    # --- Coach House: COACH HOUSE GIFTS on one line (photos/coach-house/02, the exact lettering),
+    # Source Sans 3 Bold (OFL), 0.25 m capitals; the hood over the door: 4.2 x 1.0 m, the top
+    # bowed up 0.24 m (photos/coach-house/01)
+    L, w = set_text(os.path.join(SRC, "SourceSans3-Bold.ttf"), "COACH HOUSE GIFTS", 0.25, 0.02)
+    write("ch_name", "COACH HOUSE GIFTS", L, w, (255, 250, 235), 0.2, "Source Sans 3 Bold, after Steven's photo")
+    hw, hh, bow = 4.2, 1.0, 0.24
+    top = [(hw * i / 24, hh + bow * np.sin(np.pi * i / 24)) for i in range(24, -1, -1)]
+    write("ch_hood", "hood", [letter("H", [[(0, 0), (hw, 0)] + top])], hw, (0, 0, 0), 0.1, "the arched hood", top=hh + bow, tex=False)
+    cap = [(-0.06 + (hw + 0.12) * i / 24, hh + 0.02 + (bow + 0.02) * np.sin(np.pi * i / 24)) for i in range(25)]
+    cap2 = [(x, y + 0.09) for (x, y) in cap][::-1]
+    write("ch_cornice", "cornice", [letter("H", [cap + cap2])], hw, (0, 0, 0), 0.1, "the cornice along the arch", top=hh + bow, tex=False)
+
+    # --- Footaction USA (photos/footaction): FOOTACTION in Krona One (OFL) stretched wide and heavy
+    # as on the sign, 0.42 m capitals; the bar under it, USA small; the star (blue outline,
+    # white inner line)
+    L, w = set_text(os.path.join(SRC, "KronaOne-Regular.ttf"), "FOOTACTION", 0.42, 0.0)
+    x0, y0, x1, y1 = bbox(L)
+    k = 4.2 / (x1 - x0)
+    L = [{"ch": l["ch"], "tris": [[(p[0] - x0) * k, p[1]] for p in l["tris"]], "loops": [[[(p[0] - x0) * k, p[1]] for p in lp] for lp in l["loops"]]} for l in L]
+    bar = letter("-", [[(0.35, -0.14), (3.3, -0.14), (3.3, -0.09), (0.35, -0.09)]])
+    U, uw = set_text(os.path.join(SRC, "KronaOne-Regular.ttf"), "USA", 0.11, 0.03)
+    U = shift(U, 3.35, -0.2)
+    L = shift(L + [bar] + U, 0.0, 0.2)
+    write("fa_name", "FOOTACTION USA", L, 4.2, (240, 250, 255), 0.25, "Krona One stretched, after Steven's photos")
+    so, si = 0.62, 0.25
+    write("fa_star", "star", [letter("*", [star(so, so, so, si), star(so, so, so - 0.07, si - 0.03)[::-1]])], 2 * so, (40, 140, 255), 0.25, "the star's blue outline", top=2 * so)
+    write("fa_star_in", "star", [letter("*", [star(so, so, so - 0.11, si - 0.045), star(so, so, so - 0.135, si - 0.055)[::-1]])], 2 * so, (0, 0, 0), 0.1, "the star's white inner line", top=2 * so, tex=False)
+
+    # --- Champs Sports (photos/champs-sports/03, 04: the blue badge): the badge 3.6 x 1.3 m, the top
+    # bowed, a lobe below for SPORTS; CHAMPS in Old Standard Bold (OFL) widened, the end letters
+    # taller as on the sign; SPORTS spaced in a red-lined oval
+    bw, bh = 3.6, 1.05
+    tp = [(bw * i / 24, bh + 0.12 * np.sin(np.pi * i / 24)) for i in range(24, -1, -1)]
+    lobe = [(1.8 + 1.0 * np.cos(np.pi + np.pi * i / 20), 0.22 - 0.22 * np.sin(np.pi * i / 20)) for i in range(21)]
+    badge = [(0.0, 0.22)] + lobe + [(bw, 0.22)] + tp
+    def grow(poly, d):
+        c = np.mean(poly, axis=0)
+        return [(c[0] + (x - c[0]) * (1 + d / (bw / 2)), c[1] + (y - c[1]) * (1 + d / (bh / 2))) for (x, y) in poly]
+    write("cs_badge", "badge", [letter("B", [badge])], bw, (0, 0, 0), 0.1, "the blue badge", top=bh + 0.12, tex=False)
+    rim = grow(badge, 0.06)
+    x0 = min(p[0] for p in rim)
+    y0 = min(p[1] for p in rim)
+    write("cs_rim", "rim", [letter("B", [[(x - x0 - 0.06 * 0 + 0.0, y - y0 + 0.0) for (x, y) in rim]])], bw, (0, 0, 0), 0.1, "the red edge", top=bh + 0.12, tex=False)
+    L, w = set_text(os.path.join(SRC, "OldStandard-Bold.ttf"), "CHAMPS", 0.5, 0.02)
+    x0, y0, x1, y1 = bbox(L)
+    sx = 3.1 / (x1 - x0)
+    out = []
+    for l in L:
+        lx = np.mean([p[0] for lp in l["loops"] for p in lp])
+        tt = ((lx - x0) / (x1 - x0)) * 2 - 1
+        sy = 1.0 + 0.22 * tt * tt
+        f = lambda p: [round((p[0] - x0) * sx + 0.25, 5), round(0.62 + (p[1] - 0.25) * sy, 5)]
+        out.append({"ch": l["ch"], "tris": [f(p) for p in l["tris"]], "loops": [[f(p) for p in lp] for lp in l["loops"]]})
+    write("cs_name", "CHAMPS", out, bw, (255, 245, 230), 0.15, "Old Standard Bold, widened, ends taller", top=bh + 0.12)
+    S2, sw = set_text(os.path.join(SRC, "OldStandard-Bold.ttf"), "SPORTS", 0.1, 0.12)
+    S2 = shift(S2, 1.8 - sw / 2, 0.12)
+    ring = letter("O", [ellipse(1.8, 0.2, 0.92, 0.17), ellipse(1.8, 0.2, 0.89, 0.145, cw=True)])
+    write("cs_sub", "SPORTS", S2 + [ring], bw, (0, 0, 0), 0.1, "SPORTS in the red-lined oval", top=bh + 0.12, tex=False)
+
+    # --- Sports Avenue (photos/sports-avenue): the marquee field of bulbs 3.0 x 0.95 m, SPORTS in
+    # red (Francois One, OFL) over it, gold stars at the corners
+    bulbs(os.path.join(TEX, "sa_bulbs.png"), 3.0, 0.95)
+    L, w = set_text(os.path.join(SRC, "FrancoisOne-Regular.ttf"), "SPORTS", 0.66, 0.04)
+    x0, y0, x1, y1 = bbox(L)
+    k = 2.6 / (x1 - x0)
+    L = [{"ch": l["ch"], "tris": [[(p[0] - x0) * k, p[1] * 1.0] for p in l["tris"]], "loops": [[[(p[0] - x0) * k, p[1] * 1.0] for p in lp] for lp in l["loops"]]} for l in L]
+    write("sa_name", "SPORTS", L, 2.6, (255, 60, 40), 0.15, "Francois One, after Steven's photos")
+    write("sa_star", "star", [letter("*", [star(0.11, 0.11, 0.11, 0.045)])], 0.22, (0, 0, 0), 0.1, "a corner star", top=0.22, tex=False)
+
+
 if __name__ == "__main__":
     main()
     kb()
     more()
     batch3()
+    batch4()

@@ -20,6 +20,7 @@
 
 const UNIT = 8.0
 const DEPTH = 40.0
+const ROOM_D = DEPTH - 3.05   # Steven (Oct 7): a false back wall ~10 ft nearer; nothing is built behind it
 const F0 = 1.5          # fascia ends (it spans both glass columns)
 const F1 = 6.5
 const COL = 0.2         # glass-block column: one block wide and one deep, standing proud of the wall
@@ -39,8 +40,12 @@ const LETTER_D = 0.07
 const RIGHT_BACK = 3.0  # the right-hand line of machines starts this much further in (Steven, Oct 6)
 const CENTRE_U = 3.7    # the centre aisle's line, where the feature games stand
 const CYC_D = 2.0       # the cyclone game's front edge, just inside the door (Steven, Oct 6 18:30: a few feet nearer the mall)
-const PUSH_D = 7.4      # the coin pusher's middle, behind it, turned lengthwise down the room
-const PUSH_U = 3.7      # the pusher's centre line across the room
+const PUSH_D = 9.0      # the coin pushers' middle, back to back, turned lengthwise down the room (Oct 7: two)
+const PUSH_U = 3.7      # the line their backs meet on
+const RIDE_U = 4.3      # the dinosaur ride's centre across the room (Oct 7: clear of the right-hand walk)
+const RIDE_D = 11.4     # its step, just behind the pushers
+const SKEE_D = 14.6     # the skee-ball alleys start here (Oct 7: after the ride, so the right side stays open)
+const HOCKEY_D = 24.6   # the air hockey tables' near ends, side by side past the basketball
 const BACK_10FT = 3.05  # Steven (Oct 6 18:30): everything from the skee-ball back moves ~10 ft deeper; the claws stay
 
 static func P(a, t, n, u, y, d):
@@ -57,8 +62,8 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 	machines(b, a, t, n)
 	unbake_small(b)
 	var rp = ReflectionProbe.new()
-	rp.position = P(a, t, n, UNIT * 0.5, CEIL * 0.5, DEPTH * 0.5)
-	rp.size = (t * UNIT + n * DEPTH).abs() + Vector3(0.1, CEIL + 0.1, 0.1)
+	rp.position = P(a, t, n, UNIT * 0.5, CEIL * 0.5, ROOM_D * 0.5)
+	rp.size = (t * UNIT + n * ROOM_D).abs() + Vector3(0.1, CEIL + 0.1, 0.1)
 	rp.box_projection = true
 	rp.interior = true
 	rp.update_mode = ReflectionProbe.UPDATE_ONCE
@@ -166,7 +171,7 @@ static func letters(b, g, a, t, n):
 static func room(b, G, a, t, n):
 	var u0 = SIDE
 	var u1 = UNIT - SIDE
-	var dB = DEPTH - SIDE
+	var dB = ROOM_D - SIDE
 	var o0 = F0 + COL
 	var o1 = F1 - COL
 	var up = Vector3.UP
@@ -220,7 +225,7 @@ static func room(b, G, a, t, n):
 ## A few small black can downlights down the room; the machines' own glow does the rest.
 static func lights(b, G, a, t, n):
 	var d = 3.0
-	while d < DEPTH - 1.0:
+	while d < ROOM_D - 1.0:
 		for u in [2.6, 5.4]:
 			var c = P(a, t, n, u, CEIL - 0.005, d)
 			b.cur_color = Color("#101012")
@@ -326,30 +331,29 @@ static func machines(b, a, t, n):
 	put(b, a, t, n, "redeem", 6.7, 2.5, "+d", {"kind": "counter", "length": 1.6}, 0.15)
 	put(b, a, t, n, "redeem", 5.9, 5.6, "+u", {"kind": "counter", "length": 5.0}, 0.15)
 	put(b, a, t, n, "redeem", u1 - 0.45, 5.6, "+u", {"kind": "prizewall", "length": 5.0, "height": 2.8}, 0.0)
-	# --- right wall, front to back: claws, skee-ball, basketball, video games. Steven (Oct 6,
-	# 12:22): the whole line starts about 10 ft further back than first built
+	# --- right wall, front to back: claws, skee-ball, basketball, video games. Steven (Oct 7):
+	# more room to breathe, the line spread out down the room with space between the banks
 	var d = WALL_T + 0.05 + RIGHT_BACK
 	d = wall_run(b, a, t, n, "crane", [{"style": 0}, {"style": 1}, {"style": 2}], u0, "-u", d, 0.02)
-	d = wall_run(b, a, t, n, "skee", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1 + BACK_10FT)
-	d = wall_run(b, a, t, n, "hoops", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 0.1)
-	wall_row(b, a, t, n, [0, 3, 4, 5, 2, 6, 1, 7, 0, 4, 3, 2, 5, 6], u0, "-u", d + 0.15, DEPTH - 1.9)
+	d = wall_run(b, a, t, n, "skee", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", SKEE_D)
+	d = wall_run(b, a, t, n, "hoops", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 1.5)
+	wall_row(b, a, t, n, [0, 3, 4, 5, 2, 6, 1, 7, 0, 4, 3, 2, 5, 6], u0, "-u", d + 0.3, ROOM_D - 1.9)
 	# --- left wall past the prize wall: video games, the twin racers, more video games,
-	# pinball, and video games up to the back door
-	d = wall_row(b, a, t, n, [1, 6, 0, 4, 3, 2], u1, "+u", 8.6, 14.4)
+	# pinball, and video games up to the back door (a few dropped beside the ride for a path)
+	d = wall_row(b, a, t, n, [1, 6, 0], u1, "+u", 8.6, 10.6)
 	d = wall_run(b, a, t, n, "driver", [{"kind": "racer", "style": 0}, {"kind": "racer", "style": 1}], u1, "+u", 14.5, 0.1)
-	d = wall_row(b, a, t, n, [2, 5, 0, 7, 3, 4, 6, 1], u1, "+u", d + 0.2, 29.0)
-	d = wall_run(b, a, t, n, "driver", [{"kind": "pinball", "style": 0}, {"kind": "pinball", "style": 1}, {"kind": "pinball", "style": 2}], u1, "+u", 29.2, 0.12)
-	wall_row(b, a, t, n, [0, 3, 5, 2], u1, "+u", d + 0.2, DEPTH - 2.2)
-	# --- the feature game dead centre as you walk in (Steven, Oct 6): the cyclone-style
-	# light-ring ticket game, and the coin pusher behind it, both facing the entrance
+	d = wall_row(b, a, t, n, [2, 5, 0, 7, 3, 4, 6, 1], u1, "+u", d + 0.2, 27.0)
+	d = wall_run(b, a, t, n, "driver", [{"kind": "pinball", "style": 0}, {"kind": "pinball", "style": 1}, {"kind": "pinball", "style": 2}], u1, "+u", 27.2, 0.12)
+	wall_row(b, a, t, n, [0, 3, 5, 2], u1, "+u", d + 0.2, ROOM_D - 2.2)
+	# --- the middle, front to back (Steven, Oct 7): the cyclone just inside the door, two coin
+	# pushers back to back, the dinosaur ride with a clear walk past it on the right, then the two
+	# air hockey tables side by side, lengthwise down the room. Nothing else in the middle.
 	put(b, a, t, n, "cyclone", CENTRE_U, CYC_D, "+d", {}, 0.2)
-	# the coin pusher turned lengthwise (Steven, Oct 6 18:30): its three positions face the
-	# left aisle and the redemption counter, its back to the claw machines
 	var ps = fp("pusher")
-	put(b, a, t, n, "pusher", PUSH_U + ps.y * 0.5, PUSH_D, "-u", {}, 0.2)
-	# --- the middle: the sit-in dinosaur ride, its doorway toward the entrance (you can step in)
-	var ru = 4.45
-	var rd = 11.4 + BACK_10FT
+	put(b, a, t, n, "pusher", PUSH_U + ps.y, PUSH_D, "-u", {}, 0.2)
+	put(b, a, t, n, "pusher", PUSH_U - ps.y, PUSH_D, "+u", {}, 0.2)
+	var ru = RIDE_U
+	var rd = RIDE_D
 	var k0 = b.obstacles.size()
 	put(b, a, t, n, "ride", ru, rd, "+d", {})
 	b.obstacles.resize(k0)
@@ -358,23 +362,14 @@ static func machines(b, a, t, n):
 		var q0 = P(a, t, n, ru - r[0], 0, rd + r[2])
 		var q1 = P(a, t, n, ru - r[1], 0, rd + r[3])
 		b.obst(["rect", min(q0.x, q1.x) - 0.1, min(q0.z, q1.z) - 0.1, max(q0.x, q1.x) + 0.1, max(q0.z, q1.z) + 0.1])
-	# --- an island of back-to-back uprights
-	d = 18.6 + BACK_10FT
-	for pr in [[0, 4], [2, 5], [3, 0]]:
-		var sa = fp("video", {"style": pr[0]})
-		var sb = fp("video", {"style": pr[1]})
-		var wdt = max(sa.x, sb.x)
-		put(b, a, t, n, "video", 4.0 - sa.y, d + wdt * 0.5, "+u", {"style": pr[0]})
-		put(b, a, t, n, "video", 4.0 + sb.y, d + wdt * 0.5, "-u", {"style": pr[1]})
-		d += wdt + 0.03
-	# --- two air hockey tables in the open middle at the back, end to end down the room
+	var ah = fp("airhockey")
 	for i in 2:
-		put(b, a, t, n, "airhockey", 4.0, 25.6 + BACK_10FT + i * 5.2, "+d", {"number": i + 1})
-	# --- a few uprights on the back wall, right of the back door
+		put(b, a, t, n, "airhockey", 4.0 + (i - 0.5) * (ah.x + 0.9), HOCKEY_D, "+d", {"number": i + 1})
+	# --- a few uprights on the (false) back wall, right of the back door
 	for i in 3:
 		var s = [3, 0, 2][i]
 		var sz = fp("video", {"style": s})
-		put(b, a, t, n, "video", 1.9 + i * 0.75, DEPTH - SIDE - sz.y, "+d", {"style": s})
+		put(b, a, t, n, "video", 1.9 + i * 0.75, ROOM_D - SIDE - sz.y, "+d", {"style": s})
 
 # ------------------------------------------------------------------ materials
 ## "pc_store_<key>" (build_mall.gd's mat() calls this).
