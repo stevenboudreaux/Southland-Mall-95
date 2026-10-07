@@ -37,7 +37,9 @@ Read `production/session-handoff-2026-10-07-demo16.md` first for the state of th
 - **In the real scene:** `tools/qa/wingshot.gd` renders of Wing 1, night and day.
 - **The web build:** opened in a headless browser at the Cucos front before publishing (`d17-cucos-web-build-night.png`); the sign renders, and the page fetched Wing 2 for the crossing cache.
 - **Stand-in:** Wing 1 recaptured, night and day; both wings' stamps match (`d17-cucos-standin-night.png` is the Cucos slot).
-- **Not done:** `seamtest.py` and `movetest.py` were not re-run (the crossing code and walk grids did not change). No walk on the iPhone; no frame-rate measurement on a phone (the sign is about 25,000 triangles).
+- **Crossing:** `tools/qa/seamtest.py` on the published build (run just after publishing): crossed 1 → 2 by key and 2 → 1 by clicking the prompt, 0 errors (`d17-seam-*.png`).
+- **The live URL itself was not opened:** this workspace cannot reach github.io. The build branch is at `e5a8877` and both site deploy runs finished green.
+- **Not done:** `movetest.py` was not re-run (walk grids did not change). No walk on the iPhone; no frame-rate measurement on a phone (the sign is about 25,000 triangles).
 
 ## Known gaps (for Steven's grade)
 - **MEXICAN CAFE's typeface** is Old Standard Bold, thickened. The real letters are a heavier wedge-serif.
