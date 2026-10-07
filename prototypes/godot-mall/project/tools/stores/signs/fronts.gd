@@ -25,6 +25,10 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 			athletes_foot(b, g, e, a, n, t, Ln, sd, U)
 		"K&B":
 			kb(b, g, e, a, n, t, Ln, sd, U)
+		"BLOCKBUSTER MUSIC":
+			blockbuster(b, g, e, a, n, t, Ln, sd, U)
+		"THE SHOE DEPT":
+			shoe_dept(b, g, e, a, n, t, Ln, sd, U)
 
 ## Wood planks on the front plane between x0..x1, y0..y1 (1 m texture tiles); mirror swaps the slant.
 static func wood(b, G, a, t, n, U, x0, x1, y0, y1, mirror):
@@ -148,15 +152,73 @@ static func kb(b, g, e, a, n, t, Ln, sd, U):
 		CH.build(b, "kbf_sign", S + "kb_%s_logo.json" % wv[1], P(a, t, n, U.call(wv[0]), 3.5, face), n, "sg_kb_letter", "sg_kb_return", "sg_kb_edge", 0.03, 0.1, 0.022, "sg_kb_glow_" + wv[1])
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.3, Ln - 0.3)
 
+## Blockbuster Music (Steven, Oct 7: refs/blockbuster-music-*.jpg; the street fronts for the look):
+## blue panelled fascia with the yellow-edged ticket and "music" lit magenta on a dark box, a lit
+## white band under it, a glass front in dark frames with the doors open.
+static func blockbuster(b, g, e, a, n, t, Ln, sd, U):
+	var G = "bbf_props"
+	var LH = b.LANE_H
+	var head = 2.78
+	for x in [0.15, Ln - 0.15]:
+		b.box(G, "sg_bb_pier", P(a, t, n, U.call(x), LH * 0.5, -0.1), b.abs_size(t, 0.3, LH, 0.2, n), Transform3D.IDENTITY, ["-y"])
+	b.box(G, "sg_bb_panels", P(a, t, n, U.call(Ln * 0.5), (3.0 + LH) * 0.5, -0.1), b.abs_size(t, Ln - 0.6, LH - 3.0, 0.2, n))
+	b.box(G, "sg_bb_band", P(a, t, n, U.call(Ln * 0.5), (head + 3.0) * 0.5, -0.11), b.abs_size(t, Ln - 0.6, 3.0 - head, 0.22, n))
+	# the glass front, the doors in the middle standing open
+	var d0 = Ln * 0.5 - 1.0
+	var d1 = Ln * 0.5 + 1.0
+	for seg in [[0.3, d0], [d1, Ln - 0.3]]:
+		_glass(b, a, t, n, U, seg[0], seg[1], 0.15, head)
+		_mullions(b, G, a, t, n, U, seg[0], seg[1], 0.0, head, 2, "sg_bb_frame")
+		b.box(G, "sg_bb_frame", P(a, t, n, U.call((seg[0] + seg[1]) * 0.5), 0.075, -0.02), b.abs_size(t, seg[1] - seg[0], 0.15, 0.1, n))
+	_glass(b, a, t, n, U, d0, d1, 2.25, head)
+	_mullions(b, G, a, t, n, U, d0, d1, 0.0, head, 1, "sg_bb_frame")
+	b.box(G, "sg_bb_frame", P(a, t, n, U.call(Ln * 0.5), 2.22, -0.02), b.abs_size(t, d1 - d0, 0.07, 0.1, n))
+	for x in [d0 + 0.05, d1 - 0.05]:
+		K.lbox(b, G, "sg_bb_frame", P(a, t, n, U.call(x), 0.0, 0.1), -n, t, 0.0, 0.0, 0.0, 0.95, 2.2, 0.05)
+	# "music" on its dark box, right of centre; the ticket, tilted, at the upper left
+	var mx = Ln - 2.0
+	b.box(G, "sg_bb_box", P(a, t, n, U.call(mx), 3.81, -0.24), b.abs_size(t, 3.3, 1.56, 0.08, n))
+	CH.build(b, "bbf_sign", S + "bb_music_logo.json", P(a, t, n, U.call(mx), 3.1, -0.28), n, "sg_bb_music", "sg_bb_music_ret", "sg_bb_music_trim", 0.02, 0.08, 0.015, "sg_bb_glow")
+	var tc = P(a, t, n, U.call(mx - 2.7), 3.88 - 0.52, -0.2)
+	var r = deg_to_rad(10.0)
+	CH.build(b, "bbf_sign", S + "bb_ticket_rim_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.05, 0.0, "", true, r)
+	CH.build(b, "bbf_sign", S + "bb_ticket_face_logo.json", tc, n, "sg_bb_blue", "sg_bb_ticket_ret", "", 0.12, 0.056, 0.0, "", true, r)
+	CH.build(b, "bbf_sign", S + "bb_ticket_frame_logo.json", tc, n, "sg_bb_yellow", "sg_bb_yellow", "", 0.12, 0.06, 0.0, "", true, r)
+	CH.build(b, "bbf_sign", S + "bb_ticket_text_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.068, 0.0, "", true, r)
+	_inside(b, g, e, a, n, t, Ln, sd, U, 0.3, Ln - 0.3)
+
+## The Shoe Dept (Steven, Oct 7: "that's like the exact facade"; refs/shoe-dept-*.jpg): a dark
+## marble fascia and end piers, "the SHOE DEPT." in white lit letters, brass columns either side of
+## the open entrance, display windows in brass frames.
+static func shoe_dept(b, g, e, a, n, t, Ln, sd, U):
+	var G = "sdf_props"
+	var LH = b.LANE_H
+	var head = 2.95
+	b.box(G, "sg_sd_marble", P(a, t, n, U.call(Ln * 0.5), (head + LH) * 0.5, -0.08), b.abs_size(t, Ln, LH - head, 0.16, n))
+	for x in [0.25, Ln - 0.25]:
+		b.box(G, "sg_sd_marble", P(a, t, n, U.call(x), head * 0.5, -0.08), b.abs_size(t, 0.5, head, 0.16, n), Transform3D.IDENTITY, ["-y"])
+	b.box(G, "sg_sd_brass", P(a, t, n, U.call(Ln * 0.5), head + 0.03, -0.17), b.abs_size(t, Ln - 1.0, 0.06, 0.02, n))
+	var e0 = Ln * 0.5 - 1.85
+	var e1 = Ln * 0.5 + 1.85
+	for seg in [[0.5, e0 - 0.15], [e1 + 0.15, Ln - 0.5]]:
+		b.box(G, "sg_sd_brass", P(a, t, n, U.call((seg[0] + seg[1]) * 0.5), 0.15, -0.04), b.abs_size(t, seg[1] - seg[0], 0.3, 0.1, n))
+		_glass(b, a, t, n, U, seg[0], seg[1], 0.3, head)
+		_mullions(b, G, a, t, n, U, seg[0], seg[1], 0.3, head, 2, "sg_sd_brass")
+	for x in [e0, e1]:
+		b.cyl(G, "sg_sd_brass", P(a, t, n, U.call(x), 0.0, -0.1), 0.13, 0.13, head, 24, false, false)
+		K.ob(b, P(a, t, n, U.call(x) - 0.15, 0, -0.25), P(a, t, n, U.call(x) + 0.15, 0, 0.05), 0.05)
+	CH.build(b, "sdf_sign", S + "sd_name_logo.json", P(a, t, n, U.call(Ln * 0.5), 3.48, -0.16), n, "sg_sd_white", "sg_sd_return", "sg_sd_trim", 0.03, 0.09, 0.01, "sg_sd_glow")
+	_inside(b, g, e, a, n, t, Ln, sd, U, 0.5, Ln - 0.5)
+
 static func _glass(b, a, t, n, U, x0, x1, y0, y1):
 	b.quad("glass", "glass", [P(a, t, n, U.call(x0), y0, 0.0), P(a, t, n, U.call(x1), y0, 0.0), P(a, t, n, U.call(x1), y1, 0.0), P(a, t, n, U.call(x0), y1, 0.0)], n,
 		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
 
-static func _mullions(b, G, a, t, n, U, x0, x1, y0, y1, k):
+static func _mullions(b, G, a, t, n, U, x0, x1, y0, y1, k, m = "sg_kb_alum"):
 	for i in k + 1:
 		var x = x0 + (x1 - x0) * i / k
-		b.box(G, "sg_kb_alum", P(a, t, n, U.call(x), (y0 + y1) * 0.5, -0.02), b.abs_size(t, 0.06, y1 - y0, 0.1, n))
-	b.box(G, "sg_kb_alum", P(a, t, n, U.call((x0 + x1) * 0.5), y1 - 0.04, -0.02), b.abs_size(t, x1 - x0, 0.08, 0.1, n))
+		b.box(G, m, P(a, t, n, U.call(x), (y0 + y1) * 0.5, -0.02), b.abs_size(t, 0.06, y1 - y0, 0.1, n))
+	b.box(G, m, P(a, t, n, U.call((x0 + x1) * 0.5), y1 - 0.04, -0.02), b.abs_size(t, x1 - x0, 0.08, 0.1, n))
 
 ## The mall's generic interior between x0..x1 (build_mall.gd interior()).
 static func _inside(b, g, e, a, n, t, Ln, sd, U, x0, x1):

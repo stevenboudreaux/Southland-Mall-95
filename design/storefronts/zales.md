@@ -22,3 +22,6 @@
 
 ## Files
 `tools/stores/small/store2.gd`, `make_signs.py` → `zl_letters.json`, `zl_sub_letters.json`.
+
+## Sign pass (Oct 7, 2026)
+Steven sent three photos of Zales mall fronts (refs/zales-1..3.jpg) and asked for the corner to be two-sided. Both faces now have: tan stone tile (the fascia and piers), a cherry panel 3.4 × 1.4 m, ZALES over JEWELERS traced from refs/zales-1.jpg in white lit letters (ZALES 2.6 m across). Replaces the mauve panels and the stand-in silver letters (`zl_letters.json` is no longer used). Files: `store2.gd` zales() and zales_sign(), `tools/stores/signs/` (zl_*).

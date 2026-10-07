@@ -414,6 +414,143 @@ def kb():
     bricks(os.path.join(TEX, "kb_brick.png"))
 
 
+def level(m, deg):
+    h, w = m.shape
+    R = cv2.getRotationMatrix2D((w / 2, h / 2), deg, 1.0)
+    return cv2.warpAffine(m.astype(np.uint8) * 255, R, (w, h), flags=cv2.INTER_LINEAR) > 127
+
+
+def stone_blocks(path, base=(184, 166, 138)):
+    """Tan ashlar tile, 1024 px = 1 m: blocks 50 x 25 cm, running bond, thin light joints, tiling."""
+    N = 1024
+    rng = np.random.default_rng(5)
+    img = np.zeros((N, N, 3), np.float32)
+    for r in range(4):
+        off = 0 if r % 2 == 0 else N // 4
+        for c in range(-1, 3):
+            sh = rng.uniform(0.88, 1.08)
+            x0 = c * N // 2 + off
+            img[r * N // 4 + 4:(r + 1) * N // 4 - 4, max(0, x0 + 4):min(N, x0 + N // 2 - 4)] = np.array(base[::-1]) * sh
+    joint = np.all(img == 0, axis=2)
+    img[joint] = np.array(base[::-1]) * 1.12
+    spots = cv2.GaussianBlur(rng.normal(0, 1, (N, N)).astype(np.float32), (0, 0), 6) * 0.05 + cv2.GaussianBlur(rng.normal(0, 1, (N, N)).astype(np.float32), (0, 0), 1) * 0.03
+    img = np.clip(img * (1 + spots[..., None]), 0, 255).astype(np.uint8)
+    cv2.imwrite(path, cv2.resize(img, (512, 512), interpolation=cv2.INTER_AREA))
+
+
+def marble(path, base=(92, 78, 70)):
+    """Dark brown-grey marble with pale veins, 1024 px = 1 m, tiling (whole-period sines)."""
+    N = 1024
+    y, x = np.mgrid[0:N, 0:N].astype(np.float32) / N
+    rng = np.random.default_rng(9)
+    t = np.zeros_like(x)
+    for fx, fy, a in ((1, 2, 1.0), (3, 1, 0.6), (2, 5, 0.4), (7, 3, 0.25), (11, 13, 0.12)):
+        ph = rng.uniform(0, 6.28)
+        t += a * np.sin(2 * np.pi * (fx * x + fy * y) + ph)
+    veins = np.exp(-np.abs(np.sin(3 * np.pi * (x + 0.35 * y) + 1.6 * t)) * 16.0)
+    cloud = 0.8 + 0.12 * np.sin(2 * np.pi * (2 * x + y) + t) + 0.08 * np.sin(2 * np.pi * (5 * x - 3 * y) + 2 * t)
+    v = cloud[..., None] * np.array(base[::-1], np.float32) + veins[..., None] * np.array([150, 160, 170], np.float32) * 0.35
+    # tile joints every 50 cm
+    j = ((x * 2) % 1 < 0.004) | ((y * 2) % 1 < 0.004)
+    v[j] *= 0.6
+    cv2.imwrite(path, cv2.resize(np.clip(v, 0, 255).astype(np.uint8), (512, 512), interpolation=cv2.INTER_AREA))
+
+
+def reveal_panels(path, base=(26, 56, 160)):
+    """Blue metal panels with a horizontal reveal every 25 cm (Blockbuster Music's fascia), 1 m tile."""
+    N = 512
+    img = np.zeros((N, N, 3), np.float32) + np.array(base[::-1], np.float32)
+    y = np.arange(N)
+    img[(y % (N // 4)) < 5] *= 0.45
+    img[(y % (N // 4)) == 5] *= 1.25
+    rng = np.random.default_rng(2)
+    img *= (1 + cv2.GaussianBlur(rng.normal(0, 1, (N, N)).astype(np.float32), (0, 0), 8)[..., None] * 0.04)
+    cv2.imwrite(path, np.clip(img, 0, 255).astype(np.uint8))
+
+
+def ticket_poly(inset=0.0):
+    """Blockbuster's ticket in view units (levelled logo, 0.6 x the 3x crop; y down): a box with a
+    round notch on the left and a torn right edge. inset shrinks it all round."""
+    i = inset
+    x0, y0, y1 = 52 + i, 42 + i, 340 - i
+    nc, nr = 190, 45 + i
+    torn = [(598, 42), (612, 60), (622, 100), (616, 140), (624, 180), (614, 220), (620, 260), (606, 300), (612, 340)]
+    pts = [(x0, y0)]
+    pts += [(x - i, y + (i if k == 0 else (-i if k == len(torn) - 1 else 0))) for k, (x, y) in enumerate(torn)]
+    pts += [(x0, y1), (x0, nc + nr)]
+    for k in range(1, 16):
+        a = np.pi / 2 - np.pi * k / 16
+        pts.append((52 + nr * np.cos(a), nc + nr * np.sin(a)))
+    pts.append((x0, nc - nr))
+    return pts
+
+
+def more():
+    """Blockbuster Music, Zales and The Shoe Dept (Steven's photos, Oct 7)."""
+    # --- Blockbuster Music (refs/blockbuster-music-logo.jpg): the ticket 2.0 m across, drawn from the
+    # levelled logo; BLOCKBUSTER traced; "music" traced, 3.0 m across
+    tw = 2.0
+    sv = tw / (625 - 52)
+    to_m = lambda pts: [((x - 52) * sv, (340 - y) * sv) for (x, y) in pts]
+    th = (340 - 42) * sv
+    write("bb_ticket_rim", "rim", [letter("T", [to_m(ticket_poly(0))])], tw, (0, 0, 0), 0.1, "the ticket's yellow edge", top=th, tex=False)
+    write("bb_ticket_face", "face", [letter("T", [to_m(ticket_poly(10))])], tw, (0, 0, 0), 0.1, "the ticket's blue face", top=th, tex=False)
+    fr = [(112, 77), (592, 77), (592, 310), (112, 310)]
+    fi = [(117, 82), (117, 305), (587, 305), (587, 82)]
+    write("bb_ticket_frame", "frame", [letter("#", [to_m(fr), to_m(fi)])], tw, (0, 0, 0), 0.1, "the thin inner frame", top=th, tex=False)
+    m = cv2.imread(os.path.join(HERE, "src", "bb_ticket_text.png"), 0) > 127
+    # the mask is in levelled big pixels (view / 0.6): frame x0 = 52 / 0.6, metres per px = sv * 0.6
+    write("bb_ticket_text", "BLOCKBUSTER", trace_mask(m, "BLOCKBUSTER", tw, 340 / 0.6, frame=(52 / 0.6, sv * 0.6), smooth=2.5), tw, (0, 0, 0), 0.1,
+          "traced from the logo", top=th, tex=False)
+    mu = cv2.imread(os.path.join(HERE, "src", "bb_music.png"), 0) > 127
+    # the logo's stripes notch the letters' left edges: close each letter vertically
+    n, lab = cv2.connectedComponents(mu.astype(np.uint8))
+    cl = np.zeros_like(mu)
+    for k in range(1, n):
+        cl |= cv2.morphologyEx((lab == k).astype(np.uint8), cv2.MORPH_CLOSE, np.ones((41, 9), np.uint8)) > 0
+    mu = cl
+    ys, xs = np.where(mu)
+    write("bb_music", "music", trace_mask(mu, "music", 3.0, ys.max(), smooth=3.0), 3.0, (255, 60, 200), 0.3, "traced from the logo")
+    reveal_panels(os.path.join(TEX, "bb_panels.png"))
+
+    # --- Zales (refs/zales-1.jpg): ZALES and JEWELERS traced (levelled 2.9 degrees), ZALES 2.6 m across
+    z = level(cv2.imread(os.path.join(HERE, "src", "zl_letters.png"), 0) > 127, -2.9)
+    n, lab, st, _ = cv2.connectedComponentsWithStats(z.astype(np.uint8))
+    big = np.zeros_like(z); small = np.zeros_like(z)
+    for k in range(1, n):
+        if st[k][4] < 400 or st[k][3] < 20:
+            continue
+        (big if st[k][3] > 120 else small).__ior__(lab == k)
+    ys, xs = np.where(big)
+    s_px = 2.6 / (xs.max() - xs.min())
+    x0 = xs.min()
+    base = ys.max()
+    ys2, xs2 = np.where(small)
+    zw = 2.6
+    write("zl_name", "ZALES", trace_mask(big, "ZALES", zw, base, frame=(x0, s_px), smooth=2.0), zw, (255, 250, 240), 0.2, "traced from Steven's photo")
+    jw = (xs2.max() - xs2.min()) * s_px
+    write("zl_sub", "JEWELERS", trace_mask(small, "JEWELERS", jw, ys2.max(), frame=(xs2.min(), s_px), smooth=1.5), jw, (255, 250, 240), 0.15, "traced from Steven's photo")
+    stone_blocks(os.path.join(TEX, "zl_stone.png"))
+
+    # --- The Shoe Dept (refs/shoe-dept-*.jpg): SHOE DEPT traced (levelled 2.6 degrees;
+    # src/sd_letters.png, cleaned of the marble's veins), 0.62 m capitals; "the" in Kaushan Script (OFL); a square full stop
+    sd = level(cv2.imread(os.path.join(HERE, "src", "sd_letters.png"), 0) > 127, 2.6)
+    ys, xs = np.where(sd)
+    cap = 0.62
+    s_px = cap / (np.percentile(ys, 99) - np.percentile(ys, 1))
+    base = np.percentile(ys, 99)
+    L = trace_mask(sd, "SHOEDEPT", 0, base, frame=(xs.min(), s_px), smooth=2.5)
+    sw = (xs.max() - xs.min()) * s_px
+    L.append(letter(".", [[(sw + 0.05, 0.0), (sw + 0.15, 0.0), (sw + 0.15, 0.1), (sw + 0.05, 0.1)]]))
+    the, tw2 = set_text(os.path.join(HERE, "src", "KaushanScript-Regular.ttf"), "the", 0.42)
+    off = tw2 + 0.12
+    shifted = [{"ch": Lt["ch"], "tris": [[p[0] + off, p[1]] for p in Lt["tris"]], "loops": [[[p[0] + off, p[1]] for p in lp] for lp in Lt["loops"]]} for Lt in L]
+    the = [{"ch": Lt["ch"], "tris": [[p[0], p[1] + 0.22] for p in Lt["tris"]], "loops": [[[p[0], p[1] + 0.22] for p in lp] for lp in Lt["loops"]]} for Lt in the]
+    write("sd_name", "the SHOE DEPT.", the + shifted, off + sw + 0.15, (255, 250, 240), 0.25, "SHOE DEPT traced from Steven's photo, 'the' in Kaushan Script")
+    marble(os.path.join(TEX, "sd_marble.png"))
+
+
 if __name__ == "__main__":
     main()
     kb()
+    more()

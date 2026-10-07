@@ -177,20 +177,17 @@ static func zales(b, a, t, n, W, D, rng):
 	var G = "s6z_fix"
 	var F = "s6zf_props"
 	var head = 2.7
-	S1.upper(b, F, a, t, n, W, head, "sm_stone", 0.2)
-	K.lbox(b, F, "s6_wood", P(a, t, n, 0, 0, 0), t, n, 0.6, head + 0.15, 0.2, W - 1.2, 0.9, 0.06)
-	K.lbox(b, F, "s6_mauve", P(a, t, n, 0, 0, 0), t, n, 1.6, head + 0.25, 0.26, W - 3.2, 0.7, 0.06)
-	AK.letters(b, F, "res://tools/stores/small/zl_letters.json", P(a, t, n, W * 0.5, head + 0.5, -0.32), n, "s6_silver", "s6_silver", 0.0, 0.03)
-	AK.letters(b, F, "res://tools/stores/small/zl_sub_letters.json", P(a, t, n, W * 0.5, head + 0.32, -0.32), n, "s6_silver", "s6_silver", 0.0, 0.02)
-	# the east front: stone header and the same sign, smaller
+	# Steven's sign pass (Oct 7: design/storefronts/refs/zales-*.jpg): tan stone, a cherry panel with
+	# ZALES and JEWELERS in white lit letters traced from his photo, on both faces of the corner
+	S1.upper(b, F, a, t, n, W, head, "sg_zl_stone", 0.2)
+	zales_sign(b, F, P(a, t, n, W * 0.5, 0, -0.2), n, head)
+	# the east front: the stone header and the same sign
 	var e0 = P(a, t, n, W, 0, 0)
-	b.box(F, "sm_stone", e0 - n * (D * 0.5) + UP * ((head + b.LANE_H) * 0.5) + t * 0.1, b.abs_size(-n, D, b.LANE_H - head, 0.2, t))
-	K.lbox(b, F, "s6_mauve", e0, -n, t, D * 0.5 - 1.6, head + 0.25, 0.2, 3.2, 0.7, 0.06)
-	AK.letters(b, F, "res://tools/stores/small/zl_letters.json", e0 - n * (D * 0.5) + UP * (head + 0.5) + t * 0.26, t, "s6_silver", "s6_silver", 0.0, 0.03)
-	for s in [[0.0, 0.4]]:
-		b.box(F, "sm_stone", P(a, t, n, 0.2, head * 0.5, 0.0), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
-	b.box(F, "sm_stone", P(a, t, n, W - 0.2, head * 0.5, 0.2), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
-	b.box(F, "sm_stone", P(a, t, n, W - 0.2, head * 0.5, D - 0.2), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
+	b.box(F, "sg_zl_stone", e0 - n * (D * 0.5) + UP * ((head + b.LANE_H) * 0.5) + t * 0.1, b.abs_size(-n, D, b.LANE_H - head, 0.2, t))
+	zales_sign(b, F, e0 - n * (D * 0.5) + t * 0.2, t, head)
+	b.box(F, "sg_zl_stone", P(a, t, n, 0.2, head * 0.5, 0.0), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
+	b.box(F, "sg_zl_stone", P(a, t, n, W - 0.2, head * 0.5, 0.2), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
+	b.box(F, "sg_zl_stone", P(a, t, n, W - 0.2, head * 0.5, D - 0.2), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
 	K.ob(b, P(a, t, n, W - 0.4, 0, 0.0), P(a, t, n, W, 0, 0.4), 0.05)
 	M2.shell2(b, "s6z_shell", a, t, n, W, D, 3.0, 0.0, "s6_navy_carpet", 1.0, "ap_cream", "kb_ceiling", [2.0, 5.4], 1.0, 1.3, true)
 	M2.soffit(b, F, a, t, n, W, head, "ap_cream")
@@ -202,6 +199,14 @@ static func zales(b, a, t, n, W, D, rng):
 	var cc = P(a, t, n, 3.2, 0, 6.5)
 	b.box(G, "ap_cream", cc + UP * 1.5, Vector3(0.5, 3.0, 0.5), Transform3D.IDENTITY, ["-y", "+y"])
 	K.ob(b, cc - Vector3(0.25, 0, 0.25), cc + Vector3(0.25, 0, 0.25), 0.1)
+
+## Zales' sign on one face: a cherry panel 3.4 x 1.4 m standing 6 cm off the stone at c (the
+## panel's foot, middle), ZALES over JEWELERS in white lit letters (tools/stores/signs).
+static func zales_sign(b, F, c, nn, head):
+	var r = (-nn).cross(UP)
+	b.box(F, "sg_zl_wood", c + UP * (head + 0.25 + 0.7) + nn * 0.03, b.abs_size(r, 3.4, 1.4, 0.06, nn))
+	CH.build(b, "s6zf_sign", "res://tools/stores/signs/zl_name_logo.json", c + UP * (head + 0.88) + nn * 0.06, nn, "sg_zl_white", "sg_zl_return", "sg_zl_white", 0.01, 0.05, 0.008, "sg_zl_glow")
+	CH.build(b, "s6zf_sign", "res://tools/stores/signs/zl_sub_logo.json", c + UP * (head + 0.45) + nn * 0.06, nn, "sg_zl_white", "sg_zl_return", "", 0.01, 0.03, 0.0, "sg_zl_glow_sub")
 
 ## A glass jewellery case on a wood base, its trays lit: `o` the start, `r` along, `f` toward shoppers.
 static func jewel_case(b, G, o, r, f, w):

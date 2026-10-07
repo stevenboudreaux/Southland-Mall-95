@@ -14,12 +14,16 @@ const UP = Vector3.UP
 ## Builds the logo in `path` centred on c (the baseline's middle, on the fascia's face), facing nn.
 ## face/ret/trim: material names; standoff: gap behind the cans; depth: the cans' depth;
 ## trim_w: the trim cap's width; glow: material name for the halo ("" for none).
-static func build(b, g, path, c, nn, face, ret, trim, standoff = 0.02, depth = 0.11, trim_w = 0.012, glow = "", dyn = true):
+## roll: turns the logo in its own plane (radians, counter-clockwise as seen) about its frame's middle.
+static func build(b, g, path, c, nn, face, ret, trim, standoff = 0.02, depth = 0.11, trim_w = 0.012, glow = "", dyn = true, roll = 0.0):
 	var J = JSON.parse_string(FileAccess.get_file_as_string(path))
-	var rv = (-nn).cross(UP)
+	var rv0 = (-nn).cross(UP)
+	var rv = rv0 * cos(roll) + UP * sin(roll)
+	var up = -rv0 * sin(roll) + UP * cos(roll)
 	var wv = float(J.width)
 	var hv = float(J.cap_h)
-	var X = func(p, d): return c - rv * (wv * 0.5) + rv * float(p.x) + UP * float(p.y) + nn * d
+	var C0 = c + UP * (hv * 0.5)
+	var X = func(p, d): return C0 + rv * (float(p.x) - wv * 0.5) + up * (float(p.y) - hv * 0.5) + nn * d
 	var zf = standoff + depth
 	var sf = b.st(g, face, dyn)
 	var sr = b.st(g, ret, dyn)
@@ -34,17 +38,18 @@ static func build(b, g, path, c, nn, face, ret, trim, standoff = 0.02, depth = 0
 			var pts = []
 			for q in lp:
 				pts.append(Vector2(float(q[0]), float(q[1])))
-			_can_side(b, sr, stm, pts, X, rv, nn, standoff, zf, trim_w)
+			_can_side(b, sr, stm, pts, X, rv, up, nn, standoff, zf, trim_w)
 	if glow != "":
 		var pad = float(J.get("glow_pad", 0.3))
-		var x0 = c - rv * (wv * 0.5 + pad)
-		var x1 = c + rv * (wv * 0.5 + pad)
-		b.quad(g + "_glow", glow, [x0 - UP * pad + nn * 0.004, x1 - UP * pad + nn * 0.004, x1 + UP * (hv + pad) + nn * 0.004, x0 + UP * (hv + pad) + nn * 0.004], nn,
+		var x0 = C0 - rv * (wv * 0.5 + pad)
+		var x1 = C0 + rv * (wv * 0.5 + pad)
+		var hh = hv * 0.5 + pad
+		b.quad(g + "_glow", glow, [x0 - up * hh + nn * 0.004, x1 - up * hh + nn * 0.004, x1 + up * hh + nn * 0.004, x0 + up * hh + nn * 0.004], nn,
 			[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
 
 ## One outline: the returns (smooth where the outline curves, creased at corners) and the trim
 ## cap, a flat band just inside the face's edge standing 4 mm proud, with a lip over the return.
-static func _can_side(b, sr, stm, pts, X, rv, nn, z0, z1, tw):
+static func _can_side(b, sr, stm, pts, X, rv, up, nn, z0, z1, tw):
 	var n = pts.size()
 	if n < 3:
 		return
@@ -58,7 +63,7 @@ static func _can_side(b, sr, stm, pts, X, rv, nn, z0, z1, tw):
 		else:
 			d = d.normalized()
 			en.append(Vector2(d.y, -d.x))
-	var W3 = func(v2): return (rv * v2.x + UP * v2.y).normalized()
+	var W3 = func(v2): return (rv * v2.x + up * v2.y).normalized()
 	var lip = 0.004
 	var top = z1 - 0.006 if tw > 0.0 else z1
 	for i in n:
@@ -242,6 +247,73 @@ static func fill_mat(m, key, b):
 			_glow(m, b.tex("sg/kb_drugs_glow.png"), 0.35)
 		"kb_glow_tobacco":
 			_glow(m, b.tex("sg/kb_tobacco_glow.png"), 0.35)
+		# Blockbuster Music
+		"bb_panels":
+			m.albedo_texture = b.tex("sg/bb_panels.png"); m.roughness = 0.35; m.metallic_specular = 0.6
+		"bb_pier":
+			m.albedo_color = Color("#2c2c32"); m.roughness = 0.5
+		"bb_band":
+			m.albedo_color = Color("#f4f4f2"); m.roughness = 0.4
+			m.emission_enabled = true; m.emission = Color("#fffaf0"); m.emission_energy_multiplier = 1.2
+			m.set_meta("e_day", 0.8); m.set_meta("e_night", 1.4)
+		"bb_frame":
+			m.albedo_color = Color("#2a2a2e"); m.roughness = 0.35; m.metallic = 0.4
+		"bb_box":
+			m.albedo_color = Color("#1e1026"); m.roughness = 0.4
+		"bb_music":
+			m.albedo_texture = b.tex("sg/bb_music_face.png"); m.albedo_color = Color("#d22aa8"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#ff3cc8"); m.emission_energy_multiplier = 1.3
+			m.set_meta("e_day", 1.0); m.set_meta("e_night", 1.6)
+		"bb_music_trim":
+			m.albedo_color = Color("#7a1a66"); m.roughness = 0.35
+		"bb_music_ret":
+			m.albedo_color = Color("#2a0c26"); m.roughness = 0.5
+		"bb_glow":
+			_glow(m, b.tex("sg/bb_music_glow.png"), 0.45)
+		"bb_yellow":
+			m.albedo_color = Color("#ffc81a"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#ffcc22"); m.emission_energy_multiplier = 0.5
+			m.set_meta("e_day", 0.35); m.set_meta("e_night", 0.65)
+		"bb_blue":
+			m.albedo_color = Color("#1e3fb4"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#2a50e0"); m.emission_energy_multiplier = 0.35
+			m.set_meta("e_day", 0.25); m.set_meta("e_night", 0.45)
+		"bb_ticket_ret":
+			m.albedo_color = Color("#16163a"); m.roughness = 0.5
+		# Zales
+		"zl_stone":
+			m.albedo_texture = b.tex("sg/zl_stone.png"); m.roughness = 0.75
+		"zl_wood":
+			m.albedo_texture = b.tex("wood_dark.png"); m.albedo_color = Color(1.35, 0.85, 0.7); m.roughness = 0.45
+		"zl_white":
+			m.albedo_texture = b.tex("sg/zl_name_face.png"); m.albedo_color = Color("#fbf8f2"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#fffaf0"); m.emission_energy_multiplier = 1.1
+			m.set_meta("e_day", 0.8); m.set_meta("e_night", 1.3)
+		"zl_return":
+			m.albedo_color = Color("#3a2a20"); m.roughness = 0.45; m.metallic = 0.3
+		"zl_glow":
+			_glow(m, b.tex("sg/zl_name_glow.png"), 0.25)
+		"zl_glow_sub":
+			_glow(m, b.tex("sg/zl_sub_glow.png"), 0.25)
+		# The Shoe Dept
+		"sd_marble":
+			m.albedo_texture = b.tex("sg/sd_marble.png"); m.roughness = 0.15; m.metallic_specular = 0.7
+			m.uv1_scale = Vector3(0.5, 0.5, 1.0)
+		"sd_brass":
+			m.albedo_color = Color("#c9a24a"); m.metallic = 0.85; m.roughness = 0.2
+		"sd_white":
+			m.albedo_texture = b.tex("sg/sd_name_face.png"); m.albedo_color = Color("#fbfaf6"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#fffcf4"); m.emission_energy_multiplier = 1.1
+			m.set_meta("e_day", 0.8); m.set_meta("e_night", 1.3)
+		"sd_trim":
+			m.albedo_color = Color("#d8d6d0"); m.roughness = 0.3
+		"sd_return":
+			m.albedo_color = Color("#2e2c2a"); m.roughness = 0.45; m.metallic = 0.3
+		"sd_glow":
+			_glow(m, b.tex("sg/sd_name_glow.png"), 0.3)
 		_:
 			return false
 	return true

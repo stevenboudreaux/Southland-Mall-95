@@ -1196,7 +1196,7 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# built in full 3D from the photographs of the unchanged shop (Phase 4b)
 		preload("res://tools/stores/corn_dog_7.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
-	if sd.name in ["FOOT LOCKER", "ATHLETE'S FOOT"] and not inner_call:
+	if sd.name in ["FOOT LOCKER", "ATHLETE'S FOOT", "BLOCKBUSTER MUSIC", "THE SHOE DEPT"] and not inner_call:
 		# the facade and sign in 3D from Steven's photos (sign pass, Oct 7); the generic
 		# interior behind until the store is built (tools/stores/signs/fronts.gd)
 		load("res://tools/stores/signs/fronts.gd").build(self, g, e, a, b, n, t, Ln, sd)
