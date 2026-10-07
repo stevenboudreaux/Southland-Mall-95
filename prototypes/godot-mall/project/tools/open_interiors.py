@@ -73,6 +73,15 @@ OPEN = {
     "s35": [(156, 158, 103, 103)],
     "s36": [(159, 162, 103, 107)],
     "s20": [(149, 155, 133, 136)],
+    # Wave 9 (tools/stores/small/wave9.gd): Solarium's lobby (x -16..-10, z -86..-80), Rave
+    # (x -22..-10, z -80..-72), Concepts (x -68..-58, z 60..74), Country Fair (x -124..-118,
+    # z 60..70), Lion's Share's passage and dining room (x -50..-38, z 36..48; the closed rooms
+    # either side of the passage are obstacles). American Bank's gate is closed.
+    "n8": [(140, 142, 57, 59)],
+    "n9": [(137, 142, 60, 63)],
+    "s61": [(114, 118, 130, 136)],
+    "n42": [(86, 88, 130, 134)],
+    "n36": [(123, 128, 118, 123)],
 }
 
 

@@ -107,3 +107,24 @@ if __name__ == "__main__":
         ml.SPACE = space
         ml.main()
         shutil.move(os.path.join(HERE, "letters.json"), os.path.join(HERE, out))
+
+# Wave 9 (wave9.gd): Solarium's aqua neon, Rave's heavy italics, Country Fair's cream serif,
+# American Bank's heavy rounded white letters
+GF = "/usr/share/fonts/truetype/google-fonts/"
+W9 = [
+    ("sol_letters.json", GF + "Poppins-Medium.ttf", "solarium", 0.34, 0.01, 0.5),
+    ("rave_letters.json", os.path.join(HERE, "..", "media", "Nunito-BlackItalic.ttf"), "RAVE", 0.5, 0.03, 0.5),
+    ("cf_letters.json", DJ + "DejaVuSerif-BoldItalic.ttf", "Country Fair", 0.3, 0.0, 0.8),
+    ("ab_american.json", os.path.join(HERE, "..", "media", "Nunito-Black.ttf"), "American", 0.42, 0.0, 0.5),
+    ("ab_bank.json", os.path.join(HERE, "..", "media", "Nunito-Black.ttf"), "Bank", 0.42, 0.0, 0.5),
+]
+if __name__ == "__main__":
+    for out, font, text, cap, track, space in W9:
+        ml.HERE = HERE
+        ml.FONT = font
+        ml.TEXT = text
+        ml.CAP_H = cap
+        ml.TRACK = track
+        ml.SPACE = space
+        ml.main()
+        shutil.move(os.path.join(HERE, "letters.json"), os.path.join(HERE, out))
