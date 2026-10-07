@@ -33,6 +33,13 @@ OPEN = {
     "s19": [(131, 142, 68, 70)],
     # Woolworth (s13, tiles x 125-142, y 93-110, faces east; 36 m x 36 m with the restaurant)
     "s13": [(125, 142, 93, 110)],
+    # Wave 4 clothing stores (tools/stores/apparel/more.gd): Lerner Shop (s10, east hall),
+    # Lane Bryant (n10), Miller's Outpost (s17), Gadzooks (n35, north side), The Limited (s50)
+    "s10": [(129, 142, 111, 117)],
+    "n10": [(131, 142, 64, 67)],
+    "s17": [(129, 142, 74, 79)],
+    "n35": [(117, 122, 112, 123)],
+    "s50": [(82, 86, 110, 123)],
 }
 
 

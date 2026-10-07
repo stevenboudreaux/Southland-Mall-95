@@ -37,7 +37,9 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 	"KAY-BEE TOYS": [-34.0, -58.0, -10.0, -52.0], "GUMBALLS": [-20.0, 36.0, -10.0, 48.0],
 	"JW": [-80.0, 20.0, -74.0, 48.0], "5-7-9": [-74.0, 20.0, -68.0, 48.0], "COUNTY SEAT": [-94.0, 60.0, -86.0, 100.0],
 	"BABBAGE'S": [-132.0, 60.0, -124.0, 68.0], "SOUND SHOP": [-34.0, -64.0, -10.0, -58.0],
-	"WOOLWORTH": [-46.0, -14.0, -10.0, 22.0]}
+	"WOOLWORTH": [-46.0, -14.0, -10.0, 22.0], "LERNER SHOP": [-38.0, 22.0, -10.0, 36.0],
+	"LANE BRYANT": [-34.0, -72.0, -10.0, -64.0], "MILLER'S OUTPOST": [-38.0, -52.0, -10.0, -40.0],
+	"GADZOOKS": [-62.0, 24.0, -50.0, 48.0], "THE LIMITED": [-132.0, 20.0, -122.0, 48.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
@@ -263,6 +265,10 @@ func mat(name):
 			elif name.begins_with("gb_"):
 				# Gumballs: tools/stores/gumballs/store.gd's fill_mat(m, key, b)
 				if not load("res://tools/stores/gumballs/store.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("a2_"):
+				# the Wave 4 clothing stores: tools/stores/apparel/more.gd's fill_mat
+				if not load("res://tools/stores/apparel/more.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
 			elif name.begins_with("wl_"):
 				# Woolworth: tools/stores/woolworth/store.gd's fill_mat
@@ -1087,6 +1093,12 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# stock from the video, the layouts guessed (design/storefronts/jw.md, 579.md, county-seat.md)
 		var mod = {"JW": "jw", "5-7-9": "s579", "COUNTY SEAT": "county_seat"}[sd.name]
 		load("res://tools/stores/apparel/%s.gd" % mod).build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name in ["LERNER SHOP", "LANE BRYANT", "MILLER'S OUTPOST", "GADZOOKS", "THE LIMITED"] and not inner_call:
+		# built in full 3D on the apparel kit from the regional videos Steven sent (Hammond
+		# 1993, Pecanland 1992, the Gadzooks slideshow); layouts guessed (design/storefronts/
+		# lerner.md, lane-bryant.md, millers-outpost.md, gadzooks.md, limited.md)
+		load("res://tools/stores/apparel/more.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	if sd.name == "WOOLWORTH" and not inner_call:
 		# built in full 3D: the front from the facade record, the inside from the 1991

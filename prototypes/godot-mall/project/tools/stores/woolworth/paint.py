@@ -250,7 +250,7 @@ def slats():
 def booth_vinyl():
     """Orange-red vinyl with button tufting rows, 0.5 m square."""
     N = 128
-    a = np.zeros((N, N, 3), np.float32) + np.array([186, 72, 40], np.float32)
+    a = np.zeros((N, N, 3), np.float32) + np.array([132, 42, 34], np.float32)
     a += kb.noise(N, N, 4, 36, blur=2)[..., None]
     for k in range(0, N, 32):
         a[k:k + 2, :] *= 0.75
