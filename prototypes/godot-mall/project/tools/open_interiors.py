@@ -63,6 +63,16 @@ OPEN = {
     "n56": [(128, 129, 130, 135)],
     "s34": [(153, 155, 105, 107)],
     "s29": [(149, 153, 91, 94)],
+    # Wave 8 (tools/stores/small/wave8.gd): Cucos (x 22-36, z -86..-70), Claire's corner
+    # (x 12-20, z -16..-6), Mitchell's (x 20-24), Tee Tai's customer strip in front of its
+    # counter, Optical Outlet, Saadi's (x 2-16, z 66-74). Golden Chain Gang is served over a
+    # counter at the front line: nothing to open.
+    "s42": [(159, 165, 57, 64)],
+    "s30": [(154, 157, 92, 96)],
+    "s31": [(158, 159, 91, 96)],
+    "s35": [(156, 158, 103, 103)],
+    "s36": [(159, 162, 103, 107)],
+    "s20": [(149, 155, 133, 136)],
 }
 
 

@@ -89,3 +89,21 @@ if __name__ == "__main__":
         ml.SPACE = space
         ml.main()
         shutil.move(os.path.join(HERE, "letters.json"), os.path.join(HERE, out))
+
+# Wave 8 (wave8.gd): Optical Outlet's fat round letters, Tee Tai's gold brush script,
+# Saadi's heavy serif
+W8 = [
+    ("oo_letters.json", os.path.join(HERE, "..", "media", "Nunito-Black.ttf"), "Optical Outlet", 0.36, 0.01, 0.5),
+    ("tt_letters.json", os.path.join(HERE, "..", "gumballs", "MrDafoe-Regular.ttf"), "Tee Tai's", 0.42, 0.0, 1.3),
+    ("saadi_letters.json", DJ + "DejaVuSerif-Bold.ttf", "Saadi's", 0.40, 0.02, 0.5),
+]
+if __name__ == "__main__":
+    for out, font, text, cap, track, space in W8:
+        ml.HERE = HERE
+        ml.FONT = font
+        ml.TEXT = text
+        ml.CAP_H = cap
+        ml.TRACK = track
+        ml.SPACE = space
+        ml.main()
+        shutil.move(os.path.join(HERE, "letters.json"), os.path.join(HERE, out))
