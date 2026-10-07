@@ -66,12 +66,12 @@ static func card(b, c, facing, cell, w, h, ceil):
 	b.cur_color = Color.WHITE
 
 ## Wall bays down both side walls from d0 to d1 (media kit), stock sheets per side.
-static func side_bays(b, G, a, t, n, W, d0, d1, sheets_l, sheets_r, rng, back_mat = "md_white", boards = [0.4, 0.75, 1.1, 1.45, 1.8], depth = 0.34):
+static func side_bays(b, G, a, t, n, W, d0, d1, sheets_l, sheets_r, rng, back_mat = "md_white", boards = [0.4, 0.75, 1.1, 1.45, 1.8], depth = 0.34, frame_mat = "md_white"):
 	var d = d0
 	while d + 1.22 <= d1:
 		var g1 = G if d < 10.0 else G + "2"
-		K.bay(b, g1, g1, P(a, t, n, SIDE, 0, d + 1.22), n, t, 1.22, boards, sheets_r, rng, depth, back_mat)
-		K.bay(b, g1, g1, P(a, t, n, W - SIDE, 0, d), -n, -t, 1.22, boards, sheets_l, rng, depth, back_mat)
+		K.bay(b, g1, g1, P(a, t, n, SIDE, 0, d + 1.22), n, t, 1.22, boards, sheets_r, rng, depth, back_mat, frame_mat)
+		K.bay(b, g1, g1, P(a, t, n, W - SIDE, 0, d), -n, -t, 1.22, boards, sheets_l, rng, depth, back_mat, frame_mat)
 		d += 1.22
 	K.ob(b, P(a, t, n, SIDE, 0, d0), P(a, t, n, SIDE + depth + 0.05, 0, d), 0.08)
 	K.ob(b, P(a, t, n, W - SIDE, 0, d0), P(a, t, n, W - SIDE - depth - 0.05, 0, d), 0.08)
@@ -99,7 +99,7 @@ static func gnc(b, a, t, n, W, D, rng):
 	side_bays(b, G, a, t, n, W, 1.0, D - 2.6, ["hba"], ["hba", "boxes"], rng)
 	# the counter across the back
 	K.counter(b, G, "smg_small", P(a, t, n, W - 0.6, 0, D - 2.0), -t, n, W - 1.8, "md_ss_counter", rng)
-	card(b, P(a, t, n, W * 0.5, 2.1, 3.0), -n, 0, 0.55, 0.55, 3.0)
+	card(b, P(a, t, n, W * 0.5, 2.1, 3.0), -n, 2, 0.55, 0.55, 3.0)
 	card(b, P(a, t, n, W * 0.5, 2.1, 7.5), -n, 1, 0.55, 0.55, 3.0)
 
 # ------------------------------------------------------------------ MasterCuts
@@ -244,7 +244,7 @@ static func wicks(b, a, t, n, W, D, rng):
 		K.stock_row(b, G, P(a, t, n, 3.85, 0, 0.1 + k * 0.3), -t, n, 0.0, 3.5, y, 0.3, -0.05, "candles", rng)
 	K.ob(b, P(a, t, n, 0.0, 0, -0.15), P(a, t, n, 4.2, 0, 1.1), 0.05)
 	M2.shell2(b, "smw_shell", a, t, n, W, D, 2.9, 0.0, "a2_carpet_mauve", 1.0, "sm_oak_wall", "kb_ceiling", [1.6, 4.0], 1.0, 0.9)
-	side_bays(b, G, a, t, n, W, 1.4, D - 2.3, ["candles"], ["candles", "gifts"], rng, "sm_oak", [0.4, 0.75, 1.1, 1.45, 1.8], 0.36)
+	side_bays(b, G, a, t, n, W, 1.4, D - 2.3, ["candles"], ["candles", "gifts"], rng, "sm_oak", [0.4, 0.75, 1.1, 1.45, 1.8], 0.36, "sm_oak")
 	# tiered tables of candles in the middle: three stepped oak tiers each
 	for dd in [3.5, 6.6]:
 		var c0 = P(a, t, n, 3.0, 0, dd)
@@ -346,7 +346,7 @@ static func fill_mat(m, key, b):
 			m.albedo_texture = b.tex("wood_dark.png"); m.roughness = 0.7
 			m.albedo_color = Color(1.6, 1.3, 1.0)
 		"wainscot":
-			m.albedo_texture = b.tex("wood_dark.png"); m.roughness = 0.5
+			m.albedo_color = Color("#3e2618"); m.roughness = 0.5
 		"red_box":
 			m.albedo_color = Color("#8e1424"); m.roughness = 0.4; m.metallic_specular = 0.5
 		"red_letter":
@@ -355,8 +355,8 @@ static func fill_mat(m, key, b):
 		"red_side":
 			m.albedo_color = Color("#7a1218"); m.roughness = 0.5
 		"flame":
-			m.albedo_color = Color("#ff6a20")
-			K.emit(m, Color("#ff5010"), 2.0)
+			m.albedo_color = Color("#e83a10")
+			K.emit(m, Color("#ff2a08"), 1.3)
 		"neon_pink":
 			m.albedo_color = Color("#ffe0ee")
 			m.emission_enabled = true; m.emission = Color("#ff9ac8"); m.emission_energy_multiplier = 3.0

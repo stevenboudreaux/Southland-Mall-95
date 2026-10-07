@@ -106,16 +106,16 @@ static func stock_row(b, gm, o, r, f, x0, x1, y, space, depth, sheet, rng):
 
 ## A white wall bay: back panel, kick base, shelf boards with stock, uprights.
 ## `boards`: the shelf heights; `sheets`: the stock sheet for each level (cycled).
-static func bay(b, G, gm, o, r, f, w, boards, sheets, rng, depth = 0.36, back_mat = "md_white"):
+static func bay(b, G, gm, o, r, f, w, boards, sheets, rng, depth = 0.36, back_mat = "md_white", frame_mat = "md_white"):
 	var top = boards[boards.size() - 1]
 	b.quad(G, back_mat, [L(o, r, f, 0, 0.12, 0.01), L(o, r, f, w, 0.12, 0.01), L(o, r, f, w, top + 0.3, 0.01), L(o, r, f, 0, top + 0.3, 0.01)], f,
 		[Vector2(0, 0), Vector2(w / 0.6, 0), Vector2(w / 0.6, (top + 0.18) / 0.6), Vector2(0, (top + 0.18) / 0.6)])
-	lbox(b, G, "md_white", o, r, f, 0.0, 0.0, 0.0, w, 0.12, depth + 0.03, ["-y", "-z"])
+	lbox(b, G, frame_mat, o, r, f, 0.0, 0.0, 0.0, w, 0.12, depth + 0.03, ["-y", "-z"])
 	for x in [0.0, w - 0.025]:
-		lbox(b, G, "md_white", o, r, f, x, 0.12, 0.01, 0.025, top + 0.18 - 0.12, depth, ["-y", "-z"])
+		lbox(b, G, frame_mat, o, r, f, x, 0.12, 0.01, 0.025, top + 0.18 - 0.12, depth, ["-y", "-z"])
 	var levels = [0.12]
 	for yb in boards:
-		lbox(b, G, "md_white", o, r, f, 0.025, yb - 0.022, 0.01, w - 0.05, 0.022, depth - 0.01, ["-z"])
+		lbox(b, G, frame_mat, o, r, f, 0.025, yb - 0.022, 0.01, w - 0.05, 0.022, depth - 0.01, ["-z"])
 		levels.append(yb)
 	for i in levels.size() - 1:
 		var y = levels[i]

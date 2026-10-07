@@ -16,6 +16,10 @@ sys.path.insert(0, os.path.join(HERE, "..", "kay_bee"))
 sys.path.insert(0, os.path.join(HERE, "..", "media"))
 import paint_store as kb   # noqa: E402
 import paint as md         # noqa: E402
+import importlib.util
+_spec = importlib.util.spec_from_file_location("wl_paint", os.path.join(HERE, "..", "woolworth", "paint.py"))
+wlp = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(wlp)
 
 OUT = os.path.join(HERE, "..", "..", "..", "tex", "sm")
 MD_OUT = os.path.join(HERE, "..", "..", "..", "tex", "md")
@@ -144,7 +148,7 @@ def cards():
         x0, y0 = i * c, 3 * c
         d.rectangle([x0, y0, x0 + c, y0 + c], fill=(150, 20, 34))
         d.rectangle([x0 + 8 * SS, y0 + 8 * SS, x0 + c - 8 * SS, y0 + c * 0.42], fill=(250, 244, 230))
-        md.cover_art(d, x0 + 12 * SS, y0 + 12 * SS, c - 24 * SS, c * 0.42 - 16 * SS, rng, dark=(120, 70, 40))
+        wlp.food(d, x0 + 12 * SS, y0 + 12 * SS, c - 24 * SS, c * 0.42 - 16 * SS, rng, ["sandwich", "burger", "fries", "salad"][i])
         for k in range(5):
             y = y0 + c * 0.47 + k * 26 * SS
             kb.scribble(d, x0 + 14 * SS, y + 4 * SS, rng.uniform(100, 150) * SS, 12 * SS, (255, 240, 220), rng)

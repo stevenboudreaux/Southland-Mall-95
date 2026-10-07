@@ -123,6 +123,9 @@ static func karmelkorn(b, a, t, n, W, D, rng):
 	var head = 2.7
 	S1.upper(b, F, a, t, n, W, head, "s6_yellow", 0.25)
 	AK.letters(b, F, "res://tools/stores/small/kk_letters.json", P(a, t, n, W * 0.5, head + 0.5, -0.25), n, "s6_kk_red", "s6_kk_edge", 0.02, 0.07)
+	# the deep red drop shadow behind the letters (record)
+	var rvk = (-n).cross(UP)
+	AK.letters(b, F, "res://tools/stores/small/kk_letters.json", P(a, t, n, W * 0.5, head + 0.5, -0.25) + rvk * 0.05 - UP * 0.05, n, "s6_kk_shadow", "s6_kk_shadow", 0.0, 0.02)
 	# the bulkhead wraps the corner: the east front (u = W, along d)
 	var e0 = P(a, t, n, W, 0, 0)
 	b.box(F, "s6_yellow", e0 - n * (D * 0.5) + UP * ((head + b.LANE_H) * 0.5) + t * 0.125, b.abs_size(-n, D, b.LANE_H - head, 0.25, t))
@@ -243,6 +246,8 @@ static func fill_mat(m, key, b):
 			K.emit(m, Color("#e83028"), 0.6)
 		"kk_edge":
 			m.albedo_color = Color("#f4e6c4"); m.roughness = 0.4
+		"kk_shadow":
+			m.albedo_color = Color("#6a0c10"); m.roughness = 0.5
 		"kk_counter":
 			m.albedo_color = Color("#c8141c"); m.roughness = 0.35; m.metallic_specular = 0.5
 		"popcorn":
@@ -251,8 +256,8 @@ static func fill_mat(m, key, b):
 		"mauve":
 			m.albedo_color = Color("#8a5a78"); m.roughness = 0.4; m.metallic_specular = 0.5
 		"silver":
-			m.albedo_color = Color("#d8dadf"); m.metallic = 0.7; m.roughness = 0.3
-			K.emit(m, Color("#c0c4cc"), 0.5)
+			m.albedo_color = Color("#a8acb4"); m.metallic = 0.7; m.roughness = 0.35
+			K.emit(m, Color("#9a9ea6"), 0.25)
 		"jewels":
 			m.albedo_texture = b.tex("sm/jewels.png"); m.roughness = 0.2; m.metallic_specular = 0.8
 			K.emit_tex(m, 0.6)

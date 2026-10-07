@@ -51,7 +51,7 @@ MORE = [
     ("rs_letters.json", DJ + "DejaVuSerif-BoldItalic.ttf", "Radio Shack", 0.30, 0.0, 0.6),
     ("bd_letters.json", os.path.join(HERE, "..", "gumballs", "MrDafoe-Regular.ttf"), "B. Dalton", 0.5, 0.0, 0.5),
     ("bd_sub_letters.json", DJ + "DejaVuSerif.ttf", "BOOKSELLER", 0.09, 0.2, 0.9),
-    ("kk_letters.json", os.path.join(HERE, "..", "woolworth", "RobotoSlab-ExtraBold.ttf"), "Karmelkorn", 0.62, 0.0, 0.5),
+    ("kk_letters.json", os.path.join(HERE, "..", "woolworth", "RobotoSlab-ExtraBold.ttf"), "KARMELKORN", 0.5, 0.03, 0.5),
     ("zl_letters.json", "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", "ZALES", 0.34, 0.06, 0.5),
     ("zl_sub_letters.json", "/usr/share/fonts/truetype/freefont/FreeSansBold.ttf", "JEWELERS", 0.11, 0.2, 0.5),
 ]
