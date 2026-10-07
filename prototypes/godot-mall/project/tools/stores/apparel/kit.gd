@@ -217,22 +217,22 @@ static func mannequin(b, c, facing, top_col, bot_col, s = 1.0):
 	var S = "ap_small"
 	var r = facing.cross(UP)
 	b.cur_color = Color("#3a3a3e")
-	b.cyl(S, "vcolor", c, 0.18, 0.18, 0.02, 12, true, false, true)
-	b.cyl(S, "vcolor", c, 0.012, 0.012, 0.45 * s, 6, false, false, true)
+	b.cyl(S, "ap_mq", c, 0.18, 0.18, 0.02, 12, true, false, true)
+	b.cyl(S, "ap_mq", c, 0.012, 0.012, 0.45 * s, 6, false, false, true)
 	b.cur_color = Color(bot_col)
 	for sd in [-1.0, 1.0]:
-		b.cyl(S, "vcolor_matte", c + r * (0.09 * sd * s) + UP * 0.05, 0.065 * s, 0.075 * s, 0.9 * s, 10, false, false, true)
-	b.cyl(S, "vcolor_matte", c + UP * 0.9 * s, 0.17 * s, 0.17 * s, 0.12 * s, 12, false, false, true)
+		b.cyl(S, "ap_mq_matte", c + r * (0.09 * sd * s) + UP * 0.05, 0.065 * s, 0.075 * s, 0.9 * s, 10, false, false, true)
+	b.cyl(S, "ap_mq_matte", c + UP * 0.9 * s, 0.17 * s, 0.17 * s, 0.12 * s, 12, false, false, true)
 	b.cur_color = Color(top_col)
-	b.cyl(S, "vcolor_matte", c + UP * 1.0 * s, 0.17 * s, 0.21 * s, 0.42 * s, 12, true, false, true)
+	b.cyl(S, "ap_mq_matte", c + UP * 1.0 * s, 0.17 * s, 0.21 * s, 0.42 * s, 12, true, false, true)
 	for sd in [-1.0, 1.0]:
-		b.cyl(S, "vcolor_matte", c + r * (0.23 * sd * s) + UP * 0.78 * s, 0.05 * s, 0.06 * s, 0.62 * s, 8, false, false, true)
+		b.cyl(S, "ap_mq_matte", c + r * (0.23 * sd * s) + UP * 0.78 * s, 0.05 * s, 0.06 * s, 0.62 * s, 8, false, false, true)
 	# a small egg-shaped head on a neck (realistic proportions, no features)
 	b.cur_color = Color("#e8e6e0")
-	b.cyl(S, "vcolor", c + UP * 1.42 * s, 0.04 * s, 0.04 * s, 0.07 * s, 8, false, false, true)
-	b.cyl(S, "vcolor", c + UP * 1.49 * s, 0.045 * s, 0.075 * s, 0.07 * s, 10, false, false, true)
-	b.cyl(S, "vcolor", c + UP * 1.56 * s, 0.075 * s, 0.07 * s, 0.07 * s, 10, false, false, true)
-	b.cyl(S, "vcolor", c + UP * 1.63 * s, 0.07 * s, 0.03 * s, 0.07 * s, 10, true, false, true)
+	b.cyl(S, "ap_mq", c + UP * 1.42 * s, 0.04 * s, 0.04 * s, 0.07 * s, 8, false, false, true)
+	b.cyl(S, "ap_mq", c + UP * 1.49 * s, 0.045 * s, 0.075 * s, 0.07 * s, 10, false, false, true)
+	b.cyl(S, "ap_mq", c + UP * 1.56 * s, 0.075 * s, 0.07 * s, 0.07 * s, 10, false, false, true)
+	b.cyl(S, "ap_mq", c + UP * 1.63 * s, 0.07 * s, 0.03 * s, 0.07 * s, 10, true, false, true)
 	b.cur_color = Color.WHITE
 	ob(b, c - Vector3(0.25, 0, 0.25), c + Vector3(0.25, 0, 0.25), 0.05)
 
@@ -397,6 +397,12 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#f6f6f2"); m.roughness = 0.35
 			m.emission_enabled = true; m.emission = Color("#f0f0ea"); m.emission_energy_multiplier = 0.4
 			m.set_meta("e_day", 0.3); m.set_meta("e_night", 0.5)
+		"mq", "mq_matte":
+			# mannequins are dynamic, so lit only by probes, and went black in the dark windows at
+			# night (Demo 11 check): their vertex colours plus a little light of their own
+			m.vertex_color_use_as_albedo = true; m.roughness = 0.85 if key == "mq_matte" else 0.5
+			m.emission_enabled = true; m.emission = Color(0.22, 0.21, 0.2); m.emission_energy_multiplier = 1.0
+			m.set_meta("e_day", 0.6); m.set_meta("e_night", 1.0)
 		"letterdark":
 			m.albedo_color = Color("#141416"); m.roughness = 0.55
 		_:
