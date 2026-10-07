@@ -7,6 +7,7 @@
 ## Frame: kit.gd's. u runs from the edge's start (x = -74, JW's side, the viewer's left)
 ## to Foot Locker's side (u = 6); d runs into the store (-z).
 
+const CH = preload("res://tools/stores/signs/channel.gd")
 const K = preload("res://tools/stores/apparel/kit.gd")
 const W = 6.0
 const D = 28.0
@@ -41,21 +42,13 @@ static func front(b, g, a, t, n):
 	# a white header over the glass, white bulkhead above
 	b.box(g, "ap_white", P(a, t, n, W * 0.5, (HEAD + HTOP) * 0.5, -0.04), b.abs_size(t, W, HTOP - HEAD, 0.08, n))
 	b.quad("ap_shell", "ap_white", [P(a, t, n, 0, HTOP, 0), P(a, t, n, W, HTOP, 0), P(a, t, n, W, LH, 0), P(a, t, n, 0, LH, 0)], n)
-	# the steel triangle, point down, hung over the doors, and the numerals across it
-	var rv = (-n).cross(UP)
-	var tc = P(a, t, n, W * 0.5, 0, 0) + n * 0.1
-	var tw = 2.1
-	var ttop = HTOP - 0.02
-	var tbot = HEAD - 0.42
-	var s = b.st("apf_props", "ap_steel", true)
-	var p0 = tc - rv * (tw * 0.5) + UP * ttop
-	var p1 = tc + rv * (tw * 0.5) + UP * ttop
-	var p2 = tc + UP * tbot
-	b.tri(s, p0, p1, p2, Vector2(0, 0), Vector2(1, 0), Vector2(0.5, 1), n)
-	for e in [[p0, p2], [p2, p1], [p1, p0]]:
-		var en = ((e[1] - e[0]).cross(-n)).normalized()
-		b.quad("apf_props", "ap_steel", [e[0], e[1], e[1] - n * 0.06, e[0] - n * 0.06], en, [], true)
-	K.letters(b, "apf_props", "res://tools/stores/apparel/s579_letters.json", tc + UP * (HEAD + 0.08), n, "ap_yellow", "ap_steel", 0.03, 0.07)
+	# Steven's sign pass (Oct 7: design/storefronts/photos/579): the burgundy oval ring on a silver
+	# plate, "5.7.9" raised in burgundy, centred on the header (replaces the steel triangle)
+	var tc = P(a, t, n, W * 0.5, 0, -0.08)
+	var oc = tc + UP * 3.52
+	CH.build(b, "apf_sign", "res://tools/stores/signs/s579_plate_logo.json", oc, n, "sg_s579_silver", "sg_s579_silver", "", 0.0, 0.04, 0.0)
+	CH.build(b, "apf_sign", "res://tools/stores/signs/s579_ring_logo.json", oc, n, "sg_s579_red", "sg_s579_red_dark", "", 0.0, 0.09, 0.0, "", true)
+	CH.build(b, "apf_sign", "res://tools/stores/signs/s579_digits_logo.json", oc, n, "sg_s579_red", "sg_s579_red_dark", "", 0.04, 0.09, 0.0)
 	# all-glass front in white frames; glass doors standing open in the middle
 	for u in [0.0, 1.0, DOOR0 - 0.06, DOOR1, 5.0 - 0.06, W - 0.06]:
 		b.box(g, "ap_white", P(a, t, n, u + 0.03, HEAD * 0.5, 0.04), b.abs_size(t, 0.06, HEAD, 0.08, n))

@@ -19,3 +19,7 @@
 
 ## Files
 `tools/stores/small/wave7.gd` (the nine Wave 7 shops, materials `w7_*`), `paint7.py` → `tex/w7/`, `make_signs.py` (letters). Hooks in `tools/build_mall.gd` and `tools/open_interiors.py`.
+
+## Sign pass (Oct 7, 2026)
+See photos/ (Steven's photos for this store) and tools/stores/signs/ (make_logos.py batch3, channel.gd sg_* materials).
+Lit white transom on both faces, framed in cherry with two uprights and an arched muntin; "Gordon's" over JEWELERS in black (Old Standard Bold, OFL). Replaces the flat painted sign.

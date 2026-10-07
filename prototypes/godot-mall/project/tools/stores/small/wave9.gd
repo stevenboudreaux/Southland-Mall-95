@@ -7,6 +7,7 @@
 ##
 ## Frame: P(a, t, n, u, y, d) = a + t u - n d + y up, u along the frontage, d into the store.
 
+const CH = preload("res://tools/stores/signs/channel.gd")
 const K = preload("res://tools/stores/media/kit.gd")
 const AK = preload("res://tools/stores/apparel/kit.gd")
 const M2 = preload("res://tools/stores/apparel/more.gd")
@@ -115,13 +116,15 @@ static func rave(b, a, t, n, W, D, rng):
 	var head = 2.8
 	S1.upper(b, F, a, t, n, W, head, "w9_dark_grey", 0.12)
 	var o = P(a, t, n, 0, 0, 0)
-	K.lbox(b, F, "w9_brushed", o, t, n, 0.4, head + 0.1, 0.12, W - 0.8, 1.55, 0.06)
-	K.lbox(b, F, "w9_brushed_dark", o, t, n, W * 0.5 - 2.6, head + 0.25, 0.18, 4.6, 1.3, 0.06)
-	K.lbox(b, F, "w9_brushed", o, t, n, W * 0.5 - 2.1, head + 0.18, 0.24, 4.6, 1.2, 0.06)
-	K.lbox(b, F, "w8_white", o, t, n, W * 0.5 - 1.6, head + 0.32, 0.3, 3.2, 0.95, 0.08)
-	AK.letters(b, F, LET + "rave_letters.json", P(a, t, n, W * 0.5, head + 0.55, -0.38), n, "w9_rave_red", "w9_rave_red", 0.0, 0.06)
-	# the speed line: a white slice through the letters
-	b.box(F, "w8_white", P(a, t, n, W * 0.5, head + 0.86, -0.46), b.abs_size(t, 3.0, 0.035, 0.03, n))
+	# Steven's sign pass (Oct 7: design/storefronts/photos/rave): a black box sign hung out over
+	# the entrance, its dark glass face carrying RAVE in pink lit letters
+	var bw = 3.4
+	var bc = P(a, t, n, W * 0.5, head + 0.2, -0.75)
+	var rv = (-n).cross(UP)
+	b.box(F, "sg_rave_box", bc + UP * 0.65, b.abs_size(t, bw, 1.3, 1.2, n))
+	b.box(F, "sg_rave_glass", bc + UP * 0.65 + n * 0.605, b.abs_size(t, bw - 0.16, 1.14, 0.01, n))
+	b.box(F, "sg_rave_box", bc + UP * (1.3 + (b.LANE_H - head - 0.2 - 1.3) * 0.5), b.abs_size(t, 0.08, b.LANE_H - head - 1.5, 0.08, n))
+	CH.build(b, "w9rf_sign", "res://tools/stores/signs/rave_name_logo.json", bc + UP * 0.33 + n * 0.61, n, "sg_rave_pink", "sg_rave_pink_dark", "", 0.0, 0.03, 0.0, "sg_rave_glow")
 	W8.pier(b, F, "w9_dark_grey", a, t, n, 0.0, 0.2, head, 0.12)
 	W8.pier(b, F, "w9_dark_grey", a, t, n, W - 0.2, W, head, 0.12)
 	W8.glass_front(b, F, a, t, n, 0.2, W - 0.2, head, W * 0.5, 2.2, "md_black", 0.3)

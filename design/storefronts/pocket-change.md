@@ -87,3 +87,7 @@ The machines' titles and art are original: real titles and logos are not reprodu
 - **A 3-player coin pusher behind it:** the Silver Skis structure, with a marquee in the style of Steven's Coin Galaxy graphic.
   - It ships as **COIN COMET**, an original name, editable, with original space art on the translites.
   - Module `pusher.gd`, `paint_pusher.py`.
+
+## Sign pass (Oct 7, 2026)
+See photos/ (Steven's photos for this store) and tools/stores/signs/ (make_logos.py batch3, channel.gd sg_* materials).
+Steven: "make the pocket change facade a little bigger, more similar to heights of nearby stores." Opening head 2.4 → 2.9 m, fascia top 3.45 → 4.3 m, the stepped tile two rows taller, letters 5 % bigger. (The photo's proportions were the source for the old sizes.)

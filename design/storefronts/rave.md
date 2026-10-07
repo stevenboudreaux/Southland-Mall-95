@@ -18,3 +18,7 @@
 
 ## Files
 `tools/stores/small/wave9.gd`, `paint9.py` → `tex/w9/`, `make_signs.py`. Hooks in `tools/build_mall.gd` and `tools/open_interiors.py`.
+
+## Sign pass (Oct 7, 2026)
+See photos/ (Steven's photos for this store) and tools/stores/signs/ (make_logos.py batch3, channel.gd sg_* materials).
+A black box sign hung out over the entrance (3.4 x 1.3 m, 1.2 m deep, on a stem to the ceiling), dark glass face, RAVE in pink lit letters (Poppins Black, OFL, slanted 14 degrees). Replaces the brushed-steel panels and red letters.

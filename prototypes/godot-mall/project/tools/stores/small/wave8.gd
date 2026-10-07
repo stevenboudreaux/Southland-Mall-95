@@ -8,6 +8,7 @@
 ##
 ## Frame: P(a, t, n, u, y, d) = a + t u - n d + y up, u along the frontage, d into the store.
 
+const CH = preload("res://tools/stores/signs/channel.gd")
 const K = preload("res://tools/stores/media/kit.gd")
 const AK = preload("res://tools/stores/apparel/kit.gd")
 const M2 = preload("res://tools/stores/apparel/more.gd")
@@ -274,13 +275,13 @@ static func claires(b, a, t, n, W, D, rng):
 	var G = "w8l_fix"
 	var head = 2.8
 	S1.upper(b, F, a, t, n, W, head, "w8_marble", 0.16)
-	K.lbox(b, F, "w8_white", P(a, t, n, 0, 0, 0), t, n, W * 0.5 - 1.7, head + 0.25, 0.16, 3.4, 1.06, 0.14)
-	sign_q(b, F, "w8_claire_sign", a, t, n, W * 0.5, 3.2, head + 0.28, head + 1.28, -0.305)
+	# Steven's sign pass (Oct 7: design/storefronts/photos/claires): a white box sign, "Claire's" in
+	# black letters on red returns (a red glow round them), ACCESSORIES in red, on both faces
+	claires_sign(b, F, P(a, t, n, W * 0.5, 0, -0.16), n, head)
 	# the west front: marble over a second opening, a smaller sign box
 	var wn = -t
 	b.box(F, "w8_marble", P(a, t, n, -0.08, (head + b.LANE_H) * 0.5, 2.0), b.abs_size(n, 4.0, b.LANE_H - head, 0.16, t))
-	K.lbox(b, F, "w8_white", P(a, t, n, 0, 0, 0), -n, wn, 0.6, head + 0.3, 0.16, 2.8, 0.92, 0.14)
-	K.fq(b, F, "w8_claire_sign", P(a, t, n, -0.305, 0, 0), -n, wn, 0.7, 3.3, head + 0.33, head + 1.18, 0.0)
+	claires_sign(b, F, P(a, t, n, -0.16, 0, 2.0), wn, head)
 	# piers: the corner (wrapping both fronts), the far end of each front
 	b.box(F, "w8_marble", P(a, t, n, 0.17, head * 0.5, 0.17), b.abs_size(t, 0.66, head, 0.66, n), Transform3D.IDENTITY, ["-y"])
 	K.ob(b, P(a, t, n, -0.16, 0, -0.16), P(a, t, n, 0.5, 0, 0.5), 0.05)
@@ -556,6 +557,14 @@ static func bust(b, G, c, n, t):
 	b.cyl(G, "w8_velvet_black", c + UP * 0.21, 0.055, 0.045, 0.2, 10, true, false)
 	b.cyl(G, "w8_gold", c + UP * 0.31, 0.058, 0.058, 0.012, 12, false, false)
 	b.cyl(G, "w8_gold", c + UP * 0.22, 0.1, 0.1, 0.01, 14, false, false)
+
+## Claire's box sign on one face: c the foot's middle on the fascia, facing nn: 2.4 x 1.55 m, 0.14 deep.
+static func claires_sign(b, F, c, nn, head):
+	var r = (-nn).cross(UP)
+	var y0 = head + 0.08
+	b.box(F, "sg_cla_box", c + UP * (y0 + 0.775) + nn * 0.07, b.abs_size(r, 2.4, 1.55, 0.14, nn))
+	CH.build(b, "w8lf_sign", "res://tools/stores/signs/cla_name_logo.json", c + UP * (y0 + 0.36) + nn * 0.14, nn, "sg_cla_black", "sg_cla_red", "", 0.0, 0.05, 0.0, "sg_cla_glow")
+	CH.build(b, "w8lf_sign", "res://tools/stores/signs/cla_acc_logo.json", c + UP * (y0 + 0.12) + nn * 0.14, nn, "sg_cla_red", "sg_cla_red", "", 0.0, 0.015, 0.0)
 
 # ------------------------------------------------------------------ materials
 ## "w8_<key>" (build_mall.gd's mat() calls this).

@@ -24,15 +24,16 @@ const F0 = 1.5          # fascia ends (it spans both glass columns)
 const F1 = 6.5
 const COL = 0.2         # glass-block column: one block wide and one deep, standing proud of the wall
 const PROUD = 0.2       # how far the columns and the fascia stand out into the hall
-const HEAD = 2.4        # top of the opening = bottom of the fascia (11 blocks + a plinth)
-const FTOP = 3.45       # top of the fascia (~1.05 m tall in the photo)
+const HEAD = 2.9        # top of the opening = bottom of the fascia (raised Oct 7: Steven, "more similar to heights of nearby stores")
+const FTOP = 4.3        # top of the fascia (1.4 m; was 1.05 m from the photo)
 const TILE = 0.3        # 12-inch tile
-const STEPS = [9, 8, 7, 6, 5]   # tile rows in each column, stepping away from the fascia (photo)
+const STEPS = [11, 10, 9, 8, 7]   # tile rows in each column, stepping away from the fascia (photo; two rows added Oct 7)
 const WALL_T = 0.8      # the front wall with its blue returns (the photo's return runs back ~0.8 m)
 const SIDE = 0.15       # party walls' inner faces from the unit edges
 const CEIL = 3.6        # black ceiling inside
-const TEXT_U0 = 6.12    # the sign starts 0.42 m in from the fascia's left end (viewer's left = high u)
-const TEXT_Y = 2.90     # baseline: the caps sit in the fascia's upper part (photo)
+const TEXT_U0 = 6.3     # the sign starts 0.2 m in from the fascia's left end (viewer's left = high u)
+const TEXT_Y = 3.43     # baseline: the caps sit a little above the fascia's middle
+const LS = 1.05         # letter scale (Oct 7: a touch bigger with the taller fascia)
 const LETTER_OFF = 0.04     # on stand-offs: they throw a shadow on the tile
 const LETTER_D = 0.07
 const RIGHT_BACK = 3.0  # the right-hand line of machines starts this much further in (Steven, Oct 6)
@@ -138,7 +139,7 @@ static func letters(b, g, a, t, n):
 	var J = JSON.parse_string(FileAccess.get_file_as_string("res://tools/stores/pocket_change/letters.json"))
 	var d_back = -PROUD - LETTER_OFF
 	var d_face = d_back - LETTER_D
-	var X = func(p, d): return P(a, t, n, TEXT_U0 - float(p[0]), TEXT_Y + float(p[1]), d)
+	var X = func(p, d): return P(a, t, n, TEXT_U0 - float(p[0]) * LS, TEXT_Y + float(p[1]) * LS, d)
 	for L in J.letters:
 		var tr = L.tris
 		var s = b.st(g, "pc_store_letterface", true)

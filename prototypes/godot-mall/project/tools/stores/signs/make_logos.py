@@ -550,7 +550,85 @@ def more():
     marble(os.path.join(TEX, "sd_marble.png"))
 
 
+def shift(L, dx, dy=0.0, shear=0.0):
+    """Move letters by (dx, dy) metres, slanting by shear (x += shear * y)."""
+    f = lambda p: [round(p[0] + dx + shear * p[1], 5), round(p[1] + dy, 5)]
+    return [{"ch": l["ch"], "tris": [f(p) for p in l["tris"]], "loops": [[f(p) for p in lp] for lp in l["loops"]]} for l in L]
+
+
+def bbox(L):
+    pts = [p for l in L for lp in l["loops"] for p in lp]
+    return min(p[0] for p in pts), min(p[1] for p in pts), max(p[0] for p in pts), max(p[1] for p in pts)
+
+
+def batch3():
+    """Payless ShoeSource, Claire's, Gordon's, Rave, 5-7-9, Lady Foot Locker (Steven's photos, Oct 7)."""
+    SRC = os.path.join(HERE, "src")
+    # --- Payless (photos/payless/01): yellow letters and the two orange O's traced from the photo
+    # straightened to the fascia; 6.8 m across
+    yl = cv2.imread(os.path.join(SRC, "pay_yellow.png"), 0) > 127
+    og = cv2.imread(os.path.join(SRC, "pay_orange.png"), 0) > 127
+    ys, xs = np.where(yl | og)
+    pw = 9.0
+    s_px = pw / (xs.max() - xs.min())
+    fr = (xs.min(), s_px)
+    base = ys.max()
+    write("pay_name", "Payless ShoeSource", trace_mask(yl, "PaylessShoeSurce", pw, base, frame=fr, smooth=3.0), pw, (255, 210, 40), 0.3, "traced from Steven's photo")
+    write("pay_dots", "oo", trace_mask(og, "oo", pw, base, frame=fr, smooth=3.0), pw, (255, 120, 30), 0.2, "the orange O's, traced", top=(base - ys.min()) * s_px)
+
+    # --- Claire's (photos/claires/01): "Claire's" in a compressed Bodoni (Bodoni Moda Bold, OFL)
+    # stretched to the photo's word box; ACCESSORIES in Josefin Sans (OFL), spaced
+    nm = cv2.imread(os.path.join(SRC, "cla_name.png"), 0) > 127
+    ys, xs = np.where(nm)
+    cw = 1.5
+    s_px = cw / (xs.max() - xs.min())
+    name = fit_words(os.path.join(SRC, "BodoniModa-Bold.ttf"), [("Claire\u2019s", (xs.min(), ys.min(), xs.max() - xs.min(), ys.max() - ys.min()))], xs.min(), ys.max(), s_px)
+    write("cla_name", "Claire's", name, cw, (255, 40, 50), 0.25, "Bodoni Moda fitted to Steven's photo")
+    acc, aw = set_text(os.path.join(SRC, "JosefinSans-Regular.ttf"), "ACCESSORIES", 0.15, 0.07)
+    write("cla_acc", "ACCESSORIES", acc, aw, (255, 40, 50), 0.15, "Josefin Sans, spaced")
+
+    # --- Gordon's (photos/gordons/02, 04): "Gordon's" in Old Standard Bold (OFL), JEWELERS spaced
+    gd, gw = set_text(os.path.join(SRC, "OldStandard-Bold.ttf"), "Gordon\u2019s", 0.42)
+    write("gor_name", "Gordon's", gd, gw, (0, 0, 0), 0.1, "Old Standard Bold (the photos' serif)", tex=False)
+    gj, jw = set_text(os.path.join(SRC, "OldStandard-Bold.ttf"), "JEWELERS", 0.1, 0.1)
+    write("gor_sub", "JEWELERS", gj, jw, (0, 0, 0), 0.1, "Old Standard Bold, spaced", tex=False)
+
+    # --- Rave (photos/rave/01, 02): RAVE in Poppins Black (OFL), slanted 14 degrees, 2.5 m across
+    rv, rw = set_text(os.path.join(SRC, "Poppins-Black.ttf"), "RAVE", 0.62, -0.02)
+    rv = shift(rv, 0.0, 0.0, np.tan(np.radians(14)))
+    x0, y0, x1, y1 = bbox(rv)
+    k = 2.5 / (x1 - x0)
+    rv = [{"ch": l["ch"], "tris": [[(p[0] - x0) * k, p[1] * k] for p in l["tris"]], "loops": [[[(p[0] - x0) * k, p[1] * k] for p in lp] for lp in l["loops"]]} for l in rv]
+    write("rave_name", "RAVE", rv, 2.5, (255, 110, 190), 0.25, "Poppins Black slanted, after Steven's photos")
+
+    # --- 5-7-9 (photos/579/02): the burgundy oval ring on a silver plate, "5.7.9" in Kaushan Script
+    # (OFL; the photo's brushy italic digits) with round dots
+    ow, oh = 2.2, 0.92
+    ring = [letter("O", [[(ow / 2 + ow / 2 * np.cos(a), oh / 2 + oh / 2 * np.sin(a)) for a in np.linspace(0, 2 * np.pi, 96, endpoint=False)],
+                         [(ow / 2 + (ow / 2 - 0.09) * np.cos(a), oh / 2 + (oh / 2 - 0.09) * np.sin(a)) for a in np.linspace(2 * np.pi, 0, 96, endpoint=False)]])]
+    write("s579_ring", "ring", ring, ow, (0, 0, 0), 0.1, "the oval ring", top=oh, tex=False)
+    plate = [letter("O", [[(ow / 2 + (ow / 2 - 0.08) * np.cos(a), oh / 2 + (oh / 2 - 0.08) * np.sin(a)) for a in np.linspace(0, 2 * np.pi, 96, endpoint=False)]])]
+    write("s579_plate", "plate", plate, ow, (0, 0, 0), 0.1, "the silver plate", top=oh, tex=False)
+    dg = []
+    x = 0.0
+    for ch in "579":
+        L, w = set_text(os.path.join(SRC, "KaushanScript-Regular.ttf"), ch, 0.62)
+        bx = bbox(L)
+        dg += shift(L, x - bx[0], 0.0)
+        x += (bx[2] - bx[0]) + 0.26
+        if ch != "9":
+            dg.append(letter(".", [circle(0.055, x - 0.13, 0.07)]))
+    bx = bbox(dg)
+    dg = shift(dg, (ow - (bx[2] - bx[0])) / 2 - bx[0], (oh - (bx[3] - bx[1])) / 2 - bx[1])
+    write("s579_digits", "5.7.9", dg, ow, (0, 0, 0), 0.1, "Kaushan Script digits", top=oh, tex=False)
+
+    # --- Lady Foot Locker (photos/lady-foot-locker/01): rounded green letters, Fredoka Bold (OFL)
+    lf, lw = set_text(os.path.join(SRC, "Fredoka-Bold.ttf"), "Lady Foot Locker", 0.42, 0.01)
+    write("lfl_name", "Lady Foot Locker", lf, lw, (60, 220, 80), 0.2, "Fredoka Bold (the photo's rounded letters)")
+
+
 if __name__ == "__main__":
     main()
     kb()
     more()
+    batch3()

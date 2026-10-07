@@ -9,6 +9,7 @@
 ##
 ## Frame: P(a, t, n, u, y, d) = a + t u - n d + y up, u along the frontage, d into the store.
 
+const CH = preload("res://tools/stores/signs/channel.gd")
 const K = preload("res://tools/stores/media/kit.gd")
 const AK = preload("res://tools/stores/apparel/kit.gd")
 const M2 = preload("res://tools/stores/apparel/more.gd")
@@ -328,13 +329,13 @@ static func gordons(b, a, t, n, W, D, rng):
 	var G = "w7g_fix"
 	var head = 2.8
 	S1.upper(b, F, a, t, n, W, head, "w7_bronze", 0.2)
-	var rv = (-n).cross(UP)
-	K.fq(b, F, "w7_gordons", P(a, t, n, W * 0.5, 0, -0.205) - rv * (W * 0.5 - 0.1), rv, n, 0.0, W - 0.2, head + 0.2, head + 1.2, 0.0)
+	# Steven's sign pass (Oct 7: design/storefronts/photos/gordons): a lit white transom framed in
+	# cherry with arched muntins, "Gordon's / JEWELERS" in black over it, on both faces
+	gordons_sign(b, F, P(a, t, n, W * 0.5, 0, -0.2), n, W - 0.6, head)
 	# the other front: the bronze header round the corner
 	var e0 = P(a, t, n, W, 0, 0)
 	b.box(F, "w7_bronze", e0 - n * (D * 0.5) + UP * ((head + b.LANE_H) * 0.5) + t * 0.1, b.abs_size(-n, D, b.LANE_H - head, 0.2, t))
-	var rv2 = (-t).cross(UP)
-	K.fq(b, F, "w7_gordons", e0 - n * (D * 0.5) + t * 0.205 - rv2 * (D * 0.5 - 0.1), rv2, t, 0.0, D - 0.2, head + 0.2, head + 1.2, 0.0)
+	gordons_sign(b, F, e0 - n * (D * 0.5) + t * 0.2, t, D - 0.6, head)
 	b.box(F, "w7_bronze", P(a, t, n, 0.2, head * 0.5, 0.0), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
 	b.box(F, "w7_bronze", P(a, t, n, W - 0.2, head * 0.5, D - 0.2), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
 	b.box(F, "w7_bronze", P(a, t, n, W - 0.2, head * 0.5, 0.2), b.abs_size(t, 0.4, head, 0.4, n), Transform3D.IDENTITY, ["-y"])
@@ -349,6 +350,29 @@ static func gordons(b, a, t, n, W, D, rng):
 		K.fq(b, G, "wl_food_photos", P(a, t, n, SIDE, 0, 2.6 + k * 2.6), n, t, 0.0, 0.6, 1.6, 2.2, 0.62, (k % 4) * 0.25, 0.0, (k % 4) * 0.25 + 0.25, 1.0)
 	var l = b.add_omni(P(a, t, n, W * 0.5, 2.6, D * 0.5), 0.3, 6.0, Color(1.0, 0.9, 0.78))
 	b.tag(l, "", 0.3, 0.4)
+
+## Gordon's transom on one face: c the foot's middle on the fascia, w wide, 1.0 m tall from head + 0.25.
+static func gordons_sign(b, F, c, nn, w, head):
+	var r = (-nn).cross(UP)
+	var y0 = head + 0.25
+	var h = 1.0
+	var mid = c + UP * (y0 + h * 0.5)
+	b.box(F, "sg_gor_frame", mid + nn * 0.04, b.abs_size(r, w + 0.16, h + 0.16, 0.08, nn))
+	b.box(F, "sg_gor_lit", mid + nn * 0.085, b.abs_size(r, w, h, 0.01, nn))
+	# the muntins: two uprights and an arch across the panel
+	for x in [-w * 0.32, w * 0.32]:
+		b.box(F, "sg_gor_frame", mid + r * x + nn * 0.095, b.abs_size(r, 0.05, h, 0.012, nn))
+	var seg = 16
+	for i in seg:
+		var a0 = PI * i / seg
+		var a1 = PI * (i + 1) / seg
+		var q0 = mid + r * (-cos(a0) * w * 0.5) + UP * (sin(a0) * h * 0.85 - h * 0.5) + nn * 0.095
+		var q1 = mid + r * (-cos(a1) * w * 0.5) + UP * (sin(a1) * h * 0.85 - h * 0.5) + nn * 0.095
+		var d = q1 - q0
+		var xf = Transform3D(Basis(d.normalized(), d.normalized().cross(nn).normalized() * -1.0, nn), (q0 + q1) * 0.5)
+		b.box(F, "sg_gor_frame", Vector3.ZERO, Vector3(d.length() + 0.02, 0.04, 0.012), xf)
+	CH.build(b, "w7gf_sign", "res://tools/stores/signs/gor_name_logo.json", c + UP * (y0 + 0.38) + nn * 0.1, nn, "sg_gor_black", "sg_gor_black", "", 0.0, 0.015, 0.0)
+	CH.build(b, "w7gf_sign", "res://tools/stores/signs/gor_sub_logo.json", c + UP * (y0 + 0.18) + nn * 0.1, nn, "sg_gor_black", "sg_gor_black", "", 0.0, 0.01, 0.0)
 
 # ------------------------------------------------------------------ materials
 ## "w7_<key>" (build_mall.gd's mat() calls this).

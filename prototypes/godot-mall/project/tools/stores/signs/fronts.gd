@@ -29,6 +29,10 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 			blockbuster(b, g, e, a, n, t, Ln, sd, U)
 		"THE SHOE DEPT":
 			shoe_dept(b, g, e, a, n, t, Ln, sd, U)
+		"PAYLESS SHOES":
+			payless(b, g, e, a, n, t, Ln, sd, U)
+		"LADY FOOT LOCKER":
+			lady_foot_locker(b, g, e, a, n, t, Ln, sd, U)
 
 ## Wood planks on the front plane between x0..x1, y0..y1 (1 m texture tiles); mirror swaps the slant.
 static func wood(b, G, a, t, n, U, x0, x1, y0, y1, mirror):
@@ -209,6 +213,42 @@ static func shoe_dept(b, g, e, a, n, t, Ln, sd, U):
 		K.ob(b, P(a, t, n, U.call(x) - 0.15, 0, -0.25), P(a, t, n, U.call(x) + 0.15, 0, 0.05), 0.05)
 	CH.build(b, "sdf_sign", S + "sd_name_logo.json", P(a, t, n, U.call(Ln * 0.5), 3.48, -0.16), n, "sg_sd_white", "sg_sd_return", "sg_sd_trim", 0.03, 0.09, 0.01, "sg_sd_glow")
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.5, Ln - 0.5)
+
+## Payless ShoeSource (Steven, Oct 7: design/storefronts/photos/payless): a black fascia box over
+## a wide open front, cream piers at the ends, "Payless ShoeSource" in yellow lit letters with the
+## two O's in orange.
+static func payless(b, g, e, a, n, t, Ln, sd, U):
+	var G = "payf_props"
+	var LH = b.LANE_H
+	var head = 2.9
+	b.box(G, "sg_pay_black", P(a, t, n, U.call(Ln * 0.5), (head + LH) * 0.5, -0.15), b.abs_size(t, Ln - 0.8, LH - head, 0.3, n))
+	b.quad(G, "sg_pay_soffit", [P(a, t, n, U.call(0.4), head, -0.3), P(a, t, n, U.call(Ln - 0.4), head, -0.3), P(a, t, n, U.call(Ln - 0.4), head, 0.0), P(a, t, n, U.call(0.4), head, 0.0)], Vector3.DOWN)
+	for x in [0.2, Ln - 0.2]:
+		b.box(G, "sg_pay_cream", P(a, t, n, U.call(x), LH * 0.5, -0.12), b.abs_size(t, 0.4, LH, 0.4, n), Transform3D.IDENTITY, ["-y"])
+		K.ob(b, P(a, t, n, U.call(x - 0.2), 0, -0.32), P(a, t, n, U.call(x + 0.2), 0, 0.08), 0.05)
+	var c = P(a, t, n, U.call(Ln * 0.5), 3.36, -0.3)
+	CH.build(b, "payf_sign", S + "pay_name_logo.json", c, n, "sg_pay_yellow", "sg_pay_return", "", 0.02, 0.1, 0.0, "sg_pay_glow")
+	CH.build(b, "payf_sign", S + "pay_dots_logo.json", c + UP * 0.0, n, "sg_pay_orange", "sg_pay_return", "", 0.02, 0.1, 0.0)
+	_inside(b, g, e, a, n, t, Ln, sd, U, 0.4, Ln - 0.4)
+
+## Lady Foot Locker (Steven, Oct 7: design/storefronts/photos/lady-foot-locker): a white fascia box
+## over the entrance with "Lady Foot Locker" in green raised letters, glass display windows either
+## side, white slatwall within, dark piers at the ends.
+static func lady_foot_locker(b, g, e, a, n, t, Ln, sd, U):
+	var G = "lflf_props"
+	var LH = b.LANE_H
+	var head = 2.85
+	b.box(G, "sg_lfl_white", P(a, t, n, U.call(Ln * 0.5), (head + LH) * 0.5, -0.06), b.abs_size(t, Ln, LH - head, 0.12, n))
+	b.box(G, "sg_lfl_white", P(a, t, n, U.call(Ln * 0.5), head + 0.65, -0.32), b.abs_size(t, Ln - 0.6, 1.1, 0.4, n))
+	for x in [0.12, Ln - 0.12]:
+		b.box(G, "sg_lfl_dark", P(a, t, n, U.call(x), head * 0.5, -0.06), b.abs_size(t, 0.24, head, 0.16, n), Transform3D.IDENTITY, ["-y"])
+	for seg in [[0.24, 1.6], [Ln - 1.6, Ln - 0.24]]:
+		_glass(b, a, t, n, U, seg[0], seg[1], 0.25, head)
+		_mullions(b, G, a, t, n, U, seg[0], seg[1], 0.0, head, 1, "sg_lfl_frame")
+		b.box(G, "sg_lfl_frame", P(a, t, n, U.call((seg[0] + seg[1]) * 0.5), 0.125, -0.02), b.abs_size(t, seg[1] - seg[0], 0.25, 0.1, n))
+	var nm = float(JSON.parse_string(FileAccess.get_file_as_string(S + "lfl_name_logo.json")).width)
+	CH.build(b, "lflf_sign", S + "lfl_name_logo.json", P(a, t, n, U.call(Ln * 0.5), head + 0.45, -0.52), n, "sg_lfl_green", "sg_lfl_green_dark", "", 0.0, 0.05, 0.0)
+	_inside(b, g, e, a, n, t, Ln, sd, U, 0.24, Ln - 0.24)
 
 static func _glass(b, a, t, n, U, x0, x1, y0, y1):
 	b.quad("glass", "glass", [P(a, t, n, U.call(x0), y0, 0.0), P(a, t, n, U.call(x1), y0, 0.0), P(a, t, n, U.call(x1), y1, 0.0), P(a, t, n, U.call(x0), y1, 0.0)], n,

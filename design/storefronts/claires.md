@@ -20,3 +20,7 @@
 
 ## Files
 `tools/stores/small/wave8.gd`, `paint8.py` → `tex/w8/`. Hooks in `tools/build_mall.gd` and `tools/open_interiors.py`; a new `open_u0_to` option on `apparel/more.gd`'s `shell2`.
+
+## Sign pass (Oct 7, 2026)
+See photos/ (Steven's photos for this store) and tools/stores/signs/ (make_logos.py batch3, channel.gd sg_* materials).
+White box sign on both faces of the corner: "Claire's" in a compressed Bodoni (Bodoni Moda Bold, OFL, fitted to the photo's word box) as black letters on red returns with a red glow, ACCESSORIES in red (Josefin Sans, OFL). Replaces the flat painted sign.

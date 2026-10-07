@@ -314,6 +314,80 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#2e2c2a"); m.roughness = 0.45; m.metallic = 0.3
 		"sd_glow":
 			_glow(m, b.tex("sg/sd_name_glow.png"), 0.3)
+		# Payless
+		"pay_black":
+			m.albedo_color = Color("#151517"); m.roughness = 0.4; m.metallic_specular = 0.5
+		"pay_soffit":
+			m.albedo_color = Color("#f2efe6"); m.roughness = 0.6
+		"pay_cream":
+			m.albedo_color = Color("#e8dcbc"); m.roughness = 0.6
+		"pay_yellow":
+			m.albedo_texture = b.tex("sg/pay_name_face.png"); m.albedo_color = Color("#ffd51c"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#ffd42a"); m.emission_energy_multiplier = 1.0
+			m.set_meta("e_day", 0.7); m.set_meta("e_night", 1.2)
+		"pay_orange":
+			m.albedo_color = Color("#ff6a14"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#ff6a14"); m.emission_energy_multiplier = 0.9
+			m.set_meta("e_day", 0.6); m.set_meta("e_night", 1.1)
+		"pay_return":
+			m.albedo_color = Color("#5a4a10"); m.roughness = 0.5
+		"pay_glow":
+			_glow(m, b.tex("sg/pay_name_glow.png"), 0.3)
+		# Lady Foot Locker
+		"lfl_white":
+			m.albedo_color = Color("#f2f2ee"); m.roughness = 0.5
+		"lfl_dark":
+			m.albedo_color = Color("#2c2e32"); m.roughness = 0.4
+		"lfl_frame":
+			m.albedo_color = Color("#d8dbd8"); m.metallic = 0.4; m.roughness = 0.3
+		"lfl_green":
+			m.albedo_color = Color("#2fa83a"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#3cc84a"); m.emission_energy_multiplier = 0.25
+			m.set_meta("e_day", 0.15); m.set_meta("e_night", 0.35)
+		"lfl_green_dark":
+			m.albedo_color = Color("#1a6a22"); m.roughness = 0.4
+		# 5-7-9
+		"s579_silver":
+			m.albedo_color = Color("#d6d6d8"); m.metallic = 0.7; m.roughness = 0.25
+		"s579_red":
+			m.albedo_color = Color("#a3163c"); m.roughness = 0.3; m.metallic_specular = 0.7
+		"s579_red_dark":
+			m.albedo_color = Color("#5a0a20"); m.roughness = 0.4
+		# Rave
+		"rave_box":
+			m.albedo_color = Color("#141414"); m.roughness = 0.35; m.metallic = 0.3
+		"rave_glass":
+			m.albedo_color = Color("#1c1e22"); m.roughness = 0.05; m.metallic_specular = 0.9
+		"rave_pink":
+			m.albedo_texture = b.tex("sg/rave_name_face.png"); m.albedo_color = Color("#ff86c0"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#ff7ab8"); m.emission_energy_multiplier = 1.0
+			m.set_meta("e_day", 0.8); m.set_meta("e_night", 1.3)
+		"rave_pink_dark":
+			m.albedo_color = Color("#8a2a5a"); m.roughness = 0.4
+		"rave_glow":
+			_glow(m, b.tex("sg/rave_name_glow.png"), 0.35)
+		# Gordon's
+		"gor_frame":
+			m.albedo_color = Color("#5a1e18"); m.roughness = 0.35; m.metallic_specular = 0.5
+		"gor_lit":
+			m.albedo_color = Color("#f2f4ec"); m.roughness = 0.4
+			m.emission_enabled = true; m.emission = Color("#eef4e6"); m.emission_energy_multiplier = 1.0
+			m.set_meta("e_day", 0.7); m.set_meta("e_night", 1.2)
+		"gor_black":
+			m.albedo_color = Color("#141414"); m.roughness = 0.4
+		# Claire's
+		"cla_box":
+			m.albedo_color = Color("#ebe8e2"); m.roughness = 0.5
+		"cla_black":
+			m.albedo_color = Color("#1c1416"); m.roughness = 0.35; m.metallic_specular = 0.6
+		"cla_red":
+			m.albedo_color = Color("#d8202a"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#ff2030"); m.emission_energy_multiplier = 0.8
+			m.set_meta("e_day", 0.5); m.set_meta("e_night", 1.0)
+		"cla_glow":
+			_glow(m, b.tex("sg/cla_name_glow.png"), 0.5)
 		_:
 			return false
 	return true
