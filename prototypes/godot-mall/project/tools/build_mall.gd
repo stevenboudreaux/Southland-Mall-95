@@ -36,7 +36,8 @@ const USE_FRONT_ART = false
 const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE": [-110.0, 60.0, -102.0, 100.0],
 	"KAY-BEE TOYS": [-34.0, -58.0, -10.0, -52.0], "GUMBALLS": [-20.0, 36.0, -10.0, 48.0],
 	"JW": [-80.0, 20.0, -74.0, 48.0], "5-7-9": [-74.0, 20.0, -68.0, 48.0], "COUNTY SEAT": [-94.0, 60.0, -86.0, 100.0],
-	"BABBAGE'S": [-132.0, 60.0, -124.0, 68.0], "SOUND SHOP": [-34.0, -64.0, -10.0, -58.0]}
+	"BABBAGE'S": [-132.0, 60.0, -124.0, 68.0], "SOUND SHOP": [-34.0, -64.0, -10.0, -58.0],
+	"WOOLWORTH": [-46.0, -14.0, -10.0, 22.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
 const LEVEL_COLORS = ["#8a8a8a", "#b07a3c", "#c9c9c9", "#e2b43a", "#3fae6a"]   # grey, bronze, silver, gold, green
@@ -262,6 +263,10 @@ func mat(name):
 			elif name.begins_with("gb_"):
 				# Gumballs: tools/stores/gumballs/store.gd's fill_mat(m, key, b)
 				if not load("res://tools/stores/gumballs/store.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("wl_"):
+				# Woolworth: tools/stores/woolworth/store.gd's fill_mat
+				if not load("res://tools/stores/woolworth/store.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
 			elif name.begins_with("md_"):
 				# the media kit (Babbage's, Sound Shop): tools/stores/media/kit.gd's fill_mat
@@ -1082,6 +1087,12 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# stock from the video, the layouts guessed (design/storefronts/jw.md, 579.md, county-seat.md)
 		var mod = {"JW": "jw", "5-7-9": "s579", "COUNTY SEAT": "county_seat"}[sd.name]
 		load("res://tools/stores/apparel/%s.gd" % mod).build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name == "WOOLWORTH" and not inner_call:
+		# built in full 3D: the front from the facade record, the inside from the 1991
+		# Statesville video Steven chose, the restaurant on the right with its own mall door
+		# (design/storefronts/woolworth.md)
+		load("res://tools/stores/woolworth/store.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	if sd.name in ["BABBAGE'S", "SOUND SHOP"] and not inner_call:
 		# built in full 3D with the media kit: Babbage's from the 1997 Killeen Mall video, Sound

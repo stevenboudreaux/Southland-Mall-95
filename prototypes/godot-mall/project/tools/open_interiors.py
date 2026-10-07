@@ -31,6 +31,8 @@ OPEN = {
     # beside Kay-Bee): the whole stores (design/storefronts/babbages.md, sound-shop.md)
     "n39b": [(83, 85, 130, 133), (82, 82, 131, 133)],
     "s19": [(131, 142, 68, 70)],
+    # Woolworth (s13, tiles x 125-142, y 93-110, faces east; 36 m x 36 m with the restaurant)
+    "s13": [(125, 142, 93, 110)],
 }
 
 

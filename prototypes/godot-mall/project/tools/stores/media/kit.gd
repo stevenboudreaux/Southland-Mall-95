@@ -12,7 +12,12 @@
 const UP = Vector3.UP
 const SHEET_W = 1.22            # a stock sheet's width in metres
 ## stock sheet -> [rows, row height m] (paint.py ROWS)
-const ROWS = {"games": [8, 0.305], "pc": [8, 0.305], "books": [8, 0.305], "acc": [8, 0.305], "cd": [16, 0.1525], "tape": [16, 0.1525]}
+const ROWS = {"games": [8, 0.305], "pc": [8, 0.305], "books": [8, 0.305], "acc": [8, 0.305], "cd": [16, 0.1525], "tape": [16, 0.1525],
+	# Woolworth's sheets (tools/stores/woolworth/paint.py)
+	"boxes": [8, 0.305], "hba": [8, 0.305], "linens": [8, 0.305], "candy": [8, 0.305], "gcards": [8, 0.305], "party": [8, 0.305],
+	# Kay-Bee's toy sheets (kb_merch_<cat>.png: 7 rows of 146 px for 0.35 m, kay_bee/paint_store.py)
+	"kb_dolls": [7, 0.35, 0.142578], "kb_action": [7, 0.35, 0.142578], "kb_vehicles": [7, 0.35, 0.142578], "kb_games": [7, 0.35, 0.142578],
+	"kb_preschool": [7, 0.35, 0.142578], "kb_sports": [7, 0.35, 0.142578]}
 
 static func L(o, r, f, x, y, z):
 	return o + r * x + UP * y + f * z
@@ -83,16 +88,18 @@ static func stock_row(b, gm, o, r, f, x0, x1, y, space, depth, sheet, rng):
 	var R = ROWS[sheet]
 	var nrows = int(R[0])
 	var rh = float(R[1])
+	var rv = float(R[2]) if R.size() > 2 else 1.0 / nrows
+	var mname = ("kb_merch_" + sheet.substr(3)) if sheet.begins_with("kb_") else ("md_stock_" + sheet)
 	var x = x0
 	while x < x1 - 0.05:
 		var seg = min(x1 - x, rng.randf_range(0.5, 1.1))
 		var hgt = min(space, rh)
 		var row = rng.randi_range(0, nrows - 1)
-		var vb = float(row + 1) / nrows
-		var va = vb - hgt / rh / nrows
+		var vb = float(row + 1) * rv
+		var va = vb - hgt / rh * rv
 		var ua = rng.randf() * (1.0 - seg / SHEET_W)
 		var z = depth - rng.randf_range(0.02, 0.06)
-		fq(b, gm, "md_stock_" + sheet, o, r, f, x + 0.006, x + seg - 0.006, y, y + hgt, z, ua, va, ua + seg / SHEET_W, vb)
+		fq(b, gm, mname, o, r, f, x + 0.006, x + seg - 0.006, y, y + hgt, z, ua, va, ua + seg / SHEET_W, vb)
 		x += seg
 
 ## A white wall bay: back panel, kick base, shelf boards with stock, uprights.
