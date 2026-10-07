@@ -650,6 +650,26 @@ def bulbs(path, w_m, h_m, pitch=0.075):
     cv2.imwrite(path, np.clip(img, 0, 255).astype(np.uint8))
 
 
+def dot_matrix(path_json, text, font, cols=52, rows=15, top=2, height=11, side=1):
+    """A scoreboard field: cols x rows round lamps; the lamps under the letters are red, the rest
+    white. The text is rendered large, fitted to `height` rows from row `top` with `side` columns
+    of margin, and sampled per cell (a lamp is red when over half its cell is letter)."""
+    from PIL import Image, ImageDraw, ImageFont
+    ft = ImageFont.truetype(font, 400)
+    im = Image.new("L", (4000, 700), 0)
+    ImageDraw.Draw(im).text((20, 20), text, font=ft, fill=255)
+    a = np.array(im) > 127
+    ys, xs = np.where(a)
+    a = a[ys.min():ys.max() + 1, xs.min():xs.max() + 1].astype(np.float32)
+    W = cols - 2 * side
+    cell = cv2.resize(a, (W * 8, height * 8), interpolation=cv2.INTER_AREA)
+    cell = cell.reshape(height, 8, W, 8).mean(axis=(1, 3))
+    red = np.zeros((rows, cols), bool)
+    red[top:top + height, side:side + W] = cell > 0.45
+    json.dump({"cols": cols, "rows": rows, "red": ["".join("1" if red[r, c] else "0" for c in range(cols)) for r in range(rows)]}, open(path_json, "w"))
+    return red
+
+
 def batch4():
     """Coach House Gifts, Footaction USA, Champs Sports, Sports Avenue (Steven's photos, Oct 7)."""
     SRC = os.path.join(HERE, "src")
@@ -714,7 +734,13 @@ def batch4():
 
     # --- Sports Avenue (photos/sports-avenue): the marquee field of bulbs 3.0 x 0.95 m, SPORTS in
     # red (Francois One, OFL) over it, gold stars at the corners
-    bulbs(os.path.join(TEX, "sa_bulbs.png"), 3.0, 0.95)
+    red = dot_matrix(os.path.join(HERE, "sa_dots.json"), "SPORTS", os.path.join(SRC, "FrancoisOne-Regular.ttf"))
+    print("\n".join("".join("#" if v else "." for v in r) for r in red))
+    # the gold frame: a trapezoid (wider at the top, as in the photos) round the 3.1 x 0.95 m field
+    fw_b, fw_t, fh = 3.45, 3.75, 1.3
+    outer = [((fw_t - fw_b) / 2, 0.0), ((fw_t + fw_b) / 2, 0.0), (fw_t, fh), (0.0, fh)]
+    hole = [((fw_t - 3.1) / 2, (fh - 0.95) / 2), ((fw_t - 3.1) / 2, (fh + 0.95) / 2), ((fw_t + 3.1) / 2, (fh + 0.95) / 2), ((fw_t + 3.1) / 2, (fh - 0.95) / 2)]
+    write("sa_frame", "frame", [letter("F", [outer, hole])], fw_t, (0, 0, 0), 0.1, "the marquee's gold frame", top=fh, tex=False)
     L, w = set_text(os.path.join(SRC, "FrancoisOne-Regular.ttf"), "SPORTS", 0.66, 0.04)
     x0, y0, x1, y1 = bbox(L)
     k = 2.6 / (x1 - x0)

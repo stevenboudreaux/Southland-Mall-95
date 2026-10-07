@@ -39,13 +39,13 @@ const LETTER_OFF = 0.04     # on stand-offs: they throw a shadow on the tile
 const LETTER_D = 0.07
 const RIGHT_BACK = 3.0  # the right-hand line of machines starts this much further in (Steven, Oct 6)
 const CENTRE_U = 3.7    # the centre aisle's line, where the feature games stand
-const CYC_D = 2.0       # the cyclone game's front edge, just inside the door (Steven, Oct 6 18:30: a few feet nearer the mall)
-const PUSH_D = 9.0      # the coin pushers' middle, back to back, turned lengthwise down the room (Oct 7: two)
-const PUSH_U = 3.7      # the line their backs meet on
-const RIDE_U = 4.3      # the dinosaur ride's centre across the room (Oct 7: clear of the right-hand walk)
-const RIDE_D = 11.4     # its step, just behind the pushers
-const SKEE_D = 14.6     # the skee-ball alleys start here (Oct 7: after the ride, so the right side stays open)
-const HOCKEY_D = 24.6   # the air hockey tables' near ends, side by side past the basketball
+const CYC_D = 1.4       # the cyclone game's front edge, just inside the door (Steven, Oct 7 markup: nearer the door again)
+const PUSH_D = 5.5      # the coin pushers' middle, back to back, lengthwise, right behind the cyclone (Oct 7 markup)
+const PUSH_U = 3.5      # the line their backs meet on
+const RIDE_U = 4.0      # the dinosaur ride, centred across the room (Oct 7 markup)
+const RIDE_D = 18.4     # its step, behind the basketball depth-wise (Oct 7 markup)
+const SKEE_D = 7.8      # the skee-ball alleys start right after the claws (Oct 7 markup)
+const HOCKEY_D = 25.2   # the first air hockey table's middle; turned across the room, one behind the other (Oct 7 markup)
 const BACK_10FT = 3.05  # Steven (Oct 6 18:30): everything from the skee-ball back moves ~10 ft deeper; the claws stay
 
 static func P(a, t, n, u, y, d):
@@ -336,18 +336,18 @@ static func machines(b, a, t, n):
 	var d = WALL_T + 0.05 + RIGHT_BACK
 	d = wall_run(b, a, t, n, "crane", [{"style": 0}, {"style": 1}, {"style": 2}], u0, "-u", d, 0.02)
 	d = wall_run(b, a, t, n, "skee", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", SKEE_D)
-	d = wall_run(b, a, t, n, "hoops", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 1.5)
+	d = wall_run(b, a, t, n, "hoops", [{"number": 1}, {"number": 2}, {"number": 3}, {"number": 4}], u0, "-u", d + 1.0)
 	wall_row(b, a, t, n, [0, 3, 4, 5, 2, 6, 1, 7, 0, 4, 3, 2, 5, 6], u0, "-u", d + 0.3, ROOM_D - 1.9)
 	# --- left wall past the prize wall: video games, the twin racers, more video games,
-	# pinball, and video games up to the back door (a few dropped beside the ride for a path)
-	d = wall_row(b, a, t, n, [1, 6, 0], u1, "+u", 8.6, 10.6)
+	# pinball, and video games up to the back door
+	d = wall_row(b, a, t, n, [1, 6, 0, 4, 3, 2], u1, "+u", 8.6, 14.4)
 	d = wall_run(b, a, t, n, "driver", [{"kind": "racer", "style": 0}, {"kind": "racer", "style": 1}], u1, "+u", 14.5, 0.1)
 	d = wall_row(b, a, t, n, [2, 5, 0, 7, 3, 4, 6, 1], u1, "+u", d + 0.2, 27.0)
 	d = wall_run(b, a, t, n, "driver", [{"kind": "pinball", "style": 0}, {"kind": "pinball", "style": 1}, {"kind": "pinball", "style": 2}], u1, "+u", 27.2, 0.12)
 	wall_row(b, a, t, n, [0, 3, 5, 2], u1, "+u", d + 0.2, ROOM_D - 2.2)
-	# --- the middle, front to back (Steven, Oct 7): the cyclone just inside the door, two coin
-	# pushers back to back, the dinosaur ride with a clear walk past it on the right, then the two
-	# air hockey tables side by side, lengthwise down the room. Nothing else in the middle.
+	# --- the middle, front to back (Steven, Oct 7 markup): the cyclone just inside the door, two
+	# coin pushers back to back right behind it, the dinosaur ride centred behind the basketball,
+	# then the two air hockey tables across the room, one behind the other. Nothing else.
 	put(b, a, t, n, "cyclone", CENTRE_U, CYC_D, "+d", {}, 0.2)
 	var ps = fp("pusher")
 	put(b, a, t, n, "pusher", PUSH_U + ps.y, PUSH_D, "-u", {}, 0.2)
@@ -364,7 +364,7 @@ static func machines(b, a, t, n):
 		b.obst(["rect", min(q0.x, q1.x) - 0.1, min(q0.z, q1.z) - 0.1, max(q0.x, q1.x) + 0.1, max(q0.z, q1.z) + 0.1])
 	var ah = fp("airhockey")
 	for i in 2:
-		put(b, a, t, n, "airhockey", 4.0 + (i - 0.5) * (ah.x + 0.9), HOCKEY_D, "+d", {"number": i + 1})
+		put(b, a, t, n, "airhockey", 4.0 - ah.y * 0.5, HOCKEY_D + i * (ah.x + 2.0), "+u", {"number": i + 1})
 	# --- a few uprights on the (false) back wall, right of the back door
 	for i in 3:
 		var s = [3, 0, 2][i]

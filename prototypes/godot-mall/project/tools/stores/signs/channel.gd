@@ -460,6 +460,18 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#c8141a"); m.roughness = 0.35
 			m.emission_enabled = true; m.emission = Color("#ff1a12"); m.emission_energy_multiplier = 0.35
 			m.set_meta("e_day", 0.2); m.set_meta("e_night", 0.5)
+		"sa_board":
+			m.albedo_color = Color("#0c0c0e"); m.roughness = 0.6
+		"sa_grid":
+			m.albedo_color = Color("#202024"); m.roughness = 0.5
+		"sa_lamp_white":
+			m.albedo_color = Color("#f6f4ea"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#fff6e4"); m.emission_energy_multiplier = 0.9
+			m.set_meta("e_day", 0.6); m.set_meta("e_night", 1.2)
+		"sa_lamp_red":
+			m.albedo_color = Color("#d0201c"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#ff2a1e"); m.emission_energy_multiplier = 0.9
+			m.set_meta("e_day", 0.6); m.set_meta("e_night", 1.2)
 		"sa_white":
 			m.albedo_color = Color("#f4f4f0"); m.roughness = 0.4
 		"sa_glow":

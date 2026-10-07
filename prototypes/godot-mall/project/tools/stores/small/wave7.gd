@@ -166,40 +166,104 @@ static func sports_avenue(b, a, t, n, W, D, rng):
 	var head = 2.7
 	S1.upper(b, F, a, t, n, W, head, "w7_royal", 0.12)
 	var rv = (-n).cross(UP)
-	# Steven's sign pass (Oct 7: design/storefronts/photos/sports-avenue): the marquee in 3D: a deep
-	# gold box, a field of lit bulbs, SPORTS raised in red over them, a gold star at each corner
-	var mc = P(a, t, n, W * 0.5, head + 0.9, -0.3)
-	b.box(F, "w7_gold", mc - n * 0.12, b.abs_size(t, 3.4, 1.3, 0.3, n))
-	K.fq(b, F, "sg_sa_bulbs", mc - UP * (head + 0.9) - rv * 1.5 + n * 0.032, rv, n, 0.0, 3.0, head + 0.425, head + 1.375, 0.0)
-	b.box(F, "w7_red", mc - UP * 0.47 + n * 0.045, b.abs_size(t, 3.4, 0.06, 0.02, n))
-	b.box(F, "w7_red", mc + UP * 0.47 + n * 0.045, b.abs_size(t, 3.4, 0.06, 0.02, n))
-	CH.build(b, "w7sf_sign", "res://tools/stores/signs/sa_name_logo.json", mc - UP * 0.33 + n * 0.032, n, "sg_sa_red", "sg_sa_white", "sg_sa_white", 0.0, 0.07, 0.018, "sg_sa_glow")
-	for cx in [-1.55, 1.55]:
-		for cy in [-0.52, 0.42]:
-			CH.build(b, "w7sf_sign", "res://tools/stores/signs/sa_star_logo.json", mc + rv * cx + UP * cy + n * 0.032, n, "w7_gold", "w7_gold", "", 0.0, 0.03, 0.0)
-	AK.letters(b, F, LET + "avenue_letters.json", P(a, t, n, W * 0.5, head + 0.02, -0.3), n, "w7_gold", "w7_gold", 0.0, 0.04)
-	b.box(F, "w7_gold", P(a, t, n, W * 0.5, head - 0.02, -0.22), b.abs_size(t, 2.4, 0.03, 0.03, n))
-	# the goalpost: uprights with red flags, the crossbar, the padded post at the door
-	for s in [-1.0, 1.0]:
-		var up0 = P(a, t, n, W * 0.5 + s * 1.75, 0, -0.35)
-		b.cyl(F, "w7_gold", up0 + UP * head, 0.04, 0.04, b.LANE_H - head - 0.05, 10, true, false)
-		var fl = up0 + UP * (b.LANE_H - 0.4)
+	# Steven's sign pass (Oct 7: design/storefronts/photos/sports-avenue): the marquee as the photos
+	# show it, a scoreboard: a black grid of round lamps in a gold trapezoid frame, the red ones
+	# spelling SPORTS, the rest white; white stars on the frame; AVENUE in gold on a rail below
+	var mu = W * 0.5
+	var mb = head + 0.25
+	var fr = P(a, t, n, mu, mb, -0.3)
+	CH.build(b, F, "res://tools/stores/signs/sa_frame_logo.json", fr, n, "w7_gold", "w7_gold", "", 0.0, 0.32, 0.0)
+	sa_scoreboard(b, P(a, t, n, mu, mb + 0.175, -0.3) + n * 0.22, n)
+	for sx in [-1.0, 1.0]:
+		CH.build(b, "w7sf_sign", "res://tools/stores/signs/sa_star_logo.json", P(a, t, n, mu + sx * 1.74, mb + 0.54, -0.3) + n * 0.325, n, "sg_sa_lamp_white", "w7_gold", "", 0.0, 0.02, 0.0)
+	AK.letters(b, F, LET + "avenue_letters.json", P(a, t, n, mu, mb - 0.2, -0.3), n, "w7_gold", "w7_gold", 0.0, 0.04)
+	b.box(F, "w7_gold", P(a, t, n, mu, mb - 0.24, -0.25), b.abs_size(t, 2.6, 0.04, 0.05, n))
+	# the goalpost, centred on the front: the crossbar right across it, an upright at each end
+	# with a pennant, and the red padded post at the middle joined to the crossbar by a gooseneck
+	var cy = 2.5
+	var cd = -0.42
+	b.box(F, "w7_gold", P(a, t, n, mu, cy, cd), b.abs_size(t, W - 0.5, 0.11, 0.11, n))
+	for x in [0.25, W - 0.25]:
+		var u0 = P(a, t, n, x, 0, cd)
+		b.box(F, "w7_gold", u0 + UP * ((cy + b.LANE_H) * 0.5), b.abs_size(t, 0.1, b.LANE_H - cy, 0.1, n))
+		var fl = u0 + UP * (b.LANE_H - 0.42)
+		var rr = t if x > W * 0.5 else -t
 		var sf = b.st(F, "w7_red", true)
-		b.tri(sf, fl, fl + UP * 0.3, fl + UP * 0.15 + rv * 0.35, Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), n)
-	b.box(F, "w7_gold", P(a, t, n, W * 0.5, head + 0.25, -0.35), b.abs_size(t, 3.6, 0.08, 0.08, n))
-	b.cyl(F, "w7_gold", P(a, t, n, 1.0, 0, -0.35) + UP * 1.6, 0.04, 0.04, head - 1.35, 10, false, false)
-	b.cyl(F, "w7_red", P(a, t, n, 1.0, 0, -0.35), 0.13, 0.13, 1.6, 14, true, false)
-	K.ob(b, P(a, t, n, 0.85, 0, -0.5), P(a, t, n, 1.15, 0, -0.2), 0.05)
-	# glass with jerseys pinned in a grid behind it, the door on the left
-	b.quad("glass", "glass", [P(a, t, n, 2.0, 0.4, -0.02), P(a, t, n, W - 0.1, 0.4, -0.02), P(a, t, n, W - 0.1, head, -0.02), P(a, t, n, 2.0, head, -0.02)], n,
+		b.tri(sf, fl, fl + UP * 0.28, fl + UP * 0.14 + rr * 0.34, Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), n)
+		b.tri(sf, fl, fl + UP * 0.14 + rr * 0.34, fl + UP * 0.28, Vector2(0, 0), Vector2(0, 0), Vector2(0, 0), -n)
+	# (the post stands out in the hall in front of the window; the bend carries the pipe back to the bar)
+	var pb = P(a, t, n, mu, 0, -1.15)
+	var tb = P(a, t, n, mu, 0, cd)
+	var tw = (tb - pb).normalized()
+	var r = pb.distance_to(tb)
+	b.cyl(F, "w7_red", pb, 0.14, 0.14, 1.65, 18, true, false)
+	b.cyl(F, "w7_gold", pb + UP * 1.65, 0.055, 0.055, cy - r - 1.65, 12, false, false)
+	var c0 = pb + UP * (cy - r) + tw * r
+	var prev = pb + UP * (cy - r)
+	for i in range(1, 13):
+		var ang = PI * 0.5 * i / 12.0
+		var q = c0 - tw * (r * cos(ang)) + UP * (r * sin(ang))
+		_pipe(b, F, prev, q, 0.055)
+		prev = q
+	K.ob(b, pb - t * 0.16 - n * 0.16, pb + t * 0.16 + n * 0.16, 0.05)
+	# glass with jerseys behind it to the right of the post, the entrance to its left
+	var g0 = mu + 0.3
+	b.quad("glass", "glass", [P(a, t, n, g0, 0.4, -0.02), P(a, t, n, W - 0.1, 0.4, -0.02), P(a, t, n, W - 0.1, head, -0.02), P(a, t, n, g0, head, -0.02)], n,
 		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
-	b.box(F, "w7_royal", P(a, t, n, 4.0, 0.2, 0.0), b.abs_size(t, 4.0, 0.4, 0.1, n), Transform3D.IDENTITY, ["-y"])
-	K.ob(b, P(a, t, n, 2.0, 0, -0.1), P(a, t, n, W, 0, 0.1), 0.05)
+	b.box(F, "w7_royal", P(a, t, n, (g0 + W - 0.1) * 0.5, 0.2, 0.0), b.abs_size(t, W - 0.1 - g0, 0.4, 0.1, n), Transform3D.IDENTITY, ["-y"])
+	b.box(F, "w7_royal", P(a, t, n, g0, head * 0.5, -0.02), b.abs_size(t, 0.06, head, 0.08, n))
+	K.ob(b, P(a, t, n, g0, 0, -0.1), P(a, t, n, W, 0, 0.1), 0.05)
 	M2.shell2(b, "w7s_shell", a, t, n, W, D, 3.0, 0.0, "a2_carpet_grey", 1.0, "md_wall", "kb_ceiling", [1.6, 4.0], 5.0)
 	var c = {"cash": "right", "seed": 8, "slat": "gb_slat_white", "door": 5.0, "fit": 1, "cols": [3.0], "cards": [8], "floor": "a2_carpet_grey", "wall": "md_wall", "rows": [1.6]}
 	M2.inside(b, a, t, n, W, D, c, rng)
 	# jerseys pinned in a grid on the back wall of the window
 	AK.faceout_wall(b, a, t, n, W - 0.2, -t, 0.3, 1.2, 0, rng, "gb_slat_white")
+
+## A gold pipe from p to q.
+static func _pipe(b, F, p, q, r):
+	var d = q - p
+	var L = d.length()
+	if L < 0.001:
+		return
+	var y = d / L
+	var x = y.cross(Vector3.FORWARD if abs(y.dot(Vector3.FORWARD)) < 0.9 else Vector3.RIGHT).normalized()
+	var z = x.cross(y)
+	b.box(F, "w7_gold", Vector3.ZERO, Vector3(r * 2.0, L + r, r * 2.0), Transform3D(Basis(x, y, z), (p + q) * 0.5))
+
+## The SPORTS scoreboard: c the field's lower middle on its face, facing nn; 52 x 15 round lamps
+## (tools/stores/signs/sa_dots.json) on a black board with a dark grid between them.
+static func sa_scoreboard(b, c, nn):
+	var J = JSON.parse_string(FileAccess.get_file_as_string("res://tools/stores/signs/sa_dots.json"))
+	var cols = int(J.cols)
+	var rows = int(J.rows)
+	var fw = 3.1
+	var fh = 0.95
+	var px = fw / cols
+	var py = fh / rows
+	var r = (-nn).cross(UP)
+	var o = c - r * (fw * 0.5)
+	b.box("w7sf_sign", "sg_sa_board", o + r * (fw * 0.5) + UP * (fh * 0.5) - nn * 0.01, b.abs_size(r, fw, fh, 0.02, nn), Transform3D.IDENTITY, [], true)
+	for k in cols + 1:
+		b.box("w7sf_sign", "sg_sa_grid", o + r * (k * px) + UP * (fh * 0.5) + nn * 0.004, b.abs_size(r, 0.006, fh, 0.008, nn), Transform3D.IDENTITY, [], true)
+	for k in rows + 1:
+		b.box("w7sf_sign", "sg_sa_grid", o + r * (fw * 0.5) + UP * (k * py) + nn * 0.004, b.abs_size(r, fw, 0.006, 0.008, nn), Transform3D.IDENTITY, [], true)
+	var rad = min(px, py) * 0.4
+	var seg = 10
+	var sw = b.st("w7sf_sign", "sg_sa_lamp_white", true)
+	var sr = b.st("w7sf_sign", "sg_sa_lamp_red", true)
+	for row in rows:
+		var line = str(J.red[rows - 1 - row])
+		for col in cols:
+			var s = sr if line[col] == "1" else sw
+			var cc = o + r * ((col + 0.5) * px) + UP * ((row + 0.5) * py) + nn * 0.012
+			for i in seg:
+				var a0 = TAU * i / seg
+				var a1 = TAU * (i + 1) / seg
+				var p0 = cc + (r * cos(a0) + UP * sin(a0)) * rad
+				var p1 = cc + (r * cos(a1) + UP * sin(a1)) * rad
+				b.tri(s, cc + nn * 0.006, p0, p1, Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(0.5, 0.5), nn)
+				b.tri(s, p0 - nn * 0.012, p1 - nn * 0.012, p1, Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(0.5, 0.5), (p0 + p1 - cc * 2.0).normalized())
+				b.tri(s, p0 - nn * 0.012, p1, p0, Vector2(0.5, 0.5), Vector2(0.5, 0.5), Vector2(0.5, 0.5), (p0 + p1 - cc * 2.0).normalized())
 
 # ------------------------------------------------------------------ Great American Cookie Co.
 ## A cream sign box with maroon checkerboard corners, 'Great American' in yellow script on a
