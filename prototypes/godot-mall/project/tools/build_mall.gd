@@ -1105,6 +1105,11 @@ func build_edge(e):
 ## the sign, bronze-framed glass (or an open front), the lit interior behind.
 func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 	var sd = L.stores[e.store]
+	if sd.name == "K&B" and not inner_call:
+		# Steven (Oct 7): the front of the K&B at Prien Lake Mall (same owners), with the logo
+		# from his photos (tools/stores/signs/fronts.gd); replaces decision 6's pink wall
+		load("res://tools/stores/signs/fronts.gd").build(self, g, e, a, b, n, t, Ln, sd)
+		return
 	if sd.name == "K&B" and not inner_call and Ln > 12.0:
 		# K&B's frontage was a pink wall with plum stripes (decision 6), with
 		# the store entrance in the middle

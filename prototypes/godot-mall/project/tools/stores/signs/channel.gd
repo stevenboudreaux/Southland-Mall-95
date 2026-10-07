@@ -202,6 +202,46 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#2a313b"); m.roughness = 0.12; m.metallic = 0.4
 		"af_header":
 			m.albedo_color = Color("#e8e5de"); m.roughness = 0.8
+		# K&B: the round logo (purple face, gold rim, red line, white letters) and lit lettering
+		"kb_fascia":
+			m.albedo_color = Color("#6b4630"); m.roughness = 0.45; m.metallic_specular = 0.5
+		"kb_brick":
+			m.albedo_texture = b.tex("sg/kb_brick.png"); m.roughness = 0.85
+			m.uv1_scale = Vector3(1.0, 1.0, 1.0)
+		"kb_alum":
+			m.albedo_color = Color("#c8c8c4"); m.metallic = 0.6; m.roughness = 0.3
+		"kb_purple":
+			m.albedo_color = Color("#8e4a9e"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#a860c0"); m.emission_energy_multiplier = 0.55
+			m.set_meta("e_day", 0.4); m.set_meta("e_night", 0.7)
+		"kb_gold":
+			m.albedo_color = Color("#e6a91c"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#ffb21c"); m.emission_energy_multiplier = 0.4
+			m.set_meta("e_day", 0.3); m.set_meta("e_night", 0.5)
+		"kb_red":
+			m.albedo_color = Color("#c8301e"); m.roughness = 0.35
+		"kb_white":
+			m.albedo_color = Color("#f6f3f8"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#ffffff"); m.emission_energy_multiplier = 0.6
+			m.set_meta("e_day", 0.45); m.set_meta("e_night", 0.8)
+		"kb_bevel":
+			m.albedo_color = Color("#d8cfe0"); m.roughness = 0.3
+		"kb_can":
+			m.albedo_color = Color("#26242a"); m.roughness = 0.45; m.metallic = 0.3
+		"kb_letter":
+			m.albedo_color = Color("#e9def4"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#e8d8ff"); m.emission_energy_multiplier = 0.7
+			m.set_meta("e_day", 0.5); m.set_meta("e_night", 0.9)
+		"kb_edge":
+			m.albedo_color = Color("#ffffff"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission = Color("#ffffff"); m.emission_energy_multiplier = 1.4
+			m.set_meta("e_day", 1.0); m.set_meta("e_night", 1.6)
+		"kb_return":
+			m.albedo_color = Color("#3a2448"); m.roughness = 0.5
+		"kb_glow_drugs":
+			_glow(m, b.tex("sg/kb_drugs_glow.png"), 0.35)
+		"kb_glow_tobacco":
+			_glow(m, b.tex("sg/kb_tobacco_glow.png"), 0.35)
 		_:
 			return false
 	return true

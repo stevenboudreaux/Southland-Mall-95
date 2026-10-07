@@ -23,6 +23,8 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 			foot_locker(b, g, e, a, n, t, Ln, sd, U)
 		"ATHLETE'S FOOT":
 			athletes_foot(b, g, e, a, n, t, Ln, sd, U)
+		"K&B":
+			kb(b, g, e, a, n, t, Ln, sd, U)
 
 ## Wood planks on the front plane between x0..x1, y0..y1 (1 m texture tiles); mirror swaps the slant.
 static func wood(b, G, a, t, n, U, x0, x1, y0, y1, mirror):
@@ -94,6 +96,67 @@ static func athletes_foot(b, g, e, a, n, t, Ln, sd, U):
 	CH.build(b, "aff_sign", S + "af_foot_logo.json", face, n, "sg_af_red", "sg_af_return", "", 0.0, 0.022, 0.0)
 	CH.build(b, "aff_sign", S + "af_wing_logo.json", face, n, "sg_af_white", "sg_af_return", "", 0.0, 0.032, 0.0)
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.15, Ln - 0.15)
+
+## K&B (Steven, Oct 7): the front of the K&B at Prien Lake Mall, Lake Charles (same owners;
+## refs/kb-prien-lake-mall.png): a brown fascia with the round logo at each end and DRUGS,
+## TOBACCO in lit letters between; display windows on a brick bulkhead, the doors, then glass
+## to the floor. The logo from refs/kb-logo.jpg: purple face, gold rim, a red line, white K&B.
+static func kb(b, g, e, a, n, t, Ln, sd, U):
+	var G = "kbf_props"
+	var LH = b.LANE_H
+	var head = 3.0
+	b.box(G, "sg_kb_fascia", P(a, t, n, U.call(Ln * 0.5), (head + LH) * 0.5, -0.12), b.abs_size(t, Ln, LH - head, 0.24, n), Transform3D.IDENTITY, ["+z", "-z"])
+	b.quad(G, "sg_kb_fascia", [P(a, t, n, 0.0, head, -0.24), P(a, t, n, Ln, head, -0.24), P(a, t, n, Ln, head, 0.0), P(a, t, n, 0.0, head, 0.0)], Vector3.DOWN)
+	for x in [0.15, Ln - 0.15]:
+		b.box(G, "sg_kb_fascia", P(a, t, n, U.call(x), head * 0.5, -0.08), b.abs_size(t, 0.3, head, 0.16, n), Transform3D.IDENTITY, ["-y"])
+	var w0 = 0.3
+	var w1 = Ln * 0.48
+	var d1 = w1 + 2.2
+	var g1 = Ln - 0.3
+	# display windows on a brick bulkhead
+	b.box(G, "sg_kb_brick", P(a, t, n, U.call((w0 + w1) * 0.5), 0.45, -0.08), b.abs_size(t, w1 - w0, 0.9, 0.16, n))
+	b.box(G, "sg_kb_alum", P(a, t, n, U.call((w0 + w1) * 0.5), 0.92, -0.09), b.abs_size(t, w1 - w0, 0.05, 0.18, n))
+	_glass(b, a, t, n, U, w0, w1, 0.92, head)
+	_mullions(b, G, a, t, n, U, w0, w1, 0.92, head, 6)
+	# the doors: a pair of aluminium-framed glass leaves standing open, a transom over them
+	_glass(b, a, t, n, U, w1, d1, 2.25, head)
+	_mullions(b, G, a, t, n, U, w1, d1, 0.0, head, 1)
+	b.box(G, "sg_kb_alum", P(a, t, n, U.call((w1 + d1) * 0.5), 2.22, -0.02), b.abs_size(t, d1 - w1, 0.07, 0.1, n))
+	for s in [[w1 + 0.05, 1.0], [d1 - 0.05, -1.0]]:
+		var hinge = P(a, t, n, U.call(s[0]), 0.0, 0.1)
+		K.lbox(b, G, "sg_kb_alum", hinge, -n, t, 0.0, 0.0, 0.0, 1.0, 2.2, 0.05)
+	# glass to the floor on the right
+	b.box(G, "sg_kb_alum", P(a, t, n, U.call((d1 + g1) * 0.5), 0.05, -0.02), b.abs_size(t, g1 - d1, 0.1, 0.1, n))
+	_glass(b, a, t, n, U, d1, g1, 0.1, head)
+	_mullions(b, G, a, t, n, U, d1, g1, 0.0, head, 5)
+	# the sign: logo, DRUGS, TOBACCO, logo, evenly spaced along the fascia
+	var face = -0.24
+	var wd = float(JSON.parse_string(FileAccess.get_file_as_string(S + "kb_drugs_logo.json")).width)
+	var wt = float(JSON.parse_string(FileAccess.get_file_as_string(S + "kb_tobacco_logo.json")).width)
+	var l0 = 0.35 + 0.65
+	var l1 = Ln - 0.35 - 0.65
+	var gap = (l1 - l0 - 1.3 - wd - wt) / 3.0
+	var xd = l0 + 0.65 + gap + wd * 0.5
+	var xt = xd + wd * 0.5 + gap + wt * 0.5
+	for x in [l0, l1]:
+		var c = P(a, t, n, U.call(x), 3.15, face)
+		CH.build(b, "kbf_sign", S + "kb_disc_logo.json", c, n, "sg_kb_purple", "sg_kb_can", "", 0.02, 0.2, 0.0)
+		CH.build(b, "kbf_sign", S + "kb_rim_logo.json", c, n, "sg_kb_gold", "sg_kb_can", "", 0.02, 0.235, 0.0)
+		CH.build(b, "kbf_sign", S + "kb_line_logo.json", c, n, "sg_kb_red", "sg_kb_can", "", 0.02, 0.21, 0.0)
+		CH.build(b, "kbf_sign", S + "kb_letters_logo.json", c, n, "sg_kb_white", "sg_kb_bevel", "sg_kb_bevel", 0.22, 0.03, 0.012)
+	for wv in [[xd, "drugs"], [xt, "tobacco"]]:
+		CH.build(b, "kbf_sign", S + "kb_%s_logo.json" % wv[1], P(a, t, n, U.call(wv[0]), 3.5, face), n, "sg_kb_letter", "sg_kb_return", "sg_kb_edge", 0.03, 0.1, 0.022, "sg_kb_glow_" + wv[1])
+	_inside(b, g, e, a, n, t, Ln, sd, U, 0.3, Ln - 0.3)
+
+static func _glass(b, a, t, n, U, x0, x1, y0, y1):
+	b.quad("glass", "glass", [P(a, t, n, U.call(x0), y0, 0.0), P(a, t, n, U.call(x1), y0, 0.0), P(a, t, n, U.call(x1), y1, 0.0), P(a, t, n, U.call(x0), y1, 0.0)], n,
+		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
+
+static func _mullions(b, G, a, t, n, U, x0, x1, y0, y1, k):
+	for i in k + 1:
+		var x = x0 + (x1 - x0) * i / k
+		b.box(G, "sg_kb_alum", P(a, t, n, U.call(x), (y0 + y1) * 0.5, -0.02), b.abs_size(t, 0.06, y1 - y0, 0.1, n))
+	b.box(G, "sg_kb_alum", P(a, t, n, U.call((x0 + x1) * 0.5), y1 - 0.04, -0.02), b.abs_size(t, x1 - x0, 0.08, 0.1, n))
 
 ## The mall's generic interior between x0..x1 (build_mall.gd interior()).
 static func _inside(b, g, e, a, n, t, Ln, sd, U, x0, x1):

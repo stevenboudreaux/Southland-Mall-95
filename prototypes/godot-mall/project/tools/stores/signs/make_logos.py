@@ -209,6 +209,55 @@ def fit_words(font, words, frame_x0, base_px, s_px):
     return out
 
 
+def set_text(font, text, cap_m, track=0.0):
+    """text set in the font with its own spacing, capitals cap_m high, baseline y = 0, from x = 0."""
+    f = TTFont(font)
+    gs = f.getGlyphSet()
+    cmap = f.getBestCmap()
+    hmtx = f["hmtx"]
+    bp = FlatPen(gs)
+    gs[cmap[ord("H")]].draw(bp)
+    capu = max(p[1] for c in bp.contours for p in c)
+    k = cap_m / capu
+    out = []
+    x = 0.0
+    for ch in text:
+        g = cmap[ord(ch)]
+        if ch != " ":
+            pen = FlatPen(gs)
+            gs[g].draw(pen)
+            out.append(letter(ch, [[((p[0] + x) * k, p[1] * k) for p in c] for c in pen.contours]))
+        x += hmtx[g][0] + track / k
+    return out, (x - track / k) * k
+
+
+def circle(r, cx=0.0, cy=0.0, n=96, cw=False):
+    pts = [(cx + r * np.cos(2 * np.pi * i / n), cy + r * np.sin(2 * np.pi * i / n)) for i in range(n)]
+    return pts[::-1] if cw else pts
+
+
+def bricks(path, base=(92, 52, 38)):
+    """Running-bond brick, 1024 px = 1 m (bricks 20 x 6.7 cm with 1 cm joints), tiling."""
+    N = 1024
+    img = np.zeros((N, N, 3), np.float32)
+    rng = np.random.default_rng(11)
+    rows = 15
+    rh = N / rows
+    for r in range(rows):
+        off = 0 if r % 2 == 0 else N / 10
+        for c in range(-1, 6):
+            x0 = int(c * N / 5 + off)
+            y0 = int(r * rh)
+            sh = rng.uniform(0.75, 1.15)
+            col = np.array([base[2], base[1], base[0]]) * sh
+            img[y0 + 5:int(y0 + rh) - 5, max(0, x0 + 5):min(N, x0 + N // 5 - 5)] = col
+    joint = np.all(img == 0, axis=2)
+    img[joint] = (120, 125, 128)
+    noise = cv2.GaussianBlur(rng.normal(0, 1, (N, N)).astype(np.float32), (0, 0), 1.5)
+    img = np.clip(img * (1 + noise[..., None] * 0.06), 0, 255).astype(np.uint8)
+    cv2.imwrite(path, cv2.resize(img, (512, 512), interpolation=cv2.INTER_AREA))
+
+
 # ------------------------------------------------------------------ textures
 def textures(lid, letters, width, top, glow_rgb, pad, face_lo=0.72):
     """face: UV (x / width, 1 - y / top); glow: covers the letters plus pad metres all round."""
@@ -341,5 +390,30 @@ def main():
     write("af_border", "border", [rect_ring(-0.01, -0.01, fw + 0.01, fh + 0.01, 0.022)], fw, (0, 0, 0), 0.1, "the yellow pinstripe", top=fh, tex=False)
 
 
+def kb():
+    """K&B (Prien Lake Mall photo, refs/kb-prien-lake-mall.png; the logo from refs/kb-logo.jpg):
+    the round logo 1.3 m across (purple face, gold rim, a red line inside it, K&B traced from the
+    logo photo), and DRUGS / TOBACCO in Francois One (OFL), 0.6 m capitals."""
+    D = 1.3
+    R = D / 2
+    m = cv2.imread(os.path.join(HERE, "src", "kb_letters.png"), 0) > 127
+    ys, xs = np.where(m)
+    lw = 0.8 * D                                # the letters span 80 % of the disc
+    s_px = lw / (xs.max() - xs.min())
+    lh = (ys.max() - ys.min()) * s_px
+    x0 = xs.min() - (D - lw) / 2 / s_px         # frame: the disc's left edge
+    base = ys.max() + (D - lh) / 2 / s_px       # frame: the disc's bottom
+    write("kb_letters", "K&B", trace_mask(m, "K&B", D, base, frame=(x0, s_px), smooth=6.0), D, (0, 0, 0), 0.1,
+          "K&B traced from Steven's logo photo", top=D, tex=False)
+    write("kb_disc", "disc", [letter("O", [circle(R * 0.93, R, R)])], D, (0, 0, 0), 0.1, "the purple face", top=D, tex=False)
+    write("kb_rim", "rim", [letter("O", [circle(R, R, R), circle(R * 0.93, R, R, cw=True)])], D, (0, 0, 0), 0.1, "the gold rim", top=D, tex=False)
+    write("kb_line", "line", [letter("O", [circle(R * 0.925, R, R), circle(R * 0.905, R, R, cw=True)])], D, (0, 0, 0), 0.1, "the red line", top=D, tex=False)
+    for word in ("DRUGS", "TOBACCO"):
+        L, w = set_text(os.path.join(HERE, "src", "FrancoisOne-Regular.ttf"), word, 0.6, 0.06)
+        write("kb_" + word.lower(), word, L, w, (225, 200, 255), 0.25, "Francois One, read off the Prien Lake photo")
+    bricks(os.path.join(TEX, "kb_brick.png"))
+
+
 if __name__ == "__main__":
     main()
+    kb()
