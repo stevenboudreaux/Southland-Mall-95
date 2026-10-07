@@ -104,6 +104,13 @@ static func spot(b, G, c, energy = 1.2, rng = 6.0, angle = 56.0):
 	var l = b.add_spot(c - UP * 0.04, Vector3.DOWN, energy, rng, angle, Color(1.0, 0.95, 0.86))
 	b.tag(l, "", energy, energy)
 
+## The Cucos sign (Steven, Oct 7: "the most accurate neon Cucos Mexican Cafe sign"): the open-face
+## neon channel script over the blue MEXICAN CAFE cabinet, traced from his photos and built as the
+## real one is (tools/stores/signs/cucos_sign.gd), centred on the plank parapet above the teal line.
+static func cucos_sign(b, a, t, n, W, head):
+	var c = P(a, t, n, W * 0.5, head + 0.15, -0.34)
+	load("res://tools/stores/signs/cucos_sign.gd").build(b, "w8cf_sign", "res://tools/stores/signs/cu_sign.json", c, n)
+
 # ------------------------------------------------------------------ Cucos Border Cafe
 ## Warm vertical wood planks with teal-green trim and a stepped parapet; the sign board with
 ## pale peach stripes behind the big red swash name and MEXICAN CAFE; heavy wood lintels over
@@ -122,24 +129,7 @@ static func cucos(b, a, t, n, W, D, rng):
 		b.box(F, "w8_teal", P(a, t, n, mid + s * 2.72, (head + b.LANE_H) * 0.5, -0.27), b.abs_size(t, 0.08, b.LANE_H - head, 0.16, n))
 		b.box(F, "w8_teal", P(a, t, n, mid + s * (2.7 + (W * 0.5 - 2.7) * 0.5), head + 1.15, -0.22), b.abs_size(t, W * 0.5 - 2.7, 0.08, 0.06, n))
 	b.box(F, "w8_teal", P(a, t, n, mid, head + 0.04, -0.3), b.abs_size(t, W, 0.08, 0.2, n))
-	# the sign (Steven, Oct 7: his photos of the Cucos sign, lit at night and on the street front):
-	# the Cucos script as 3D letters on the plank parapet, neon tubes running round each letter
-	# and glowing a little, the blue MEXICAN CAFE band below on the right with white lit letters
-	var CHN = load("res://tools/stores/signs/channel.gd")
-	var AKN = load("res://tools/stores/apparel/kit.gd")
-	var S = "res://tools/stores/signs/"
-	var sgc = P(a, t, n, mid - 0.25, head + 0.36, -0.34)
-	CHN.build(b, "w8cf_sign", S + "cu_name_logo.json", sgc, n, "sg_cu_face", "sg_cu_return", "", 0.0, 0.07, 0.0, "sg_cu_glow")
-	AKN.neon(b, "w8cf_sign", S + "cu_name_logo.json", sgc, n, "sg_cu_neon", 0.0, 0.016, 0.085)
-	var bc = P(a, t, n, mid + 0.75, head + 0.14, -0.34)
-	var rvs = (-n).cross(UP)
-	b.box("w8cf_sign", "sg_cu_band", bc + UP * 0.16 + n * 0.06, b.abs_size(t, 2.4, 0.32, 0.12, n), Transform3D.IDENTITY, [], true)
-	for sx in [-1.0, 1.0]:
-		var ec = bc + UP * 0.16 + n * 0.06 + rvs * (sx * 1.2)
-		b.box("w8cf_sign", "sg_cu_band", ec + rvs * (sx * 0.08), b.abs_size(t, 0.16, 0.24, 0.12, n), Transform3D.IDENTITY, [], true)
-	b.box("w8cf_sign", "sg_cu_white_trim", bc + UP * 0.315 + n * 0.06, b.abs_size(t, 2.4, 0.02, 0.125, n), Transform3D.IDENTITY, [], true)
-	b.box("w8cf_sign", "sg_cu_white_trim", bc + UP * 0.005 + n * 0.06, b.abs_size(t, 2.4, 0.02, 0.125, n), Transform3D.IDENTITY, [], true)
-	CHN.build(b, "w8cf_sign", S + "cu_sub_logo.json", bc + UP * 0.075 + n * 0.12, n, "sg_cu_white", "sg_cu_band", "", 0.0, 0.02, 0.0, "sg_cu_sub_glow")
+	cucos_sign(b, a, t, n, W, head)
 	# the doorway: plank jambs, a heavy dark lintel, the dark double doors standing open inward
 	var dw = 2.4
 	for s in [-1.0, 1.0]:

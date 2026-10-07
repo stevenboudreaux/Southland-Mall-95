@@ -499,6 +499,44 @@ static func fill_mat(m, key, b):
 			m.set_meta("e_day", 0.7); m.set_meta("e_night", 1.2)
 		"cu_sub_glow":
 			_glow(m, b.tex("sg/cu_sub_glow.png"), 0.2)
+		# Cucos, the neon channel sign (Oct 7, tools/stores/signs/cucos_sign.gd): black cans painted
+		# brick red inside, red neon on standoffs, the blue cabinet with white neon. Lit a little:
+		# the tubes glow without washing out the cans.
+		"cu2_black":
+			m.albedo_color = Color("#15120f"); m.roughness = 0.5; m.metallic = 0.25
+		"cu2_red":
+			m.albedo_color = Color("#a22a1c"); m.roughness = 0.55
+			m.emission_enabled = true; m.emission = Color("#e0341c"); m.emission_energy_multiplier = 0.5
+			m.set_meta("e_day", 0.3); m.set_meta("e_night", 0.5)
+		"cu2_tube":
+			m.albedo_color = Color("#ff9a88"); m.roughness = 0.15
+			m.emission_enabled = true; m.emission = Color("#ff3c22"); m.emission_energy_multiplier = 1.9
+			m.set_meta("e_day", 1.4); m.set_meta("e_night", 1.9)
+		"cu2_boot":
+			m.albedo_color = Color("#0b0b0b"); m.roughness = 0.7
+		"cu2_post":
+			m.albedo_color = Color("#d9dad4"); m.roughness = 0.2; m.metallic_specular = 0.7
+			m.emission_enabled = true; m.emission = Color("#ff6a48"); m.emission_energy_multiplier = 0.25
+			m.set_meta("e_day", 0.1); m.set_meta("e_night", 0.25)
+		"cu2_blue":
+			m.albedo_color = Color("#4c58a8"); m.roughness = 0.4; m.metallic_specular = 0.5
+			m.emission_enabled = true; m.emission = Color("#5562cc"); m.emission_energy_multiplier = 0.5
+			m.set_meta("e_day", 0.32); m.set_meta("e_night", 0.5)
+		"cu2_white":
+			m.albedo_color = Color("#eef0f4"); m.roughness = 0.35
+			m.emission_enabled = true; m.emission = Color("#eef2ff"); m.emission_energy_multiplier = 0.8
+			m.set_meta("e_day", 0.5); m.set_meta("e_night", 0.8)
+		"cu2_wtube":
+			m.albedo_color = Color("#ffffff"); m.roughness = 0.15
+			m.emission_enabled = true; m.emission = Color("#eaf2ff"); m.emission_energy_multiplier = 1.8
+			m.set_meta("e_day", 1.3); m.set_meta("e_night", 1.8)
+		"cu2_pool":
+			# light added over what is behind it: the colour is in the vertices
+			m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			m.vertex_color_use_as_albedo = true
+			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+			m.cull_mode = BaseMaterial3D.CULL_DISABLED
 		# Great American Cookie Co. (Oct 7): red neon script, white lit capitals, a black fascia
 		"gac_neon":
 			m.albedo_texture = b.tex("sg/gac_script_face.png"); m.albedo_color = Color("#ff3a2a"); m.roughness = 0.25

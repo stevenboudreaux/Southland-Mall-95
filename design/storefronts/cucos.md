@@ -10,9 +10,38 @@
 
 ## Front
 - Vertical wood planks over the whole front; a raised plank panel in the middle with teal edges, teal caps stepping down each side, a teal line at the head.
-- The sign board in a teal frame: peach stripes, the red slanted name with a dark drop shadow and a swash under it, MEXICAN CAFE in spaced capitals.
+- **The sign (Oct 7, 2026, evening; Steven: "the most accurate neon Cucos Mexican Cafe sign"):** see "The neon sign" below. It replaces the sign board and the earlier outline trace.
 - A heavy dark lintel over the doorway; dark double doors standing open inside.
 - Each side: a white-mullioned window over a plank bulkhead with a teal sill; a clay barrel-tile awning (tile ends along the eave) over a green fascia board, on dark brackets.
+
+## The neon sign
+**Source.** Steven's five photos of the chain's street sign (Oct 7): a 1100 px close-up from below-left with the neon off, a square-on photo, two distant ones, and the wood-plank restaurant front.
+
+**What the photos show.** An open-face neon channel sign:
+- The script is sheet-metal cans with black returns, painted brick red inside. The big C runs into the swash and the S as one can; u, c and o are cans of their own.
+- Glass tubes sit inside the cans on standoffs: three abreast where the stroke is wide, two in the middle weights, one in the hairlines and curls.
+- Below, a periwinkle-blue cabinet with bullnose ends. Each end has two white stripes with a white tube that runs out along one and back along the other. MEXICAN CAFE is white letters, each with its own white tube.
+
+**How it was traced.**
+- The close-up was registered to the square-on photo (a homography found by aligning the two red masks), then levelled on the blue bar: `tools/stores/signs/src/cucos_front.jpg`.
+- The letter openings were segmented from that view (`src/cucos_cans.png`); the three places where u, c, o and the S touch were cut by hand so each is its own can.
+- `tools/stores/signs/make_cucos.py` turns the mask into outlines, back-pan triangles and tube runs: `cu_sign.json`.
+
+**How it is built** (`tools/stores/signs/cucos_sign.gd`, materials `sg_cu2_*` in `channel.gd`). Geometry and vertex colour only, no textures.
+- Cans: 125 mm deep returns, a 4 mm rim, red back pan and inner walls.
+- Tubes: 8 mm glass, 42 mm off the fascia; a run 30 mm inside the walls, a centre run where the stroke is wide or too narrow for two. Each run ends in two electrodes in black boots; closed runs keep their gap. Standoffs every 21 cm.
+- Light: the tubes glow a little (emission 1.9 at night, 1.4 by day); each lays a pool of light on the red pan; the cans throw a faint halo on the planks.
+- Size: the script is 1.80 m wide and 1.04 m tall, the bar 2.32 m by 0.25 m, the whole sign 1.36 m tall on the 1.62 m parapet, centred over the doorway.
+- About 20,000 triangles, plus 4,800 for the added light.
+
+**Guessed or approximate.**
+- The mall sign's size: scaled to fit the parapet. The street sign is roughly 3 m wide.
+- MEXICAN CAFE is set in Old Standard Bold, thickened. The real letters are a heavier wedge-serif; no exact font was found.
+- Tube runs follow the walls at a fixed inset. The real glass bender's runs differ in detail (where runs start, stop and cross).
+- Whether the 1995 mall sign matched the street sign exactly is not known; the photos are of later street locations.
+
+**Rebuild without a rebake.** The sign is a dynamic mesh, outside the lightmap:
+`python3 tools/stores/signs/make_cucos.py`, then `godot --headless --path . --script res://tools/stores/signs/cucos_only.gd` rewrites `gen/w1/dyn_w8cf_sign.res` and `dyn_w8cf_sign_glow.res`. A full wing build calls the same code (`wave8.gd` `cucos_sign`). Then recapture Wing 1's stand-in, export and publish. Preview: `tools/qa/cucos_preview.gd`.
 
 ## Inside (walkable)
 - Saltillo tile floor, warm adobe walls with a teal tile wainscot, dark beams under a dark wood ceiling.
@@ -22,4 +51,4 @@
 - Papel picado strung across the room; copper pendant lamps, warm.
 
 ## Files
-`tools/stores/small/wave8.gd` (the seven Wave 8 shops, materials `w8_*`), `paint8.py` → `tex/w8/`, `make_signs.py` (letters). Hooks in `tools/build_mall.gd` and `tools/open_interiors.py`.
+`tools/stores/small/wave8.gd` (the seven Wave 8 shops, materials `w8_*`), `paint8.py` → `tex/w8/`, `make_signs.py` (letters). The sign: `tools/stores/signs/cucos_sign.gd`, `make_cucos.py`, `cu_sign.json`, `cucos_only.gd`. Hooks in `tools/build_mall.gd` and `tools/open_interiors.py`.
