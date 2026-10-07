@@ -26,6 +26,11 @@ OPEN = {
     "n33": [(108, 110, 110, 123)],
     "n33b": [(111, 113, 110, 123)],
     "n46": [(101, 104, 130, 149)],
+    # Babbage's (n39b, tiles x 83-85, y 130-133, faces north, by Corn Dog 7; the 2 m jog on
+    # its right is x 82, y 131-133) and Sound Shop (s19, x 131-142, y 68-70, faces east,
+    # beside Kay-Bee): the whole stores (design/storefronts/babbages.md, sound-shop.md)
+    "n39b": [(83, 85, 130, 133), (82, 82, 131, 133)],
+    "s19": [(131, 142, 68, 70)],
 }
 
 
