@@ -52,7 +52,7 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 	"GADZOOKS": [-62.0, 24.0, -50.0, 48.0], "THE LIMITED": [-132.0, 20.0, -122.0, 48.0],
 	"COACH HOUSE GIFTS": [2.0, 16.0, 26.0, 26.0], "GENERAL NUTRITION CENTER": [2.0, 34.0, 16.0, 38.0],
 	"MASTERCUTS": [2.0, -48.0, 16.0, -44.0], "WICKS 'N' STICKS": [-37.0, 36.0, -32.0, 48.0],
-	"CHICK-FIL-A": [-102.0, 60.0, -94.0, 76.0], "RADIO SHACK": [2.0, 26.0, 18.0, 32.4],
+	"CHICK-FIL-A": [-102.0, 60.0, -94.0, 86.0], "RADIO SHACK": [2.0, 26.0, 18.0, 32.4],
 	"B. DALTON BOOKSELLER": [-110.0, 28.0, -102.0, 48.0], "KARMELKORN": [-36.0, 60.0, -20.0, 70.0],
 	"ZALES": [-154.0, 68.0, -146.0, 78.0], "MERRY-GO-ROUND": [-102.0, 28.0, -94.0, 48.0],
 	"JEAN NICOLE": [-34.0, -40.0, -10.0, -30.0], "CHAMPS SPORTS": [-122.0, 24.0, -110.0, 48.0],
@@ -311,6 +311,10 @@ func mat(name):
 			elif name.begins_with("sg_"):
 				# the traced channel-letter signs: tools/stores/signs/channel.gd's fill_mat
 				if not load("res://tools/stores/signs/channel.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
+			elif name.begins_with("cf_"):
+				# Chick-fil-A, rebuilt from Steven's video: tools/stores/cfa/store.gd's fill_mat
+				if not load("res://tools/stores/cfa/store.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
 			elif name.begins_with("w9_"):
 				# the Wave 9 shops: tools/stores/small/wave9.gd's fill_mat
@@ -1363,7 +1367,12 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# guessed (design/storefronts/radio-shack.md, b-dalton.md, karmelkorn.md, zales.md)
 		load("res://tools/stores/small/store2.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
-	if sd.name in ["COACH HOUSE GIFTS", "GENERAL NUTRITION CENTER", "MASTERCUTS", "WICKS 'N' STICKS", "CHICK-FIL-A"] and not inner_call:
+	if sd.name == "CHICK-FIL-A" and not inner_call:
+		# rebuilt Oct 8, 2026 from Steven's video of the Southland unit
+		# (design/storefronts/chick-fil-a.md)
+		load("res://tools/stores/cfa/store.gd").build(self, g, e, a, b, n, t, Ln, sd)
+		return
+	if sd.name in ["COACH HOUSE GIFTS", "GENERAL NUTRITION CENTER", "MASTERCUTS", "WICKS 'N' STICKS"] and not inner_call:
 		# built in full 3D from the facade records and the Hammond 1993 commercial, insides
 		# guessed (design/storefronts/coach-house.md, gnc.md, mastercuts.md, wicks-n-sticks.md,
 		# chick-fil-a.md)

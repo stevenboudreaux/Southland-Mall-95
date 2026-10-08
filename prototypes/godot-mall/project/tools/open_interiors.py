@@ -46,7 +46,7 @@ OPEN = {
     "s21c": [(149, 155, 117, 118)],
     "s24mc": [(149, 155, 76, 77)],
     "s44": [(130, 131, 118, 123)],   # narrowed Oct 7
-    "s64": [(97, 100, 130, 137)],
+    "s64": [(97, 100, 130, 142)],   # deepened to 26 m Oct 8 (the video's long dining room)
     # Wave 6 (tools/stores/small/store2.gd): Radio Shack (s21b), B. Dalton (s48), and the
     # corner shops Karmelkorn (s57) and Zales (s7), open on two halls
     "s21b": [(149, 156, 113, 115)],   # narrowed Oct 7
