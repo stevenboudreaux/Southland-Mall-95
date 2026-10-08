@@ -141,7 +141,8 @@
 [ext_resource type="ArrayMesh" path="res://gen/w2/dyn_apf_props.res" id="139_blrtg"]
 [ext_resource type="ArrayMesh" path="res://gen/w2/dyn_w7rf_props.res" id="140_31vwk"]
 [ext_resource type="ArrayMesh" path="res://gen/w2/dyn_w7af_props.res" id="141_kplxc"]
-[ext_resource type="ArrayMesh" path="res://gen/w2/dyn_s6kf_props.res" id="142_80ex2"]
+[ext_resource type="ArrayMesh" path="res://gen/w2/dyn_s6kf_sign.res" id="142_kksgn"]
+[ext_resource type="ArrayMesh" path="res://gen/w2/dyn_s6kf_sign_glow.res" id="142_kkglw"]
 [ext_resource type="ArrayMesh" path="res://gen/w2/dyn_s6zf_sign.res" id="143_pqxtd"]
 [ext_resource type="ArrayMesh" path="res://gen/w2/dyn_s6zf_sign_glow.res" id="144_nyf6u"]
 [ext_resource type="ArrayMesh" path="res://gen/w2/dyn_w8sf_props.res" id="145_472yy"]
@@ -6758,10 +6759,15 @@ cast_shadow = 0
 gi_mode = 2
 mesh = ExtResource("141_kplxc")
 
-[node name="dyn_s6kf_props" type="MeshInstance3D" parent="Dynamic" unique_id=1606109512]
+[node name="dyn_s6kf_sign" type="MeshInstance3D" parent="Dynamic" unique_id=1606109512]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("142_80ex2")
+mesh = ExtResource("142_kksgn")
+
+[node name="dyn_s6kf_sign_glow" type="MeshInstance3D" parent="Dynamic" unique_id=1606109513]
+cast_shadow = 0
+gi_mode = 2
+mesh = ExtResource("142_kkglw")
 
 [node name="dyn_s6zf_sign" type="MeshInstance3D" parent="Dynamic" unique_id=1693020204]
 cast_shadow = 0

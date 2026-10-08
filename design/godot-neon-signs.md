@@ -87,6 +87,22 @@ python3 $T cut --mask m.png --lines "765,506,765,542;936,408,947,454;1138,350,11
 
 Re-running these steps on Steven's photos reproduces the committed Cucos mask to 99.7%.
 
+### When the photo is too small to trace: fit a typeface (Karmelkorn, Oct 7)
+If the letters are only a few dozen pixels tall and the glow joins them, `mask` gives blobs.
+Karmelkorn's square-on photo was 582 px. The worked example is `tools/stores/signs/kk_trace.py`:
+1. **Enlarge.** Crop to the sign and enlarge 4x (bicubic). Save it as `src/<id>_front.jpg`.
+2. **Find each letter's box.** Take a column profile of brightness across the caps band (the 70th percentile per column, smoothed). Its minima are the gaps between letters. A minimum inside a letter (a counter) gives itself away by an odd letter width.
+3. **Pick the typeface.** Fit each glyph into its box by correlation with the photo's brightness, blurring the glyph as much as the photo is blurred (sigma 4 at 4x), and search the box edges by ±9 px.
+   - `kk_trace.py --fonts ...` scores several faces. Then look at the overlay: the scores sit within 0.02 of each other, so pick by eye.
+   - Thinning made no difference to the score (blur dominates). Choose it by the counters' size in the photo.
+4. **Build one-off letters as strokes,** such as a swash K or a flourish. Measure their centre lines and widths off a skeleton of the photo's mask; widths come out about a third too wide because of the glow. Tracing them directly came out wobbly, the "sloppy" look Steven rejects.
+5. **Leave air between cans:** 1.5 photo px. Drop slivers.
+
+Then carry on from step 4 (`make_kk.py` is `make_cucos.py` without the cabinet).
+- **Outline neon** (Karmelkorn): no centre run in wide strokes, just the inset ring and a single run in hairlines. Drop centre runs shorter than 70 px, because those are serif stubs.
+- **Tube scale:** on a 6 m sign, 9 mm glass read as hairlines; 12 mm matched the photo.
+- **Two fronts:** one dynamic group, two `build` calls, and a node pair in the wing's `.tscn`.
+
 ### Step 4: Make the sign's data (copy `make_cucos.py`)
 Copy `make_cucos.py` to `make_<id>.py` and change the constants. It writes `<id>_sign.json`:
 - **cans:** outline loops plus back-pan triangles, in metres.

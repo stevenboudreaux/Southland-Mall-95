@@ -537,6 +537,32 @@ static func fill_mat(m, key, b):
 			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
 			m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
 			m.cull_mode = BaseMaterial3D.CULL_DISABLED
+		# Karmelkorn, the neon channel sign on both fronts (Oct 7, tools/stores/signs/kk_sign.gd):
+		# deep red returns, a cream trim cap, red inside, red neon outlines. Lit a little.
+		"kk2_return":
+			m.albedo_color = Color("#5c0c0e"); m.roughness = 0.45; m.metallic = 0.2
+		"kk2_rim":
+			m.albedo_color = Color("#eedcb4"); m.roughness = 0.35; m.metallic_specular = 0.6
+		"kk2_red":
+			m.albedo_color = Color("#b8281c"); m.roughness = 0.55
+			m.emission_enabled = true; m.emission = Color("#ee4424"); m.emission_energy_multiplier = 0.75
+			m.set_meta("e_day", 0.4); m.set_meta("e_night", 0.75)
+		"kk2_tube":
+			m.albedo_color = Color("#ffd2bc"); m.roughness = 0.15
+			m.emission_enabled = true; m.emission = Color("#ff6440"); m.emission_energy_multiplier = 1.9
+			m.set_meta("e_day", 1.4); m.set_meta("e_night", 1.9)
+		"kk2_boot":
+			m.albedo_color = Color("#0b0b0b"); m.roughness = 0.7
+		"kk2_post":
+			m.albedo_color = Color("#d9dad4"); m.roughness = 0.2; m.metallic_specular = 0.7
+			m.emission_enabled = true; m.emission = Color("#ff6a48"); m.emission_energy_multiplier = 0.25
+			m.set_meta("e_day", 0.1); m.set_meta("e_night", 0.25)
+		"kk2_pool":
+			m.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
+			m.vertex_color_use_as_albedo = true
+			m.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
+			m.blend_mode = BaseMaterial3D.BLEND_MODE_ADD
+			m.cull_mode = BaseMaterial3D.CULL_DISABLED
 		# Great American Cookie Co. (Oct 7): red neon script, white lit capitals, a black fascia
 		"gac_neon":
 			m.albedo_texture = b.tex("sg/gac_script_face.png"); m.albedo_color = Color("#ff3a2a"); m.roughness = 0.25

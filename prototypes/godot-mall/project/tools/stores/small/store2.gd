@@ -120,22 +120,29 @@ static func dalton(b, a, t, n, W, D, rng):
 	K.counter(b, G, "s6b_small", P(a, t, n, SIDE + 0.5, 0, 2.5), -n, t, 2.4, "md_bb_counter", rng)
 
 # ------------------------------------------------------------------ Karmelkorn
-## A golden-yellow bulkhead wrapping the corner with the red logotype (a big K, slab-serif
-## capitals, red with a cream edge, leaning a little), a lit soffit, an open front (record);
+## A golden-yellow bulkhead wrapping the corner with the red neon logotype on both fronts (the
+## swash K, slab-serif capitals: kk_sign above), a lit soffit, an open front (record);
 ## inside, a counter of caramel corn under glass, kettles, tins, a yellow room.
+const KK_LIFT = 0.57     # the sign's bottom above the bulkhead's: it sits in the middle of the 1.9 m face
+
+## The Karmelkorn neon sign (Oct 7, built as the real one is: tools/stores/signs/kk_sign.gd), with
+## the middle of its bottom edge at c on a bulkhead face that looks along nn. Both fronts share
+## one dynamic group; kk_only.gd rebuilds just this.
+static func kk_sign(b, c, nn):
+	load("res://tools/stores/signs/kk_sign.gd").build(b, "s6kf_sign", "res://tools/stores/signs/kk_sign.json", c, nn)
+
 static func karmelkorn(b, a, t, n, W, D, rng):
 	var G = "s6k_fix"
 	var F = "s6kf_props"
 	var head = 2.7
 	S1.upper(b, F, a, t, n, W, head, "s6_yellow", 0.25)
-	AK.letters(b, F, "res://tools/stores/small/kk_letters.json", P(a, t, n, W * 0.5, head + 0.5, -0.25), n, "s6_kk_red", "s6_kk_edge", 0.02, 0.07)
-	# the deep red drop shadow behind the letters (record)
-	var rvk = (-n).cross(UP)
-	AK.letters(b, F, "res://tools/stores/small/kk_letters.json", P(a, t, n, W * 0.5, head + 0.5, -0.25) + rvk * 0.05 - UP * 0.05, n, "s6_kk_shadow", "s6_kk_shadow", 0.0, 0.02)
+	# the neon sign on both fronts (Steven, Oct 7: "a corner shop, so neon goes on both sides"):
+	# tools/stores/signs/kk_sign.gd, centred on each bulkhead's face
+	kk_sign(b, P(a, t, n, W * 0.5, head + KK_LIFT, -0.25), n)
 	# the bulkhead wraps the corner: the east front (u = W, along d)
 	var e0 = P(a, t, n, W, 0, 0)
 	b.box(F, "s6_yellow", e0 - n * (D * 0.5) + UP * ((head + b.LANE_H) * 0.5) + t * 0.125, b.abs_size(-n, D, b.LANE_H - head, 0.25, t))
-	AK.letters(b, F, "res://tools/stores/small/kk_letters.json", e0 - n * (D * 0.5) + UP * (head + 0.5) + t * 0.25, t, "s6_kk_red", "s6_kk_edge", 0.02, 0.07)
+	kk_sign(b, e0 - n * (D * 0.5) + UP * (head + KK_LIFT) + t * 0.25, t)
 	# lit soffits on both fronts
 	b.quad(F, "md_glowstrip", [P(a, t, n, 0.2, head, 0.0), P(a, t, n, W, head, 0.0), P(a, t, n, W, head, 0.6), P(a, t, n, 0.2, head, 0.6)], Vector3.DOWN)
 	b.quad(F, "md_glowstrip", [P(a, t, n, W - 0.6, head, 0.0), P(a, t, n, W, head, 0.0), P(a, t, n, W, head, D - 0.2), P(a, t, n, W - 0.6, head, D - 0.2)], Vector3.DOWN)
