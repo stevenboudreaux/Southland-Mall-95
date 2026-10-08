@@ -3,7 +3,7 @@
 ##
 ## Front (0-8 s): a light grey fascia whose sign panel drops over the open entry, the script
 ## name in white lit letters; a dark maroon beam to its left; to its right a recessed box with
-## a pink fish-scale awning under a cove light, in two bays split by a white pilaster, over the
+## a pink fish-scale awning under a cove light, in one bay (no pilaster: Steven, Oct 8), over the
 ## counter's takeout end.
 ## Inside: the counter down the right (cream top, chocolate front, registers), a backlit menu
 ## band over it, the kitchen behind (maroon wall, hood, pressure fryers, bun toaster, holding
@@ -148,7 +148,7 @@ static func letters():
 	bb.tag(l, "", 0.3, 0.6)
 
 ## The awning box: dark brown frame, cove light at the top, pink fish-scale shingles on a
-## slope, two bays split by a white pilaster (0-7.5 s).
+## slope, one bay (the video's white pilaster between two bays was removed, Steven, Oct 8).
 static func awning():
 	var u0 = SIDE
 	var u1 = 3.25
@@ -164,9 +164,8 @@ static func awning():
 	bx(DY, "cf_cove", u0, FASCIA_Y - 0.11, 0.08, u1 - u0, 0.03, 0.14, [], true)
 	var l = bb.add_omni(P((u0 + u1) * 0.5, FASCIA_Y - 0.2, 0.0), 0.35, 1.6, Color(1.0, 0.85, 0.85))
 	bb.tag(l, "", 0.3, 0.45)
-	# the pilaster
-	var pu = 1.68
-	bx(GS, "cf_white", pu - 0.09, 0.0, fz - 0.04, 0.18, FASCIA_Y, 0.22, ["-y"])
+	# no pilaster: Steven (Oct 8) had the white pillar in front of the counter removed, so the
+	# shingles run as one bay
 	# shingles: a slope from the top back (y 3.17, d 0.22) to the bottom front (y 2.66, d -0.12)
 	var T = Vector2(FASCIA_Y - 0.17, 0.22)
 	var B = Vector2(yb + 0.11, -0.12)
@@ -180,7 +179,7 @@ static func awning():
 	var rows = int(slope_len / (r * 1.05))
 	var sp = bb.st(DY, "cf_awning", true)
 	var se = bb.st(DY, "cf_awning_edge", true)
-	for bay in [[u0 + 0.02, pu - 0.09], [pu + 0.09, u1 - 0.07]]:
+	for bay in [[u0 + 0.02, u1 - 0.07]]:
 		for k in rows:
 			var f = (k + 0.7) * slope_len / (rows + 0.4)
 			var stagger = r if k % 2 == 1 else 0.0

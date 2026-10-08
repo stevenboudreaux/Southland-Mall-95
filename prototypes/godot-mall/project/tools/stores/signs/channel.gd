@@ -147,6 +147,24 @@ static func fill_mat(m, key, b):
 			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
 			m.emission = Color("#ff2c10"); m.emission_energy_multiplier = 1.3
 			m.set_meta("e_day", 1.1); m.set_meta("e_night", 1.5)
+		"du_face":
+			# Duncan Sports (Oct 8): the ad's script in blue, lit
+			m.albedo_texture = b.tex("sg/du_name_face.png"); m.albedo_color = Color("#2a5ad0"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#3c74ff"); m.emission_energy_multiplier = 0.9
+			m.set_meta("e_day", 0.6); m.set_meta("e_night", 1.1)
+		"du_return":
+			m.albedo_color = Color("#14214a"); m.roughness = 0.45; m.metallic = 0.3
+		"du_glow":
+			_glow(m, b.tex("sg/du_name_glow.png"), 0.4)
+		"wlr_face":
+			# Woolworth's "Restaurant" (Oct 8): the WOOLWORTH letters' red, on its own face texture
+			m.albedo_texture = b.tex("sg/wlr_face.png"); m.albedo_color = Color("#dc2e16"); m.roughness = 0.3
+			m.emission_enabled = true; m.emission_texture = m.albedo_texture; m.emission_operator = BaseMaterial3D.EMISSION_OP_MULTIPLY
+			m.emission = Color("#ff2c10"); m.emission_energy_multiplier = 1.3
+			m.set_meta("e_day", 1.1); m.set_meta("e_night", 1.5)
+		"wlr_glow":
+			_glow(m, b.tex("sg/wlr_glow.png"), 0.5)
 		"wl_trim":
 			m.albedo_color = Color("#7a2416"); m.roughness = 0.35; m.metallic_specular = 0.6
 			m.emission_enabled = true; m.emission = Color("#ff5a32"); m.emission_energy_multiplier = 0.25
@@ -551,6 +569,11 @@ static func fill_mat(m, key, b):
 			m.albedo_color = Color("#ffd2bc"); m.roughness = 0.15
 			m.emission_enabled = true; m.emission = Color("#ff6440"); m.emission_energy_multiplier = 1.9
 			m.set_meta("e_day", 1.4); m.set_meta("e_night", 1.9)
+		"fr2_tube":
+			# Franks (Oct 8): red neon, deeper red than Karmelkorn's
+			m.albedo_color = Color("#ffb8ae"); m.roughness = 0.15
+			m.emission_enabled = true; m.emission = Color("#ff1c12"); m.emission_energy_multiplier = 2.1
+			m.set_meta("e_day", 1.7); m.set_meta("e_night", 2.1)
 		"kk2_boot":
 			m.albedo_color = Color("#0b0b0b"); m.roughness = 0.7
 		"kk2_post":

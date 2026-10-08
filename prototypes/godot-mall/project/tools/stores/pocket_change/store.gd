@@ -40,7 +40,7 @@ const LETTER_D = 0.07
 const RIGHT_BACK = 3.0  # the right-hand line of machines starts this much further in (Steven, Oct 6)
 const CENTRE_U = 3.7    # the centre aisle's line, where the feature games stand
 const CYC_D = 1.4       # the cyclone game's front edge, just inside the door (Steven, Oct 7 markup: nearer the door again)
-const PUSH_D = 5.5      # the coin pushers' middle, back to back, lengthwise, right behind the cyclone (Oct 7 markup)
+const PUSH_D = 5.5      # the coin pusher's middle, lengthwise, right behind the cyclone (Oct 7 markup; one double machine since Oct 8)
 const PUSH_U = 3.5      # the line their backs meet on
 const RIDE_U = 4.0      # the dinosaur ride, centred across the room (Oct 7 markup)
 const RIDE_D = 18.4     # its step, behind the basketball depth-wise (Oct 7 markup)
@@ -346,12 +346,12 @@ static func machines(b, a, t, n):
 	d = wall_run(b, a, t, n, "driver", [{"kind": "pinball", "style": 0}, {"kind": "pinball", "style": 1}, {"kind": "pinball", "style": 2}], u1, "+u", 27.2, 0.12)
 	wall_row(b, a, t, n, [0, 3, 5, 2], u1, "+u", d + 0.2, ROOM_D - 2.2)
 	# --- the middle, front to back (Steven, Oct 7 markup): the cyclone just inside the door, two
-	# coin pushers back to back right behind it, the dinosaur ride centred behind the basketball,
+	# the coin pusher (one machine, both sides) right behind it, the dinosaur ride centred behind the basketball,
 	# then the two air hockey tables across the room, one behind the other. Nothing else.
 	put(b, a, t, n, "cyclone", CENTRE_U, CYC_D, "+d", {}, 0.2)
-	var ps = fp("pusher")
-	put(b, a, t, n, "pusher", PUSH_U + ps.y, PUSH_D, "-u", {}, 0.2)
-	put(b, a, t, n, "pusher", PUSH_U - ps.y, PUSH_D, "+u", {}, 0.2)
+	# one double-sided pusher, played from both sides (Steven, Oct 8: like Crompton's Silver Skis)
+	var ps = fp("pusher", {"double": true})
+	put(b, a, t, n, "pusher", PUSH_U + ps.y * 0.5, PUSH_D, "-u", {"double": true}, 0.2)
 	var ru = RIDE_U
 	var rd = RIDE_D
 	var k0 = b.obstacles.size()

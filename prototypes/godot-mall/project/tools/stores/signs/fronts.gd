@@ -108,8 +108,8 @@ static func athletes_foot(b, g, e, a, n, t, Ln, sd, U):
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.15, Ln - 0.15)
 
 ## K&B (Steven, Oct 7): the front of the K&B at Prien Lake Mall, Lake Charles (same owners;
-## refs/kb-prien-lake-mall.png): a brown fascia with the round logo at each end and DRUGS,
-## TOBACCO in lit letters between; display windows on a brick bulkhead, the doors, then glass
+## refs/kb-prien-lake-mall.png): a brown fascia with the oval logo at each end (DRUGS and
+## TOBACCO taken off, Oct 8); display windows on a brick bulkhead, the doors, then glass
 ## to the floor. The logo from refs/kb-logo.jpg: purple face, gold rim, a red line, white K&B.
 static func kb(b, g, e, a, n, t, Ln, sd, U):
 	var G = "knbf_props"
@@ -139,27 +139,20 @@ static func kb(b, g, e, a, n, t, Ln, sd, U):
 	b.box(G, "sg_kb_alum", P(a, t, n, U.call((d1 + g1) * 0.5), 0.05, -0.02), b.abs_size(t, g1 - d1, 0.1, 0.1, n))
 	_glass(b, a, t, n, U, d1, g1, 0.1, head)
 	_mullions(b, G, a, t, n, U, d1, g1, 0.0, head, 5)
-	# the sign: logo, DRUGS, TOBACCO, logo, evenly spaced along the fascia
+	# the sign: the oval logo at each end of the fascia (Steven, Oct 8: DRUGS and TOBACCO taken
+	# off, and the logo made the oval it was: make_kb_oval.py)
 	var face = -0.24
-	var wd = float(JSON.parse_string(FileAccess.get_file_as_string(S + "kb_drugs_logo.json")).width)
-	var wt = float(JSON.parse_string(FileAccess.get_file_as_string(S + "kb_tobacco_logo.json")).width)
-	var l0 = 0.35 + 0.65
-	var l1 = Ln - 0.35 - 0.65
-	var gap = (l1 - l0 - 1.3 - wd - wt) / 3.0
-	var xd = l0 + 0.65 + gap + wd * 0.5
-	var xt = xd + wd * 0.5 + gap + wt * 0.5
-	for x in [l0, l1]:
-		var c = P(a, t, n, U.call(x), 3.15, face)
+	var hw = float(JSON.parse_string(FileAccess.get_file_as_string(S + "kb_disc_logo.json")).width) * 0.5
+	for x in [0.35 + hw, Ln - 0.35 - hw]:
+		var c = P(a, t, n, U.call(x), 3.18, face)
 		CH.build(b, "knbf_sign", S + "kb_disc_logo.json", c, n, "sg_kb_purple", "sg_kb_can", "", 0.02, 0.2, 0.0)
 		CH.build(b, "knbf_sign", S + "kb_rim_logo.json", c, n, "sg_kb_gold", "sg_kb_can", "", 0.02, 0.235, 0.0)
 		CH.build(b, "knbf_sign", S + "kb_line_logo.json", c, n, "sg_kb_red", "sg_kb_can", "", 0.02, 0.21, 0.0)
 		CH.build(b, "knbf_sign", S + "kb_letters_logo.json", c, n, "sg_kb_white", "sg_kb_bevel", "sg_kb_bevel", 0.22, 0.03, 0.012)
-	for wv in [[xd, "drugs"], [xt, "tobacco"]]:
-		CH.build(b, "knbf_sign", S + "kb_%s_logo.json" % wv[1], P(a, t, n, U.call(wv[0]), 3.5, face), n, "sg_kb_letter", "sg_kb_return", "sg_kb_edge", 0.03, 0.1, 0.022, "sg_kb_glow_" + wv[1])
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.3, Ln - 0.3)
 
 ## Blockbuster Music (Steven, Oct 7: refs/blockbuster-music-*.jpg; the street fronts for the look):
-## blue panelled fascia with the yellow-edged ticket and "music" lit magenta on a dark box, a lit
+## the fascia (mall cream since Oct 8, was blue panelled) with the yellow-edged ticket and "music" lit magenta on a dark box, a lit
 ## white band under it, a glass front in dark frames with the doors open.
 static func blockbuster(b, g, e, a, n, t, Ln, sd, U):
 	var G = "bbmf_props"
@@ -167,7 +160,8 @@ static func blockbuster(b, g, e, a, n, t, Ln, sd, U):
 	var head = 2.78
 	for x in [0.15, Ln - 0.15]:
 		b.box(G, "sg_bb_pier", P(a, t, n, U.call(x), LH * 0.5, -0.1), b.abs_size(t, 0.3, LH, 0.2, n), Transform3D.IDENTITY, ["-y"])
-	b.box(G, "sg_bb_panels", P(a, t, n, U.call(Ln * 0.5), (3.0 + LH) * 0.5, -0.1), b.abs_size(t, Ln - 0.6, LH - 3.0, 0.2, n))
+	# the fascia in the mall's cream (Steven, Oct 8; it was the blue panelling of the street stores)
+	b.box(G, "cream", P(a, t, n, U.call(Ln * 0.5), (3.0 + LH) * 0.5, -0.1), b.abs_size(t, Ln - 0.6, LH - 3.0, 0.2, n))
 	b.box(G, "sg_bb_band", P(a, t, n, U.call(Ln * 0.5), (head + 3.0) * 0.5, -0.11), b.abs_size(t, Ln - 0.6, 3.0 - head, 0.22, n))
 	# the glass front, the doors in the middle standing open
 	var d0 = Ln * 0.5 - 1.0
@@ -181,16 +175,19 @@ static func blockbuster(b, g, e, a, n, t, Ln, sd, U):
 	b.box(G, "sg_bb_frame", P(a, t, n, U.call(Ln * 0.5), 2.22, -0.02), b.abs_size(t, d1 - d0, 0.07, 0.1, n))
 	for x in [d0 + 0.05, d1 - 0.05]:
 		K.lbox(b, G, "sg_bb_frame", P(a, t, n, U.call(x), 0.0, 0.1), -n, t, 0.0, 0.0, 0.0, 0.95, 2.2, 0.05)
-	# "music" on its dark box, right of centre; the ticket, tilted, at the upper left
+	# "music" on its dark box, right of centre; the ticket, tilted, at the upper left; the logo at
+	# 78 % of its first size (Steven, Oct 8: "a little smaller"; the *_sm_logo.json copies)
+	var k = 0.78
 	var mx = Ln - 2.0
-	b.box(G, "sg_bb_box", P(a, t, n, U.call(mx), 3.81, -0.24), b.abs_size(t, 3.3, 1.56, 0.08, n))
-	CH.build(b, "bbmf_sign", S + "bb_music_logo.json", P(a, t, n, U.call(mx), 3.1, -0.28), n, "sg_bb_music", "sg_bb_music_ret", "sg_bb_music_trim", 0.02, 0.08, 0.015, "sg_bb_glow")
-	var tc = P(a, t, n, U.call(mx - 2.7), 3.88 - 0.52, -0.2)
+	var by = 3.03                      # the box's bottom
+	b.box(G, "sg_bb_box", P(a, t, n, U.call(mx), by + 0.78 * k, -0.24), b.abs_size(t, 3.3 * k, 1.56 * k, 0.08, n))
+	CH.build(b, "bbmf_sign", S + "bb_music_sm_logo.json", P(a, t, n, U.call(mx), by + 0.07 * k, -0.28), n, "sg_bb_music", "sg_bb_music_ret", "sg_bb_music_trim", 0.02, 0.08, 0.015, "sg_bb_glow")
+	var tc = P(a, t, n, U.call(mx - 2.7 * k), by + 0.33 * k, -0.2)
 	var r = deg_to_rad(10.0)
-	CH.build(b, "bbmf_sign", S + "bb_ticket_rim_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.05, 0.0, "", true, r)
-	CH.build(b, "bbmf_sign", S + "bb_ticket_face_logo.json", tc, n, "sg_bb_blue", "sg_bb_ticket_ret", "", 0.12, 0.056, 0.0, "", true, r)
-	CH.build(b, "bbmf_sign", S + "bb_ticket_frame_logo.json", tc, n, "sg_bb_yellow", "sg_bb_yellow", "", 0.12, 0.06, 0.0, "", true, r)
-	CH.build(b, "bbmf_sign", S + "bb_ticket_text_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.068, 0.0, "", true, r)
+	CH.build(b, "bbmf_sign", S + "bb_ticket_rim_sm_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.05, 0.0, "", true, r)
+	CH.build(b, "bbmf_sign", S + "bb_ticket_face_sm_logo.json", tc, n, "sg_bb_blue", "sg_bb_ticket_ret", "", 0.12, 0.056, 0.0, "", true, r)
+	CH.build(b, "bbmf_sign", S + "bb_ticket_frame_sm_logo.json", tc, n, "sg_bb_yellow", "sg_bb_yellow", "", 0.12, 0.06, 0.0, "", true, r)
+	CH.build(b, "bbmf_sign", S + "bb_ticket_text_sm_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.068, 0.0, "", true, r)
 	_inside(b, g, e, a, n, t, Ln, sd, U, 0.3, Ln - 0.3)
 
 ## The Shoe Dept (Steven, Oct 7: "that's like the exact facade"; refs/shoe-dept-*.jpg): a dark

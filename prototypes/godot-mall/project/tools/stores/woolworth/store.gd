@@ -86,8 +86,10 @@ static func front(b, G, a, t, n):
 	for s in [[3.7, 1.0], [5.3, -1.0]]:
 		var hinge = P(a, t, n, s[0], 0, 0.12)
 		K.lbox(b, G, al, hinge, -n, t * s[1], 0.0, 0.0, 0.0, 0.8, 2.2, 0.05)
-	# the "Restaurant" plate on the fascia over its door (guess: the record shows none)
-	K.fq(b, G, "wl_signs", P(a, t, n, UNIT, 0, 0), -t, n, UNIT - 6.5, UNIT - 2.5, HEAD + 0.25, HEAD + 1.15, PROUD + 0.01, 0.0, 0.5, 0.5, 1.0)
+	# "Restaurant" over its door: red lit channel letters straight on the fascia, no plate behind
+	# them (Steven, Oct 8; tools/stores/signs/make_wl_restaurant.py)
+	CH.build(b, "wlf_sign", "res://tools/stores/signs/wlr_logo.json", P(a, t, n, 4.5, 3.5, -PROUD), n,
+		"sg_wlr_face", "sg_wl_return", "sg_wl_trim", 0.02, 0.09, 0.01, "sg_wlr_glow")
 	# the cream pier between the restaurant and the store, and one at the store's far end
 	K.lbox(b, G, "sg_wl_cream", o, t, n, R_U, 0.0, -0.05, WALL_T, HEAD, 0.2, ["-y"])
 	K.lbox(b, G, "sg_wl_cream", o, t, n, UNIT - 0.45, 0.0, -0.05, 0.45, HEAD, 0.2, ["-y"])

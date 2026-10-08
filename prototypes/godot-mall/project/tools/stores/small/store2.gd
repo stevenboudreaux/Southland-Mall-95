@@ -120,7 +120,7 @@ static func dalton(b, a, t, n, W, D, rng):
 	K.counter(b, G, "s6b_small", P(a, t, n, SIDE + 0.5, 0, 2.5), -n, t, 2.4, "md_bb_counter", rng)
 
 # ------------------------------------------------------------------ Karmelkorn
-## A golden-yellow bulkhead wrapping the corner with the red neon logotype on both fronts (the
+## A cream bulkhead (the mall's own cream: Steven, Oct 8; it was golden yellow) wrapping the corner with the red neon logotype on both fronts (the
 ## swash K, slab-serif capitals: kk_sign above), a lit soffit, an open front (record);
 ## inside, a counter of caramel corn under glass, kettles, tins, a yellow room.
 const KK_LIFT = 0.57     # the sign's bottom above the bulkhead's: it sits in the middle of the 1.9 m face
@@ -135,19 +135,19 @@ static func karmelkorn(b, a, t, n, W, D, rng):
 	var G = "s6k_fix"
 	var F = "s6kf_props"
 	var head = 2.7
-	S1.upper(b, F, a, t, n, W, head, "s6_yellow", 0.25)
+	S1.upper(b, F, a, t, n, W, head, "cream", 0.25)
 	# the neon sign on both fronts (Steven, Oct 7: "a corner shop, so neon goes on both sides"):
 	# tools/stores/signs/kk_sign.gd, centred on each bulkhead's face
 	kk_sign(b, P(a, t, n, W * 0.5, head + KK_LIFT, -0.25), n)
 	# the bulkhead wraps the corner: the east front (u = W, along d)
 	var e0 = P(a, t, n, W, 0, 0)
-	b.box(F, "s6_yellow", e0 - n * (D * 0.5) + UP * ((head + b.LANE_H) * 0.5) + t * 0.125, b.abs_size(-n, D, b.LANE_H - head, 0.25, t))
+	b.box(F, "cream", e0 - n * (D * 0.5) + UP * ((head + b.LANE_H) * 0.5) + t * 0.125, b.abs_size(-n, D, b.LANE_H - head, 0.25, t))
 	kk_sign(b, e0 - n * (D * 0.5) + UP * (head + KK_LIFT) + t * 0.25, t)
 	# lit soffits on both fronts
 	b.quad(F, "md_glowstrip", [P(a, t, n, 0.2, head, 0.0), P(a, t, n, W, head, 0.0), P(a, t, n, W, head, 0.6), P(a, t, n, 0.2, head, 0.6)], Vector3.DOWN)
 	b.quad(F, "md_glowstrip", [P(a, t, n, W - 0.6, head, 0.0), P(a, t, n, W, head, 0.0), P(a, t, n, W, head, D - 0.2), P(a, t, n, W - 0.6, head, D - 0.2)], Vector3.DOWN)
-	b.box(F, "s6_yellow", P(a, t, n, 0.1, head * 0.5, 0.0), b.abs_size(t, 0.2, head, 0.3, n), Transform3D.IDENTITY, ["-y"])
-	b.box(F, "s6_yellow", P(a, t, n, W, head * 0.5, D - 0.1) + t * 0.0, b.abs_size(t, 0.3, head, 0.2, n), Transform3D.IDENTITY, ["-y"])
+	b.box(F, "cream", P(a, t, n, 0.1, head * 0.5, 0.0), b.abs_size(t, 0.2, head, 0.3, n), Transform3D.IDENTITY, ["-y"])
+	b.box(F, "cream", P(a, t, n, W, head * 0.5, D - 0.1) + t * 0.0, b.abs_size(t, 0.3, head, 0.2, n), Transform3D.IDENTITY, ["-y"])
 	# the room: yellow walls, a red tile floor, ceiling over the back half only (the front is the soffit's)
 	M2.shell2(b, "s6k_shell", a, t, n, W, D, 3.0, 0.0, "s6_red_tile", 0.61, "s6_yellow_wall", "kb_ceiling", [3.0, 8.0, 13.0], 2.0, 1.3, true)
 	# the long L counter: along the hall front, then down the east front; caramel corn under glass

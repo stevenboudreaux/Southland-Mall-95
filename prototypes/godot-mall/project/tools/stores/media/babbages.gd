@@ -10,13 +10,14 @@
 ## shelving that wraps round the back and both sides.
 ##
 ## Frame: u runs along the 6 m frontage from the edge's start a (x = -130, the viewer's
-## right) to x = -124 (u = 6). d runs into the store (+z); d < 0 is the hall. The stall
-## also takes a 2 m jog on the right (u -2..0) whose front stands 2 m back (d = 2); the
-## room is 8 m deep (Corn Dog 7's dining room is behind it).
+## right) to x = -124 (u = 6). d runs into the store (+z); d < 0 is the hall. The room is 8 m
+## deep (Corn Dog 7's dining room is behind it). Until Oct 8 the stall also took a 2 m jog on
+## the right, its front 2 m back; Steven had the corner made one diagonal (tools/layout_oct8.py),
+## so JOG is 0 and the jog's pieces are skipped (they stay in the code for JOG > 0).
 
 const K = preload("res://tools/stores/media/kit.gd")
 const UNIT = 6.0
-const JOG = 2.0          # the jog's width (u -2..0) and set-back (d 0..2)
+const JOG = 0.0          # the jog's width (u -JOG..0) and set-back (d 0..JOG); none since Oct 8
 const DEPTH = 8.0
 const SIDE = 0.12
 const HEAD = 2.75        # top of the opening = bottom of the fascia
@@ -85,6 +86,8 @@ static func front(b, G, a, t, n):
 		b.cyl(G, "md_downlight", c, 0.09, 0.09, 0.004, 12, false, true)
 	var l = b.add_spot(P(a, t, n, 3.0, HEAD - 0.1, 0.5), Vector3.DOWN, 1.2, 5.0, 70.0, Color(1.0, 0.95, 0.86))
 	b.tag(l, "", 1.2, 1.2)
+	if JOG <= 0.0:
+		return
 	# the jog on the right (u -2..0, front at d 2): the side return and a show window
 	var jo = P(a, t, n, -JOG, 0, JOG)
 	K.lbox(b, G, "md_fascia_white", jo, t, n, 0.0, HEAD + 0.12, 0.0, JOG, FTOP - HEAD - 0.12, 0.12, ["-z"])
@@ -106,15 +109,18 @@ static func room(b, G, a, t, n):
 	var dB = DEPTH - SIDE
 	var uj = -JOG + SIDE
 	K.floor_rect(b, G, "md_carpet_grey", a, t, n, u0, u1, 0.0, dB)
-	K.floor_rect(b, G, "md_carpet_grey", a, t, n, uj, u0, JOG + SIDE, dB)
+	if JOG > 0.0:
+		K.floor_rect(b, G, "md_carpet_grey", a, t, n, uj, u0, JOG + SIDE, dB)
 	K.ceiling(b, G, a, t, n, u0, u1, 1.0, dB, CEIL, [1.6, 4.3], 2.0)
-	K.ceiling(b, G, a, t, n, uj, u0, JOG + SIDE, dB, CEIL, [], 2.44, false)
+	if JOG > 0.0:
+		K.ceiling(b, G, a, t, n, uj, u0, JOG + SIDE, dB, CEIL, [], 2.44, false)
 	# walls
 	K.wall(b, G, "md_wall", a, t, n, u1, dB, u1, 0.0, 0.0, CEIL, -t)              # left
 	K.wall(b, G, "md_wall", a, t, n, u1, dB, uj, dB, 0.0, CEIL, n)                # back
 	K.wall(b, G, "md_wall", a, t, n, uj, JOG + SIDE, uj, dB, 0.0, CEIL, t)        # right, behind the jog
 	K.wall(b, G, "md_wall", a, t, n, u0, 0.0, u0, JOG + SIDE, 0.0, CEIL, t)       # right, by the opening
-	K.wall(b, G, "md_wall", a, t, n, uj, JOG + SIDE, u0, JOG + SIDE, HEAD + 0.12, CEIL, -n)   # over the window, inside
+	if JOG > 0.0:
+		K.wall(b, G, "md_wall", a, t, n, uj, JOG + SIDE, u0, JOG + SIDE, HEAD + 0.12, CEIL, -n)   # over the window, inside
 	# the perimeter soffit over the wall bays with its maroon trim line (video 19:42)
 	var sw = 0.45
 	var runs = [[u1, 1.0, u1, dB, -t], [u1, dB, uj, dB, n], [uj, dB, uj, JOG + SIDE, t]]
@@ -175,14 +181,16 @@ static func fixtures(b, a, t, n, rng):
 	# the right wall behind the jog
 	K.bay_run(b, G, "bb_merch", P(a, t, n, uj, 0, dB - 0.42), n, t, BAY, 3, BOARDS, [["games"], ["games", "pc"], ["games"]], [11, 8, 10], "md_bb_headers", HY, rng)
 	K.end_cap(b, G, "md_white", P(a, t, n, uj, 0, dB - 0.42 - 3 * BAY), n, t, 0.36, 0.0, PI * 0.5, 0.0, 2.1)
-	K.column(b, G, "md_maroon", P(a, t, n, uj + 0.2, 0, JOG + 0.55), 0.17, SOFF)
+	if JOG > 0.0:
+		K.column(b, G, "md_maroon", P(a, t, n, uj + 0.2, 0, JOG + 0.55), 0.17, SOFF)
 	# the right wall by the opening: one bay of PC boxes
 	K.bay_run(b, G, "bb_merch", P(a, t, n, SIDE, 0, 1.95), n, t, BAY, 1, BOARDS, [["pc"]], [3], "md_bb_headers", HY, rng)
 	# the show window's riser, inside the jog's glass
-	var ro = P(a, t, n, uj, 0, JOG + SIDE)
-	K.lbox(b, G, "md_white", ro, t, -n, 0.0, 0.0, 0.0, JOG - SIDE, 0.55, 0.5)
-	K.stock_row(b, G, P(a, t, n, 0.0, 0, JOG + SIDE + 0.5), -t, n, 0.05, JOG - 0.2, 0.55, 0.3, 0.36, "pc", rng)
-	K.ob_local(b, ro, t, -n, 0.0, 0.0, JOG - SIDE, 0.6)
+	if JOG > 0.0:
+		var ro = P(a, t, n, uj, 0, JOG + SIDE)
+		K.lbox(b, G, "md_white", ro, t, -n, 0.0, 0.0, 0.0, JOG - SIDE, 0.55, 0.5)
+		K.stock_row(b, G, P(a, t, n, 0.0, 0, JOG + SIDE + 0.5), -t, n, 0.05, JOG - 0.2, 0.55, 0.3, 0.36, "pc", rng)
+		K.ob_local(b, ro, t, -n, 0.0, 0.0, JOG - SIDE, 0.6)
 	# -- the low rows of books (Steven): two short gondolas across the middle toward the back
 	for d in [4.35, 5.85]:
 		K.gondola(b, G, "bb_merch", P(a, t, n, 3.55, 0, d), -t, n, BAY, 2, [0.42, 0.8], ["books", "books"], rng, 0.28)

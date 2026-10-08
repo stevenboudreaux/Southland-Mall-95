@@ -29,7 +29,7 @@ OPEN = {
     # Babbage's (n39b, tiles x 83-85, y 130-133, faces north, by Corn Dog 7; the 2 m jog on
     # its right is x 82, y 131-133) and Sound Shop (s19, x 131-142, y 68-70, faces east,
     # beside Kay-Bee): the whole stores (design/storefronts/babbages.md, sound-shop.md)
-    "n39b": [(83, 85, 130, 133), (82, 82, 131, 133)],
+    "n39b": [(83, 85, 130, 133)],   # the 2 m jog went with the corner's new diagonal (Oct 8)
     "s19": [(131, 142, 68, 70)],
     # Woolworth (s13, tiles x 125-142, y 93-110, faces east; 36 m x 36 m with the restaurant)
     "s13": [(125, 142, 93, 110)],
@@ -60,7 +60,7 @@ OPEN = {
     "smuopv1vy0": [(132, 134, 118, 123)],
     "s60": [(119, 122, 130, 137)],
     "n56": [(128, 129, 130, 135)],
-    "s34": [(153, 155, 105, 107)],
+    "s34": [(154, 155, 103, 107)],   # moved up into line with Tee Tai's (Oct 8)
     "s29": [(149, 153, 91, 94)],
     # Wave 8 (tools/stores/small/wave8.gd): Cucos (x 22-36, z -86..-70), Claire's corner
     # (x 12-20, z -16..-6), Mitchell's (x 20-24), Tee Tai's customer strip in front of its

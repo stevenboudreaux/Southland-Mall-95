@@ -14,6 +14,12 @@
 ## coin-stack front faces) plus a few dozen loose coin discs on the edges and in the cups.
 ## Invented title: COIN COMET (owner-editable sign "pc.pusher.1"). The pusher is static.
 ##
+## opts {"double": true} (Steven, Oct 8 2026: Southland's was one machine played from both sides,
+## like Crompton's Silver Skis, not two back to back): two playfields back to back in ONE cabinet,
+## 1.64 m deep. Each side is built from its front to the translites (ZM); the side panels, the
+## ears and the marquee box run through to meet the other side's, so the cabinet is continuous,
+## with a marquee face on each side and no backs.
+##
 ## Preview:
 ##   tools/qa/preview.sh pusher /home/claude/southland-mall-95/.scratch/preview/pusher/a \
 ##     "0,1.6,2.6,0,-12;2.4,1.7,1.9,45,-12;3.2,1.5,0.55,90,-6" '{}' lit
@@ -45,6 +51,7 @@ const Z_M = 0.29
 const Z_MB = 0.48
 const COIN_R = 0.0125
 const COIN_T = 0.0018
+const ZM = 0.82       # the double cabinet's middle (each side is built from 0 to here)
 
 # side panel outline (z, y), the side window cut out of its upper front
 const SIDE = [Vector2(0.0, 0.07), Vector2(1.10, 0.07), Vector2(1.10, 1.00), Vector2(0.82, 1.48), Vector2(0.82, 1.79),
@@ -55,12 +62,16 @@ const INNER = [Vector2(0.06, 0.72), Vector2(0.82, 0.72), Vector2(0.82, 1.48), Ve
 const SWIN = [Vector2(0.06, 0.78), Vector2(0.50, 0.98), Vector2(0.50, 1.48), Vector2(0.30, 1.48)]
 # the grey ear beside the marquee
 const EAR = [Vector2(0.27, 1.82), Vector2(0.70, 1.82), Vector2(0.49, 2.20), Vector2(0.27, 2.20)]
+# the double cabinet's side of one half (runs to the middle, ZM) and its ear (meets the other's)
+const SIDE_H = [Vector2(0.0, 0.07), Vector2(0.82, 0.07), Vector2(0.82, 1.79), Vector2(0.30, 1.79), Vector2(0.30, 1.48),
+	Vector2(0.50, 1.48), Vector2(0.50, 0.98), Vector2(0.06, 0.78), Vector2(0.0, 0.78)]
+const EAR_H = [Vector2(0.27, 1.82), Vector2(0.82, 1.82), Vector2(0.82, 2.20), Vector2(0.27, 2.20)]
 # partition fin between positions
 const FIN = [Vector2(0.50, 0.895), Vector2(0.80, 0.895), Vector2(0.80, 1.47), Vector2(0.71, 1.47), Vector2(0.71, 1.06), Vector2(0.50, 0.94)]
 
 ## Footprint (width, depth) in metres.
-static func footprint(_opts = {}):
-	return Vector2(W, D)
+static func footprint(opts = {}):
+	return Vector2(W, 2.0 * ZM) if opts.get("double", false) else Vector2(W, D)
 
 static func X(o, f):
 	return Transform3D(Basis(f.cross(Vector3.UP), Vector3.UP, f), o)
@@ -273,13 +284,23 @@ static func dome(b, g, m, xf, c, ax, r, seg = 8):
 # ---------------------------------------------------------------- build
 ## Builds one machine. The player stands at `o` (floor, centre of the front edge) facing `f`.
 static func build(b, g, o, f, opts = {}):
-	var xf = X(o, f)
+	if opts.get("double", false):
+		half(b, g, X(o, f), true)
+		half(b, g, X(o + f * (2.0 * ZM), -f), true)
+	else:
+		half(b, g, X(o, f), false)
+
+## One playfield and its cabinet in the frame xf; dbl: one side of the double cabinet.
+static func half(b, g, xf, dbl):
 	var rng = RandomNumberGenerator.new()
 	rng.seed = 1995
 	var UP = Vector3.UP; var FR = Vector3(0, 0, -1); var BK = Vector3(0, 0, 1)
 
 	# ---- plinth, lower front, sill
-	b.box(g, "pc_pusher_plinth", Vector3(0, 0.035, 0.55), Vector3(1.60, 0.07, 1.02), xf)
+	if dbl:
+		b.box(g, "pc_pusher_plinth", Vector3(0, 0.035, 0.04 + (ZM - 0.04) * 0.5), Vector3(1.60, 0.07, ZM - 0.04), xf, ["+z"])
+	else:
+		b.box(g, "pc_pusher_plinth", Vector3(0, 0.035, 0.55), Vector3(1.60, 0.07, 1.02), xf)
 	q(b, g, "pc_pusher_front", xf, [Vector3(-IW, 0.07, 0), Vector3(IW, 0.07, 0), Vector3(IW, 0.70, 0), Vector3(-IW, 0.70, 0)], FR, ruv())
 	b.box(g, "pc_pusher_alu", Vector3(0, 0.7425, 0.03), Vector3(2.0 * HW, 0.085, 0.09), xf)
 	# payout cups: black plastic trays standing out of the doors
@@ -294,14 +315,22 @@ static func build(b, g, o, f, opts = {}):
 	var suv = func(v): return Vector2(v.x / 1.1, 1.0 - v.y / 2.2)
 	var iuv = func(v): return Vector2(v.x / 0.4, -v.y / 0.4)
 	var emats = ["", "pc_pusher_trim", "pc_pusher_trim", "pc_pusher_trim", "pc_pusher_trim", "pc_pusher_alu", "pc_pusher_alu", "pc_pusher_alu", "pc_pusher_alu", "pc_pusher_alu", "pc_pusher_alu"]
+	var side = SIDE
+	var ear = EAR
+	var ear_m = ["pc_pusher_trim", "pc_pusher_trim", "pc_pusher_alu", "pc_pusher_alu"]
+	if dbl:
+		side = SIDE_H
+		ear = EAR_H
+		emats = ["", "", "pc_pusher_trim", "pc_pusher_alu", "pc_pusher_alu", "pc_pusher_alu", "pc_pusher_alu", "pc_pusher_alu", "pc_pusher_alu"]
+		ear_m = ["pc_pusher_trim", "", "pc_pusher_alu", "pc_pusher_alu"]
 	for sx in [-1.0, 1.0]:
-		zpoly(b, g, "pc_pusher_side", xf, SIDE, sx * HW, sx, suv)
+		zpoly(b, g, "pc_pusher_side", xf, side, sx * HW, sx, suv)
 		zpoly(b, g, "pc_pusher_inner", xf, INNER, sx * IW, -sx, iuv)
-		zedges(b, g, emats, xf, SIDE, sx * IW, sx * HW)
+		zedges(b, g, emats, xf, side, sx * IW, sx * HW)
 		# the ears beside the marquee
-		zpoly(b, g, "pc_pusher_side", xf, EAR, sx * HW, sx, suv)
-		zpoly(b, g, "pc_pusher_side", xf, EAR, sx * IW, -sx, suv)
-		zedges(b, g, ["pc_pusher_trim", "pc_pusher_trim", "pc_pusher_alu", "pc_pusher_alu"], xf, EAR, sx * IW, sx * HW)
+		zpoly(b, g, "pc_pusher_side", xf, ear, sx * HW, sx, suv)
+		zpoly(b, g, "pc_pusher_side", xf, ear, sx * IW, -sx, suv)
+		zedges(b, g, ear_m, xf, ear, sx * IW, sx * HW)
 		# side window glass and the corner post where it meets the front glass
 		var xg = sx * (HW + IW) * 0.5
 		var gp = []
@@ -311,9 +340,10 @@ static func build(b, g, o, f, opts = {}):
 		obox(b, g, "pc_pusher_alu", xf, Vector3(sx * 0.803, G0.y - 0.01, G0.x), Vector3(sx * 0.803, G1.y + 0.01, G1.x), 0.046, 0.034)
 
 	# ---- the back: plain painted panels
-	q(b, g, "pc_pusher_dark", xf, [Vector3(IW, 0.07, D), Vector3(-IW, 0.07, D), Vector3(-IW, 1.00, D), Vector3(IW, 1.00, D)], BK)
-	q(b, g, "pc_pusher_dark", xf, [Vector3(IW, 1.00, D), Vector3(-IW, 1.00, D), Vector3(-IW, 1.48, 0.82), Vector3(IW, 1.48, 0.82)], Vector3(0, 0.28, 0.48).normalized())
-	q(b, g, "pc_pusher_dark", xf, [Vector3(IW, 1.48, 0.82), Vector3(-IW, 1.48, 0.82), Vector3(-IW, Y_TOP, 0.82), Vector3(IW, Y_TOP, 0.82)], BK)
+	if not dbl:
+		q(b, g, "pc_pusher_dark", xf, [Vector3(IW, 0.07, D), Vector3(-IW, 0.07, D), Vector3(-IW, 1.00, D), Vector3(IW, 1.00, D)], BK)
+		q(b, g, "pc_pusher_dark", xf, [Vector3(IW, 1.00, D), Vector3(-IW, 1.00, D), Vector3(-IW, 1.48, 0.82), Vector3(IW, 1.48, 0.82)], Vector3(0, 0.28, 0.48).normalized())
+		q(b, g, "pc_pusher_dark", xf, [Vector3(IW, 1.48, 0.82), Vector3(-IW, 1.48, 0.82), Vector3(-IW, Y_TOP, 0.82), Vector3(IW, Y_TOP, 0.82)], BK)
 	q(b, g, "pc_pusher_dark", xf, [Vector3(-IW, Y_TOP, Z_BAND), Vector3(IW, Y_TOP, Z_BAND), Vector3(IW, Y_TOP, 0.82), Vector3(-IW, Y_TOP, 0.82)], UP)
 
 	# ---- window: glass leaning back, aluminium frame
@@ -338,7 +368,8 @@ static func build(b, g, o, f, opts = {}):
 		q(b, g, "pc_pusher_mech", xf, [Vector3(cx - 0.05, 1.59, Z_BAND - 0.0305), Vector3(cx + 0.05, 1.59, Z_BAND - 0.0305), Vector3(cx + 0.05, 1.70, Z_BAND - 0.0305), Vector3(cx - 0.05, 1.70, Z_BAND - 0.0305)], FR, ruv())
 
 	# ---- marquee box on its ears, a small gap above the body
-	b.box(g, "pc_pusher_dark", Vector3(0, (Y_M0 + Y_M1) * 0.5, (Z_M + Z_MB) * 0.5), Vector3(2.0 * IW, Y_M1 - Y_M0, Z_MB - Z_M), xf, ["-z"])
+	var zmb = ZM if dbl else Z_MB
+	b.box(g, "pc_pusher_dark", Vector3(0, (Y_M0 + Y_M1) * 0.5, (Z_M + zmb) * 0.5), Vector3(2.0 * IW, Y_M1 - Y_M0, zmb - Z_M), xf, ["-z", "+z"] if dbl else ["-z"])
 	for sx in [-1.0, 1.0]:
 		b.box(g, "pc_pusher_dark", Vector3(sx * 0.62, (Y_TOP + Y_M0) * 0.5, 0.42), Vector3(0.06, Y_M0 - Y_TOP, 0.10), xf, [], true)
 	var zm = Z_M - 0.001
@@ -466,7 +497,7 @@ static func build(b, g, o, f, opts = {}):
 
 	# walk obstacle
 	var c0 = xf * Vector3(-HW, 0, 0)
-	var c1 = xf * Vector3(HW, 0, D)
+	var c1 = xf * Vector3(HW, 0, ZM if dbl else D)
 	b.obst(["rect", min(c0.x, c1.x), min(c0.z, c1.z), max(c0.x, c1.x), max(c0.z, c1.z)])
 
 ## Material "pc_pusher_<key>".

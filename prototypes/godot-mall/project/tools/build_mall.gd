@@ -46,7 +46,7 @@ const PLACEHOLDER_SIGNS = {"FELGER'S FOOTWEAR": ["sg_ph_felgers", 110.0 / 52.0],
 const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE": [-110.0, 60.0, -102.0, 100.0],
 	"KAY-BEE TOYS": [-34.0, -58.0, -10.0, -52.0], "GUMBALLS": [-20.0, 36.0, -10.0, 48.0],
 	"JW": [-80.0, 20.0, -74.0, 48.0], "5-7-9": [-74.0, 20.0, -68.0, 48.0], "COUNTY SEAT": [-94.0, 60.0, -86.0, 100.0],
-	"BABBAGE'S": [-132.0, 60.0, -124.0, 68.0], "SOUND SHOP": [-34.0, -64.0, -10.0, -58.0],
+	"BABBAGE'S": [-130.0, 60.0, -124.0, 68.0], "GOLD 'N' GIFTS UNLIMITED": [-136.0, 60.0, -130.0, 68.0], "SOUND SHOP": [-34.0, -64.0, -10.0, -58.0],
 	"WOOLWORTH": [-46.0, -14.0, -10.0, 22.0], "LERNER SHOP": [-38.0, 22.0, -10.0, 36.0],
 	"LANE BRYANT": [-34.0, -72.0, -10.0, -64.0], "MILLER'S OUTPOST": [-38.0, -52.0, -10.0, -40.0],
 	"GADZOOKS": [-62.0, 24.0, -50.0, 48.0], "THE LIMITED": [-132.0, 20.0, -122.0, 48.0],
@@ -58,12 +58,12 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 	"JEAN NICOLE": [-34.0, -40.0, -10.0, -30.0], "CHAMPS SPORTS": [-122.0, 24.0, -110.0, 48.0],
 	"SPORTS AVENUE": [-26.0, 36.0, -20.0, 48.0], "GREAT AMERICAN COOKIE CO": [-32.0, 36.0, -26.0, 48.0],
 	"REGIS HAIRSTYLISTS": [-58.0, 60.0, -50.0, 76.0], "AFTERTHOUGHTS": [-40.0, 60.0, -36.0, 72.0],
-	"ORANGE JULIUS": [10.0, 10.0, 16.0, 16.0], "GORDON'S JEWELERS": [2.0, -18.0, 12.0, -10.0],
+	"ORANGE JULIUS": [12.0, 6.0, 16.0, 16.0], "GORDON'S JEWELERS": [2.0, -18.0, 12.0, -10.0],
 	"CUCOS BORDER CAFE": [22.0, -86.0, 36.0, -70.0], "CLAIRE'S BOUTIQUES": [12.0, -16.0, 20.0, -6.0],
 	"MITCHELL'S FORMAL WEAR": [20.0, -18.0, 24.0, -6.0], "TEE TAI'S": [16.0, 6.0, 22.0, 14.0],
 	"OPTICAL OUTLET": [22.0, 6.0, 30.0, 16.0], "SAADI'S": [2.0, 66.0, 16.0, 74.0], "GOLDEN CHAIN GANG": [-74.0, 60.0, -68.0, 68.0],
 	"SOLARIUM": [-18.0, -86.0, -10.0, -80.0], "RAVE": [-22.0, -80.0, -10.0, -72.0], "CONCEPTS": [-68.0, 60.0, -58.0, 74.0],
-	"COUNTRY FAIR": [-124.0, 60.0, -118.0, 70.0], "LION'S SHARE RESTAURANT": [-50.0, 36.0, -40.7, 48.0], "COMING SOON": [-40.7, 44.0, -37.0, 48.0], "AMERICAN BANK": [-46.0, -86.0, -36.0, -78.0],
+	"COUNTRY FAIR": [-124.0, 60.0, -118.0, 70.0], "LION'S SHARE RESTAURANT": [-50.0, 36.0, -40.7, 48.0], "AMERICAN BANK": [-46.0, -86.0, -36.0, -78.0],
 	"SOUTHLAND CINEMA": [-70.0, -86.0, -46.0, -76.0]}
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 # ------------------------------------------------------------------ wings
@@ -816,6 +816,8 @@ func build_court(z):
 	var inset = 1.3
 	for qx in [r[0] + inset, r[2] - inset]:
 		for qz in [r[1] + inset, r[3] - inset]:
+			if no_column(qx, qz):
+				continue
 			cyl(g, "column", Vector3(qx, 0.35, qz), 0.3, 0.3, COURT_SPRING - 0.6, 24, false)
 			cyl(g, "stone", Vector3(qx, 0, qz), 0.4, 0.4, 0.35, 24, true)
 			cyl(g, "column", Vector3(qx, COURT_SPRING - 0.25, qz), 0.3, 0.42, 0.25, 24, true, true)
@@ -945,9 +947,20 @@ func build_court_flat(z):
 	var inset = 1.3
 	for qx in [r[0] + inset, r[2] - inset]:
 		for qz in [r[1] + inset, r[3] - inset]:
+			if no_column(qx, qz):
+				continue
 			cyl(g, "column", Vector3(qx, 0.35, qz), 0.3, 0.3, SOF - 0.35, 24, false)
 			cyl(g, "stone", Vector3(qx, 0, qz), 0.4, 0.4, 0.35, 24, true)
 			obst([qx, qz, 0.55])
+
+## Court columns left out: the one standing in front of the Woolworth restaurant's door
+## (Shoe Dept. court, north-west corner; Steven, Oct 8).
+const NO_COLUMNS = [Vector2(-8.7, -8.7)]
+func no_column(qx, qz):
+	for c in NO_COLUMNS:
+		if abs(c.x - qx) < 0.2 and abs(c.y - qz) < 0.2:
+			return true
+	return false
 
 # ------------------------------------------------------------------ lights
 ## Since Godot 4.7 the lightmapper lights the mall mostly from glowing surfaces
@@ -1367,6 +1380,19 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# guessed (design/storefronts/radio-shack.md, b-dalton.md, karmelkorn.md, zales.md)
 		load("res://tools/stores/small/store2.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
+	if sd.name == "DUNCAN SPORTS" and not inner_call:
+		# the generic front with the script from the store's Courier ad, in blue over the
+		# bulkhead (Steven, Oct 8: tools/stores/signs/make_duncan.py)
+		storefront(g, e, a, b, n, t, Ln, true)
+		var cdu = a + t * (Ln * 0.5) + n * 0.16 + Vector3(0, OPEN_H + 0.53, 0)
+		load("res://tools/stores/signs/channel.gd").build(self, "duf_sign", "res://tools/stores/signs/du_name_logo.json", cdu, n,
+			"sg_du_face", "sg_du_return", "", 0.02, 0.05, 0.0, "sg_du_glow")
+		return
+	if sd.name == "FRANKS" and not inner_call:
+		# the generic front with the logo as bare red neon on both faces of the corner
+		# (Steven, Oct 8: tools/stores/franks/franks.gd)
+		load("res://tools/stores/franks/franks.gd").build(self, g, e, a, b, n, t, Ln, sd)
+		return
 	if sd.name == "CHICK-FIL-A" and not inner_call:
 		# rebuilt Oct 8, 2026 from Steven's video of the Southland unit
 		# (design/storefronts/chick-fil-a.md)
@@ -1418,6 +1444,10 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		return
 	if sd.name == "COMING SOON":
 		coming_soon(g, a, b, n, t, Ln)
+		return
+	if sd.name == "GOLD 'N' GIFTS UNLIMITED" and not inner_call:
+		# on the corner's diagonal by Babbage's (Steven, Oct 8: tools/layout_oct8.py)
+		load("res://tools/stores/gold_gifts/store.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return
 	var fa = fronts.get(edge_key(e.a, e.b))
 	if fa != null and not inner_call:
@@ -1712,18 +1742,12 @@ func cinema_front(g, a, n, t, Ln):
 		box(g, "brass", pc + n * 0.035, abs_size(t, 1.1, 1.55, 0.02, n))
 	add_omni(mc + Vector3(0, -0.8, 0) + n * 0.6, 0.8, 6.0, Color(1.0, 0.9, 0.7))
 
-## Jewelry kiosks (decision 1: both there since 1991) under lit rings (decision 7).
+## Jewelry kiosks (decision 1) under lit rings (decision 7): the Mr. Silverman island only, since
+## Oct 8.
 func kiosks():
 	var centers = []
-	for e in L.edges:
-		if e.kind == "store" and L.stores[e.store].name.begins_with("GREAT AMERICAN COOKIE"):
-			var eb = edge_basics(e)
-			var a = eb[0]; var b = eb[1]; var n = eb[2]; var t = eb[3]
-			var corner = (a + b) * 0.5 + t * 3.2 + n * 2.7
-			gold_kiosk("kiosks", corner, t, n)
-			lit_ring("kiosks", corner + t * 1.0 + n * 0.7)
-			centers.append(corner)
-			break
+	# the gold kiosk that stood in front of Gumballs (east of the cookie shop) is gone: Steven,
+	# Oct 8 ("remove the Goldman's kiosk in front of Gumballs"); gold_kiosk() is kept for now
 	# Mr. Silverman island: position is a guess (concourse, west of the cookie shop)
 	var ms = Vector3(-52.0, 0, 54.0)
 	island_kiosk("kiosks", ms)
@@ -2182,6 +2206,14 @@ func build():
 	for r in L.leftovers:
 		quad("misc", "floorz_left", [Vector3(r[0], 0, r[1]), Vector3(r[2], 0, r[1]), Vector3(r[2], 0, r[3]), Vector3(r[0], 0, r[3])], Vector3.UP)
 		quad("misc", "lane_ceiling", [Vector3(r[0], LANE_H, r[1]), Vector3(r[2], LANE_H, r[1]), Vector3(r[2], LANE_H, r[3]), Vector3(r[0], LANE_H, r[3])], Vector3.DOWN)
+	# triangular patches (the diagonal corner by Babbage's, Oct 8: tools/layout_oct8.py)
+	for tr3 in L.get("leftover_tris", []):
+		var fl = []
+		for q in tr3:
+			fl.append(Vector3(q[0], 0, q[1]))
+		var up3 = Vector3(0, LANE_H, 0)
+		tri(st("misc", "floorz_left"), fl[0], fl[1], fl[2], proj_uv(fl[0], Vector3.UP), proj_uv(fl[1], Vector3.UP), proj_uv(fl[2], Vector3.UP), Vector3.UP)
+		tri(st("misc", "lane_ceiling"), fl[0] + up3, fl[1] + up3, fl[2] + up3, proj_uv(fl[0], Vector3.DOWN), proj_uv(fl[1], Vector3.DOWN), proj_uv(fl[2], Vector3.DOWN), Vector3.DOWN)
 	for e in L.edges:
 		if in_wing(edge_wing(e)):
 			build_edge(e)

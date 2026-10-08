@@ -1,6 +1,8 @@
 ## First-person walker for the Godot mall.
 ## Phone: drag on the left half to walk, drag on the right half to look.
-## Desktop: WASD / arrow keys to walk, drag with the mouse to look.
+## Desktop: WASD / arrow keys to walk, drag with the mouse to look, hold the right mouse button
+## (or X / Shift) to run. J (a gamepad's Y, or the "Jump to" button) opens the quick-jump menu:
+## Sears, the main entrance, Dillard's or JCPenney (Steven, Oct 8).
 ## URL ?cam=x,z,yaw,pitch places the camera (used for test screenshots).
 ## Wings (design/godot-wings.md): the mall ships as two game files; near the seam between them a
 ## prompt offers the other wing (E / Enter, a gamepad's A, a click or a tap), and the page reloads
@@ -26,6 +28,17 @@ var look_touch := -1
 var move_origin := Vector2.ZERO
 var move_vec := Vector2.ZERO
 var dragging := false
+var rmb_run := false    # the right mouse button held: run (Steven, Oct 8)
+# quick jump (Steven, Oct 8): name, wing, x, z, yaw (degrees), standing in front of each entrance
+const JUMPS := [
+	["Sears", 1, -4.0, -90.0, 0.0],
+	["Mall entrance", 1, 31.0, 0.0, -90.0],
+	["Dillard's", 2, -4.0, 75.5, 180.0],
+	["JCPenney", 2, -148.0, 56.0, 90.0]]
+var jump_panel: PanelContainer
+var jump_btns: Array = []
+var jump_sel := 0
+var jump_open_btn: Button
 var last_pos := {}   # touch index -> last position
 var hud: Label
 var buttons: Array = []   # HUD buttons, tapped by hand since touch skips mouse emulation
@@ -110,6 +123,7 @@ func _ready() -> void:
 		hint.visible = false
 	_apply_rot()
 	_build_wing_ui()
+	_build_jump_ui()
 
 func _build_hud() -> void:
 	var cl := CanvasLayer.new()
@@ -193,6 +207,9 @@ func _input(e: InputEvent) -> void:
 		input_kind = "kb"
 	elif e is InputEventScreenTouch:
 		input_kind = "touch"
+	if _jump_input(e):
+		get_viewport().set_input_as_handled()
+		return
 	if prompt and prompt.visible and not leaving:
 		var go := false
 		if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode in [KEY_E, KEY_ENTER, KEY_KP_ENTER]:
@@ -242,6 +259,8 @@ func _input(e: InputEvent) -> void:
 	elif e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT:
 		dragging = e.pressed
 		hint.visible = false
+	elif e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_RIGHT:
+		rmb_run = e.pressed
 	elif e is InputEventMouseMotion and dragging and not DisplayServer.is_touchscreen_available():
 		_look(e.relative * 0.004)
 
@@ -267,7 +286,7 @@ func _process(dt: float) -> void:
 		hint.visible = false
 		var fwd := -transform.basis.z
 		var right := transform.basis.x
-		var run := RUN if (Input.is_physical_key_pressed(KEY_X) or Input.is_physical_key_pressed(KEY_SHIFT)) else 1.0
+		var run := RUN if (rmb_run or Input.is_physical_key_pressed(KEY_X) or Input.is_physical_key_pressed(KEY_SHIFT)) else 1.0
 		var step := (right * iv.x - fwd * iv.y) * SPEED * run * dt
 		_try_move(Vector3(step.x, 0, 0))
 		_try_move(Vector3(0, 0, step.z))
@@ -428,6 +447,180 @@ func _cross() -> void:
 			Engine.set_meta("mall_xfer", {"x": tx, "z": tz, "yaw": yaw, "pitch": pitch})
 			Engine.set_meta("mall_arrived", true)
 			var path := "res://wing%d.tscn" % other
+			if ResourceLoader.exists(path):
+				get_tree().change_scene_to_file(path)
+			else:
+				leaving = false
+				fade.modulate.a = 0.0)
+
+# ------------------------------------------------------------------ quick jump
+## A small menu (J, a gamepad's Y, or the "Jump to" button) that drops the player in front of
+## Sears, the main entrance, Dillard's or JCPenney. In the other wing, it loads that wing's file
+## the same way the seam does.
+func _build_jump_ui() -> void:
+	jump_open_btn = Button.new()
+	jump_open_btn.text = "Jump to (J)"
+	jump_open_btn.focus_mode = Control.FOCUS_NONE
+	jump_open_btn.add_theme_font_size_override("font_size", 14)
+	jump_open_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	jump_open_btn.offset_left = -200; jump_open_btn.offset_right = -10
+	jump_open_btn.offset_top = 128; jump_open_btn.offset_bottom = 160
+	jump_open_btn.pressed.connect(func(): _jump_show(not jump_panel.visible))
+	_cl.add_child(jump_open_btn)
+	jump_panel = PanelContainer.new()
+	var sb := StyleBoxFlat.new()
+	sb.bg_color = Color(0.08, 0.06, 0.05, 0.86)
+	sb.border_color = Color(0.93, 0.85, 0.66, 0.85)
+	sb.set_border_width_all(2)
+	sb.set_corner_radius_all(10)
+	sb.set_content_margin_all(14)
+	jump_panel.add_theme_stylebox_override("panel", sb)
+	jump_panel.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	jump_panel.custom_minimum_size = Vector2(280, 0)
+	jump_panel.offset_left = -140; jump_panel.offset_right = 140
+	jump_panel.offset_top = -130; jump_panel.offset_bottom = 130
+	jump_panel.visible = false
+	var col := VBoxContainer.new()
+	col.add_theme_constant_override("separation", 8)
+	jump_panel.add_child(col)
+	var title := Label.new()
+	title.text = "Jump to"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 18)
+	title.add_theme_color_override("font_color", Color(1, 0.97, 0.9))
+	col.add_child(title)
+	for i in JUMPS.size():
+		var b := Button.new()
+		b.text = "%d   %s" % [i + 1, JUMPS[i][0]]
+		b.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		b.focus_mode = Control.FOCUS_NONE
+		b.custom_minimum_size = Vector2(0, 40)
+		b.add_theme_font_size_override("font_size", 16)
+		var k := i
+		b.pressed.connect(func(): _jump_go(k))
+		b.mouse_entered.connect(func(): _jump_select(k))
+		col.add_child(b)
+		jump_btns.append(b)
+	var foot := Label.new()
+	foot.text = "1–4 or arrows + Enter · gamepad: D-pad + A · Esc / B closes"
+	foot.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	foot.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	foot.add_theme_font_size_override("font_size", 12)
+	foot.add_theme_color_override("font_color", Color(0.93, 0.85, 0.66, 0.9))
+	col.add_child(foot)
+	_cl.add_child(jump_panel)
+	_jump_select(0)
+
+func _jump_show(on: bool) -> void:
+	if leaving:
+		on = false
+	jump_panel.visible = on
+	if on:
+		move_vec = Vector2.ZERO
+		dragging = false
+		_jump_select(0)
+
+func _jump_select(i: int) -> void:
+	jump_sel = posmod(i, JUMPS.size())
+	for k in jump_btns.size():
+		jump_btns[k].modulate = Color(1, 0.86, 0.5) if k == jump_sel else Color(1, 1, 1)
+
+## Handles the menu's keys, pad buttons and taps. True when the event was used.
+func _jump_input(e: InputEvent) -> bool:
+	if jump_panel == null or leaving:
+		return false
+	var open := jump_panel.visible
+	if e is InputEventKey and e.pressed and not e.echo:
+		var k: int = e.physical_keycode
+		if k == KEY_J:
+			_jump_show(not open)
+			return true
+		if not open:
+			return false
+		if k == KEY_ESCAPE:
+			_jump_show(false)
+		elif k in [KEY_UP, KEY_W]:
+			_jump_select(jump_sel - 1)
+		elif k in [KEY_DOWN, KEY_S]:
+			_jump_select(jump_sel + 1)
+		elif k in [KEY_ENTER, KEY_KP_ENTER, KEY_E, KEY_SPACE]:
+			_jump_go(jump_sel)
+		elif k >= KEY_1 and k < KEY_1 + JUMPS.size():
+			_jump_go(k - KEY_1)
+		return true
+	if e is InputEventJoypadButton and e.pressed:
+		if e.button_index == JOY_BUTTON_Y:
+			_jump_show(not open)
+			return true
+		if not open:
+			return false
+		match e.button_index:
+			JOY_BUTTON_B, JOY_BUTTON_BACK:
+				_jump_show(false)
+			JOY_BUTTON_DPAD_UP:
+				_jump_select(jump_sel - 1)
+			JOY_BUTTON_DPAD_DOWN:
+				_jump_select(jump_sel + 1)
+			JOY_BUTTON_A:
+				_jump_go(jump_sel)
+		return true
+	if e is InputEventJoypadMotion and open and e.axis == JOY_AXIS_LEFT_Y and abs(e.axis_value) > 0.6:
+		if not Engine.has_meta("_jump_axis_held"):
+			Engine.set_meta("_jump_axis_held", true)
+			_jump_select(jump_sel + (1 if e.axis_value > 0 else -1))
+		return true
+	if e is InputEventJoypadMotion and e.axis == JOY_AXIS_LEFT_Y and abs(e.axis_value) < 0.3 and Engine.has_meta("_jump_axis_held"):
+		Engine.remove_meta("_jump_axis_held")
+	if e is InputEventScreenTouch and e.pressed:
+		# touches skip mouse emulation, so the menu and its button are tapped here
+		if jump_open_btn.get_global_rect().has_point(e.position):
+			_jump_show(not open)
+			return true
+		if open:
+			for i in jump_btns.size():
+				if jump_btns[i].get_global_rect().has_point(e.position):
+					_jump_go(i)
+					return true
+			if not jump_panel.get_global_rect().has_point(e.position):
+				_jump_show(false)
+			return true
+	if open and (e is InputEventScreenDrag or (e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT and e.pressed and not jump_panel.get_global_rect().has_point(e.position))):
+		if e is InputEventMouseButton:
+			_jump_show(false)
+		return true
+	return false
+
+## Go to JUMPS[i]: in this wing, at once; in the other wing, by loading its file there.
+func _jump_go(i: int) -> void:
+	var j: Array = JUMPS[i]
+	_jump_show(false)
+	hint.visible = false
+	var tw_wing := int(j[1])
+	if wing == 0 or tw_wing == wing:
+		position = Vector3(float(j[2]), 0, float(j[3]))
+		yaw = deg_to_rad(float(j[4]))
+		pitch = deg_to_rad(3.0)
+		_apply_rot()
+		return
+	leaving = true
+	if prompt:
+		prompt.visible = false
+	var tw := create_tween()
+	tw.tween_property(fade, "modulate:a", 1.0, 0.35)
+	tw.tween_callback(func():
+		var day: bool = not buttons[2].button_pressed
+		if OS.has_feature("web"):
+			var cam_s := "%.2f,%.2f,%.1f,%.1f" % [float(j[2]), float(j[3]), float(j[4]), 3.0]
+			var js := "(function(){try{sessionStorage.setItem('mall-xfer','%d')}catch(e){}var u=new URL(location.href);var p=u.searchParams;p.set('wing','%d');p.set('cam','%s');" % [tw_wing, tw_wing, cam_s]
+			js += "p.set('time','%s');" % ("day" if day else "night")
+			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not buttons[0].button_pressed else "false")
+			js += "if(%s)p.set('fx','1');else p.delete('fx');" % ("true" if buttons[1].button_pressed else "false")
+			js += "console.log('jumping to '+u.toString());if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
+			JavaScriptBridge.eval(js, true)
+		else:
+			Engine.set_meta("mall_xfer", {"x": float(j[2]), "z": float(j[3]), "yaw": deg_to_rad(float(j[4])), "pitch": deg_to_rad(3.0)})
+			Engine.set_meta("mall_arrived", true)
+			var path := "res://wing%d.tscn" % tw_wing
 			if ResourceLoader.exists(path):
 				get_tree().change_scene_to_file(path)
 			else:

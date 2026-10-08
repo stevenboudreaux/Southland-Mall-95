@@ -58,7 +58,7 @@ static func build(b, g, e, a, bb, n, t, Ln, sd):
 		"AFTERTHOUGHTS":
 			afterthoughts(b, a, t, n, W, D, rng)
 		"ORANGE JULIUS":
-			D = 6.0
+			D = 10.0   # moved up into line with Tee Tai's (Steven, Oct 8): 4 m wide, 10 m deep
 			orange_julius(b, a, t, n, W, D, rng)
 		"GORDON'S JEWELERS":
 			if abs(n.x) < 0.5:
@@ -396,7 +396,7 @@ static func orange_julius(b, a, t, n, W, D, rng):
 	var G = "w7o_fix"
 	var head = 2.7
 	S1.upper(b, F, a, t, n, W, head, "w7_cream_tile", 0.12)
-	b.box(F, "w7_cream", P(a, t, n, W * 0.5, head + 0.85, -0.18), b.abs_size(t, W - 1.0, 1.0, 0.12, n))
+	b.box(F, "w7_cream", P(a, t, n, W * 0.5, head + 0.85, -0.18), b.abs_size(t, min(W - 0.3, max(W - 1.0, 3.5)), 1.0, 0.12, n))
 	AK.neon(b, F, LET + "oj_letters.json", P(a, t, n, W * 0.5, head + 0.62, -0.24), n, "w7_neon_orange", 0.02, 0.016, 0.02)
 	K.fq(b, F, "w7_diamonds", P(a, t, n, W, 0, 0), -t, n, 0.0, W, head + 0.05, head + 0.2, 0.125, 0.0, 0.0, W / 0.6, 1.0)
 	M2.shell2(b, "w7o_shell", a, t, n, W, D, 3.0, 0.0, "s6_red_tile", 0.61, "w7_cream", "kb_ceiling", [1.6, 4.0], 1.0)
@@ -410,7 +410,7 @@ static func orange_julius(b, a, t, n, W, D, rng):
 	K.ob(b, P(a, t, n, SIDE, 0, 1.7), P(a, t, n, 0.6, 0, 2.4), 0.0)
 	K.ob(b, P(a, t, n, W - 0.6, 0, 1.7), P(a, t, n, W - SIDE, 0, 2.4), 0.0)
 	K.lbox(b, G, "wl_steel", P(a, t, n, W - 0.4, 0, D - SIDE), -t, n, 0.0, 0.0, 0.0, W - 0.8, 1.0, 0.7)
-	for k in 3:
+	for k in clampi(int((W - 1.0) / 1.6), 1, 3):
 		K.lbox(b, G, "md_black", P(a, t, n, W - 0.6, 0, D - SIDE), -t, n, k * 1.6, 1.8, 0.0, 1.5, 0.8, 0.08)
 		K.fq(b, G, "sm_cards", P(a, t, n, W - 0.6, 0, D - SIDE), -t, n, k * 1.6 + 0.05, k * 1.6 + 1.45, 1.85, 2.55, 0.082, k * 0.25, 0.75, k * 0.25 + 0.25, 1.0)
 	K.ob(b, P(a, t, n, SIDE, 0, 2.4), P(a, t, n, W - SIDE, 0, D - SIDE), 0.0)
