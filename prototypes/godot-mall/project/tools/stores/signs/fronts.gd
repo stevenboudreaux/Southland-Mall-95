@@ -180,8 +180,12 @@ static func blockbuster(b, g, e, a, n, t, Ln, sd, U):
 	var k = 0.78
 	var mx = Ln - 2.0
 	var by = 3.03                      # the box's bottom
-	b.box(G, "sg_bb_box", P(a, t, n, U.call(mx), by + 0.78 * k, -0.24), b.abs_size(t, 3.3 * k, 1.56 * k, 0.08, n))
-	CH.build(b, "bbmf_sign", S + "bb_music_sm_logo.json", P(a, t, n, U.call(mx), by + 0.07 * k, -0.28), n, "sg_bb_music", "sg_bb_music_ret", "sg_bb_music_trim", 0.02, 0.08, 0.015, "sg_bb_glow")
+	# "music" and its dark box a further third smaller (Steven, Oct 8 11:44: "two-thirds of the
+	# size"; bb_music_xs_logo.json), its left edge kept where it was, by the ticket
+	var km = k * 2.0 / 3.0
+	var mxm = mx - 3.3 * (k - km) * 0.5
+	b.box(G, "sg_bb_box", P(a, t, n, U.call(mxm), by + 0.78 * km, -0.24), b.abs_size(t, 3.3 * km, 1.56 * km, 0.08, n))
+	CH.build(b, "bbmf_sign", S + "bb_music_xs_logo.json", P(a, t, n, U.call(mxm), by + 0.07 * km, -0.28), n, "sg_bb_music", "sg_bb_music_ret", "sg_bb_music_trim", 0.02, 0.08, 0.015, "sg_bb_glow")
 	var tc = P(a, t, n, U.call(mx - 2.7 * k), by + 0.33 * k, -0.2)
 	var r = deg_to_rad(10.0)
 	CH.build(b, "bbmf_sign", S + "bb_ticket_rim_sm_logo.json", tc, n, "sg_bb_yellow", "sg_bb_ticket_ret", "", 0.12, 0.05, 0.0, "", true, r)

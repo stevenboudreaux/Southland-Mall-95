@@ -1389,7 +1389,7 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 			"sg_du_face", "sg_du_return", "", 0.02, 0.05, 0.0, "sg_du_glow")
 		return
 	if sd.name == "FRANKS" and not inner_call:
-		# the generic front with the logo as bare red neon on both faces of the corner
+		# the generic front with the logo as bare red neon on the storefront
 		# (Steven, Oct 8: tools/stores/franks/franks.gd)
 		load("res://tools/stores/franks/franks.gd").build(self, g, e, a, b, n, t, Ln, sd)
 		return

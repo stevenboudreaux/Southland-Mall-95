@@ -1,8 +1,9 @@
 ## Franks (s33), the hot dog stand near the Shoe Dept. court (Courier, May 8 1988: "Franks, a
 ## restaurant specializing in a variety of gourmet hot dogs", owned with the Orange Julius next
 ## door by Mehrhoff Corp.). Steven, Oct 8 2026: the sign is the ads' lowercase "franks" as bare
-## red neon, no backing, straight on the cream facade, on both faces of the corner unit (the
-## court front and the east hall side).
+## red neon, no backing, straight on the cream facade, on the storefront only (11:44: not on the
+## side on the east hall). The unit is the corner of the row Franks, Orange Julius, Tee Tai's on
+## the entrance hall (directory units 53, 52, 51).
 ##
 ## The facade is the mall's generic storefront (build_mall.gd storefront(), no sign box, no
 ## awning); the neon is built here as skeleton neon:
@@ -22,14 +23,11 @@ const BOTTOM = 3.24      # the sign's lowest point (the s's tail) above the floo
 const POOL = Color(0.46, 0.06, 0.03)
 const WIDE = Color(0.10, 0.012, 0.006)
 
-## g, e, a, b_, n, t, Ln, sd: as build_mall.gd storefront() passes them (the court front, x 2..12).
+## g, e, a, b_, n, t, Ln, sd: as build_mall.gd storefront() passes them (the front, x 2..12 at z = 6).
 static func build(b, g, e, a, b_, n, t, Ln, sd):
 	b.storefront(g, e, a, b_, n, t, Ln, true)
-	# the court front: centred on the frontage, on the face of the cream bulkhead (16 cm proud)
+	# the storefront: centred on the frontage, on the face of the cream bulkhead (16 cm proud)
 	neon(b, "frf_sign", a + t * (Ln * 0.5) + n * 0.16 + UP * BOTTOM, n)
-	# the side on the east hall: the plain cream wall x = 2, z 10..16, facing west (-x),
-	# centred on it (the edge's start a is that corner)
-	neon(b, "frf_sign", a + Vector3(0, BOTTOM, 3.0), Vector3(-1, 0, 0))
 
 ## The neon with the middle of its bottom at c on a wall facing nn.
 static func neon(b, g, c, nn):
