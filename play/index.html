@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+		<title>Houma Mall Rewind - Godot Mall</title>
+		<style>
+html, body, #canvas {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+body {
+	color: white;
+	background-color: black;
+	overflow: hidden;
+	touch-action: none;
+}
+
+#canvas {
+	display: block;
+}
+
+#canvas:focus {
+	outline: none;
+}
+
+#status, #status-splash, #status-progress {
+	position: absolute;
+	left: 0;
+	right: 0;
+}
+
+#status, #status-splash {
+	top: 0;
+	bottom: 0;
+}
+
+#status {
+	background-color: #242424;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	visibility: hidden;
+}
+
+#status-splash {
+	max-height: 100%;
+	max-width: 100%;
+	margin: auto;
+}
+
+#status-splash.show-image--false {
+	display: none;
+}
+
+#status-splash.fullsize--true {
+	height: 100%;
+	width: 100%;
+	object-fit: contain;
+}
+
+#status-splash.use-filter--false {
+	image-rendering: pixelated;
+}
+
+#status-progress, #status-notice {
+	display: none;
+}
+#status { background: #efe6d3 radial-gradient(circle at 50% 35%, #fbf6ea 0%, #efe6d3 55%, #e2d4b8 100%); color: #3a2a1f; font-family: Georgia, 'Times New Roman', serif; }
+#load-card { position: absolute; left: 16px; right: 16px; top: 50%; transform: translateY(-58%); text-align: center; }
+#load-title { font-size: clamp(30px, 7vw, 54px); letter-spacing: 0.02em; margin: 0; color: #5b2a3a; }
+#load-sub { font: 16px/1.4 -apple-system, system-ui, sans-serif; color: #6d5a48; margin: 10px 0 26px; }
+#load-track { width: min(420px, 80vw); height: 10px; margin: 0 auto; border-radius: 6px; background: #d8c9ac; overflow: hidden; }
+#load-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #a98a62, #5b2a3a); border-radius: 6px; transition: width 0.25s; }
+#load-mb { font: 14px/1.4 -apple-system, system-ui, sans-serif; color: #6d5a48; margin-top: 10px; min-height: 20px; }
+#load-tip { font: 14px/1.5 -apple-system, system-ui, sans-serif; color: #8a7560; margin-top: 28px; }
+
+#status-progress { display: none !important; }
+/* crossing between the wings: a dark screen instead of the cream card (scripts/player.gd) */
+body.xfer #status { background: #000; color: #e9dfcb; }
+body.xfer #load-title { font-size: clamp(22px, 4.5vw, 34px); color: #efe6d3; }
+body.xfer #load-sub { color: #b8a88f; margin-bottom: 18px; }
+body.xfer #load-track { background: #2a2420; height: 4px; width: min(260px, 60vw); }
+body.xfer #load-bar { background: #e9dfcb; }
+body.xfer #load-mb, body.xfer #load-tip { color: #8c7d68; }
+body.xfer #load-tip { display: none; }
+
+#status-notice {
+	background-color: #5b3943;
+	border-radius: 0.5rem;
+	border: 1px solid #9b3943;
+	color: #e0e0e0;
+	font-family: 'Noto Sans', 'Droid Sans', Arial, sans-serif;
+	line-height: 1.3;
+	margin: 0 2rem;
+	overflow: hidden;
+	padding: 1rem;
+	text-align: center;
+	z-index: 1;
+}
+		</style>
+		<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+
+	</head>
+	<body>
+		<canvas id="canvas">
+			Your browser does not support the canvas tag.
+		</canvas>
+
+		<noscript>
+			Your browser does not support JavaScript.
+		</noscript>
+
+		<div id="status">
+			<img id="status-splash" class="show-image--true fullsize--true use-filter--true" src="index.png" alt="" style="display:none">
+			<progress id="status-progress"></progress>
+			<div id="load-card">
+				<h1 id="load-title">Houma Mall Rewind</h1>
+				<div id="load-sub">Opening the doors… the 1995 mall, built in 3D</div>
+				<div id="load-track"><div id="load-bar"></div></div>
+				<div id="load-mb">Starting…</div>
+				<div id="load-tip">Left thumb walks · right thumb looks<br>On a computer: WASD or arrow keys, drag to look</div>
+			</div>
+			<div id="status-notice"></div>
+		</div>
+
+		<script>
+// Owner-editable signs (scripts/signs.gd): publishing the owner's sign edits to
+// play/signs.json on GitHub, the same way the main game's editor Publish writes files
+// (contents API, the token it keeps in this browser under "southland-gh"). Nothing secret
+// lives here: without a saved token it asks for one and does not keep it.
+// The playable arcade cabinets (scripts/signs.gd, play/emu.html): a full-window frame over the
+// game; emu.html posts "emu-close" to come back to the mall.
+window.mallRoms = {
+	frame: null,
+	open: function (url) {
+		if (this.frame) return;
+		var f = document.createElement('iframe');
+		f.src = url;
+		f.allow = 'autoplay; fullscreen; gamepad';
+		f.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:1000;background:#000';
+		document.body.appendChild(f);
+		this.frame = f;
+	},
+	close: function () {
+		if (!this.frame) return;
+		this.frame.remove();
+		this.frame = null;
+		var c = document.getElementById('canvas');
+		if (c) c.focus();
+	},
+	isOpen: function () { return this.frame ? '1' : '0'; }
+};
+window.addEventListener('message', function (e) { if (e.data === 'emu-close') window.mallRoms.close(); });
+window.mallSigns = {
+	status: '',
+	path: 'prototypes/godot-mall/play/signs.json',
+	repo: function (cfg) {
+		if (cfg.repo) return cfg.repo;
+		var h = location.hostname, seg = location.pathname.split('/').filter(Boolean)[0];
+		if (/\.github\.io$/.test(h) && seg) return h.split('.')[0] + '/' + seg;
+		return 'stevenboudreaux/Southland-Mall-95';
+	},
+	b64: function (str) {
+		var by = new TextEncoder().encode(str), s = '';
+		for (var i = 0; i < by.length; i += 0x8000) s += String.fromCharCode.apply(null, by.subarray(i, i + 0x8000));
+		return btoa(s);
+	},
+	publish: function (draftJson) {
+		var S = this;
+		S.status = 'busy';
+		var cfg = {};
+		try { cfg = JSON.parse(localStorage.getItem('southland-gh') || '{}'); } catch (e) {}
+		var repo = S.repo(cfg), br = cfg.branch || 'main', tok = cfg.token;
+		if (!tok) tok = prompt('GitHub token to publish the signs (the one the mall editor uses). It is not saved.');
+		if (!tok) { S.status = 'error: no GitHub token'; return; }
+		var draft = JSON.parse(draftJson);
+		var H = { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/vnd.github.object+json', 'X-GitHub-Api-Version': '2022-11-28' };
+		var u = 'https://api.github.com/repos/' + repo + '/contents/' + S.path.split('/').map(encodeURIComponent).join('/');
+		fetch(u + '?ref=' + encodeURIComponent(br), { headers: H, cache: 'no-store' }).then(function (r) {
+			if (r.status === 404) return null;
+			if (r.status === 401) throw 'the token was refused';
+			if (!r.ok) throw 'GitHub said ' + r.status;
+			return r.json();
+		}).then(function (cur) {
+			// merge into the live list so nothing published elsewhere is lost
+			var live = { signs: {} };
+			if (cur && cur.content) {
+				try {
+					var bin = atob(cur.content.replace(/\n/g, '')), arr = new Uint8Array(bin.length);
+					for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+					live = JSON.parse(new TextDecoder().decode(arr));
+				} catch (e) { live = { signs: {} }; }
+			}
+			live.signs = live.signs || {};
+			Object.keys(draft).forEach(function (k) { live.signs[k] = draft[k]; });
+			var body = { message: 'Update the mall signs from the Godot mall', content: S.b64(JSON.stringify(live, null, 1) + '\n'), branch: br };
+			if (cur && cur.sha) body.sha = cur.sha;
+			return fetch(u, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify(body) });
+		}).then(function (r) {
+			if (r.ok) { S.status = 'ok'; return; }
+			if (r.status === 403 || r.status === 404) throw 'this token cannot write to ' + repo;
+			if (r.status === 409) throw 'someone else changed the signs; reload and publish again';
+			throw 'GitHub said ' + r.status;
+		}).catch(function (e) { S.status = 'error: ' + (typeof e === 'string' ? e : (e && e.message) || 'network error'); });
+	}
+};
+		</script>
+		<script src="index.js"></script>
+		<script>
+const GODOT_CONFIG = {"args":[],"canvasResizePolicy":2,"emscriptenPoolSize":8,"ensureCrossOriginIsolationHeaders":true,"executable":"index","experimentalVK":false,"fileSizes":{"index.pck":63627020,"index.wasm":39514754},"focusCanvas":true,"gdextensionLibs":[],"godotPoolSize":4};
+const GODOT_THREADS_ENABLED = false;
+// Two builds of the game, the same except for texture formats: "desktop" (S3TC and BPTC,
+// computer GPUs) and "mobile" (ETC2 and ASTC: phones, tablets, VR headsets). Each device
+// downloads only its own. tools/export_web.sh fills in the sizes. Override with ?pack=.
+// The mall ships as two wings (design/godot-wings.md), each its own pair of files:
+// w1.desktop.pck / w1.mobile.pck (Sears and the east halls, with Gumballs) and w2.* (the
+// Dillard's court, the Concourse, JCPenney). ?wing=1|2 picks the wing; the game sets it when you
+// cross the seam. While you walk one wing, the other wing's file is fetched into this browser's
+// cache (Cache Storage), so crossing over does not download it again.
+const PACK_SIZES = {"w1": {"desktop": 63627020, "mobile": 63627020}, "w2": {"desktop": 67255208, "mobile": 67255208}}; // PACK_SIZES
+function mallPackKind() {
+	try { const q = new URLSearchParams(location.search).get('pack'); if (q === 'desktop' || q === 'mobile') { return q; } } catch (e) { /* ignore */ }
+	try { const s = localStorage.getItem('southland-pack'); if (s === 'desktop' || s === 'mobile') { return s; } } catch (e) { /* ignore */ }
+	try {
+		const gl = document.createElement('canvas').getContext('webgl2');
+		if (gl) {
+			const has = (n) => !!gl.getExtension(n);
+			const desk = has('WEBGL_compressed_texture_s3tc') && has('EXT_texture_compression_bptc');
+			const mob = has('WEBGL_compressed_texture_etc') && has('WEBGL_compressed_texture_astc');
+			const lose = gl.getExtension('WEBGL_lose_context');
+			if (lose) { lose.loseContext(); }
+			if (desk) { return 'desktop'; }
+			if (mob) { return 'mobile'; }
+		}
+	} catch (e) { /* ignore */ }
+	return /iPhone|iPad|Android|Quest|OculusBrowser|Mobile/.test(navigator.userAgent) ? 'mobile' : 'desktop';
+}
+window.__mallPack = mallPackKind();
+window.__mallWing = (function () {
+	try { const w = new URLSearchParams(location.search).get('wing'); if (w === '2') { return 2; } } catch (e) { /* ignore */ }
+	return 1;
+}());
+const MALL_PACK = (w) => 'w' + w + '.' + window.__mallPack + '.pck';
+GODOT_CONFIG['mainPack'] = MALL_PACK(window.__mallWing);
+GODOT_CONFIG['fileSizes'] = GODOT_CONFIG['fileSizes'] || {};
+const mallSize = (w) => (PACK_SIZES['w' + w] || {})[window.__mallPack] || 0;
+if (mallSize(window.__mallWing)) { GODOT_CONFIG['fileSizes'][GODOT_CONFIG['mainPack']] = mallSize(window.__mallWing); }
+// one cache per build (the pack sizes change with every export), older ones are removed
+const MALL_CACHE = 'mall-wings-' + [mallSize(1), mallSize(2)].join('-');
+const mallPackUrl = (w) => new URL(MALL_PACK(w), location.href).toString();
+if ('caches' in window) {
+	const netFetch = window.fetch.bind(window);
+	window.fetch = function (input, init) {
+		const url = typeof input === 'string' ? input : (input && input.url) || '';
+		if (/w[12]\.(desktop|mobile)\.pck(\?|$)/.test(url)) {
+			const abs = new URL(url, location.href).toString();
+			return caches.open(MALL_CACHE).then((c) => c.match(abs)).then((r) => r || netFetch(input, init)).catch(() => netFetch(input, init));
+		}
+		return netFetch(input, init);
+	};
+}
+window.mallPrefetchOther = function () {
+	if (!('caches' in window)) { return; }
+	const other = 3 - window.__mallWing;
+	caches.keys().then((ks) => Promise.all(ks.filter((k) => k.indexOf('mall-wings-') === 0 && k !== MALL_CACHE).map((k) => caches.delete(k))))
+		.then(() => caches.open(MALL_CACHE))
+		.then((c) => c.match(mallPackUrl(other)).then((r) => (r ? null : c.add(mallPackUrl(other)))))
+		.catch((e) => console.warn('could not keep the other wing for later:', e));
+};
+// the game calls this when you cross the seam (scripts/player.gd _cross)
+window.mallGoWing = function (url) { location.replace(url); };
+let mallXfer = '';
+try { mallXfer = sessionStorage.getItem('mall-xfer') || ''; } catch (e) { /* ignore */ }
+if (mallXfer) {
+	document.body.classList.add('xfer');
+	document.getElementById('load-title').textContent = window.__mallWing === 2 ? 'Wing 2' : 'Wing 1';
+	document.getElementById('load-sub').textContent = window.__mallWing === 2 ? "Dillard's & JCPenney" : 'Sears & the main entrance';
+}
+const engine = new Engine(GODOT_CONFIG);
+
+(function () {
+	const statusOverlay = document.getElementById('status');
+	const statusProgress = document.getElementById('status-progress');
+	const statusNotice = document.getElementById('status-notice');
+
+	let initializing = true;
+	let statusMode = '';
+
+	function setStatusMode(mode) {
+		if (statusMode === mode || !initializing) {
+			return;
+		}
+		if (mode === 'hidden') {
+			statusOverlay.remove();
+			initializing = false;
+			return;
+		}
+		statusOverlay.style.visibility = 'visible';
+		statusProgress.style.display = mode === 'progress' ? 'block' : 'none';
+		statusNotice.style.display = mode === 'notice' ? 'block' : 'none';
+		statusMode = mode;
+	}
+
+	function setStatusNotice(text) {
+		while (statusNotice.lastChild) {
+			statusNotice.removeChild(statusNotice.lastChild);
+		}
+		const lines = text.split('\n');
+		lines.forEach((line) => {
+			statusNotice.appendChild(document.createTextNode(line));
+			statusNotice.appendChild(document.createElement('br'));
+		});
+	}
+
+	function displayFailureNotice(err) {
+		console.error(err);
+		if (err instanceof Error) {
+			setStatusNotice(err.message);
+		} else if (typeof err === 'string') {
+			setStatusNotice(err);
+		} else {
+			setStatusNotice('An unknown error occurred.');
+		}
+		setStatusMode('notice');
+		initializing = false;
+	}
+
+	const missing = Engine.getMissingFeatures({
+		threads: GODOT_THREADS_ENABLED,
+	});
+
+	if (missing.length !== 0) {
+		if (GODOT_CONFIG['serviceWorker'] && GODOT_CONFIG['ensureCrossOriginIsolationHeaders'] && 'serviceWorker' in navigator) {
+			let serviceWorkerRegistrationPromise;
+			try {
+				serviceWorkerRegistrationPromise = navigator.serviceWorker.getRegistration();
+			} catch (err) {
+				serviceWorkerRegistrationPromise = Promise.reject(new Error('Service worker registration failed.'));
+			}
+			// There's a chance that installing the service worker would fix the issue
+			Promise.race([
+				serviceWorkerRegistrationPromise.then((registration) => {
+					if (registration != null) {
+						return Promise.reject(new Error('Service worker already exists.'));
+					}
+					return registration;
+				}).then(() => engine.installServiceWorker()),
+				// For some reason, `getRegistration()` can stall
+				new Promise((resolve) => {
+					setTimeout(() => resolve(), 2000);
+				}),
+			]).then(() => {
+				// Reload if there was no error.
+				window.location.reload();
+			}).catch((err) => {
+				console.error('Error while registering service worker:', err);
+			});
+		} else {
+			// Display the message as usual
+			const missingMsg = 'Error\nThe following features required to run Godot projects on the Web are missing:\n';
+			displayFailureNotice(missingMsg + missing.join('\n'));
+		}
+	} else {
+		setStatusMode('progress');
+		// If the engine dies while starting (iPhone Safari gives no console), say so on the loading screen.
+		const say = (t) => { const el = document.getElementById('load-mb'); if (el && initializing) { el.textContent = t; } };
+		window.addEventListener('error', (e) => { say('Could not start: ' + (e.message || e.error || 'unknown error')); });
+		window.addEventListener('unhandledrejection', (e) => { say('Could not start: ' + ((e.reason && e.reason.message) || e.reason || 'unknown error')); });
+		let startedAt = 0;
+		setInterval(() => {
+			if (initializing && startedAt && Date.now() - startedAt > 45000) {
+				say('Still starting after 45 s… if this stays, tell Steven: ' + (navigator.userAgent.match(/iPhone OS [\d_]+|Android [\d.]+|Chrome\/[\d.]+|Version\/[\d.]+ Safari/) || ['this browser'])[0]);
+				startedAt = 0;
+			}
+		}, 5000);
+		engine.startGame({
+			'onPrintError': function () { say('Engine error: ' + Array.prototype.slice.call(arguments).join(' ').slice(0, 220)); },
+			'onExit': function (code) { say('The engine stopped (code ' + code + ')'); },
+			'onProgress': function (current, total) {
+				// the last progress tick can land after the loading screen is removed
+				const lbar = document.getElementById('load-bar');
+				const lmb = document.getElementById('load-mb');
+				if (current > 0 && total > 0 && lbar && lmb) {
+					statusProgress.value = current;
+					statusProgress.max = total;
+					lbar.style.width = (100 * current / total).toFixed(1) + '%';
+					lmb.textContent = (current / 1048576).toFixed(0) + ' of ' + (total / 1048576).toFixed(0) + ' MB' + (current >= total ? ' · setting up the lights…' : '');
+					if (current >= total && !startedAt) { startedAt = Date.now(); }
+				} else {
+					statusProgress.removeAttribute('value');
+					statusProgress.removeAttribute('max');
+				}
+			},
+		}).then(() => {
+			setStatusMode('hidden');
+			// fetch the other wing once this one is running and has settled
+			setTimeout(window.mallPrefetchOther, 6000);
+		}, displayFailureNotice);
+	}
+}());
+		</script>
+	</body>
+</html>
+
