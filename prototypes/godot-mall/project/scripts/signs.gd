@@ -181,10 +181,12 @@ func _build_play_ui() -> void:
 func _near_check() -> void:
 	var cam := get_viewport().get_camera_3d()
 	var found = ""
-	if cam != null and not roms.is_empty():
-		var fwd = -cam.global_transform.basis.z
+	var fwd = null
+	if cam != null:
+		fwd = -cam.global_transform.basis.z
 		fwd.y = 0.0
 		fwd = fwd.normalized()
+	if cam != null and not roms.is_empty():
 		for id in ARCADE:
 			if not roms.has(id) or not recs.has(id):
 				continue
@@ -199,20 +201,51 @@ func _near_check() -> void:
 			if me.distance_to(spot) < 1.6 and fwd.dot(-n) > 0.3:
 				found = id
 				break
+	if found == "" and cam != null:
+		found = _near_whirlwind(cam, fwd if fwd != null else Vector3.ZERO)
 	play_id = found
 	if b_play == null:
 		return
 	b_play.visible = found != ""
 	if found != "":
-		var t = str(roms[found].get("title", ""))
-		if t == "" or t == str(recs[found].title):
+		var t = ""
+		if found.begins_with("pc.cyclone"):
 			t = text_of(found)
+		else:
+			t = str(roms[found].get("title", ""))
+			if t == "" or t == str(recs[found].title):
+				t = text_of(found)
 		b_play.text = "PLAY  " + t
 		var vs = get_viewport().get_visible_rect().size
 		b_play.size = Vector2(max(260.0, 22.0 * b_play.text.length()), 64)
 		b_play.position = Vector2((vs.x - b_play.size.x) * 0.5, vs.y - 150)
 
+## The WHIRLWIND light-ring ticket game (play/whirlwind.html, Steven Oct 9): standing at its
+## console (the front, 0.9 m out, within 1.4 m) and facing it. The cabinet's sign record has
+## the left, right and back decals; the console is D = 1.30 m in front of the back one.
+func _near_whirlwind(cam: Camera3D, fwd: Vector3) -> String:
+	var me = Vector3(cam.global_position.x, 0.0, cam.global_position.z)
+	for id in order:
+		if not str(id).begins_with("pc.cyclone") or not recs.has(id):
+			continue
+		var faces = recs[id].faces
+		if faces.size() < 3:
+			continue
+		var f = faces[2]
+		var c = Vector3.ZERO
+		for p in f.p:
+			c += Vector3(p[0], 0.0, p[2])
+		c *= 0.25
+		var nb = Vector3(f.n[0], 0.0, f.n[2]).normalized()
+		var spot = c - nb * (1.30 + 0.9)
+		if me.distance_to(spot) < 1.4 and fwd.dot(nb) > 0.3:
+			return id
+	return ""
+
 func _play(id: String) -> void:
+	if id.begins_with("pc.cyclone"):
+		JavaScriptBridge.eval("window.mallRoms && window.mallRoms.open('whirlwind.html?name=' + encodeURIComponent(" + JSON.stringify(text_of(id)) + "))")
+		return
 	JavaScriptBridge.eval("window.mallRoms && window.mallRoms.open('emu.html?id=' + encodeURIComponent(" + JSON.stringify(id) + "))")
 
 func _arcade_setup(id: String) -> void:
@@ -444,6 +477,16 @@ func _input(e: InputEvent) -> void:
 		pos = e.position; down = e.pressed; up = not e.pressed
 	elif e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT:
 		pos = e.position; down = e.pressed; up = not e.pressed
+	if b_play != null and b_play.visible and play_id != "":
+		var go := false
+		if e is InputEventKey and e.pressed and not e.echo and e.physical_keycode in [KEY_E, KEY_ENTER, KEY_KP_ENTER]:
+			go = true
+		elif e is InputEventJoypadButton and e.pressed and e.button_index == JOY_BUTTON_A:
+			go = true
+		if go:
+			get_viewport().set_input_as_handled()
+			_play(play_id)
+			return
 	if pos == null:
 		return
 	if down and b_play != null and b_play.visible and b_play.get_global_rect().has_point(pos):

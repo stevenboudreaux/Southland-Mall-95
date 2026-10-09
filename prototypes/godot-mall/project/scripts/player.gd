@@ -30,11 +30,12 @@ var move_vec := Vector2.ZERO
 var dragging := false
 var rmb_run := false    # the right mouse button held: run (Steven, Oct 8)
 # quick jump (Steven, Oct 8): name, wing, x, z, yaw (degrees), standing in front of each entrance
+# with your back to it, looking out into the mall (Steven, Oct 9)
 const JUMPS := [
-	["Sears", 1, -4.0, -90.0, 0.0],
-	["Mall entrance", 1, 31.0, 0.0, -90.0],
-	["Dillard's", 2, -4.0, 75.5, 180.0],
-	["JCPenney", 2, -148.0, 56.0, 90.0]]
+	["Sears", 1, -4.0, -90.0, 180.0],
+	["Mall entrance", 1, 31.0, 0.0, 90.0],
+	["Dillard's", 2, -4.0, 75.5, 0.0],
+	["JCPenney", 2, -148.0, 56.0, -90.0]]
 var jump_panel: PanelContainer
 var jump_btns: Array = []
 var jump_sel := 0

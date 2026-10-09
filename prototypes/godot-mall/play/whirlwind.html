@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>WHIRLWIND</title>
+<!--
+  The playable light-ring ticket game in Pocket Change (Steven, Oct 9 2026).
+  Walk up to the WHIRLWIND cabinet in the mall and press Play (scripts/signs.gd), or open
+  this page directly. whirlwind.html?name=<title> shows the cabinet's owner-edited name.
+  Rules and timing: whirlwind/logic.js (measured from Steven's video). Textures are the
+  mall cabinet's own (tools/stores/pocket_change/paint_whirlwind_game.py).
+  The mall page shows this in a full-window frame and listens for "emu-close".
+  Kept in this browser (localStorage): the bonus ("whirlwind.bonus") and the best $1.00
+  score ("whirlwind.best").
+-->
+<style>
+  :root { --bg: #07060a; --fg: #f4f0e8; --dim: #a49eb2; --accent: #ffd23c; --pink: #f43e9c; --line: #2a2634; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden;
+               font: 16px/1.4 -apple-system, "Helvetica Neue", Arial, sans-serif; -webkit-user-select: none; user-select: none;
+               -webkit-touch-callout: none; touch-action: none; }
+  #bar { position: fixed; top: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 10px;
+         padding-top: env(safe-area-inset-top); background: #000; border-bottom: 1px solid var(--line); z-index: 20; }
+  #bar b { flex: 1; letter-spacing: .06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; color: var(--accent); }
+  button { font: inherit; color: #1a0a20; background: var(--accent); border: 0; border-radius: 10px; padding: 9px 14px; font-weight: 800; cursor: pointer; }
+  button.ghost { background: transparent; color: var(--fg); border: 1px solid #3a3446; font-weight: 600; }
+  #stage { position: fixed; top: calc(48px + env(safe-area-inset-top)); left: 0; right: 0; bottom: 0; cursor: pointer; }
+  #gl, #fx { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  #fx { pointer-events: none; }
+  .chip { position: absolute; top: 10px; padding: 6px 12px; border-radius: 999px; background: rgba(8, 6, 14, .72);
+          border: 1px solid rgba(255, 255, 255, .12); font-weight: 700; font-size: 15px; pointer-events: none; z-index: 5;
+          font-variant-numeric: tabular-nums; }
+  #plays { left: 10px; display: flex; gap: 6px; align-items: center; }
+  #plays i { width: 16px; height: 16px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #fff 0, #d8d8dc 35%, #8a8a94 100%);
+             box-shadow: inset 0 0 0 1.5px #6c6c76; display: inline-block; }
+  #plays i.used { background: transparent; box-shadow: inset 0 0 0 1.5px #4a4656; }
+  #score { right: 10px; text-align: right; }
+  #score span { color: var(--accent); }
+  #score small { display: block; font-size: 12px; color: var(--dim); font-weight: 600; }
+  #msg { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 6;
+         width: min(440px, calc(100% - 24px)); text-align: center; pointer-events: none; }
+  #msg .card { background: rgba(10, 6, 18, .86); border: 1px solid rgba(255, 210, 60, .35); border-radius: 16px; padding: 14px 16px 16px;
+               box-shadow: 0 8px 30px rgba(0, 0, 0, .5); pointer-events: auto; }
+  #msg h2 { margin: 0 0 4px; font-size: 26px; font-style: italic; letter-spacing: .05em; color: var(--accent);
+            text-shadow: 0 0 12px rgba(255, 120, 200, .6), 2px 2px 0 #3a2a90; }
+  #msg p { margin: 4px 0 10px; color: #ddd6e8; font-size: 15px; }
+  #msg .big { font-size: 20px; padding: 12px 26px; }
+  #msg .hint { pointer-events: none; display: inline-block; background: rgba(10, 6, 18, .7); border-radius: 999px; padding: 7px 14px;
+               font-weight: 700; font-size: 14px; color: #fff; border: 1px solid rgba(255, 255, 255, .14); }
+  #skip { position: absolute; right: 10px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 7; display: none; }
+  #flash { position: absolute; left: 50%; top: 20%; transform: translate(-50%, -50%); z-index: 6; pointer-events: none; text-align: center;
+           font-weight: 900; font-style: italic; font-size: clamp(28px, 7vw, 54px); color: #fff; letter-spacing: .04em; opacity: 0;
+           text-shadow: 0 0 18px #ff3ca0, 0 0 4px #ff3ca0, 3px 3px 0 #3a2a90; transition: opacity .2s; white-space: nowrap; }
+  @media (min-aspect-ratio: 1/1) { #flash { top: 10px; transform: translate(-50%, 0); } }
+  #flash small { display: block; font-size: .42em; letter-spacing: .1em; }
+  #load { position: fixed; inset: 0; z-index: 30; background: radial-gradient(circle at 50% 38%, #2a0f2c 0, #0b0710 60%, #050407 100%);
+          display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; }
+  #load h1 { margin: 0; font-size: clamp(38px, 11vw, 76px); font-style: italic; letter-spacing: .06em; color: var(--accent);
+             text-shadow: 0 0 22px rgba(255, 60, 160, .75), 4px 4px 0 #3a2a90; }
+  #load .sub { color: var(--dim); margin: 8px 0 26px; }
+  #load .track { width: min(380px, 80vw); height: 10px; border-radius: 6px; background: #2a2236; overflow: hidden; }
+  #load .bar { height: 100%; width: 0; background: linear-gradient(90deg, #f43e9c, #ffd23c); transition: width .2s; }
+  #load .err { color: #ff8a8a; margin-top: 14px; min-height: 1.4em; }
+</style>
+</head>
+<body>
+<div id="bar"><button class="ghost" id="back">&#8592; Back to the mall</button><b id="title">WHIRLWIND</b><button class="ghost" id="snd" aria-label="Sound">&#128266;</button></div>
+<div id="stage">
+  <canvas id="gl"></canvas><canvas id="fx"></canvas>
+  <div class="chip" id="plays"></div>
+  <div class="chip" id="score">TICKETS <span id="tk">0</span><small>BEST <span id="best">0</span></small></div>
+  <div id="flash"></div>
+  <div id="msg"></div>
+  <button id="skip">SKIP &#9654;&#9654;</button>
+</div>
+<div id="load"><h1 id="ltitle">WHIRLWIND</h1><div class="sub">Pocket Change &middot; light-ring ticket game</div>
+  <div class="track"><div class="bar" id="lbar"></div></div><div class="err" id="lerr"></div></div>
+<script src="whirlwind/logic.js"></script>
+<script>
+(function () {
+'use strict';
+var WW = window.WW, CFG = WW.CONFIG, VALUES = WW.ringValues();
+var Q = new URLSearchParams(location.search);
+var NAME = (Q.get('name') || 'WHIRLWIND').slice(0, 24);
+document.getElementById('title').textContent = NAME;
+document.getElementById('ltitle').textContent = NAME;
+document.title = NAME;
+var inFrame = window.parent && window.parent !== window;
+
+// ------------------------------------------------------------------ storage (per browser)
+function load(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+var bonus = load('whirlwind.bonus', CFG.bonusStart);
+if (typeof bonus !== 'number' || !(bonus >= CFG.bonusStart) || bonus > 9999) bonus = CFG.bonusStart;
+var best = load('whirlwind.best', 0);
+if (typeof best !== 'number' || best < 0) best = 0;
+var soundOn = load('whirlwind.sound', true) !== false;
+
+// ------------------------------------------------------------------ cabinet geometry (metres)
+// x = the player's right, y = up, z = into the machine (the console's front face is z = 0).
+// Matches tools/stores/pocket_change/cyclone.gd and scripts/cyclone_lights.gd.
+var G = {
+  HW: 0.63, D: 1.30, CX: 0.53, Y0: 0.035, YT: 0.935, DECK: 0.96, FY: 0.95,
+  C: [0, 0.95, 0.70], DOME_Y: 0.975, DOME_R: 0.535, FL0: 0.53, FL1: 0.565,
+  CON_A: [0.70, -0.015], CON_B: [0.975, 0.125], CON_BACK: 0.145,
+  BULB_R: 0.372, BULB: 0.0118,
+  SLOT_X: 0.175, SLOT_Y: 0.275,
+  TICKET_L: 0.052, TICKET_W: 0.046
+};
+var DEG = Math.PI / 180;
+function ringXZ(thDeg, r) { var t = thDeg * DEG; return [-Math.sin(t) * r, G.C[2] - Math.cos(t) * r]; }
+var NEON = { GREEN: [64, 255, 97], PINK: [255, 82, 173], CYAN: [77, 209, 255], WHITE: [242, 230, 255] };
+var ARCHES = [[92, .33, .47, .13, 'GREEN', 0], [-92, .33, .47, .13, 'PINK', 1], [140, .33, .47, .12, 'GREEN', 0],
+              [-140, .33, .47, .12, 'CYAN', 2], [8, .265, .335, .17, 'PINK', 1], [-8, .265, .335, .17, 'WHITE', 3]];
+var POSTS = [[180, .31, .11, 'CYAN', 2]];
+var COILS = [[[-0.115, 0.0], .085, -0.02, .13, 1.75, 'GREEN', 0], ['post', .11, -0.01, .06, 1.25, 'PINK', 1],
+             [[0.115, -0.01], .08, -0.01, .12, 1.5, 'CYAN', 2]];
+var POST_FOOT = [0, G.C[2] - 0.08];      // the BONUS readout's post (paint_cyclone.py: pink foot at cy + 0.08)
+var BOX = { z: 0.62, y: 0.155, w: 0.24, h: 0.165, d: 0.045, tilt: 12 };
+var TOWER = { th: 122, r: 0.30, h: 0.21, s: 0.10, tilt: 35 };
+
+// neon tubes as 3D polylines
+var tubes = [];
+(function () {
+  ARCHES.forEach(function (a) {
+    var pts = [], rc = (a[1] + a[2]) / 2, rh = (a[2] - a[1]) / 2;
+    for (var k = 0; k <= 24; k++) {
+      var s = Math.PI * k / 24, r = rc - Math.cos(s) * rh, xz = ringXZ(a[0], r);
+      pts.push([xz[0], G.FY + Math.sin(s) * a[3], xz[1]]);
+    }
+    tubes.push({ pts: pts, col: NEON[a[4]], grp: a[5], arch: true, w: 0.0105 });
+  });
+  POSTS.forEach(function (p) {
+    var xz = ringXZ(p[0], p[1]);
+    tubes.push({ pts: [[xz[0], G.FY, xz[1]], [xz[0], G.FY + p[2], xz[1]]], col: NEON[p[3]], grp: p[4], arch: true, w: 0.0105 });
+  });
+  COILS.forEach(function (c) {
+    var cx, cz;
+    if (c[0] === 'post') { cx = POST_FOOT[0]; cz = POST_FOOT[1]; } else { cx = c[0][0]; cz = G.C[2] - c[0][1]; }
+    var pts = [], n = Math.ceil(c[4] * 28);
+    for (var k = 0; k <= n; k++) {
+      var s = k / n, an = s * c[4] * Math.PI * 2;
+      pts.push([cx + Math.cos(an) * c[1], G.FY + c[2] + s * (c[3] - c[2]), cz + Math.sin(an) * c[1]]);
+    }
+    tubes.push({ pts: pts, col: NEON[c[5]], grp: c[6], coil: true, w: 0.009 });
+  });
+  // the BONUS slot's two tall white tubes either side of its cap (Steven's video)
+  var bz = G.C[2] - 0.435;
+  [-0.034, 0.034].forEach(function (x) {
+    tubes.push({ pts: [[x, G.FY + 0.012, bz], [x, G.FY + 0.105, bz]], col: [210, 240, 255], grp: 'bonus', w: 0.009 });
+  });
+})();
+
+// ------------------------------------------------------------------ assets
+var IMG = {};
+var NAMES = ['field', 'console', 'bonus', 'button', 'deck', 'tower', 'front'];
+function loadAssets(done) {
+  var n = 0, failed = false;
+  NAMES.forEach(function (nm) {
+    var im = new Image();
+    im.onload = function () { IMG[nm] = im; n++; document.getElementById('lbar').style.width = (100 * n / NAMES.length) + '%'; if (n === NAMES.length) done(); };
+    im.onerror = function () { if (!failed) { failed = true; document.getElementById('lerr').textContent = 'Could not load the game. Check your connection and reload.'; } };
+    im.src = 'whirlwind/' + nm + '.webp';
+  });
+}
+
+// ------------------------------------------------------------------ WebGL
+var cv = document.getElementById('gl'), fx = document.getElementById('fx'), stage = document.getElementById('stage');
+var gl = cv.getContext('webgl', { antialias: true, alpha: false, premultipliedAlpha: false }) ||
+         cv.getContext('experimental-webgl');
+var ctx = fx.getContext('2d');
+if (!gl) { document.getElementById('lerr').textContent = 'This browser cannot show the game (WebGL is off).'; return; }
+
+var VS = 'attribute vec3 aP; attribute vec2 aT; attribute vec3 aN; uniform mat4 uM; varying vec2 vT; varying vec3 vW; varying vec3 vN;' +
+  'void main(){ vT=aT; vW=aP; vN=aN; gl_Position=uM*vec4(aP,1.0); }';
+var FS = 'precision mediump float; varying vec2 vT; varying vec3 vW; varying vec3 vN;' +
+  'uniform sampler2D uTex; uniform vec4 uCol; uniform float uLit; uniform float uRecv; uniform vec4 uL; uniform float uFlash;' +
+  'uniform float uDome; uniform vec3 uEye; uniform vec3 uDomeC; uniform vec3 uEmit; uniform float uShade;' +
+  'void main(){' +
+  ' if(uDome>0.5){ vec3 N=normalize(vW-uDomeC); vec3 V=normalize(uEye-vW); float f=pow(1.0-abs(dot(N,V)),3.0);' +
+  '   float s=pow(max(dot(reflect(-V,N),normalize(vec3(-0.3,0.9,0.35))),0.0),40.0);' +
+  '   gl_FragColor=vec4(vec3(0.82,0.9,1.0)*(0.35+f)+s*0.8, 0.035+0.42*f+s*0.6); return; }' +
+  ' vec4 t=texture2D(uTex,vT)*uCol; float sh=mix(1.0,0.42+0.68*max(dot(normalize(vN),normalize(vec3(0.25,1.0,0.65))),0.0),uShade);' +
+  ' vec3 c=t.rgb*uLit*sh*(1.0+uFlash);' +
+  ' if(uRecv>0.5){ float d=distance(vW,uL.xyz); c+=t.rgb*vec3(1.0,0.72,0.32)*uL.w*0.0016/(d*d+0.0012); }' +
+  ' gl_FragColor=vec4(c+uEmit,t.a); }';
+function sh(type, src) { var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+  if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s)); return s; }
+var prog = gl.createProgram();
+gl.attachShader(prog, sh(gl.VERTEX_SHADER, VS)); gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, FS)); gl.linkProgram(prog);
+gl.useProgram(prog);
+var A = { p: gl.getAttribLocation(prog, 'aP'), t: gl.getAttribLocation(prog, 'aT'), n: gl.getAttribLocation(prog, 'aN') };
+var U = {};
+['uM', 'uTex', 'uCol', 'uLit', 'uRecv', 'uL', 'uFlash', 'uDome', 'uEye', 'uDomeC', 'uEmit', 'uShade'].forEach(function (k) { U[k] = gl.getUniformLocation(prog, k); });
+
+function W(p) { return [p[0], p[1], -p[2]]; }       // cabinet coords -> GL (right-handed, -z forward)
+function Mesh() { this.v = []; }
+Mesh.prototype.tri = function (a, b, c) { this.v.push.apply(this.v, a.concat(b, c)); };
+// vertex: [x,y,z,u,v,nx,ny,nz] in cabinet coords
+function vx(p, u, v, n) { var q = W(p), m = n ? W(n) : [0, 1, 0]; return [q[0], q[1], q[2], u, v, m[0], m[1], m[2]]; }
+Mesh.prototype.quad = function (p0, p1, p2, p3, uv, n) {
+  uv = uv || [[0, 1], [1, 1], [1, 0], [0, 0]];
+  var a = vx(p0, uv[0][0], uv[0][1], n), b = vx(p1, uv[1][0], uv[1][1], n), c = vx(p2, uv[2][0], uv[2][1], n), d = vx(p3, uv[3][0], uv[3][1], n);
+  this.tri(a, b, c); this.tri(a, c, d);
+};
+Mesh.prototype.box = function (cx, cy, cz, sx, sy, sz) {
+  var x0 = cx - sx / 2, x1 = cx + sx / 2, y0 = cy - sy / 2, y1 = cy + sy / 2, z0 = cz - sz / 2, z1 = cz + sz / 2;
+  this.quad([x0, y0, z0], [x1, y0, z0], [x1, y1, z0], [x0, y1, z0], null, [0, 0, -1]);
+  this.quad([x0, y1, z0], [x1, y1, z0], [x1, y1, z1], [x0, y1, z1], null, [0, 1, 0]);
+  this.quad([x1, y0, z0], [x1, y0, z1], [x1, y1, z1], [x1, y1, z0], null, [1, 0, 0]);
+  this.quad([x0, y0, z1], [x0, y0, z0], [x0, y1, z0], [x0, y1, z1], null, [-1, 0, 0]);
+};
+Mesh.prototype.build = function () {
+  this.buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, this.buf);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.v), gl.STATIC_DRAW); this.n = this.v.length / 8; return this;
+};
+Mesh.prototype.update = function () {
+  if (!this.buf) this.buf = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, this.buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.v), gl.DYNAMIC_DRAW); this.n = this.v.length / 8;
+};
+function texture(src, opts) {
+  opts = opts || {};
+  var t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, t);
+  gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, false);
+  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src);
+  var pot = function (x) { return (x & (x - 1)) === 0; };
+  if (opts.mip && pot(src.width) && pot(src.height)) {
+    gl.generateMipmap(gl.TEXTURE_2D);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
+    var wrap = opts.repeat ? gl.REPEAT : gl.CLAMP_TO_EDGE;
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, wrap); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, wrap);
+  } else {
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE); gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  }
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+  return t;
+}
+function reupload(t, src) { gl.bindTexture(gl.TEXTURE_2D, t); gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, src); }
+
+// ------------------------------------------------------------------ 7-segment LEDs
+var SEG = { '0': 'abcdef', '1': 'bc', '2': 'abged', '3': 'abgcd', '4': 'fgbc', '5': 'afgcd', '6': 'afgedc', '7': 'abc', '8': 'abcdefg',
+            '9': 'abcdfg', 'C': 'afed', 'r': 'eg', '-': 'g', ' ': '' };
+function seg7(c, text, x, y, w, h, on, off) {
+  var n = text.length, cw = w / n, t = Math.max(2, cw * 0.105), sk = cw * 0.08;
+  for (var i = 0; i < n; i++) {
+    var ox = x + i * cw + cw * 0.16, gw = cw * 0.62, hm = h / 2, lit = SEG[text[i]] || '';
+    var P = function (px, py) { return [ox + px + sk * (1 - py / h), y + py]; };
+    var S = { a: [[t, 0], [gw - t, 0], [gw - t * 1.5, t], [t * 1.5, t]], d: [[t * 1.5, h - t], [gw - t * 1.5, h - t], [gw - t, h], [t, h]],
+              g: [[t, hm], [t * 1.5, hm - t / 2], [gw - t * 1.5, hm - t / 2], [gw - t, hm], [gw - t * 1.5, hm + t / 2], [t * 1.5, hm + t / 2]],
+              f: [[0, t], [t, t * 1.5], [t, hm - t * 0.8], [0, hm - t * 0.3]], b: [[gw, t], [gw, hm - t * 0.3], [gw - t, hm - t * 0.8], [gw - t, t * 1.5]],
+              e: [[0, hm + t * 0.3], [t, hm + t * 0.8], [t, h - t * 1.5], [0, h - t]], c: [[gw, hm + t * 0.3], [gw, h - t], [gw - t, h - t * 1.5], [gw - t, hm + t * 0.8]] };
+    for (var k in S) {
+      c.beginPath();
+      S[k].forEach(function (p, j) { var q = P(p[0], p[1]); if (j) c.lineTo(q[0], q[1]); else c.moveTo(q[0], q[1]); });
+      c.closePath(); c.fillStyle = lit.indexOf(k) >= 0 ? on : off; c.fill();
+    }
+  }
+}
+
+// ------------------------------------------------------------------ the scene
+var M = {}, T = {}, consoleCv, bonusCv, conCtx, bonCtx, ticketMesh;
+var conText = '', bonText = '', btnState = '';
+function buildScene() {
+  T.field = texture(IMG.field, { mip: true });
+  T.front = texture(IMG.front); T.deck = texture(IMG.deck); T.tower = texture(IMG.tower);
+  var white = document.createElement('canvas'); white.width = white.height = 2;
+  var wc = white.getContext('2d'); wc.fillStyle = '#fff'; wc.fillRect(0, 0, 2, 2); T.white = texture(white);
+  // carpet: dark with faint neon confetti
+  var cp = document.createElement('canvas'); cp.width = cp.height = 256; var cc = cp.getContext('2d');
+  cc.fillStyle = '#17121f'; cc.fillRect(0, 0, 256, 256);
+  var r = WW.rng(11);
+  for (var i = 0; i < 2600; i++) { var g = 20 + r() * 26; cc.fillStyle = 'rgba(' + (g + 6) + ',' + g + ',' + (g + 14) + ',0.8)'; cc.fillRect(r() * 256, r() * 256, 2, 2); }
+  var cols = ['#4a1d48', '#1d3a52', '#3d3a12', '#3a1a28'];
+  for (i = 0; i < 70; i++) { cc.fillStyle = cols[i % 4]; cc.save(); cc.translate(r() * 256, r() * 256); cc.rotate(r() * 6); cc.fillRect(-6, -1.5, 12, 3); cc.restore(); }
+  T.carpet = texture(cp, { mip: true, repeat: true });
+  // the ticket: a green strip tile with a perforation at each end
+  var tk = document.createElement('canvas'); tk.width = 64; tk.height = 72; var tc = tk.getContext('2d');
+  tc.fillStyle = '#5fcf6a'; tc.fillRect(0, 0, 64, 72);
+  tc.fillStyle = '#4ab456'; tc.fillRect(0, 0, 64, 3); tc.fillRect(0, 69, 64, 3);
+  tc.fillStyle = '#2e7a38'; for (i = 2; i < 64; i += 5) tc.fillRect(i, 0, 2, 2);
+  tc.save(); tc.translate(32, 36); tc.rotate(-Math.PI / 2); tc.fillStyle = '#1f5a28'; tc.textAlign = 'center';
+  tc.font = 'bold 13px Arial'; tc.fillText('TICKET', 0, -4); tc.font = 'bold 9px Arial'; tc.fillText('ADMIT ONE', 0, 10); tc.restore();
+  T.ticket = texture(tk);
+  // dynamic: the console (LED window + STOP button) and the BONUS readout
+  consoleCv = document.createElement('canvas'); consoleCv.width = 1024; consoleCv.height = 288; conCtx = consoleCv.getContext('2d');
+  bonusCv = document.createElement('canvas'); bonusCv.width = 256; bonusCv.height = 176; bonCtx = bonusCv.getContext('2d');
+  drawConsole('Cr00', 'idle'); drawBonus(String(bonus));
+  T.console = texture(consoleCv); T.bonus = texture(bonusCv);
+
+  var m;
+  // floor
+  m = M.floor = new Mesh(); m.quad([-3, 0, -2], [3, 0, -2], [3, 0, 4], [-3, 0, 4], [[0, 6], [6, 6], [6, 0], [0, 0]]); m.build();
+  // plinth (black), front door, console, shelf, console ends
+  m = M.plinth = new Mesh();
+  m.quad([-G.HW, 0, -0.004], [G.HW, 0, -0.004], [G.HW, G.Y0, -0.004], [-G.HW, G.Y0, -0.004], null, [0, 0, -1]); m.build();
+  m = M.front = new Mesh(); m.quad([-G.CX, G.Y0, 0], [G.CX, G.Y0, 0], [G.CX, G.CON_A[0], 0], [-G.CX, G.CON_A[0], 0], null, [0, 0, -1]); m.build();
+  var ca = G.CON_A, cb = G.CON_B;
+  m = M.console = new Mesh();
+  m.quad([-G.CX, ca[0], ca[1]], [G.CX, ca[0], ca[1]], [G.CX, cb[0], cb[1]], [-G.CX, cb[0], cb[1]], null, [0, 0.45, -0.89]); m.build();
+  m = M.yellow = new Mesh();
+  m.quad([-G.CX, cb[0], cb[1]], [G.CX, cb[0], cb[1]], [G.CX, cb[0], G.CON_BACK], [-G.CX, cb[0], G.CON_BACK]);
+  // flange ring and its inner lip
+  ring(m, G.FL0, G.FL1, G.DOME_Y - 0.006, 96);
+  lip(m, G.FL0, G.FY, G.DOME_Y - 0.006, 96);
+  // corner posts (yellow): rounded columns at the cabinet's four corners
+  // the rounded front corners: a quarter column each, between the front and the side
+  column(m, G.HW - 0.1, 0.1, 0.1, G.Y0, G.YT, 8, 90, 180);
+  column(m, -(G.HW - 0.1), 0.1, 0.1, G.Y0, G.YT, 8, 180, 270);
+  // caps over the front corners, beside the console's ends
+  [-1, 1].forEach(function (sd) {
+    var cxp = sd * (G.HW - 0.1), x1 = sd * G.HW, x0 = sd * G.CX;
+    for (var k = 0; k < 8; k++) {      // the quarter-round top of the corner column
+      var a0 = (90 + k * 90 / 8) * DEG, a1 = (90 + (k + 1) * 90 / 8) * DEG;
+      m.tri(vx([cxp, G.YT, 0.1], 0, 0), vx([cxp + sd * Math.sin(a0) * 0.1, G.YT, 0.1 + Math.cos(a0) * 0.1], 0, 0),
+            vx([cxp + sd * Math.sin(a1) * 0.1, G.YT, 0.1 + Math.cos(a1) * 0.1], 0, 0));
+    }
+    m.quad([x0, G.YT, 0.1], [x1, G.YT, 0.1], [x1, G.YT, G.CON_BACK], [x0, G.YT, G.CON_BACK]);
+  });
+  // the console's ends: yellow wedges between the corners
+  [-1, 1].forEach(function (sd) {
+    var x = sd * G.CX, a = [x, ca[0], ca[1]], b = [x, cb[0], cb[1]], c0 = [x, ca[0], 0.1], c1 = [x, cb[0], 0.1];
+    m.quad(a, c0, c1, b, null, [sd, 0, 0]);
+  });
+  m.build();
+  // stainless sides and the front strips beside the door
+  m = M.steel = new Mesh();
+  m.quad([G.HW, G.Y0, 0.1], [G.HW, G.Y0, G.D], [G.HW, G.YT, G.D], [G.HW, G.YT, 0.1], null, [1, 0, 0]);
+  m.quad([-G.HW, G.Y0, G.D], [-G.HW, G.Y0, 0.1], [-G.HW, G.YT, 0.1], [-G.HW, G.YT, G.D], null, [-1, 0, 0]);
+  m.build();
+  // pink deck: the square top round the dome
+  m = M.deck = new Mesh();
+  var N = 96, zc = G.C[2];
+  for (i = 0; i < N; i++) {
+    var a0 = i / N * Math.PI * 2, a1 = (i + 1) / N * Math.PI * 2;
+    var p0 = [Math.sin(a0) * G.FL1, G.DECK, zc + Math.cos(a0) * G.FL1], p1 = [Math.sin(a1) * G.FL1, G.DECK, zc + Math.cos(a1) * G.FL1];
+    var q0 = sqHit(a0), q1 = sqHit(a1);
+    var uvp = function (p) { return [(p[0] + G.HW) / (2 * G.HW), 1 - (p[2] - G.CON_BACK) / (G.D - G.CON_BACK)]; };
+    m.tri(vx(p0, uvp(p0)[0], uvp(p0)[1]), vx(q0, uvp(q0)[0], uvp(q0)[1]), vx(q1, uvp(q1)[0], uvp(q1)[1]));
+    m.tri(vx(p0, uvp(p0)[0], uvp(p0)[1]), vx(q1, uvp(q1)[0], uvp(q1)[1]), vx(p1, uvp(p1)[0], uvp(p1)[1]));
+  }
+  // the deck's front edge down to the console shelf
+  m.quad([-G.HW, G.YT, G.CON_BACK], [G.HW, G.YT, G.CON_BACK], [G.HW, G.DECK, G.CON_BACK], [-G.HW, G.DECK, G.CON_BACK], null, [0, 0, -1]);
+  m.build();
+  // playfield disc
+  m = M.field = new Mesh();
+  for (i = 0; i < 128; i++) {
+    var b0 = i / 128 * Math.PI * 2, b1 = (i + 1) / 128 * Math.PI * 2;
+    var c0 = [0, G.FY, zc], e0 = [Math.sin(b0) * G.FL0, G.FY, zc + Math.cos(b0) * G.FL0], e1 = [Math.sin(b1) * G.FL0, G.FY, zc + Math.cos(b1) * G.FL0];
+    var fu = function (p) { return [0.5 + p[0] / 1.06, 0.5 - (p[2] - zc) / 1.06]; };
+    m.tri(vx(c0, fu(c0)[0], fu(c0)[1]), vx(e0, fu(e0)[0], fu(e0)[1]), vx(e1, fu(e1)[0], fu(e1)[1]));
+  }
+  m.build();
+  // BONUS slot housing (navy) and the readout's post (pink)
+  m = M.navy = new Mesh(); m.box(0, G.FY + 0.022, zc - 0.435, 0.054, 0.044, 0.07); m.build();
+  m = M.pink = new Mesh();
+  var boxC = [0, G.FY + BOX.y, BOX.z];
+  m.box(POST_FOOT[0], G.FY + (BOX.y - BOX.h / 2) / 2, POST_FOOT[1] + 0.03, 0.035, BOX.y - BOX.h / 2, 0.035);
+  // the readout box: pink sides, its face is the BONUS texture
+  var tb = BOX.tilt * DEG, up = [0, Math.cos(tb), Math.sin(tb)], nrm = [0, -Math.sin(tb), Math.cos(tb)];
+  var hw = BOX.w / 2, hh = BOX.h / 2, dd = BOX.d;
+  var corner = function (sx, sy, sz) { return [boxC[0] + sx * hw, boxC[1] + up[1] * sy * hh + nrm[1] * sz * dd, boxC[2] + up[2] * sy * hh + nrm[2] * sz * dd]; };
+  m.quad(corner(-1, 1, -0.5), corner(1, 1, -0.5), corner(1, 1, 0.5), corner(-1, 1, 0.5));
+  m.quad(corner(1, -1, -0.5), corner(1, -1, 0.5), corner(1, 1, 0.5), corner(1, 1, -0.5));
+  m.quad(corner(-1, -1, 0.5), corner(-1, -1, -0.5), corner(-1, 1, -0.5), corner(-1, 1, 0.5));
+  m.build();
+  m = M.bonus = new Mesh(); m.quad(corner(-1, -1, -0.5), corner(1, -1, -0.5), corner(1, 1, -0.5), corner(-1, 1, -0.5)); m.build();
+  // lamp towers at the back: a grey stem and a tilted box, green on the left, blue on the right
+  m = M.stems = new Mesh(); M.towers = new Mesh();
+  [1, -1].forEach(function (sd) {
+    var xz = ringXZ(sd * TOWER.th, TOWER.r);
+    column(m, xz[0], xz[1], 0.012, G.FY, G.FY + TOWER.h - 0.04, 8);
+    var ta = TOWER.tilt * DEG, s = TOWER.s / 2, cy = G.FY + TOWER.h;
+    var dz = [0, Math.sin(ta), -Math.cos(ta)];       // face normal: toward the player and up
+    var u0 = sd > 0 ? 0 : 0.5;
+    var ctr = [xz[0], cy, xz[1]];
+    var upv = [0, Math.cos(ta), Math.sin(ta)];
+    var P = function (a, b, c) { return [ctr[0] + a * s, ctr[1] + upv[1] * b * s + dz[1] * c * s, ctr[2] + upv[2] * b * s + dz[2] * c * s]; };
+    M.towers.quad(P(-1, -1, 1), P(1, -1, 1), P(1, 1, 1), P(-1, 1, 1), [[u0, 1], [u0 + 0.5, 1], [u0 + 0.5, 0], [u0, 0]], dz);
+    M.towers.quad(P(-1, 1, 1), P(1, 1, 1), P(1, 1, -1), P(-1, 1, -1), [[u0, 0.2], [u0 + 0.5, 0.2], [u0 + 0.5, 0], [u0, 0]]);
+    M.towers.quad(P(1, -1, 1), P(1, -1, -1), P(1, 1, -1), P(1, 1, 1), [[u0, 1], [u0 + 0.1, 1], [u0 + 0.1, 0], [u0, 0]]);
+    M.towers.quad(P(-1, -1, -1), P(-1, -1, 1), P(-1, 1, 1), P(-1, 1, -1), [[u0, 1], [u0 + 0.1, 1], [u0 + 0.1, 0], [u0, 0]]);
+  });
+  m.build(); M.towers.build();
+  // the dome: a clear hemisphere
+  m = M.dome = new Mesh();
+  var NS = 48, NR = 14;
+  for (i = 0; i < NS; i++) for (var j = 0; j < NR; j++) {
+    var A0 = i / NS * Math.PI * 2, A1 = (i + 1) / NS * Math.PI * 2, E0 = j / NR * Math.PI / 2, E1 = (j + 1) / NR * Math.PI / 2;
+    var sp = function (a, e) { return [Math.sin(a) * Math.cos(e) * G.DOME_R, G.DOME_Y + Math.sin(e) * G.DOME_R, zc + Math.cos(a) * Math.cos(e) * G.DOME_R]; };
+    m.quad(sp(A0, E0), sp(A1, E0), sp(A1, E1), sp(A0, E1));
+  }
+  m.build();
+  ticketMesh = new Mesh();
+}
+function sqHit(a) {     // where a ray from the dome's centre at angle a meets the deck's square edge
+  var dx = Math.sin(a), dz = Math.cos(a), zc = G.C[2], t = 1e9;
+  if (dx > 1e-6) t = Math.min(t, G.HW / dx); if (dx < -1e-6) t = Math.min(t, -G.HW / dx);
+  if (dz > 1e-6) t = Math.min(t, (G.D - zc) / dz); if (dz < -1e-6) t = Math.min(t, (G.CON_BACK - zc) / dz);
+  return [dx * t, G.DECK, zc + dz * t];
+}
+function ring(m, r0, r1, y, n) {
+  var zc = G.C[2];
+  for (var i = 0; i < n; i++) {
+    var a0 = i / n * Math.PI * 2, a1 = (i + 1) / n * Math.PI * 2;
+    m.quad([Math.sin(a0) * r0, y, zc + Math.cos(a0) * r0], [Math.sin(a0) * r1, y, zc + Math.cos(a0) * r1],
+           [Math.sin(a1) * r1, y, zc + Math.cos(a1) * r1], [Math.sin(a1) * r0, y, zc + Math.cos(a1) * r0]);
+  }
+}
+function lip(m, r, y0, y1, n) {
+  var zc = G.C[2];
+  for (var i = 0; i < n; i++) {
+    var a0 = i / n * Math.PI * 2, a1 = (i + 1) / n * Math.PI * 2;
+    m.quad([Math.sin(a1) * r, y0, zc + Math.cos(a1) * r], [Math.sin(a0) * r, y0, zc + Math.cos(a0) * r],
+           [Math.sin(a0) * r, y1, zc + Math.cos(a0) * r], [Math.sin(a1) * r, y1, zc + Math.cos(a1) * r]);
+  }
+}
+function column(m, x, z, r, y0, y1, n, d0, d1) {
+  // angles: 0 = +z (into the machine), 90 = +x; d0..d1 in degrees (default the whole round)
+  d0 = (d0 || 0) * DEG; d1 = (d1 === undefined ? 360 : d1) * DEG;
+  for (var i = 0; i < n; i++) {
+    var a0 = d0 + i / n * (d1 - d0), a1 = d0 + (i + 1) / n * (d1 - d0);
+    var n0 = [Math.sin(a0), 0, Math.cos(a0)];
+    m.quad([x + Math.sin(a0) * r, y0, z + Math.cos(a0) * r], [x + Math.sin(a1) * r, y0, z + Math.cos(a1) * r],
+           [x + Math.sin(a1) * r, y1, z + Math.cos(a1) * r], [x + Math.sin(a0) * r, y1, z + Math.cos(a0) * r], null, n0);
+  }
+}
+
+// console texture: the painted panel, the TICKETS OWED LEDs and the STOP button
+function drawConsole(text, btn) {
+  if (text === conText && btn === btnState) return false;
+  conText = text; btnState = btn;
+  var c = conCtx;
+  c.drawImage(IMG.console, 0, 0, 1024, 288);
+  c.fillStyle = '#1a0306'; c.fillRect(824, 84, 152, 60);
+  seg7(c, text, 830, 92, 140, 44, '#ff2a1a', 'rgba(90,10,8,0.22)');
+  var bx = 548, by = 111, br = 56;
+  c.save();
+  if (btn === 'down') { c.translate(bx, by + 2); c.scale(0.96, 0.96); c.translate(-bx, -by); }
+  c.save(); c.beginPath(); c.arc(bx, by, br * 0.96, 0, 7); c.clip(); c.drawImage(IMG.button, bx - br, by - br, br * 2, br * 2); c.restore();
+  if (btn === 'lit') { c.globalCompositeOperation = 'lighter'; c.fillStyle = 'rgba(160,255,60,0.35)'; c.beginPath(); c.arc(bx, by, br * 0.86, 0, 7); c.fill(); }
+  if (btn === 'dark' || btn === 'down') { c.fillStyle = 'rgba(0,0,0,0.28)'; c.beginPath(); c.arc(bx, by, br * 0.9, 0, 7); c.fill(); }
+  c.restore();
+  return true;
+}
+function drawBonus(text) {
+  if (text === bonText) return false;
+  bonText = text;
+  var c = bonCtx;
+  c.drawImage(IMG.bonus, 0, 0, 256, 176);
+  c.fillStyle = '#160204'; c.fillRect(24, 60, 210, 76);
+  var s = text.length < 3 ? ('   ' + text).slice(-3) : text;
+  seg7(c, s, 34, 68, 192, 60, '#ff2414', 'rgba(90,10,8,0.22)');
+  return true;
+}
+
+// ------------------------------------------------------------------ camera
+var cam = { eye: [0, 1.62, -0.42], M: null, focal: 1, w: 1, h: 1, dpr: 1, view: null };
+function resize() {
+  var r = stage.getBoundingClientRect();
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  cam.dpr = dpr; cam.w = Math.max(1, Math.round(r.width * dpr)); cam.h = Math.max(1, Math.round(r.height * dpr));
+  cv.width = fx.width = cam.w; cv.height = fx.height = cam.h;
+  var aspect = cam.w / cam.h;
+  // frame the dome, the console and the ticket slot (with room for the hanging tickets)
+  var pts = [[0, G.FY, G.C[2] + G.FL1 + 0.03], [0, 1.18, 1.0], [0, 0.0, -0.10]];
+  var e = cam.eye, angs = pts.map(function (p) { return Math.atan2(e[1] - p[1], p[2] - e[2]); });
+  var lo = Math.min.apply(null, angs), hi = Math.max.apply(null, angs);
+  var pitch = (lo + hi) / 2, vf = (hi - lo) * 1.08;
+  var tgt = [0, e[1] - Math.sin(pitch), e[2] + Math.cos(pitch)];
+  var view = lookAt(W(e), W(tgt), [0, 1, 0]);
+  // horizontal: the dome's sides and the console's corners
+  var side = [[G.FL1 + 0.04, G.DOME_Y, G.C[2]], [G.CX + 0.03, G.CON_B[0], G.CON_B[1]], [G.CX, 0.30, 0]];
+  var need = 0;
+  side.forEach(function (p) { var q = xform(view, W(p)); need = Math.max(need, Math.abs(q[0] / q[2])); });
+  var vfH = 2 * Math.atan(need * 1.04 / aspect);
+  var fov = Math.max(vf, vfH);
+  if (aspect < 0.8 && fov > vf) {   // tall phone screens: keep the dome a bit lower to leave room for the plays chip
+    pitch -= (fov - vf) * 0.12; tgt = [0, e[1] - Math.sin(pitch), e[2] + Math.cos(pitch)]; view = lookAt(W(e), W(tgt), [0, 1, 0]);
+  }
+  cam.view = view;
+  cam.M = mul(persp(fov, aspect, 0.05, 20), view);
+  cam.focal = (cam.h / 2) / Math.tan(fov / 2);
+  gl.viewport(0, 0, cam.w, cam.h);
+}
+function persp(f, a, n, fr) { var t = 1 / Math.tan(f / 2); return [t / a, 0, 0, 0, 0, t, 0, 0, 0, 0, (fr + n) / (n - fr), -1, 0, 0, 2 * fr * n / (n - fr), 0]; }
+function norm(v) { var l = Math.hypot(v[0], v[1], v[2]); return [v[0] / l, v[1] / l, v[2] / l]; }
+function cross(a, b) { return [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]]; }
+function dot(a, b) { return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]; }
+function lookAt(e, t, u) {
+  var z = norm([e[0] - t[0], e[1] - t[1], e[2] - t[2]]), x = norm(cross(u, z)), y = cross(z, x);
+  return [x[0], y[0], z[0], 0, x[1], y[1], z[1], 0, x[2], y[2], z[2], 0, -dot(x, e), -dot(y, e), -dot(z, e), 1];
+}
+function mul(a, b) { var o = new Array(16); for (var c = 0; c < 4; c++) for (var r = 0; r < 4; r++) { var s = 0; for (var k = 0; k < 4; k++) s += a[k * 4 + r] * b[c * 4 + k]; o[c * 4 + r] = s; } return o; }
+function xform(m, p) { return [m[0] * p[0] + m[4] * p[1] + m[8] * p[2] + m[12], m[1] * p[0] + m[5] * p[1] + m[9] * p[2] + m[13], m[2] * p[0] + m[6] * p[1] + m[10] * p[2] + m[14]]; }
+// cabinet point -> [px, py, scale (device px per metre)] on the overlay, or null behind the eye
+function proj(p) {
+  var m = cam.M, q = W(p);
+  var x = m[0] * q[0] + m[4] * q[1] + m[8] * q[2] + m[12], y = m[1] * q[0] + m[5] * q[1] + m[9] * q[2] + m[13],
+      w = m[3] * q[0] + m[7] * q[1] + m[11] * q[2] + m[15];
+  if (w < 0.01) return null;
+  return [(x / w * 0.5 + 0.5) * cam.w, (1 - (y / w * 0.5 + 0.5)) * cam.h, cam.focal / w];
+}
+
+// ------------------------------------------------------------------ drawing
+function draw(mesh, tex, o) {
+  o = o || {};
+  if (!mesh.n) return;
+  gl.bindBuffer(gl.ARRAY_BUFFER, mesh.buf);
+  gl.vertexAttribPointer(A.p, 3, gl.FLOAT, false, 32, 0); gl.enableVertexAttribArray(A.p);
+  gl.vertexAttribPointer(A.t, 2, gl.FLOAT, false, 32, 12); gl.enableVertexAttribArray(A.t);
+  if (A.n >= 0) { gl.vertexAttribPointer(A.n, 3, gl.FLOAT, false, 32, 20); gl.enableVertexAttribArray(A.n); }
+  gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tex || T.white); gl.uniform1i(U.uTex, 0);
+  var c = o.col || [1, 1, 1, 1];
+  gl.uniform4f(U.uCol, c[0], c[1], c[2], c[3]);
+  gl.uniform1f(U.uLit, o.lit === undefined ? 0.92 : o.lit);
+  gl.uniform1f(U.uRecv, o.recv ? 1 : 0);
+  gl.uniform1f(U.uDome, o.dome ? 1 : 0);
+  gl.uniform1f(U.uShade, o.flat ? 0 : 1);
+  var em = o.emit || [0, 0, 0]; gl.uniform3f(U.uEmit, em[0], em[1], em[2]);
+  gl.drawArrays(gl.TRIANGLES, 0, mesh.n);
+}
+
+// ------------------------------------------------------------------ sound (all made here, no samples)
+var AC = null, master = null;
+function audio() {
+  if (AC || !(window.AudioContext || window.webkitAudioContext)) return AC;
+  AC = new (window.AudioContext || window.webkitAudioContext)();
+  master = AC.createGain(); master.gain.value = soundOn ? 0.6 : 0; master.connect(AC.destination);
+  return AC;
+}
+function unlock() { audio(); if (AC && AC.state === 'suspended') AC.resume(); }
+function tone(type, f0, f1, t0, dur, vol, dest) {
+  if (!AC) return;
+  var o = AC.createOscillator(), g = AC.createGain(); o.type = type;
+  o.frequency.setValueAtTime(f0, t0); if (f1 !== f0) o.frequency.exponentialRampToValueAtTime(f1, t0 + dur);
+  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0 + 0.005); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g); g.connect(dest || master); o.start(t0); o.stop(t0 + dur + 0.02);
+}
+var noiseBuf = null;
+function noise(t0, dur, vol, fq, q) {
+  if (!AC) return;
+  if (!noiseBuf) { noiseBuf = AC.createBuffer(1, AC.sampleRate, AC.sampleRate); var d = noiseBuf.getChannelData(0); for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; }
+  var s = AC.createBufferSource(), f = AC.createBiquadFilter(), g = AC.createGain();
+  s.buffer = noiseBuf; f.type = 'bandpass'; f.frequency.value = fq; f.Q.value = q || 1;
+  g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  s.connect(f); f.connect(g); g.connect(master); s.start(t0, Math.random() * 0.5); s.stop(t0 + dur + 0.02);
+}
+var SFX = {
+  coin: function () { if (!AC) return; var t = AC.currentTime; tone('triangle', 2350, 2300, t, 0.25, 0.25); tone('triangle', 3100, 3050, t + 0.05, 0.3, 0.15); noise(t + 0.12, 0.18, 0.3, 400, 2); tone('sine', 140, 80, t + 0.12, 0.12, 0.4); },
+  tick: function () { if (!AC) return; var t = AC.currentTime; tone('square', 1900, 1900, t, 0.012, 0.035); },
+  stop: function () { if (!AC) return; var t = AC.currentTime; tone('sine', 160, 60, t, 0.18, 0.6); noise(t, 0.08, 0.4, 1800, 1.5); },
+  win: function (big) {
+    if (!AC) return; var t = AC.currentTime, n = [784, 988, 1175, 1568];
+    for (var r = 0; r < (big ? 2 : 1); r++) n.forEach(function (f, i) { tone('square', f, f, t + r * 0.5 + i * 0.09, 0.16, 0.12); });
+  },
+  siren: function (dur) {
+    if (!AC) return; var t = AC.currentTime;
+    var o = AC.createOscillator(), g = AC.createGain(), l = AC.createOscillator(), lg = AC.createGain();
+    o.type = 'sawtooth'; o.frequency.value = 760; l.frequency.value = 2.2; lg.gain.value = 260; l.connect(lg); lg.connect(o.frequency);
+    var f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 2200;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09, t + 0.2); g.gain.setValueAtTime(0.09, t + dur - 0.6); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(f); f.connect(g); g.connect(master); o.start(t); l.start(t); o.stop(t + dur + 0.05); l.stop(t + dur + 0.05);
+    for (var k = 0; k < dur * 4; k++) tone('triangle', 2093, 2080, t + k * 0.25, 0.22, 0.08);
+    sirenNodes = [o, l];
+  },
+  ticket: function () { if (!AC) return; var t = AC.currentTime; noise(t, 0.2, 0.22, 260, 0.8); tone('sawtooth', 95, 90, t, 0.2, 0.05); noise(t + 0.2, 0.03, 0.5, 3000, 2); },
+  click: function () { if (!AC) return; tone('square', 1200, 1200, AC.currentTime, 0.02, 0.06); }
+};
+var sirenNodes = null;
+function stopSiren() { if (sirenNodes) { try { sirenNodes.forEach(function (n) { n.stop(); }); } catch (e) {} sirenNodes = null; } }
+
+// ------------------------------------------------------------------ game state
+// title -> (START: $1 in) chase -> stopped (celebrate) -> payout -> ready (next quarter) ... -> over
+var S = {
+  mode: 'title', credits: 0, playNo: 0, t0: 0, start: 0, result: null, stopAt: 0, won: 0,
+  owed: 0, feed: [], feedT0: 0, fedCount: 0, total: 0, strip: 0, lastLamp: -1, newBest: false
+};
+var stripTickets = 0;          // tickets that have come out of the slot this $1.00 (drawn as the strip)
+var stripAnim = [];            // [startMs] of each ticket's feed, for the strip's motion
+function now() { return performance.now(); }
+
+function startDollar() {
+  unlock(); SFX.coin();
+  S.credits = CFG.plays; S.playNo = 0; S.total = 0; S.newBest = false;
+  stripTickets = 0; stripAnim = [];
+  hideFlash();
+  startGame(now() + 350);
+}
+function startGame(at) {
+  unlock();
+  if (S.credits <= 0) return;
+  if (S.mode !== 'title') SFX.coin();
+  S.credits--; S.playNo++;
+  S.mode = 'chase'; S.t0 = at; S.start = Math.floor(Math.random() * CFG.lamps); S.result = null; S.lastLamp = -1;
+  hideFlash();
+  ui();
+}
+function stopGame(t) {
+  var ms = t - S.t0;
+  if (ms < CFG.lockoutMs) return;
+  var r = WW.judge(ms, S.start);
+  S.result = r; S.stopAt = t; S.mode = 'stopped';
+  S.won = WW.payout(r, bonus, VALUES);
+  var oldBonus = bonus;
+  if (!r.bonus) { bonus = WW.nextBonus(r, bonus); save('whirlwind.bonus', bonus); }
+  S.paidBonus = r.bonus ? oldBonus : 0;
+  SFX.stop();
+  if (r.bonus) { SFX.siren(CFG.celebrateBonusMs / 1000); showFlash('BONUS!', S.won + ' TICKETS'); }
+  else { SFX.win(false); showFlash(S.won + (S.won === 1 ? ' TICKET' : ' TICKETS'), r.skipped ? 'SO CLOSE' : ''); }
+  ui();
+}
+function startPayout(t) {
+  S.mode = 'payout'; S.owed = S.won; S.feedT0 = t; S.fedCount = 0;
+  S.feed = WW.feedTimes(S.won, WW.rng((t * 1000) >>> 0));
+  if (S.result.bonus) { bonus = CFG.bonusStart; save('whirlwind.bonus', bonus); }
+  ui();
+}
+function finishPayout() {
+  stopSiren();
+  if (S.mode === 'stopped') startPayout(now());
+  while (S.fedCount < S.won) { S.fedCount++; stripTickets++; stripAnim.push(-1e9); S.total++; }
+  S.owed = 0;
+  endPlay();
+}
+function endPlay() {
+  hideFlash();
+  if (S.credits > 0) { S.mode = 'ready'; }
+  else {
+    S.mode = 'over';
+    if (S.total > best) { best = S.total; save('whirlwind.best', best); S.newBest = true; }
+  }
+  ui();
+}
+
+function action(t, src) {
+  if (document.getElementById('load').style.display !== 'none') return;
+  if (S.mode === 'title' || S.mode === 'over') { if (src !== 'pad-any') startDollar(); return; }
+  if (S.mode === 'ready') { startGame(now() + 250); return; }
+  if (S.mode === 'chase') { pressFx = now(); stopGame(t); return; }
+}
+
+// ------------------------------------------------------------------ input (exact timestamps)
+function evTime(e) { var t = e && e.timeStamp; var n = now(); return (typeof t === 'number' && Math.abs(t - n) < 1000) ? t : n; }
+stage.addEventListener('pointerdown', function (e) {
+  if (e.target.closest('button') || e.target.closest('.card')) return;
+  if (e.button && e.button !== 0) return;
+  e.preventDefault();
+  action(evTime(e), 'pointer');
+}, { passive: false });
+window.addEventListener('keydown', function (e) {
+  if (e.repeat) return;
+  if (e.code === 'Space' || e.code === 'Enter' || e.code === 'NumpadEnter' || e.code === 'KeyS') {
+    if (document.activeElement && document.activeElement.tagName === 'BUTTON' && S.mode !== 'chase') document.activeElement.blur();
+    e.preventDefault(); action(evTime(e), 'key');
+  } else if (e.code === 'Escape') back();
+});
+var padPrev = {};
+function pollPads() {
+  var pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (var i = 0; i < pads.length; i++) {
+    var p = pads[i]; if (!p) continue;
+    var a = p.buttons[0] && p.buttons[0].pressed, st = p.buttons[9] && p.buttons[9].pressed, x = p.buttons[2] && p.buttons[2].pressed;
+    var prev = padPrev[p.index] || {};
+    var n = now();
+    // the pad's own timestamp is when its state last changed: closer to the press than this frame
+    var t = (typeof p.timestamp === 'number' && p.timestamp <= n && n - p.timestamp < 40) ? p.timestamp : n;
+    if (a && !prev.a) action(t, 'pad');
+    if (st && !prev.st) action(t, 'pad');
+    if (x && !prev.x && (S.mode === 'stopped' || S.mode === 'payout')) skip();
+    padPrev[p.index] = { a: a, st: st, x: x };
+  }
+}
+function back() {
+  stopSiren();
+  if (inFrame) window.parent.postMessage('emu-close', '*');
+  else if (history.length > 1) history.back();
+}
+document.getElementById('back').addEventListener('click', back);
+var sndBtn = document.getElementById('snd');
+function sndUi() { sndBtn.innerHTML = soundOn ? '&#128266;' : '&#128263;'; }
+sndBtn.addEventListener('click', function () { soundOn = !soundOn; save('whirlwind.sound', soundOn); unlock(); if (master) master.gain.value = soundOn ? 0.6 : 0; sndUi(); });
+sndUi();
+function skip() { if (S.mode === 'stopped' || S.mode === 'payout') finishPayout(); }
+document.getElementById('skip').addEventListener('click', function (e) { e.stopPropagation(); skip(); });
+
+// ------------------------------------------------------------------ HUD
+var flashEl = document.getElementById('flash');
+function showFlash(a, b) { flashEl.innerHTML = a + (b ? '<small>' + b + '</small>' : ''); flashEl.style.opacity = 1; }
+function hideFlash() { flashEl.style.opacity = 0; }
+function ui() {
+  var pl = document.getElementById('plays'), h = '';
+  var left = S.mode === 'title' ? CFG.plays : S.credits + ((S.mode === 'chase') ? 0 : 0);
+  var used = S.mode === 'title' ? 0 : CFG.plays - S.credits;
+  for (var i = 0; i < CFG.plays; i++) h += '<i class="' + (i < used ? 'used' : '') + '"></i>';
+  pl.innerHTML = h + '<span style="margin-left:4px">' + (S.mode === 'title' || S.mode === 'over' ? '$1.00 = 4 PLAYS' : 'PLAY ' + S.playNo + ' OF ' + CFG.plays) + '</span>';
+  document.getElementById('tk').textContent = S.total;
+  document.getElementById('best').textContent = best;
+  var m = document.getElementById('msg');
+  var pad = padSeen ? ' or &#9398;' : '';
+  if (S.mode === 'title') {
+    m.innerHTML = '<div class="card"><h2>' + esc(NAME) + '</h2><p>You have <b>$1.00</b>: four plays. Stop the light on <b>BONUS</b> to win the bonus. ' +
+      'Anywhere else wins the tickets beside the light.</p><button class="big" id="go">START</button></div>';
+    document.getElementById('go').onclick = function (e) { e.stopPropagation(); startDollar(); };
+  } else if (S.mode === 'chase') {
+    m.innerHTML = '<span class="hint">STOP: tap, click, Space' + pad + '</span>';
+  } else if (S.mode === 'ready') {
+    m.innerHTML = '<span class="hint">Next quarter: tap, click, Space' + pad + ' (' + S.credits + ' left)</span>';
+  } else if (S.mode === 'over') {
+    m.innerHTML = '<div class="card"><h2>' + S.total + ' TICKETS</h2><p>' + (S.newBest ? '<b style="color:#ffd23c">New high score!</b> ' : 'Best: ' + best + '. ') +
+      'That was your dollar.</p><button class="big" id="go">PLAY AGAIN &middot; $1.00</button></div>';
+    document.getElementById('go').onclick = function (e) { e.stopPropagation(); startDollar(); };
+  } else m.innerHTML = '';
+  document.getElementById('skip').style.display = (S.mode === 'stopped' || S.mode === 'payout') ? 'block' : 'none';
+}
+var padSeen = false;
+window.addEventListener('gamepadconnected', function () { padSeen = true; ui(); });
+function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+
+// ------------------------------------------------------------------ the light show
+var pressFx = -1e9;
+function lampLevels(t) {
+  // returns {lv: Float32Array(64), neon: [g0,g1,g2,g3,bonus], flash: 0..1, towers:[l,r], bonusLamp}
+  var lv = new Float32Array(CFG.lamps), N = CFG.lamps, i;
+  var neonT = t / 1000, grp = Math.floor(neonT / (1.6 / 3)) % 3;
+  var neon = [0, 0, 0, 0, 0];
+  for (i = 0; i < 3; i++) neon[i] = 0.55; neon[3] = 0.7; neon[grp] = 1.0;
+  var coil = [0, 0, 0]; coil[grp] = 1;
+  var flash = 0, towers = [0, 0];
+  var tw = (t / 1500) % 1; towers[0] = tw < 0.5 ? 1 : 0.15; towers[1] = tw < 0.5 ? 0.15 : 1;
+  var bonusPulse = 0.55 + 0.45 * Math.sin(t / 750 * Math.PI * 2);
+  function chase(pos, dir) {
+    for (var k = 0; k < 6; k++) {
+      var idx = ((Math.floor(pos) - dir * k) % N + N) % N, fr = pos - Math.floor(pos);
+      var d = k + (dir > 0 ? fr : 1 - fr) - 0.5;
+      lv[idx] = Math.max(lv[idx], k === 0 ? 1 : Math.exp(-Math.max(0, d) / 1.3));
+    }
+  }
+  var m = S.mode;
+  if (m === 'chase' && t >= S.t0) {
+    chase(WW.position(t - S.t0, S.start), 1);
+  } else if (m === 'chase') {
+    chase(S.start, 1);
+  } else if (m === 'stopped' || m === 'payout') {
+    var since = t - S.stopAt, L = S.result.lamp;
+    if (S.result.bonus && m === 'stopped') {
+      // bonus: the whole ring and the neon flash, alternating halves, 4 times a second
+      var ph = Math.floor(since / 125) % 2;
+      for (i = 0; i < N; i++) lv[i] = ((i >> 2) % 2 === ph) ? 1 : 0.08;
+      lv[0] = ph ? 1 : 0.3;
+      flash = ph ? 0.35 : 0.05;
+      neon = [ph, 1 - ph, ph, 1, ph]; coil = [ph, 1 - ph, ph];
+      bonusPulse = ph;
+      towers = [ph, 1 - ph];
+    } else {
+      lv[L] = (m === 'stopped') ? (Math.floor(since / 125) % 2 ? 1 : 0.15) : 1;
+      if (S.result.bonus) { lv[0] = 1; bonusPulse = 1; }
+    }
+  } else {
+    // attract (title / ready / over): the mall cabinet's cycle, chase -> flash -> reverse
+    var cyc = (t / 1000) % 10;
+    if (cyc < 5.9) chase(cyc / 1.2 * N % N, 1);
+    else if (cyc < 6.9) { var on = Math.floor((cyc - 5.9) * 8) % 2 === 0; for (i = 0; i < N; i++) lv[i] = on ? 0.9 : 0.05; flash = on ? 0.12 : 0; }
+    else chase(N - ((cyc - 6.9) / 1.0 * N % N), -1);
+  }
+  neon[4] = bonusPulse;
+  return { lv: lv, neon: neon, coil: coil, flash: flash, towers: towers };
+}
+
+// ------------------------------------------------------------------ the ticket strip
+var PATH = (function () {
+  var x = G.SLOT_X;
+  var pts = [[x, G.SLOT_Y, -0.002], [x, G.SLOT_Y - 0.006, -0.022], [x, G.SLOT_Y - 0.03, -0.040], [x, G.SLOT_Y - 0.07, -0.050],
+             [x + 0.002, 0.006, -0.058], [x + 0.03, 0.004, -0.22], [x + 0.07, 0.004, -0.6], [x + 0.10, 0.004, -2.0]];
+  var cum = [0];
+  for (var i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1], pts[i][2] - pts[i - 1][2]));
+  return { pts: pts, cum: cum };
+})();
+function pathAt(d) {
+  var P = PATH.pts, C = PATH.cum;
+  if (d <= 0) return P[0].slice();
+  for (var i = 1; i < P.length; i++) if (d <= C[i]) {
+    var f = (d - C[i - 1]) / (C[i] - C[i - 1]);
+    return [P[i - 1][0] + (P[i][0] - P[i - 1][0]) * f, P[i - 1][1] + (P[i][1] - P[i - 1][1]) * f, P[i - 1][2] + (P[i][2] - P[i - 1][2]) * f];
+  }
+  return P[P.length - 1].slice();
+}
+function buildStrip(t) {
+  // fed length: every ticket that has started feeding moves the strip one ticket length over 0.28 s
+  var fed = 0;
+  for (var i = 0; i < stripAnim.length; i++) fed += Math.max(0, Math.min(1, (t - stripAnim[i]) / 280));
+  var m = ticketMesh; m.v = [];
+  var L = G.TICKET_L, hw = G.TICKET_W / 2, total = fed * L;
+  var n = Math.ceil(fed);
+  for (var k = 0; k < n; k++) {
+    // ticket k (0 = the first out) spans [total - (k+1)L, total - kL] of path length from the slot
+    var d1 = total - k * L, d0 = Math.max(0, d1 - L);
+    if (d1 <= 0) break;
+    if (d0 > 1.2) continue;               // far out on the floor, out of sight
+    var steps = 3;
+    for (var s = 0; s < steps; s++) {
+      var a = d0 + (d1 - d0) * s / steps, b = d0 + (d1 - d0) * (s + 1) / steps;
+      var pa = pathAt(a), pb = pathAt(b);
+      var va = 1 - (a - (d1 - L)) / L, vb = 1 - (b - (d1 - L)) / L;
+      m.quad([pa[0] - hw, pa[1], pa[2]], [pa[0] + hw, pa[1], pa[2]], [pb[0] + hw, pb[1], pb[2]], [pb[0] - hw, pb[1], pb[2]],
+             [[0, va], [1, va], [1, vb], [0, vb]]);
+    }
+  }
+  m.update();
+}
+
+// ------------------------------------------------------------------ frame
+var lastFrame = 0, crPhase = 0;
+function frame() {
+  requestAnimationFrame(frame);
+  var t = now();
+  pollPads();
+  // state timing
+  if (S.mode === 'stopped') {
+    var cel = S.result.bonus ? CFG.celebrateBonusMs : CFG.celebrateWinMs;
+    if (t - S.stopAt >= cel) startPayout(t);
+  }
+  if (S.mode === 'payout') {
+    while (S.fedCount < S.feed.length && t - S.feedT0 >= S.feed[S.fedCount] - 280) {
+      stripAnim.push(S.feedT0 + S.feed[S.fedCount] - 280); stripTickets++;
+      S.fedCount++; S.owed = S.won - S.fedCount; S.total++; SFX.ticket(); ui();
+    }
+    if (S.fedCount >= S.won && t - S.feedT0 >= (S.feed.length ? S.feed[S.feed.length - 1] : 0) + 400) endPlay();
+  }
+  // chase tick sound, once per lamp
+  if (S.mode === 'chase' && t >= S.t0) {
+    var lp = Math.floor(WW.position(t - S.t0, S.start));
+    if (lp !== S.lastLamp) { S.lastLamp = lp; SFX.tick(); }
+  }
+  var L = lampLevels(t);
+  // console LEDs: TICKETS OWED while paying (showing "Cr" every few seconds, as in the video), credits otherwise
+  var txt;
+  if (S.mode === 'payout') { var ph = ((t - S.feedT0) / 1000) % 3; txt = ph < 2.2 ? ('0000' + S.owed).slice(-4) : 'Cr' + ('0' + S.credits).slice(-2); }
+  else if (S.mode === 'stopped' && S.result.bonus) txt = Math.floor((t - S.stopAt) / 250) % 2 ? ('0000' + S.won).slice(-4) : '    ';
+  else txt = 'Cr' + ('0' + Math.max(0, S.credits)).slice(-2);
+  var bstate = (t - pressFx < 160) ? 'down' : (S.mode === 'chase' ? 'lit' : ((S.mode === 'ready' || S.mode === 'title' || S.mode === 'over') && Math.floor(t / 500) % 2 ? 'lit' : 'dark'));
+  if (drawConsole(txt, bstate)) reupload(T.console, consoleCv);
+  var btxt = String(S.mode === 'stopped' && S.result.bonus ? (Math.floor((t - S.stopAt) / 250) % 2 ? S.paidBonus : '') : bonus);
+  if (drawBonus(btxt)) reupload(T.bonus, bonusCv);
+  buildStrip(t);
+  render(t, L);
+}
+
+function render(t, L) {
+  gl.clearColor(0.03, 0.025, 0.045, 1); gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  gl.enable(gl.DEPTH_TEST); gl.depthFunc(gl.LEQUAL); gl.disable(gl.BLEND); gl.depthMask(true);
+  gl.uniformMatrix4fv(U.uM, false, new Float32Array(cam.M));
+  gl.uniform3f(U.uEye, cam.eye[0], cam.eye[1], -cam.eye[2]);
+  gl.uniform3f(U.uDomeC, 0, G.DOME_Y, -G.C[2]);
+  // the brightest lamp lights the field round it
+  var bi = 0, bv = 0; for (var i = 0; i < L.lv.length; i++) if (L.lv[i] > bv) { bv = L.lv[i]; bi = i; }
+  var lx = ringXZ(bi * 360 / CFG.lamps, G.BULB_R);
+  var lit = 0.82 + L.flash;
+  gl.uniform4f(U.uL, lx[0], G.FY + 0.03, -lx[1], L.flash > 0.2 ? 0 : bv);
+  gl.uniform1f(U.uFlash, 0);
+  draw(M.floor, T.carpet, { lit: 0.55, flat: true });
+  draw(M.plinth, null, { col: [0.05, 0.05, 0.06, 1] });
+  draw(M.front, T.front, { lit: 0.78 });
+  draw(M.console, T.console, { lit: 0.95 });
+  draw(M.yellow, null, { col: [0.96, 0.82, 0.22, 1], lit: 0.78 });
+  draw(M.steel, null, { col: [0.5, 0.52, 0.56, 1], lit: 0.7 });
+  draw(M.deck, T.deck, { lit: 0.85 });
+  draw(M.field, T.field, { lit: lit, recv: true, flat: true });
+  draw(M.navy, null, { col: [0.2, 0.17, 0.5, 1] });
+  draw(M.pink, null, { col: [0.95, 0.3, 0.62, 1], lit: 0.8 });
+  draw(M.bonus, T.bonus, { lit: 1.0, flat: true });
+  draw(M.stems, null, { col: [0.6, 0.6, 0.65, 1] });
+  var tw = Math.max(L.towers[0], L.towers[1]);
+  draw(M.towers, T.tower, { lit: 0.6 + 0.6 * tw });
+  draw(ticketMesh, T.ticket, { lit: 0.85 });
+  // the dome, last: clear plastic over everything
+  gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA); gl.depthMask(false);
+  draw(M.dome, null, { dome: true });
+  gl.depthMask(true);
+  overlay(t, L);
+}
+
+function overlay(t, L) {
+  var c = ctx;
+  c.setTransform(1, 0, 0, 1, 0, 0);
+  c.clearRect(0, 0, cam.w, cam.h);
+  // unlit bulbs: little glass domes
+  var N = CFG.lamps, i, p;
+  var bulbs = [];
+  for (i = 0; i < N; i++) {
+    var xz = ringXZ(i * 360 / N, G.BULB_R);
+    p = proj([xz[0], G.FY + 0.006, xz[1]]); bulbs.push(p);
+    if (!p) continue;
+    var r = G.BULB * p[2];
+    c.fillStyle = i === 0 ? 'rgba(120,30,40,0.85)' : 'rgba(110,80,40,0.75)';
+    c.beginPath(); c.ellipse(p[0], p[1], r, r * 0.8, 0, 0, 7); c.fill();
+    c.fillStyle = 'rgba(255,240,210,0.35)'; c.beginPath(); c.arc(p[0] - r * 0.3, p[1] - r * 0.3, r * 0.3, 0, 7); c.fill();
+  }
+  c.globalCompositeOperation = 'lighter';
+  // neon: the dim glass first (it is always there), then the glow
+  tubes.forEach(function (tb) {
+    var lvl = tb.grp === 'bonus' ? L.neon[4] : (tb.coil ? L.coil[tb.grp] : L.neon[tb.grp]);
+    neonTube(c, tb, lvl);
+  });
+  // lamps
+  for (i = 0; i < N; i++) {
+    var b = L.lv[i]; p = bulbs[i];
+    if (!p || b < 0.03) continue;
+    var R = G.BULB * p[2];
+    var col = i === 0 ? [255, 70, 90] : [255, 196, 90];
+    var g = c.createRadialGradient(p[0], p[1], 0, p[0], p[1], R * 5);
+    g.addColorStop(0, 'rgba(255,250,230,' + (0.95 * b) + ')');
+    g.addColorStop(0.18, 'rgba(' + col[0] + ',' + col[1] + ',' + col[2] + ',' + (0.85 * b) + ')');
+    g.addColorStop(0.5, 'rgba(' + col[0] + ',' + Math.round(col[1] * 0.6) + ',' + Math.round(col[2] * 0.3) + ',' + (0.25 * b) + ')');
+    g.addColorStop(1, 'rgba(255,90,20,0)');
+    c.fillStyle = g; c.beginPath(); c.arc(p[0], p[1], R * 5, 0, 7); c.fill();
+  }
+  // tower lamps
+  [1, -1].forEach(function (sd, k) {
+    var xz = ringXZ(sd * TOWER.th, TOWER.r), q = proj([xz[0], G.FY + TOWER.h, xz[1] - 0.04]);
+    if (!q) return;
+    var v = L.towers[k], R = 0.09 * q[2], col = sd > 0 ? '60,255,160' : '70,140,255';
+    var g = c.createRadialGradient(q[0], q[1], 0, q[0], q[1], R);
+    g.addColorStop(0, 'rgba(' + col + ',' + (0.55 * v) + ')'); g.addColorStop(1, 'rgba(' + col + ',0)');
+    c.fillStyle = g; c.beginPath(); c.arc(q[0], q[1], R, 0, 7); c.fill();
+  });
+  // the BONUS readout's red glow
+  var bq = proj([0, G.FY + BOX.y, BOX.z - 0.03]);
+  if (bq) { var g2 = c.createRadialGradient(bq[0], bq[1], 0, bq[0], bq[1], 0.16 * bq[2]); g2.addColorStop(0, 'rgba(255,40,20,0.22)'); g2.addColorStop(1, 'rgba(255,40,20,0)');
+    c.fillStyle = g2; c.beginPath(); c.arc(bq[0], bq[1], 0.16 * bq[2], 0, 7); c.fill(); }
+  // STOP button glow while it can be pressed
+  if (btnState === 'lit') {
+    var sq = proj([(548 / 1024 - 0.5) * 2 * G.CX, lerp(G.CON_B[0], G.CON_A[0], 111 / 288), lerp(G.CON_B[1], G.CON_A[1], 111 / 288) - 0.01]);
+    if (sq) { var g3 = c.createRadialGradient(sq[0], sq[1], 0, sq[0], sq[1], 0.09 * sq[2]); g3.addColorStop(0, 'rgba(190,255,80,0.35)'); g3.addColorStop(1, 'rgba(190,255,80,0)');
+      c.fillStyle = g3; c.beginPath(); c.arc(sq[0], sq[1], 0.09 * sq[2], 0, 7); c.fill(); }
+  }
+  // the dome's highlights: a bright streak and a rim
+  c.globalCompositeOperation = 'lighter';
+  var rim = []; for (i = 0; i <= 64; i++) { var a = i / 64 * Math.PI * 2; rim.push(proj([Math.sin(a) * G.DOME_R, G.DOME_Y + 0.004, G.C[2] + Math.cos(a) * G.DOME_R])); }
+  c.strokeStyle = 'rgba(220,230,255,0.10)'; c.lineWidth = 2 * cam.dpr; c.beginPath();
+  rim.forEach(function (q, j) { if (!q) return; if (j) c.lineTo(q[0], q[1]); else c.moveTo(q[0], q[1]); }); c.stroke();
+  var arc = []; for (i = 0; i <= 24; i++) { var e = (20 + i * 2.2) * DEG, az = (-35 + i * 1.2) * DEG;
+    arc.push(proj([Math.sin(az) * Math.cos(e) * G.DOME_R, G.DOME_Y + Math.sin(e) * G.DOME_R, G.C[2] + Math.cos(az) * Math.cos(e) * G.DOME_R])); }
+  c.strokeStyle = 'rgba(255,255,255,0.06)'; c.lineWidth = 9 * cam.dpr; c.lineCap = 'round'; c.beginPath();
+  arc.forEach(function (q, j) { if (!q) return; if (j) c.lineTo(q[0], q[1]); else c.moveTo(q[0], q[1]); }); c.stroke();
+  c.globalCompositeOperation = 'source-over';
+}
+function lerp(a, b, f) { return a + (b - a) * f; }
+function neonTube(c, tb, lvl) {
+  var pts = [], sc = 0;
+  for (var i = 0; i < tb.pts.length; i++) { var p = proj(tb.pts[i]); if (!p) return; pts.push(p); sc += p[2]; }
+  sc /= pts.length;
+  var w = tb.w * sc, col = tb.col;
+  function path() { c.beginPath(); pts.forEach(function (p, j) { if (j) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); }); }
+  c.lineCap = 'round'; c.lineJoin = 'round';
+  // glass (unlit)
+  c.globalCompositeOperation = 'source-over';
+  path(); c.strokeStyle = 'rgba(' + col.map(function (v) { return Math.round(v * 0.35 + 60); }).join(',') + ',0.35)'; c.lineWidth = w; c.stroke();
+  c.globalCompositeOperation = 'lighter';
+  if (lvl < 0.05) return;
+  var rgb = col.join(',');
+  path(); c.strokeStyle = 'rgba(' + rgb + ',' + (0.10 * lvl) + ')'; c.lineWidth = w * 7; c.stroke();
+  path(); c.strokeStyle = 'rgba(' + rgb + ',' + (0.25 * lvl) + ')'; c.lineWidth = w * 3; c.stroke();
+  path(); c.strokeStyle = 'rgba(' + col.map(function (v) { return Math.round(v * 0.5 + 128); }).join(',') + ',' + (0.95 * lvl) + ')'; c.lineWidth = w * 0.9; c.stroke();
+}
+
+// ------------------------------------------------------------------ go
+loadAssets(function () {
+  try { buildScene(); } catch (e) { document.getElementById('lerr').textContent = 'The game could not start: ' + e.message; return; }
+  resize();
+  window.addEventListener('resize', resize);
+  ui();
+  document.getElementById('load').style.display = 'none';
+  requestAnimationFrame(frame);
+  window.__ww = { S: S, WW: WW, get bonus() { return bonus; }, get best() { return best; }, action: action, skip: skip, cv: function () { return [consoleCv.toDataURL(), bonusCv.toDataURL()]; } };
+});
+})();
+</script>
+</body>
+</html>

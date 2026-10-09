@@ -88,6 +88,27 @@ The machines' titles and art are original: real titles and logos are not reprodu
   - It ships as **COIN COMET**, an original name, editable, with original space art on the translites.
   - Module `pusher.gd`, `paint_pusher.py`.
 
+## WHIRLWIND is playable (Steven, Oct 9, 2026)
+Source: Steven's video of a working machine (`cyclone-ticket-redemption-game-from-ice-arcade-game-review.mp4`, a 1990s three-player cabinet with the narrator explaining the settings).
+- **Page:** `play/whirlwind.html` (+ `play/whirlwind/`: `logic.js` and textures). Opened from the cabinet: stand at its console, facing it, and press Play (tap, E/Enter, or a pad's A; `scripts/signs.gd` `_near_whirlwind`). It runs in the same full-window frame as the arcade's `emu.html` and posts `emu-close` to come back. It also works on its own link.
+- **What the video gives (measured):**
+  - The chase laps in **1.62 s** (fitted over 20 s of play; the narrator says about 1.5 s). On the 64-lamp ring that is 25.3 ms a lamp.
+  - **Difficulty** is the window in milliseconds the player has to press while the light is on the bonus, 1 (hardest) to 20. The factory setting is **3 ms**, which is what we use (Steven: keep it fixed).
+  - The **bonus** starts at 100, +1 for every game that misses it, and goes back to 100 when won.
+  - After a bonus win the lights flash for about **11.5 s**, then TICKETS OWED jumps to the amount and counts down while tickets feed at about **2.5 a second** (102 → 45 in 23 s), in runs with small stalls; the LED shows "Cr 00" now and then.
+  - Not in the video: a small win, and the ring's numbers.
+- **Steven's decisions (09:27):**
+  - The view is from the console, looking down into the dome.
+  - On the bonus lamp but outside the 3 ms window, the light stops on the next lamp (10 tickets).
+  - There is a SKIP button for the payout.
+  - The bonus keeps growing in the player's browser between visits (`localStorage` "whirlwind.bonus"); the best $1.00 total is "whirlwind.best".
+  - The ring values are the cabinet's 1–10 (`ring_values`).
+- **Play:** $1.00 is 4 plays. START puts the dollar in and starts play 1; after each payout the action button drops the next quarter. After play 4 it shows the total and the best.
+- **Timing:** presses are judged from the input event's own timestamp, not the frame, so the 3 ms window is real on keyboard, mouse and touch. Gamepads use the pad's timestamp when it is fresh, otherwise the frame time.
+- **Guessed:** a small win's flash (1.5 s before the payout), the sounds (synthesized, not the real machine's), green tickets as in the video.
+- **Textures:** `tools/stores/pocket_change/paint_whirlwind_game.py` re-runs the cabinet's painters, with the playfield at 2048 px.
+- **Tests:** `node tests/unit/whirlwind/logic.test.js` covers the window, the next-lamp rule, the bonus, the payout rate, and the win odds (3/1620 for random presses).
+
 ## Sign pass (Oct 7, 2026)
 See photos/ (Steven's photos for this store) and tools/stores/signs/ (make_logos.py batch3, channel.gd sg_* materials).
 Steven: "make the pocket change facade a little bigger, more similar to heights of nearby stores." Opening head 2.4 → 2.9 m, fascia top 3.45 → 4.3 m, the stepped tile two rows taller, letters 5 % bigger. (The photo's proportions were the source for the old sizes.)
