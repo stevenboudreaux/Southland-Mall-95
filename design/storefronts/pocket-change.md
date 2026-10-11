@@ -108,7 +108,7 @@ Source: Steven's video of a working machine (`cyclone-ticket-redemption-game-fro
 - **Guessed:** a small win's flash (1.5 s before the payout), the sounds (synthesized, not the real machine's), green tickets as in the video.
 - **Textures:** `tools/stores/pocket_change/paint_whirlwind_game.py` re-runs the cabinet's painters, with the playfield at 2048 px.
 - **Tests:** `node tests/unit/whirlwind/logic.test.js` covers the window, the next-lamp rule, the bonus, the payout rate, and the win odds (3/1620 for random presses).
-- **Phone timing (Oct 11):** Steven: "do try to do the timing compensation for iPhone a little bit, just to make it a little bit easier." A touch is judged `touchLagMs` = 55 ms earlier (`logic.js` `seenAt`), where the light was when the player saw it. Mouse, keys and pads are unchanged.
+- **The START blink (Oct 11):** Steven: the button only told "stop" from "start" by how the lights spun. While a play is waiting to be started (and on the title and game-over screens) the STOP button now flashes hard, 0.3 s on and 0.3 s off, with a bright green glow; while the light chases it is steadily lit. (The touch-timing offset tried this morning was dropped at his request.)
 
 ## SKEE-BALL is playable (Steven, Oct 11, 2026)
 Source: Steven's video of a restored classic ten-foot alley (`tnt-amusements-382-10-foot-classic-skeeball-arcade-machine-with-the-corner-100s.mp4`, a TNT Amusements showroom segment). The talk is mostly about the restoration, not the rules. The frames give the game.

@@ -24,9 +24,6 @@
     bonusStep: 1,          // added for every game that does not win it
     plays: 4,              // $1.00 in quarters
     lockoutMs: 350,        // presses this soon after a game starts are ignored
-    touchLagMs: 55,        // a phone shows the light ~55 ms late (screen + touch scan): a touch is
-                           // judged this much earlier, where the light was when the player saw it
-                           // (Steven, Oct 11: "a little bit easier" on the iPhone)
     celebrateBonusMs: 11500,
     celebrateWinMs: 1500,
     ticketMs: 360,         // one ticket's feed time in a run
@@ -46,12 +43,6 @@
   }
 
   function lampMs(cfg) { return cfg.lapMs / cfg.lamps; }
-
-  /** The press time to judge: a touch is moved back by touchLagMs (what the player saw). */
-  function seenAt(t, src, cfg) {
-    cfg = cfg || CONFIG;
-    return src === 'touch' ? t - cfg.touchLagMs : t;
-  }
 
   /** Where the light is, in lamps (fractional), `ms` after a game's chase started from
    *  lamp `startLamp`. The chase runs toward higher lamp numbers. */
@@ -112,7 +103,7 @@
   }
 
   var api = { CONFIG: CONFIG, ringValues: ringValues, position: position, judge: judge,
-              payout: payout, nextBonus: nextBonus, rng: rng, feedTimes: feedTimes, lampMs: lampMs, seenAt: seenAt };
+              payout: payout, nextBonus: nextBonus, rng: rng, feedTimes: feedTimes, lampMs: lampMs };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.WW = api;
 })(this);

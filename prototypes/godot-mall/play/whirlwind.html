@@ -439,6 +439,7 @@ function drawConsole(text, btn) {
   if (btn === 'down') { c.translate(bx, by + 2); c.scale(0.96, 0.96); c.translate(-bx, -by); }
   c.save(); c.beginPath(); c.arc(bx, by, br * 0.96, 0, 7); c.clip(); c.drawImage(IMG.button, bx - br, by - br, br * 2, br * 2); c.restore();
   if (btn === 'lit') { c.globalCompositeOperation = 'lighter'; c.fillStyle = 'rgba(160,255,60,0.35)'; c.beginPath(); c.arc(bx, by, br * 0.86, 0, 7); c.fill(); }
+  if (btn === 'flash') { c.globalCompositeOperation = 'lighter'; c.fillStyle = 'rgba(200,255,110,0.6)'; c.beginPath(); c.arc(bx, by, br * 0.9, 0, 7); c.fill(); }
   if (btn === 'dark' || btn === 'down') { c.fillStyle = 'rgba(0,0,0,0.28)'; c.beginPath(); c.arc(bx, by, br * 0.9, 0, 7); c.fill(); }
   c.restore();
   return true;
@@ -596,8 +597,8 @@ function startGame(at) {
   hideFlash();
   ui();
 }
-function stopGame(t, src) {
-  var ms = WW.seenAt(t, src) - S.t0;
+function stopGame(t) {
+  var ms = t - S.t0;
   if (ms < CFG.lockoutMs) return;
   var r = WW.judge(ms, S.start);
   S.result = r; S.stopAt = t; S.mode = 'stopped';
@@ -637,7 +638,7 @@ function action(t, src) {
   if (document.getElementById('load').style.display !== 'none') return;
   if (S.mode === 'title' || S.mode === 'over') { if (src !== 'pad-any') startDollar(); return; }
   if (S.mode === 'ready') { startGame(now() + 250); return; }
-  if (S.mode === 'chase') { pressFx = now(); stopGame(t, src); return; }
+  if (S.mode === 'chase') { pressFx = now(); stopGame(t); return; }
 }
 
 // ------------------------------------------------------------------ input (exact timestamps)
@@ -646,7 +647,7 @@ stage.addEventListener('pointerdown', function (e) {
   if (e.target.closest('button') || e.target.closest('.card')) return;
   if (e.button && e.button !== 0) return;
   e.preventDefault();
-  action(evTime(e), e.pointerType === 'touch' ? 'touch' : 'pointer');
+  action(evTime(e), 'pointer');
 }, { passive: false });
 window.addEventListener('keydown', function (e) {
   if (e.repeat) return;
@@ -705,7 +706,7 @@ function ui() {
   } else if (S.mode === 'chase') {
     m.innerHTML = '<span class="hint">STOP: tap, click, Space' + pad + '</span>';
   } else if (S.mode === 'ready') {
-    m.innerHTML = '<span class="hint">Next quarter: tap, click, Space' + pad + ' (' + S.credits + ' left)</span>';
+    m.innerHTML = '<span class="hint">Press the flashing button to START play ' + (S.playNo + 1) + ' (' + S.credits + ' left)</span>';
   } else if (S.mode === 'over') {
     m.innerHTML = '<div class="card"><h2>' + S.total + ' TICKETS</h2><p>' + (S.newBest ? '<b style="color:#ffd23c">New high score!</b> ' : 'Best: ' + best + '. ') +
       'That was your dollar.</p><button class="big" id="go">PLAY AGAIN &middot; $1.00</button></div>';
@@ -838,7 +839,9 @@ function frame() {
   if (S.mode === 'payout') { var ph = ((t - S.feedT0) / 1000) % 3; txt = ph < 2.2 ? ('0000' + S.owed).slice(-4) : 'Cr' + ('0' + S.credits).slice(-2); }
   else if (S.mode === 'stopped' && S.result.bonus) txt = Math.floor((t - S.stopAt) / 250) % 2 ? ('0000' + S.won).slice(-4) : '    ';
   else txt = 'Cr' + ('0' + Math.max(0, S.credits)).slice(-2);
-  var bstate = (t - pressFx < 160) ? 'down' : (S.mode === 'chase' ? 'lit' : ((S.mode === 'ready' || S.mode === 'title' || S.mode === 'over') && Math.floor(t / 500) % 2 ? 'lit' : 'dark'));
+  // steady while the light chases (press to STOP); a hard flash while a play waits to be STARTED
+  var waiting = S.mode === 'ready' || S.mode === 'title' || S.mode === 'over';
+  var bstate = (t - pressFx < 160) ? 'down' : (S.mode === 'chase' ? 'lit' : (waiting ? (Math.floor(t / 300) % 2 ? 'flash' : 'dark') : 'dark'));
   if (drawConsole(txt, bstate)) reupload(T.console, consoleCv);
   var btxt = String(S.mode === 'stopped' && S.result.bonus ? (Math.floor((t - S.stopAt) / 250) % 2 ? S.paidBonus : '') : bonus);
   if (drawBonus(btxt)) reupload(T.bonus, bonusCv);
@@ -929,10 +932,11 @@ function overlay(t, L) {
   if (bq) { var g2 = c.createRadialGradient(bq[0], bq[1], 0, bq[0], bq[1], 0.16 * bq[2]); g2.addColorStop(0, 'rgba(255,40,20,0.22)'); g2.addColorStop(1, 'rgba(255,40,20,0)');
     c.fillStyle = g2; c.beginPath(); c.arc(bq[0], bq[1], 0.16 * bq[2], 0, 7); c.fill(); }
   // STOP button glow while it can be pressed
-  if (btnState === 'lit') {
+  if (btnState === 'lit' || btnState === 'flash') {
+    var fl = btnState === 'flash', gr = fl ? 0.16 : 0.09;
     var sq = proj([(548 / 1024 - 0.5) * 2 * G.CX, lerp(G.CON_B[0], G.CON_A[0], 111 / 288), lerp(G.CON_B[1], G.CON_A[1], 111 / 288) - 0.01]);
-    if (sq) { var g3 = c.createRadialGradient(sq[0], sq[1], 0, sq[0], sq[1], 0.09 * sq[2]); g3.addColorStop(0, 'rgba(190,255,80,0.35)'); g3.addColorStop(1, 'rgba(190,255,80,0)');
-      c.fillStyle = g3; c.beginPath(); c.arc(sq[0], sq[1], 0.09 * sq[2], 0, 7); c.fill(); }
+    if (sq) { var g3 = c.createRadialGradient(sq[0], sq[1], 0, sq[0], sq[1], gr * sq[2]); g3.addColorStop(0, fl ? 'rgba(210,255,110,0.8)' : 'rgba(190,255,80,0.35)'); g3.addColorStop(1, 'rgba(190,255,80,0)');
+      c.fillStyle = g3; c.beginPath(); c.arc(sq[0], sq[1], gr * sq[2], 0, 7); c.fill(); }
   }
   // the dome's highlights: a bright streak and a rim
   c.globalCompositeOperation = 'lighter';
