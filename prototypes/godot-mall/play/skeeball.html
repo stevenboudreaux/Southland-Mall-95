@@ -1,0 +1,847 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>SKEE-BALL</title>
+<!--
+  The playable skee-ball alleys in Pocket Change (Steven, Oct 11 2026).
+  Walk up to any of the four alleys in the mall and press Play (scripts/signs.gd), or open this
+  page directly. skeeball.html?lane=<1..4> stands you at that alley, with its neighbours
+  beside you as they stand in the mall (from the player's left: 4, 3, 2, 1).
+  Rules and ball physics: skeeball/logic.js. Textures are the mall alleys' own
+  (tools/stores/pocket_change/paint_skeeball_game.py); geometry follows skee.gd.
+  The mall page shows this in a full-window frame and listens for "emu-close".
+  Kept in this browser (localStorage): the best score ("skeeball.best") and sound on/off.
+-->
+<style>
+  :root { --bg: #07060a; --fg: #f4f0e8; --dim: #a49eb2; --accent: #ffd23c; --red: #ff3a1e; --line: #2a2634; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden;
+               font: 16px/1.4 -apple-system, "Helvetica Neue", Arial, sans-serif; -webkit-user-select: none; user-select: none;
+               -webkit-touch-callout: none; touch-action: none; }
+  #bar { position: fixed; top: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; gap: 10px; padding: 0 10px;
+         padding-top: env(safe-area-inset-top); background: #000; border-bottom: 1px solid var(--line); z-index: 20; }
+  #bar b { flex: 1; letter-spacing: .06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; color: var(--accent); }
+  button { font: inherit; color: #1a0a20; background: var(--accent); border: 0; border-radius: 10px; padding: 9px 14px; font-weight: 800; cursor: pointer; }
+  button.ghost { background: transparent; color: var(--fg); border: 1px solid #3a3446; font-weight: 600; }
+  #stage { position: fixed; top: calc(48px + env(safe-area-inset-top)); left: 0; right: 0; bottom: 0; cursor: crosshair; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .chip { position: absolute; top: 10px; padding: 6px 12px; border-radius: 999px; background: rgba(8, 6, 14, .72);
+          border: 1px solid rgba(255, 255, 255, .12); font-weight: 700; font-size: 15px; pointer-events: none; z-index: 5;
+          font-variant-numeric: tabular-nums; }
+  #balls { left: 10px; display: flex; gap: 4px; align-items: center; flex-wrap: wrap; max-width: 46%; }
+  #balls i { width: 13px; height: 13px; border-radius: 50%; display: inline-block;
+             background: radial-gradient(circle at 35% 30%, #f3d9a8 0, #b9844a 45%, #5e3a1c 100%); }
+  #balls i.used { background: transparent; box-shadow: inset 0 0 0 1.5px #4a4656; }
+  #score { right: 10px; text-align: right; }
+  #score span { color: var(--accent); }
+  #score small { display: block; font-size: 12px; color: var(--dim); font-weight: 600; }
+  #meter { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); width: 18px; height: min(42vh, 260px);
+           border-radius: 10px; background: rgba(8, 6, 14, .7); border: 1px solid rgba(255, 255, 255, .18); overflow: hidden;
+           pointer-events: none; z-index: 5; opacity: 0; transition: opacity .15s; }
+  #meter div { position: absolute; left: 0; right: 0; bottom: 0; height: 0;
+               background: linear-gradient(0deg, #3cd27a 0, #ffd23c 55%, #ff3a1e 100%); }
+  #meter.on { opacity: 1; }
+  #msg { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 6;
+         width: min(440px, calc(100% - 24px)); text-align: center; pointer-events: none; }
+  #msg .card { background: rgba(10, 6, 18, .88); border: 1px solid rgba(255, 210, 60, .35); border-radius: 16px; padding: 14px 16px 16px;
+               box-shadow: 0 8px 30px rgba(0, 0, 0, .5); pointer-events: auto; }
+  #msg h2 { margin: 0 0 4px; font-size: 26px; font-style: italic; letter-spacing: .05em; color: var(--accent);
+            text-shadow: 0 0 12px rgba(255, 60, 30, .6), 2px 2px 0 #3a2a90; }
+  #msg p { margin: 4px 0 10px; color: #ddd6e8; font-size: 15px; }
+  #msg .big { font-size: 20px; padding: 12px 26px; }
+  #msg .hint { pointer-events: none; display: inline-block; background: rgba(10, 6, 18, .7); border-radius: 999px; padding: 7px 14px;
+               font-weight: 700; font-size: 14px; color: #fff; border: 1px solid rgba(255, 255, 255, .14); }
+  #skip { position: absolute; right: 10px; bottom: calc(18px + env(safe-area-inset-bottom)); z-index: 7; display: none; }
+  #flash { position: absolute; left: 50%; top: 22%; transform: translate(-50%, -50%); z-index: 6; pointer-events: none; text-align: center;
+           font-weight: 900; font-style: italic; font-size: clamp(30px, 8vw, 60px); color: #fff; letter-spacing: .04em; opacity: 0;
+           text-shadow: 0 0 18px #ff3a1e, 0 0 4px #ff3a1e, 3px 3px 0 #3a2a90; transition: opacity .25s; white-space: nowrap; }
+  #flash small { display: block; font-size: .42em; letter-spacing: .1em; }
+  #load { position: fixed; inset: 0; z-index: 30; background: radial-gradient(circle at 50% 38%, #2c1010 0, #0b0710 60%, #050407 100%);
+          display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; }
+  #load h1 { margin: 0; font-size: clamp(38px, 11vw, 76px); font-style: italic; letter-spacing: .06em; color: var(--accent);
+             text-shadow: 0 0 22px rgba(255, 60, 30, .75), 4px 4px 0 #3a2a90; }
+  #load .sub { color: var(--dim); margin: 8px 0 26px; }
+  #load .track { width: min(380px, 80vw); height: 10px; border-radius: 6px; background: #2a2236; overflow: hidden; }
+  #load .bar { height: 100%; width: 0; background: linear-gradient(90deg, #ff3a1e, #ffd23c); transition: width .2s; }
+  #load .err { color: #ff8a8a; margin-top: 14px; min-height: 1.4em; }
+</style>
+</head>
+<body>
+<div id="bar"><button class="ghost" id="back">&#8592; Back to the mall</button><b id="title">SKEE-BALL</b><button class="ghost" id="snd" aria-label="Sound">&#128266;</button></div>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <div class="chip" id="balls"></div>
+  <div class="chip" id="score">SCORE <span id="sc">0</span><small>TICKETS <span id="tk">0</span> &middot; BEST <span id="best">0</span></small></div>
+  <div id="meter"><div id="mfill"></div></div>
+  <div id="flash"></div>
+  <div id="msg"></div>
+  <button id="skip">SKIP &#9654;&#9654;</button>
+</div>
+<div id="load"><h1>SKEE-BALL</h1><div class="sub" id="lsub">Pocket Change &middot; ten-foot alley</div>
+  <div class="track"><div class="bar" id="lbar"></div></div><div class="err" id="lerr"></div></div>
+<script src="lib/three.min.js"></script>
+<script src="skeeball/logic.js"></script>
+<script>
+(function () {
+'use strict';
+var SK = window.SKEE, CFG = SK.CONFIG, A = SK.A, T3 = window.THREE;
+var Q = new URLSearchParams(location.search);
+var LANE = Math.max(1, Math.min(4, parseInt(Q.get('lane'), 10) || 1));
+var inFrame = window.parent && window.parent !== window;
+document.getElementById('title').textContent = 'SKEE-BALL · ALLEY ' + LANE;
+document.getElementById('lsub').textContent = 'Pocket Change · alley ' + LANE + ' of 4';
+var TOUCH_LAG = 55;     // ms: a phone shows the meter this late (as WHIRLWIND's touchLagMs)
+
+// ------------------------------------------------------------------ storage (per browser)
+function load(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+var best = load('skeeball.best', 0);
+if (typeof best !== 'number' || best < 0 || best > 990) best = 0;
+var soundOn = load('skeeball.sound', true) !== false;
+function now() { return performance.now(); }
+
+// ------------------------------------------------------------------ renderer
+var stage = document.getElementById('stage');
+var canvas = document.getElementById('gl');
+var renderer;
+try {
+  renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' });
+} catch (e) { document.getElementById('lerr').textContent = 'This browser could not start 3D graphics.'; return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputColorSpace = T3.SRGBColorSpace;
+renderer.toneMapping = T3.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+var scene = new T3.Scene();
+scene.background = new T3.Color(0x050407);
+scene.fog = new T3.Fog(0x050407, 6, 13);
+var camera = new T3.PerspectiveCamera(50, 1, 0.05, 40);
+
+// Lanes stand side by side as in the mall: from the player's left 4, 3, 2, 1 (store.gd wall_run,
+// skee.gd footprint 0.76 m). This page's x = 0 is the middle of the chosen alley; three's z = -lane z.
+function laneX(n) { return (LANE - n) * A.W; }
+function V(n, x, y, z) { return new T3.Vector3(laneX(n) + x, y, -z); }
+
+// ------------------------------------------------------------------ textures
+var TEX = {};
+var TEX_LIST = ['ball', 'board', 'front', 'lane', 'led', 'marquee', 'mesh', 'metal', 'num', 'rail', 'side', 'sidetext', 'store_carpet', 'store_wall'];
+var loader = new T3.TextureLoader();
+function loadAll(done) {
+  var n = 0, failed = false;
+  TEX_LIST.forEach(function (k) {
+    loader.load('skeeball/' + k + '.webp', function (t) {
+      t.colorSpace = T3.SRGBColorSpace;
+      t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      TEX[k] = t; n++;
+      document.getElementById('lbar').style.width = (100 * n / TEX_LIST.length) + '%';
+      if (n === TEX_LIST.length && !failed) done();
+    }, undefined, function () {
+      failed = true; document.getElementById('lerr').textContent = 'Could not load the alley (' + k + '). Check the connection and reload.';
+    });
+  });
+}
+
+// ------------------------------------------------------------------ geometry builder
+// Collects quads per material key (like build_mall.gd's surfaces), then one mesh per key.
+// UVs are given Godot-style (v = 0 at the top of the image) and flipped here for three.
+function Builder() { this.s = {}; }
+Builder.prototype.surf = function (k) { return this.s[k] || (this.s[k] = { p: [], n: [], uv: [] }); };
+Builder.prototype.tri = function (k, a, b, c, ua, ub, uc, na, nb, nc) {
+  var s = this.surf(k);
+  [[a, ua, na], [b, ub, nb], [c, uc, nc]].forEach(function (e) {
+    s.p.push(e[0].x, e[0].y, e[0].z); s.n.push(e[2].x, e[2].y, e[2].z); s.uv.push(e[1][0], 1 - e[1][1]);
+  });
+};
+// p: 4 THREE.Vector3 (world), uv: 4 [u,v], hint: a direction the face should point to (world)
+Builder.prototype.quad = function (k, p, uv, hint, normals) {
+  uv = uv || [[0, 0], [1, 0], [1, 1], [0, 1]];
+  var n = new T3.Vector3().subVectors(p[1], p[0]).cross(new T3.Vector3().subVectors(p[3], p[0]));
+  if (n.lengthSq() < 1e-12) n = new T3.Vector3().subVectors(p[2], p[1]).cross(new T3.Vector3().subVectors(p[3], p[1]));
+  n.normalize();
+  var flip = hint && n.dot(hint) < 0;
+  if (flip) n.negate();
+  var N = normals || [n, n, n, n];
+  // wind so the front face is the normal's side
+  if (!flip) { this.tri(k, p[0], p[1], p[2], uv[0], uv[1], uv[2], N[0], N[1], N[2]); this.tri(k, p[0], p[2], p[3], uv[0], uv[2], uv[3], N[0], N[2], N[3]); }
+  else { this.tri(k, p[0], p[2], p[1], uv[0], uv[2], uv[1], N[0], N[2], N[1]); this.tri(k, p[0], p[3], p[2], uv[0], uv[3], uv[2], N[0], N[3], N[2]); }
+};
+Builder.prototype.box = function (k, c, size, basis) {
+  // c: centre (world), size [sx, sy, sz] along the lane frame (x right, y up, z into the machine)
+  var hx = size[0] / 2, hy = size[1] / 2, hz = size[2] / 2, self = this;
+  function P(x, y, z) { return new T3.Vector3(c.x + x, c.y + y, c.z - z); }
+  var F = [
+    [[-hx, -hy, -hz], [hx, -hy, -hz], [hx, hy, -hz], [-hx, hy, -hz], [0, 0, 1]],
+    [[hx, -hy, hz], [-hx, -hy, hz], [-hx, hy, hz], [hx, hy, hz], [0, 0, -1]],
+    [[-hx, hy, -hz], [hx, hy, -hz], [hx, hy, hz], [-hx, hy, hz], [0, 1, 0]],
+    [[-hx, -hy, hz], [hx, -hy, hz], [hx, -hy, -hz], [-hx, -hy, -hz], [0, -1, 0]],
+    [[-hx, -hy, hz], [-hx, -hy, -hz], [-hx, hy, -hz], [-hx, hy, hz], [-1, 0, 0]],
+    [[hx, -hy, -hz], [hx, -hy, hz], [hx, hy, hz], [hx, hy, -hz], [1, 0, 0]]
+  ];
+  F.forEach(function (f) {
+    self.quad(k, [P.apply(null, f[0]), P.apply(null, f[1]), P.apply(null, f[2]), P.apply(null, f[3])], null, new T3.Vector3(f[4][0], f[4][1], f[4][2]));
+  });
+};
+Builder.prototype.meshes = function (mats, group) {
+  for (var k in this.s) {
+    var s = this.s[k], g = new T3.BufferGeometry();
+    g.setAttribute('position', new T3.Float32BufferAttribute(s.p, 3));
+    g.setAttribute('normal', new T3.Float32BufferAttribute(s.n, 3));
+    g.setAttribute('uv', new T3.Float32BufferAttribute(s.uv, 2));
+    var m = new T3.Mesh(g, mats(k));
+    group.add(m);
+  }
+};
+
+// ------------------------------------------------------------------ materials (skee.gd fill_mat)
+var MATS = {};
+var TINT = [0xffffff, 0xf0faff, 0xfffaf2, 0xf7f7fc];
+function texRepeat(t) { var c = t.clone(); c.wrapS = c.wrapT = T3.RepeatWrapping; c.needsUpdate = true; return c; }
+function mat(k) {
+  if (MATS[k]) return MATS[k];
+  var m, S = T3.MeshStandardMaterial;
+  var lane = parseInt(k.slice(-1), 10);
+  var base = /^(side|front)\d$/.test(k) ? k.slice(0, -1) : k;
+  switch (base) {
+    case 'side': m = new S({ map: TEX.side, color: TINT[lane - 1], roughness: 0.45, metalness: 0.05 }); break;
+    case 'front': m = new S({ map: TEX.front, color: TINT[lane - 1], roughness: 0.45 }); break;
+    case 'sidetext': m = new S({ map: TEX.sidetext, transparent: true, roughness: 0.4, side: T3.DoubleSide, depthWrite: false }); break;
+    case 'rail': m = new S({ map: TEX.rail, roughness: 0.35, metalness: 0.45 }); break;
+    case 'lane': m = new S({ map: TEX.lane, roughness: 0.5, metalness: 0.0 }); break;
+    case 'board': m = new S({ map: TEX.board, roughness: 0.5 }); break;
+    case 'rim': m = new S({ color: 0xe9e1cf, roughness: 0.35, side: T3.DoubleSide }); break;
+    case 'marquee': m = new S({ map: TEX.marquee, emissiveMap: TEX.marquee, emissive: 0xffffff, emissiveIntensity: 1.0, roughness: 0.25 }); break;
+    case 'num': m = new S({ map: TEX.num, emissiveMap: TEX.num, emissive: 0xffffff, emissiveIntensity: 0.9, roughness: 0.3 }); break;
+    case 'tube': m = new S({ color: 0xf4f1ea, emissive: 0xfff3df, emissiveIntensity: 1.6 }); break;
+    case 'beacon_on': m = new S({ color: 0xff8a10, emissive: 0xff7a10, emissiveIntensity: 3.0, roughness: 0.2 }); break;
+    case 'beacon_off': m = new S({ color: 0xb4500e, emissive: 0xff7a10, emissiveIntensity: 0.25, roughness: 0.2 }); break;
+    case 'metal': m = new S({ map: TEX.metal, color: 0x2a2a2e, metalness: 0.4, roughness: 0.5 }); break;
+    case 'chrome': m = new S({ color: 0xd8d8dc, metalness: 0.9, roughness: 0.2 }); break;
+    case 'frame': m = new S({ color: 0x2a2b2e, metalness: 0.5, roughness: 0.5 }); break;
+    case 'mesh': var mt = texRepeat(TEX.mesh); mt.colorSpace = T3.SRGBColorSpace;
+      m = new S({ map: mt, transparent: true, alphaTest: 0.3, metalness: 0.6, roughness: 0.45, side: T3.DoubleSide }); break;
+    case 'ball': m = new S({ map: TEX.ball, roughness: 0.35 }); break;
+    case 'bumper': m = new S({ color: 0x151515, roughness: 0.75 }); break;
+    case 'trough': m = new S({ color: 0x1c1b1a, roughness: 0.6, metalness: 0.3 }); break;
+    case 'inner': m = new S({ color: 0x14182a, roughness: 0.8 }); break;
+    case 'dark': m = new S({ color: 0x0e0e10, roughness: 0.9 }); break;
+    case 'edge': m = new S({ color: 0x161414, roughness: 0.6 }); break;
+    case 'back': m = new S({ color: 0x1e1c1c, roughness: 0.85 }); break;
+    case 'mqbody': m = new S({ color: 0x151417, roughness: 0.5 }); break;
+    case 'floor': var ct = texRepeat(TEX.store_carpet); ct.repeat.set(6, 6);
+      m = new S({ map: ct, color: 0x9a9aa6, roughness: 0.95 }); break;
+    case 'wall': var wt = texRepeat(TEX.store_wall); wt.repeat.set(4, 1.5);
+      m = new S({ map: wt, color: 0x6a6670, roughness: 0.85 }); break;
+    default:
+      if (k.indexOf('led') === 0) {
+        var row = parseInt(k.slice(3), 10);
+        if (row === 0) m = new S({ map: ledTex, emissiveMap: ledTex, emissive: 0xffffff, emissiveIntensity: 1.6, roughness: 0.15 });
+        else {
+          var lt = TEX.led.clone(); lt.needsUpdate = true;
+          lt.repeat.set(1, 0.25); lt.offset.set(0, 1 - row * 0.25);
+          m = new S({ map: lt, emissiveMap: lt, emissive: 0xffffff, emissiveIntensity: 1.6, roughness: 0.15 });
+        }
+      } else m = new S({ color: 0xff00ff });
+  }
+  MATS[k] = m;
+  return m;
+}
+
+// ------------------------------------------------------------------ live LED (score + balls)
+var ledCanvas = document.createElement('canvas');
+ledCanvas.width = 512; ledCanvas.height = 128;
+var ledTex = new T3.CanvasTexture(ledCanvas);
+ledTex.colorSpace = T3.SRGBColorSpace;
+var SEG = { '0': 'abcdef', '1': 'bc', '2': 'abged', '3': 'abgcd', '4': 'fgbc', '5': 'afgcd', '6': 'afgedc', '7': 'abc', '8': 'abcdefg', '9': 'abcdfg', ' ': '' };
+function segPolys(x, y, w, h, t) {
+  var m = h / 2, k = 0.08 * w;   // a little italic slant
+  function P(px, py) { return [x + px + k * (1 - py / h), y + py]; }
+  return {
+    a: [P(t, 0), P(w - t, 0), P(w - 2 * t, t), P(2 * t, t)],
+    d: [P(2 * t, h - t), P(w - 2 * t, h - t), P(w - t, h), P(t, h)],
+    g: [P(t, m), P(1.5 * t, m - t / 2), P(w - 1.5 * t, m - t / 2), P(w - t, m), P(w - 1.5 * t, m + t / 2), P(1.5 * t, m + t / 2)],
+    f: [P(0, t), P(t, 2 * t), P(t, m - t), P(0, m - t / 2)],
+    b: [P(w, t), P(w, m - t / 2), P(w - t, m - t), P(w - t, 2 * t)],
+    e: [P(0, m + t / 2), P(t, m + t), P(t, h - 2 * t), P(0, h - t)],
+    c: [P(w, m + t / 2), P(w, h - t), P(w - t, h - 2 * t), P(w - t, m + t)]
+  };
+}
+function drawLed(score, balls, blank) {
+  var c = ledCanvas.getContext('2d');
+  c.fillStyle = '#100202'; c.fillRect(0, 0, 512, 128);
+  var s = String(Math.min(999, score));
+  while (s.length < 3) s = (s.length < 2 ? ' ' : '0') + s;
+  if (score === 0) s = '  0';
+  var cells = [[30, s[0]], [122, s[1]], [214, s[2]], [400, String(Math.min(9, balls))]];
+  c.shadowBlur = 0;
+  cells.forEach(function (cl) {
+    var sg = segPolys(cl[0], 16, 70, 96, 13);
+    for (var key in sg) {
+      var lit = !blank && SEG[cl[1]].indexOf(key) >= 0;
+      c.beginPath(); sg[key].forEach(function (p, i) { if (i) c.lineTo(p[0], p[1]); else c.moveTo(p[0], p[1]); }); c.closePath();
+      c.fillStyle = lit ? '#ff2a12' : '#2a0604';
+      c.shadowColor = lit ? 'rgba(255,40,18,.9)' : 'transparent'; c.shadowBlur = lit ? 14 : 0;
+      c.fill();
+    }
+  });
+  c.shadowBlur = 0;
+  var g = c.createLinearGradient(0, 0, 0, 128);
+  g.addColorStop(0, 'rgba(255,255,255,.06)'); g.addColorStop(0.3, 'rgba(255,255,255,0)'); c.fillStyle = g; c.fillRect(0, 0, 512, 128);
+  ledTex.needsUpdate = true;
+}
+
+// ------------------------------------------------------------------ one alley (skee.gd build, ported)
+var RX = A.RX, SX = A.SX, W = A.W, D = A.D;
+var Z_LANE = A.Z_LANE, Y_LANE = A.Y_LANE, Z_HUMP = A.Z_HUMP, Z_LIP = A.Z_LIP;
+var PB = A.PB, PT = A.PT, CAGE_LO = A.CAGE_LO, CAGE_HI = A.CAGE_HI;
+var MQ_Y0 = 1.80, MQ_Y1 = 2.30, MQ_Z0 = 2.82, SIDE_Z = 3.12, SIDE_Y = 1.60;
+function railY(z) { return z <= Z_LANE ? 0.905 : SK.laneY(z) + 0.105; }
+var beacons = {};
+var troughBalls = [];
+
+function buildLane(num) {
+  var b = new Builder(), grp = new T3.Group();
+  var live = num === LANE;
+  function P(x, y, z) { return V(num, x, y, z); }
+  function H(x, y, z) { return new T3.Vector3(x, y, -z); }   // a direction in the lane frame
+  var sk = 'side' + num, fk = 'front' + num;
+  // side panels
+  var sideQ = [
+    [[0, 0.28], [0, 0.895], [Z_LANE, 0.895], [Z_LANE, 0.28]],
+    [[Z_LANE, 0.28], [Z_LANE, 0.895], [2.18, railY(2.18) - 0.01], [2.18, 0.28]],
+    [[2.18, 0.0], [2.18, railY(2.18) - 0.01], [CAGE_LO[0], CAGE_LO[1]], [CAGE_LO[0], 0.0]],
+    [[CAGE_LO[0], 0.0], [CAGE_LO[0], CAGE_LO[1]], [D, 1.52], [D, 0.0]]
+  ];
+  [-1, 1].forEach(function (sx) {
+    sideQ.forEach(function (q) {
+      b.quad(sk, q.map(function (v) { return P(sx * SX, v[1], v[0]); }), q.map(function (v) { return [v[0] / SIDE_Z, (SIDE_Y - v[1]) / SIDE_Y]; }), H(sx, 0, 0));
+    });
+    var x = sx * (SX + 0.0015), u0 = sx > 0 ? 0 : 1, u1 = 1 - u0;
+    b.quad('sidetext', [P(x, 0.40, 1.60), P(x, 0.40, 2.30), P(x, 0.575, 2.30), P(x, 0.575, 1.60)], [[u0, 1], [u1, 1], [u1, 0], [u0, 0]], H(sx, 0, 0));
+  });
+  // rail caps
+  var rp = [0.10, Z_LANE, 2.18];
+  [-1, 1].forEach(function (sx) {
+    for (var i = 0; i < 2; i++) {
+      var z0 = rp[i], z1 = rp[i + 1], y0 = railY(z0), y1 = railY(z1), v0 = 1 - z0 / 2.18, v1 = 1 - z1 / 2.18;
+      var xa = sx * RX, xb = sx * (SX - 0.01), xc = sx * SX;
+      b.quad('rail', [P(xa, y0, z0), P(xb, y0, z0), P(xb, y1, z1), P(xa, y1, z1)], [[0, v0], [0.85, v0], [0.85, v1], [0, v1]], H(0, 1, 0));
+      b.quad('rail', [P(xb, y0, z0), P(xc, y0 - 0.01, z0), P(xc, y1 - 0.01, z1), P(xb, y1, z1)], [[0.85, v0], [1, v0], [1, v1], [0.85, v1]], H(sx, 1, 0));
+    }
+    var e0 = [2.18, railY(2.18) - 0.01], e1 = CAGE_LO, e2 = [D, 1.52];
+    [[e0, e1], [e1, e2]].forEach(function (sg) {
+      var a = sg[0], c = sg[1];
+      b.quad('edge', [P(sx * RX, a[1], a[0]), P(sx * SX, a[1], a[0]), P(sx * SX, c[1], c[0]), P(sx * RX, c[1], c[0])], null, H(0, 1, -0.2));
+    });
+  });
+  // front face, cap, trough
+  b.quad(fk, [P(-SX, 0.28, 0), P(SX, 0.28, 0), P(SX, 0.80, 0), P(-SX, 0.80, 0)], [[0, 1], [1, 1], [1, 0], [0, 0]], H(0, 0, -1));
+  b.box('metal', P(0, 0.8525, 0.045), [W + 0.02, 0.105, 0.11]);
+  b.quad('trough', [P(-RX, 0.77, 0.10), P(RX, 0.77, 0.10), P(RX, 0.77, Z_LANE), P(-RX, 0.77, Z_LANE)], null, H(0, 1, 0));
+  b.quad('trough', [P(-RX, 0.77, 0.10), P(RX, 0.77, 0.10), P(RX, 0.80, 0.10), P(-RX, 0.80, 0.10)], null, H(0, 0, 1));
+  b.quad('metal', [P(-RX, 0.77, Z_LANE), P(RX, 0.77, Z_LANE), P(RX, Y_LANE, Z_LANE), P(-RX, Y_LANE, Z_LANE)], [[0, 0.5], [0.64, 0.5], [0.64, 0.56], [0, 0.56]], H(0, 0, -1));
+  // lane and hump
+  var mir = num % 2 === 0, ul = mir ? 1 : 0, ur = mir ? 0 : 1, hv = 0.13;
+  b.quad('lane', [P(-RX, Y_LANE, Z_LANE), P(RX, Y_LANE, Z_LANE), P(RX, SK.laneY(Z_HUMP), Z_HUMP), P(-RX, SK.laneY(Z_HUMP), Z_HUMP)],
+    [[ul, 1], [ur, 1], [ur, hv], [ul, hv]], H(0, 1, 0));
+  var HS = 10;
+  for (var i = 0; i < HS; i++) {
+    var t0 = i / HS, t1 = (i + 1) / HS;
+    var z0 = Z_HUMP + (Z_LIP - Z_HUMP) * t0, z1 = Z_HUMP + (Z_LIP - Z_HUMP) * t1;
+    var y0 = SK.humpY(t0), y1 = SK.humpY(t1), n0 = SK.humpN(t0), n1 = SK.humpN(t1);
+    var N0 = H(n0[0], n0[1], n0[2]), N1 = H(n1[0], n1[1], n1[2]);
+    b.quad('lane', [P(-RX, y0, z0), P(RX, y0, z0), P(RX, y1, z1), P(-RX, y1, z1)],
+      [[ul, hv * (1 - t0)], [ur, hv * (1 - t0)], [ur, hv * (1 - t1)], [ul, hv * (1 - t1)]], H(0, 1, -0.3), [N0, N0, N1, N1]);
+    [-1, 1].forEach(function (sx) {
+      b.quad('bumper', [P(sx * RX, y0, z0), P(sx * RX, railY(z0), z0), P(sx * RX, railY(z1), z1), P(sx * RX, y1, z1)], null, H(-sx, 0, 0));
+    });
+  }
+  var yl = SK.humpY(1);
+  b.quad('lane', [P(-RX, yl, Z_LIP), P(RX, yl, Z_LIP), P(RX, yl - 0.012, Z_LIP + 0.01), P(-RX, yl - 0.012, Z_LIP + 0.01)], [[0, 0], [1, 0], [1, 0.004], [0, 0.004]], H(0, 1, 1));
+  b.quad('dark', [P(-RX, yl - 0.012, Z_LIP + 0.01), P(RX, yl - 0.012, Z_LIP + 0.01), P(RX, 0.96, Z_LIP + 0.01), P(-RX, 0.96, Z_LIP + 0.01)], null, H(0, 0, 1));
+  b.quad('dark', [P(-RX, 0.96, Z_LIP + 0.01), P(RX, 0.96, Z_LIP + 0.01), P(RX, 0.96, PB[2]), P(-RX, 0.96, PB[2])], null, H(0, 1, 0));
+  b.quad('dark', [P(-RX, 0.96, PB[2]), P(RX, 0.96, PB[2]), P(RX, PB[1], PB[2]), P(-RX, PB[1], PB[2])], null, H(0, 0, -1));
+  [-1, 1].forEach(function (sx) {
+    var x = sx * RX;
+    b.quad('bumper', [P(x, 0.77, 0.10), P(x, 0.905, 0.10), P(x, 0.905, Z_LANE), P(x, 0.77, Z_LANE)], null, H(-sx, 0, 0));
+    b.quad('bumper', [P(x, Y_LANE, Z_LANE), P(x, railY(Z_LANE + 0.001), Z_LANE), P(x, railY(Z_HUMP), Z_HUMP), P(x, SK.laneY(Z_HUMP), Z_HUMP)], null, H(-sx, 0, 0));
+    b.quad('inner', [P(x, 0.95, Z_LIP), P(x, railY(2.18) - 0.01, Z_LIP), P(x, CAGE_LO[1], CAGE_LO[0]), P(x, 0.95, CAGE_LO[0])], null, H(-sx, 0, 0));
+    b.quad('inner', [P(x, 0.95, CAGE_LO[0]), P(x, CAGE_LO[1], CAGE_LO[0]), P(x, 1.514, 3.08), P(x, 0.95, 3.08)], null, H(-sx, 0, 0));
+  });
+  b.box('metal', P(0, Y_LANE + 0.004, Z_LANE + 0.012), [0.64, 0.008, 0.024]);
+  b.box('chrome', P(0, Y_LANE + 0.06, Z_LANE - 0.004), [0.64, 0.009, 0.009]);
+  // scoring board
+  var nb = H(A.NB[0], A.NB[1], A.NB[2]);
+  b.quad('board', [P(-RX, PB[1], PB[2]), P(RX, PB[1], PB[2]), P(RX, PT[1], PT[2]), P(-RX, PT[1], PT[2])], [[0, 1], [1, 1], [1, 0], [0, 0]], nb);
+  b.quad('inner', [P(-RX, PT[1], PT[2]), P(RX, PT[1], PT[2]), P(RX, 1.62, 3.08), P(-RX, 1.62, 3.08)], null, H(0, 1, 0));
+  b.quad('inner', [P(-RX, 1.62, 3.08), P(RX, 1.62, 3.08), P(RX, MQ_Y0, 3.08), P(-RX, MQ_Y0, 3.08)], null, H(0, 0, -1));
+  // rims (skee.gd: [u, v, r, h]); drawn as short tubes standing out of the board
+  SK.RIMS.forEach(function (rm) {
+    var seg = rm[2] > 0.1 ? 40 : 22, th = 0.006;
+    var c = SK.fromBoard(rm[0], rm[1], 0), C = P(c[0], c[1], c[2]);
+    var BX = new T3.Vector3(1, 0, 0), DVv = H(A.DV[0], A.DV[1], A.DV[2]), hh = nb.clone().multiplyScalar(rm[3]);
+    for (var k = 0; k < seg; k++) {
+      var a0 = 2 * Math.PI * k / seg, a1 = 2 * Math.PI * (k + 1) / seg;
+      var d0 = BX.clone().multiplyScalar(Math.cos(a0)).add(DVv.clone().multiplyScalar(Math.sin(a0)));
+      var d1 = BX.clone().multiplyScalar(Math.cos(a1)).add(DVv.clone().multiplyScalar(Math.sin(a1)));
+      var o0 = C.clone().addScaledVector(d0, rm[2] + th), o1 = C.clone().addScaledVector(d1, rm[2] + th);
+      var i0 = C.clone().addScaledVector(d0, rm[2] - th), i1 = C.clone().addScaledVector(d1, rm[2] - th);
+      b.quad('rim', [o0, o1, o1.clone().add(hh), o0.clone().add(hh)], null, d0.clone().add(d1), [d0, d1, d1, d0]);
+      b.quad('rim', [i0.clone().add(hh), i1.clone().add(hh), i1, i0], null, d0.clone().add(d1).negate(), [d0.clone().negate(), d1.clone().negate(), d1.clone().negate(), d0.clone().negate()]);
+      b.quad('rim', [o0.clone().add(hh), o1.clone().add(hh), i1.clone().add(hh), i0.clone().add(hh)], null, nb);
+    }
+  });
+  // back, marquee box, panel, LED, badge, tube, beacon
+  b.quad('back', [P(-SX, 0, D), P(SX, 0, D), P(SX, MQ_Y0, D), P(-SX, MQ_Y0, D)], null, H(0, 0, 1));
+  var mz = (MQ_Z0 + D) / 2;
+  b.box('mqbody', P(0, (MQ_Y0 + MQ_Y1) / 2, mz), [W + 0.02, MQ_Y1 - MQ_Y0, D - MQ_Z0]);
+  var ax0 = -0.37, ax1 = 0.37, ay0 = 1.82, ay1 = 2.28, fz = MQ_Z0 - 0.004;
+  b.quad('marquee', [P(ax0, ay0, fz), P(ax1, ay0, fz), P(ax1, ay1, fz), P(ax0, ay1, fz)], [[0, 1], [1, 1], [1, 0], [0, 0]], H(0, 0, -1));
+  var lx0 = ax0 + (ax1 - ax0) * 232 / 1024, lx1 = ax0 + (ax1 - ax0) * 792 / 1024;
+  var ly1 = ay1 - (ay1 - ay0) * 214 / 640, ly0 = ay1 - (ay1 - ay0) * 354 / 640;
+  b.quad(live ? 'led0' : 'led' + num, [P(lx0, ly0, fz - 0.003), P(lx1, ly0, fz - 0.003), P(lx1, ly1, fz - 0.003), P(lx0, ly1, fz - 0.003)], [[0, 1], [1, 1], [1, 0], [0, 0]], H(0, 0, -1));
+  var nx0 = ax0 + (ax1 - ax0) * 52 / 1024, nx1 = ax0 + (ax1 - ax0) * 124 / 1024;
+  var ny1 = ay1 - (ay1 - ay0) * 46 / 640, ny0 = ay1 - (ay1 - ay0) * 118 / 640;
+  var c0 = (num - 1) / 4, c1 = num / 4;
+  b.quad('num', [P(nx0, ny0, fz - 0.003), P(nx1, ny0, fz - 0.003), P(nx1, ny1, fz - 0.003), P(nx0, ny1, fz - 0.003)], [[c0, 1], [c1, 1], [c1, 0], [c0, 0]], H(0, 0, -1));
+  b.quad('tube', [P(-0.30, MQ_Y0 - 0.004, MQ_Z0 + 0.03), P(0.30, MQ_Y0 - 0.004, MQ_Z0 + 0.03), P(0.30, MQ_Y0 - 0.004, 3.05), P(-0.30, MQ_Y0 - 0.004, 3.05)], null, H(0, -1, 0));
+  // cage
+  [-1, 1].forEach(function (sx) {
+    var x = sx * (SX - 0.002);
+    var cp = [[x, CAGE_LO[1], CAGE_LO[0]], [x, CAGE_HI[1], CAGE_HI[0]], [x, MQ_Y0, D], [x, 1.52, D]];
+    b.quad('mesh', cp.map(function (p) { return P(p[0], p[1], p[2]); }), cp.map(function (p) { return [p[2] * 10, -p[1] * 10]; }), H(sx, 0, 0));
+  });
+  var cl = Math.hypot(CAGE_HI[0] - CAGE_LO[0], CAGE_HI[1] - CAGE_LO[1]);
+  b.quad('mesh', [P(-SX, CAGE_LO[1], CAGE_LO[0]), P(SX, CAGE_LO[1], CAGE_LO[0]), P(SX, CAGE_HI[1], CAGE_HI[0]), P(-SX, CAGE_HI[1], CAGE_HI[0])],
+    [[0, cl * 10], [W * 10, cl * 10], [W * 10, 0], [0, 0]], H(0, 1, -1.3));
+  function bar(a, c, t) {
+    var A3 = P(a[0], a[1], a[2]), C3 = P(c[0], c[1], c[2]);
+    var len = A3.distanceTo(C3), m = new T3.Mesh(new T3.BoxGeometry(t, t, len), mat('frame'));
+    m.position.copy(A3).add(C3).multiplyScalar(0.5); m.lookAt(C3); grp.add(m);
+  }
+  var lo = [0, CAGE_LO[1], CAGE_LO[0]], hi = [0, CAGE_HI[1], CAGE_HI[0]];
+  bar([-SX, lo[1], lo[2]], [SX, lo[1], lo[2]], 0.022);
+  bar([-SX, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2], [SX, (lo[1] + hi[1]) / 2, (lo[2] + hi[2]) / 2], 0.016);
+  bar([-SX, hi[1] - 0.01, hi[2]], [SX, hi[1] - 0.01, hi[2]], 0.022);
+  [-1, 1].forEach(function (sx) {
+    var x = sx * (SX - 0.008);
+    bar([x, lo[1], lo[2]], [x, hi[1], hi[2]], 0.022);
+    bar([x, lo[1], lo[2]], [x, 1.52, D - 0.01], 0.018);
+  });
+  b.meshes(mat, grp);
+  // beacon
+  var bc = P(0, MQ_Y1, mz);
+  var bb = new T3.Mesh(new T3.CylinderGeometry(0.046, 0.048, 0.022, 16), new T3.MeshStandardMaterial({ color: 0x1a1a1c }));
+  bb.position.copy(bc).add(new T3.Vector3(0, 0.011, 0)); grp.add(bb);
+  var bm = new T3.MeshStandardMaterial({ color: 0xb4500e, emissive: 0xff7a10, emissiveIntensity: num === 3 && !live ? 3.0 : 0.25, roughness: 0.2 });
+  var dome = new T3.Mesh(new T3.CylinderGeometry(0.030, 0.040, 0.06, 16), bm);
+  dome.position.copy(bc).add(new T3.Vector3(0, 0.052, 0)); grp.add(dome);
+  var cap = new T3.Mesh(new T3.CylinderGeometry(0.012, 0.030, 0.012, 16), bm);
+  cap.position.copy(bc).add(new T3.Vector3(0, 0.088, 0)); grp.add(cap);
+  beacons[num] = bm;
+  // the board's light: the tube under the marquee (a warm fluorescent)
+  var L = new T3.PointLight(0xfff0dc, 3.2, 0, 2);
+  L.position.copy(P(0, 1.74, 2.62)); grp.add(L);
+  // balls resting in the front trough
+  var rng = SK.rng(7700 + num);
+  for (var j = 0; j < 9; j++) {
+    var ball = new T3.Mesh(ballGeo, mat('ball'));
+    ball.position.copy(P(-RX + A.R + 0.002 + j * 0.0705, 0.77 + A.R, 0.205 + (rng() * 2 - 1) * 0.012));
+    ball.rotation.set(rng() * 6, rng() * 6, 0);
+    grp.add(ball);
+    if (live) troughBalls.push(ball);
+  }
+  scene.add(grp);
+}
+var ballGeo = new T3.SphereGeometry(A.R, 20, 14);
+
+function buildRoom() {
+  var g = new T3.Group();
+  var x0 = laneX(4) - SX - 2.5, x1 = laneX(1) + SX + 2.5;
+  var floor = new T3.Mesh(new T3.PlaneGeometry(x1 - x0, 9), mat('floor'));
+  floor.rotation.x = -Math.PI / 2; floor.position.set((x0 + x1) / 2, 0, -1.0); g.add(floor);
+  var wall = new T3.Mesh(new T3.PlaneGeometry(x1 - x0, 3.6), mat('wall'));
+  wall.position.set((x0 + x1) / 2, 1.8, -(D + 0.02)); g.add(wall);
+  var ceil = new T3.Mesh(new T3.PlaneGeometry(x1 - x0, 9), new T3.MeshStandardMaterial({ color: 0x050506, roughness: 1 }));
+  ceil.rotation.x = Math.PI / 2; ceil.position.set((x0 + x1) / 2, 3.6, -1.0); g.add(ceil);
+  scene.add(g);
+  scene.add(new T3.HemisphereLight(0x8a90b0, 0x1a1418, 0.35));
+  var spot = new T3.SpotLight(0xfff0d8, 7, 0, 0.8, 0.8, 2);
+  spot.position.set(0, 3.5, 0.6); spot.target.position.set(0, 0.8, -1.2);
+  scene.add(spot); scene.add(spot.target);
+}
+
+// ------------------------------------------------------------------ the ball in play
+var shadowGeo = new T3.CircleGeometry(A.R * 1.25, 20);
+var shadowMat = new T3.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.45, depthWrite: false });
+var aimMat = new T3.LineDashedMaterial({ color: 0xffe9a0, dashSize: 0.04, gapSize: 0.05, transparent: true, opacity: 0.35 });
+var hand = { x: 0, mesh: null, shadow: null, aim: null };
+function makeBall() {
+  var m = new T3.Mesh(ballGeo, mat('ball')); scene.add(m);
+  var s = new T3.Mesh(shadowGeo, shadowMat); s.renderOrder = 2; scene.add(s);
+  return { mesh: m, shadow: s };
+}
+function placeShadow(s, x, y, z) {
+  // on the lane / hump, or on the board (lane frame)
+  var b = SK.toBoard([x, y, z]);
+  if (z > PB[2] - 0.01 && b.v > 0 && b.v < A.BL) {
+    var p = SK.fromBoard(b.u, b.v, 0.002), q = V(LANE, p[0], p[1], p[2]);
+    s.position.copy(q); s.quaternion.setFromUnitVectors(new T3.Vector3(0, 0, 1), new T3.Vector3(A.NB[0], A.NB[1], -A.NB[2]));
+    s.material.opacity = Math.max(0, 0.45 - (b.h - A.R) * 3); s.visible = true;
+  } else if (z < Z_LIP) {
+    var yy = z < Z_HUMP ? SK.laneY(z) : SK.humpY((z - Z_HUMP) / (Z_LIP - Z_HUMP));
+    s.position.copy(V(LANE, x, yy + 0.002, z));
+    s.quaternion.setFromUnitVectors(new T3.Vector3(0, 0, 1), new T3.Vector3(0, 1, 0.15).normalize());
+    s.visible = true;
+  } else s.visible = false;
+}
+
+// ------------------------------------------------------------------ sound (synthesized)
+var ac = null, master = null, rumble = null, rumbleGain = null;
+function unlock() {
+  if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+  var C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+  ac = new C(); master = ac.createGain(); master.gain.value = soundOn ? 0.6 : 0; master.connect(ac.destination);
+  // a looping noise for balls rolling on the hardwood
+  var len = ac.sampleRate * 2, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0), last = 0;
+  for (var i = 0; i < len; i++) { last = last * 0.97 + (Math.random() * 2 - 1) * 0.03; d[i] = last * 6; }
+  rumble = ac.createBufferSource(); rumble.buffer = buf; rumble.loop = true;
+  var lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 420;
+  rumbleGain = ac.createGain(); rumbleGain.gain.value = 0;
+  rumble.connect(lp); lp.connect(rumbleGain); rumbleGain.connect(master); rumble.start();
+}
+function tone(f, t0, dur, type, vol, f2) {
+  if (!ac) return;
+  var o = ac.createOscillator(), g = ac.createGain();
+  o.type = type || 'square'; o.frequency.setValueAtTime(f, t0); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
+  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol || 0.2, t0 + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + dur + 0.02);
+}
+function knock(vol, freq) {
+  if (!ac) return;
+  var t = ac.currentTime, n = ac.createBufferSource(), len = ac.sampleRate * 0.06, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0);
+  for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+  n.buffer = buf; var bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = freq || 900; bp.Q.value = 1.6;
+  var g = ac.createGain(); g.gain.value = Math.min(0.9, vol);
+  n.connect(bp); bp.connect(g); g.connect(master); n.start(t);
+  tone((freq || 900) * 0.18, t, 0.09, 'sine', Math.min(0.5, vol * 0.6), (freq || 900) * 0.12);
+}
+var SFX = {
+  coin: function () { if (!ac) return; var t = ac.currentTime; tone(1320, t, 0.08, 'square', 0.15); tone(1760, t + 0.08, 0.16, 'square', 0.15); },
+  release: function () {   // the gate drops nine balls into the trough
+    if (!ac) return; for (var i = 0; i < 9; i++) setTimeout(function () { knock(0.35, 500 + Math.random() * 300); }, 80 + i * 70 + Math.random() * 40);
+  },
+  hit: function (s) { knock(Math.min(0.8, 0.2 + s * 0.3), 300); },
+  rim: function (s) { knock(Math.min(0.7, 0.15 + s * 0.25), 1700); },
+  wall: function (s) { knock(Math.min(0.5, 0.1 + s * 0.2), 650); },
+  hole: function (v) {
+    if (!ac) return; var t = ac.currentTime + 0.05;
+    knock(0.6, 220);
+    if (v >= 100) { [523, 659, 784, 1047, 784, 1047, 1319].forEach(function (f, i) { tone(f, t + 0.1 + i * 0.09, 0.12, 'square', 0.16); }); return; }
+    var n = v / 10;
+    for (var i = 0; i < n; i++) tone(1568, t + 0.08 + i * 0.075, 0.07, 'square', 0.12);
+  },
+  gutter: function () { knock(0.3, 200); },
+  over: function () { if (!ac) return; var t = ac.currentTime; [784, 659, 523, 392].forEach(function (f, i) { tone(f, t + i * 0.16, 0.18, 'triangle', 0.18); }); },
+  ticket: function () { if (!ac) return; tone(2600 + Math.random() * 200, ac.currentTime, 0.025, 'square', 0.05); }
+};
+function stopSounds() { if (rumbleGain) rumbleGain.gain.value = 0; }
+
+// ------------------------------------------------------------------ game state
+var S = { mode: 'title', score: 0, thrown: 0, counted: 0, pockets: 0, holding: false, holdT0: 0, lastRoll: -1e9,
+          tickets: 0, owed: 0, feed: null, feedT0: 0, fed: 0, newBest: false, beaconUntil: 0 };
+var live = [];   // balls on the alley: { path, res, t0, mesh, shadow, ei, done }
+var pressFx = 0;
+
+function startGame() {
+  unlock(); SFX.coin();
+  S.mode = 'play'; S.score = 0; S.thrown = 0; S.counted = 0; S.pockets = 0; S.newBest = false; S.tickets = 0; S.owed = 0; S.fed = 0;
+  live.forEach(function (b) { scene.remove(b.mesh); scene.remove(b.shadow); }); live = [];
+  troughBalls.forEach(function (m) { m.visible = true; });
+  setTimeout(SFX.release, 150);
+  drawLed(0, 0); hideFlash(); ui();
+}
+function canRoll(t) { return S.mode === 'play' && S.thrown < CFG.balls && t - S.lastRoll > 300; }
+function holdStart(t) {
+  if (!canRoll(t)) return;
+  S.holding = true; S.holdT0 = t;
+  document.getElementById('meter').classList.add('on');
+}
+function holdEnd(t, src) {
+  if (!S.holding) return;
+  S.holding = false;
+  document.getElementById('meter').classList.remove('on');
+  var seen = src === 'touch' ? t - TOUCH_LAG : t;
+  var power = SK.meter(seen - S.holdT0);
+  rollBall(hand.x, power);
+}
+function rollBall(x, power) {
+  S.thrown++; S.lastRoll = now();
+  if (troughBalls[S.thrown - 1]) troughBalls[S.thrown - 1].visible = false;
+  var seed = ((Math.random() * 4294967295) >>> 0) || 1;
+  var res = SK.roll(x, power, seed);
+  var b = makeBall();
+  live.push({ res: res, t0: now(), mesh: b.mesh, shadow: b.shadow, ei: 0, done: false, last: null });
+  ui();
+}
+function settle(bl) {
+  bl.done = true;
+  var v = bl.res.value;
+  S.counted++;
+  S.score += v;
+  if (v === 100) { S.pockets++; S.beaconUntil = now() + 4000; showFlash('100!', 'POCKET'); setTimeout(hideFlash, 1400); }
+  else if (v >= 40) { showFlash(String(v)); setTimeout(hideFlash, 700); }
+  drawLed(S.score, S.counted);
+  if (S.counted >= CFG.balls) setTimeout(endGame, 700);
+  ui();
+}
+function endGame() {
+  if (S.mode !== 'play') return;
+  S.mode = 'payout';
+  if (S.score > best) { best = S.score; save('skeeball.best', best); S.newBest = true; }
+  S.tickets = 0; S.owed = SK.tickets(S.score, S.pockets); S.feed = SK.feedTimes(S.owed); S.feedT0 = now() + 900; S.fed = 0;
+  SFX.over();
+  showFlash(S.score + ' POINTS', S.newBest ? 'NEW BEST!' : (S.owed + ' TICKETS'));
+  ui();
+}
+function finishPayout() {
+  S.tickets = SK.tickets(S.score, S.pockets); S.owed = 0; S.mode = 'over'; hideFlash(); ui();
+}
+function skip() { if (S.mode === 'payout') finishPayout(); }
+
+// ------------------------------------------------------------------ input
+var keys = {};
+function aimFromPointer(e) {
+  var r = canvas.getBoundingClientRect();
+  var ndc = new T3.Vector2(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+  var ray = new T3.Raycaster(); ray.setFromCamera(ndc, camera);
+  // the plane the hand moves on: just above the lane's front end
+  var pl = new T3.Plane(new T3.Vector3(0, 1, 0), -(Y_LANE + 0.05)), hit = new T3.Vector3();
+  if (ray.ray.intersectPlane(pl, hit)) hand.x = clampX(hit.x);
+}
+function clampX(x) { var l = RX - A.R - 0.002; return Math.max(-l, Math.min(l, x)); }
+function evTime(e) { var t = e && e.timeStamp; var n = now(); return (typeof t === 'number' && Math.abs(t - n) < 1000) ? t : n; }
+var activePointer = null;
+stage.addEventListener('pointerdown', function (e) {
+  if (e.target.closest('button') || e.target.closest('.card')) return;
+  if (e.button && e.button !== 0) return;
+  e.preventDefault(); unlock();
+  if (S.mode === 'title' || S.mode === 'over') { startGame(); return; }
+  if (S.mode === 'payout') return;
+  activePointer = e.pointerId;
+  try { stage.setPointerCapture(e.pointerId); } catch (er) {}
+  aimFromPointer(e);
+  holdStart(evTime(e));
+}, { passive: false });
+stage.addEventListener('pointermove', function (e) { if (activePointer === e.pointerId && S.holding) aimFromPointer(e); else if (e.pointerType === 'mouse' && S.mode === 'play' && !S.holding) aimFromPointer(e); });
+function pUp(e) {
+  if (activePointer !== e.pointerId) return;
+  activePointer = null;
+  holdEnd(evTime(e), e.pointerType === 'touch' ? 'touch' : 'pointer');
+}
+stage.addEventListener('pointerup', pUp);
+stage.addEventListener('pointercancel', function (e) { if (activePointer === e.pointerId) { activePointer = null; S.holding = false; document.getElementById('meter').classList.remove('on'); } });
+window.addEventListener('keydown', function (e) {
+  if (e.code === 'Escape') { back(); return; }
+  keys[e.code] = true;
+  if (e.repeat) return;
+  if (e.code === 'Space' || e.code === 'Enter' || e.code === 'NumpadEnter') {
+    e.preventDefault(); unlock();
+    if (document.activeElement && document.activeElement.tagName === 'BUTTON') document.activeElement.blur();
+    if (S.mode === 'title' || S.mode === 'over') { startGame(); return; }
+    if (S.mode === 'payout') { skip(); return; }
+    holdStart(evTime(e));
+  }
+});
+window.addEventListener('keyup', function (e) {
+  keys[e.code] = false;
+  if (e.code === 'Space' || e.code === 'Enter' || e.code === 'NumpadEnter') holdEnd(evTime(e), 'key');
+});
+var padPrev = {}, padSeen = false;
+function pollPads(dt) {
+  var pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (var i = 0; i < pads.length; i++) {
+    var p = pads[i]; if (!p) continue;
+    padSeen = true;
+    var a = p.buttons[0] && p.buttons[0].pressed, st = p.buttons[9] && p.buttons[9].pressed, x = p.buttons[2] && p.buttons[2].pressed;
+    var prev = padPrev[p.index] || {};
+    var n = now(), t = (typeof p.timestamp === 'number' && p.timestamp <= n && n - p.timestamp < 40) ? p.timestamp : n;
+    var ax = p.axes[0] || 0; if (Math.abs(ax) < 0.15) ax = 0;
+    if (p.buttons[14] && p.buttons[14].pressed) ax = -1;
+    if (p.buttons[15] && p.buttons[15].pressed) ax = 1;
+    if (ax && S.mode === 'play') hand.x = clampX(hand.x + ax * 0.45 * dt);
+    if ((a && !prev.a) || (st && !prev.st)) {
+      unlock();
+      if (S.mode === 'title' || S.mode === 'over') startGame();
+      else if (S.mode === 'payout') skip();
+      else if (a) holdStart(t);
+    }
+    if (!a && prev.a) holdEnd(t, 'pad');
+    if (x && !prev.x) skip();
+    padPrev[p.index] = { a: a, st: st, x: x };
+  }
+}
+function back() {
+  stopSounds();
+  if (inFrame) window.parent.postMessage('emu-close', '*');
+  else if (history.length > 1) history.back();
+}
+document.getElementById('back').addEventListener('click', back);
+var sndBtn = document.getElementById('snd');
+function sndUi() { sndBtn.innerHTML = soundOn ? '&#128266;' : '&#128263;'; }
+sndBtn.addEventListener('click', function () { soundOn = !soundOn; save('skeeball.sound', soundOn); unlock(); if (master) master.gain.value = soundOn ? 0.6 : 0; sndUi(); });
+sndUi();
+document.getElementById('skip').addEventListener('click', function (e) { e.stopPropagation(); skip(); });
+
+// ------------------------------------------------------------------ HUD
+var flashEl = document.getElementById('flash');
+function showFlash(a, b) { flashEl.innerHTML = a + (b ? '<small>' + b + '</small>' : ''); flashEl.style.opacity = 1; }
+function hideFlash() { flashEl.style.opacity = 0; }
+var lastMsg = '';
+function ui() {
+  var h = '';
+  for (var i = 0; i < CFG.balls; i++) h += '<i class="' + (S.mode !== 'title' && i < S.thrown ? 'used' : '') + '"></i>';
+  document.getElementById('balls').innerHTML = h;
+  document.getElementById('sc').textContent = S.score;
+  document.getElementById('tk').textContent = S.tickets;
+  document.getElementById('best').textContent = best;
+  var touch = matchMedia('(pointer: coarse)').matches;
+  var m = '', pad = padSeen;
+  if (S.mode === 'title') {
+    m = '<div class="card"><h2>SKEE-BALL</h2><p>Alley ' + LANE + ' &middot; 1 token = 9 balls</p>' +
+        '<button class="big" id="go">INSERT TOKEN</button><p style="margin:10px 0 0;font-size:13px;color:#a49eb2">' +
+        (touch ? 'Press and hold to pick up a ball, slide to line it up, let go to roll. Hold longer to roll harder: the meter rises, then falls back.'
+               : 'Hold the mouse button (or Space' + (pad ? ', or &#9398;' : '') + ') to wind up, let go to roll. Move the mouse (or &#8592; &#8594;) to line up.') + '</p></div>';
+  } else if (S.mode === 'play') {
+    if (S.thrown === 0) m = '<span class="hint">' + (touch ? 'Hold, slide to line up, let go' : 'Hold, line up, let go') + '</span>';
+  } else if (S.mode === 'over') {
+    m = '<div class="card"><h2>' + S.score + ' POINTS</h2><p>' + S.tickets + ' tickets' + (S.pockets ? ' (' + S.pockets + ' &times; 100 pocket)' : '') +
+        ' &middot; best ' + best + (S.newBest ? ' &mdash; new best!' : '') + '</p><button class="big" id="go">PLAY AGAIN</button></div>';
+  }
+  if (m !== lastMsg) {
+    lastMsg = m;
+    document.getElementById('msg').innerHTML = m;
+    var go = document.getElementById('go');
+    if (go) go.addEventListener('click', function (e) { e.stopPropagation(); startGame(); });
+  }
+  document.getElementById('skip').style.display = S.mode === 'payout' ? 'block' : 'none';
+}
+
+// ------------------------------------------------------------------ camera: standing at the alley's front
+function layout() {
+  var w = stage.clientWidth, h = stage.clientHeight;
+  renderer.setSize(w, h, false);
+  var asp = w / h;
+  camera.aspect = asp;
+  // at least 48 degrees across (your alley and some of each neighbour), at most 80 up and down
+  // and enough down to see the ball in your hand at the front of the alley
+  var hf = 48 * Math.PI / 180, vf = 2 * Math.atan(Math.tan(hf / 2) / asp) * 180 / Math.PI;
+  camera.fov = Math.max(58, Math.min(80, vf));
+  var portrait = asp < 0.8;
+  camera.position.set(0, portrait ? 1.62 : 1.6, portrait ? 0.48 : 0.55);
+  camera.lookAt(0, portrait ? 1.0 : 1.0, -(portrait ? 2.05 : 2.1));
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', layout);
+
+// ------------------------------------------------------------------ frame loop
+var tPrev = now();
+var aimLine = null;
+function frame() {
+  requestAnimationFrame(frame);
+  var t = now(), dt = Math.min(0.05, (t - tPrev) / 1000); tPrev = t;
+  pollPads(dt);
+  if (S.mode === 'play') {
+    var kx = (keys.ArrowLeft || keys.KeyA ? -1 : 0) + (keys.ArrowRight || keys.KeyD ? 1 : 0);
+    if (kx) hand.x = clampX(hand.x + kx * 0.45 * dt);
+  }
+  // the ball in hand
+  var inHand = S.mode === 'play' && S.thrown < CFG.balls && t - S.lastRoll > 300;
+  var pw = S.holding ? SK.meter(t - S.holdT0) : 0;
+  hand.mesh.visible = inHand; hand.shadow.visible = inHand;
+  if (inHand) {
+    var hz = Z_LANE + 0.04 - pw * 0.10, hy = Y_LANE + A.R + 0.035 + pw * 0.02;
+    hand.mesh.position.copy(V(LANE, hand.x, hy, hz));
+    hand.mesh.rotation.y += dt * 0.6;
+    placeShadow(hand.shadow, hand.x, hy, Z_LANE + 0.06);
+    hand.shadow.material.opacity = 0.3;
+  }
+  aimLine.visible = inHand;
+  if (inHand) { aimLine.position.x = hand.x; aimLine.material.opacity = S.holding ? 0.5 : 0.22; }
+  document.getElementById('mfill').style.height = (pw * 100) + '%';
+  // balls on the alley
+  var roll = 0;
+  live.forEach(function (bl) {
+    if (bl.gone) return;
+    var et = (t - bl.t0) / 1000, path = bl.res.path, last = path[path.length - 1];
+    while (bl.ei < bl.res.events.length && bl.res.events[bl.ei].t <= et) {
+      var ev = bl.res.events[bl.ei++];
+      if (ev.kind === 'hit' || ev.kind === 'land' || ev.kind === 'bounce') SFX.hit(ev.s || 0.5);
+      else if (ev.kind === 'rim') SFX.rim(ev.s);
+      else if (ev.kind === 'wall') SFX.wall(ev.s);
+      else if (ev.kind === 'back') SFX.hit(0.6);
+      else if (ev.kind === 'hole') SFX.hole(ev.s);
+      else if (ev.kind === 'gutter') SFX.gutter();
+    }
+    var p;
+    if (et >= last[0]) {
+      // finished: drop into the hole (or away down the return), then gone
+      var k = Math.min(1, (et - last[0]) / 0.35);
+      if (!bl.done) settle(bl);
+      if (bl.res.where === 'hole') {
+        var hp = SK.fromBoard(bl.res.u, bl.res.v, A.R - k * 0.09);
+        p = [hp[0], hp[1], hp[2]];
+      } else p = [last[1], last[2] - k * 0.1, last[3]];
+      if (k >= 1) { bl.gone = true; scene.remove(bl.mesh); scene.remove(bl.shadow); return; }
+    } else {
+      var lo = 0, hi = path.length - 1;
+      while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (path[mid][0] <= et) lo = mid; else hi = mid; }
+      var a = path[lo], c = path[hi], f = c[0] > a[0] ? (et - a[0]) / (c[0] - a[0]) : 0;
+      p = [a[1] + (c[1] - a[1]) * f, a[2] + (c[2] - a[2]) * f, a[3] + (c[3] - a[3]) * f];
+    }
+    var pos = V(LANE, p[0], p[1], p[2]);
+    if (bl.last) {
+      var dv = pos.clone().sub(bl.last), d = dv.length();
+      if (d > 1e-5) {
+        var axis = new T3.Vector3(0, 1, 0).cross(dv).normalize();
+        if (axis.lengthSq() > 0.5) bl.mesh.rotateOnWorldAxis(axis, d / A.R);
+        if (p[2] < Z_LIP && et < last[0]) roll += d / Math.max(dt, 1e-3);
+      }
+    }
+    bl.last = pos.clone();
+    bl.mesh.position.copy(pos);
+    placeShadow(bl.shadow, p[0], p[1], p[2]);
+  });
+  live = live.filter(function (bl) { return !bl.gone; });
+  if (rumbleGain) rumbleGain.gain.setTargetAtTime(Math.min(0.5, roll * 0.09), ac.currentTime, 0.04);
+  // the beacon
+  var on = t < S.beaconUntil && Math.floor(t / 180) % 2 === 0;
+  beacons[LANE].emissiveIntensity = on ? 3.2 : 0.25;
+  // payout
+  if (S.mode === 'payout' && t >= S.feedT0) {
+    var fedNow = 0, el = t - S.feedT0;
+    while (fedNow < S.feed.length && S.feed[fedNow] <= el) fedNow++;
+    if (fedNow > S.fed) { S.fed = fedNow; S.tickets = fedNow; SFX.ticket(); ui(); }
+    if (S.fed >= S.feed.length) setTimeout(function () { if (S.mode === 'payout') finishPayout(); }, 600), S.feedT0 = Infinity;
+  }
+  renderer.render(scene, camera);
+}
+
+// ------------------------------------------------------------------ start
+loadAll(function () {
+  [4, 3, 2, 1].forEach(buildLane);
+  buildRoom();
+  var hb = makeBall(); hand.mesh = hb.mesh; hand.shadow = hb.shadow;
+  var pts = [];
+  for (var z = Z_LANE + 0.1; z <= Z_HUMP; z += 0.05) pts.push(new T3.Vector3(0, SK.laneY(z) + 0.004, -z));
+  aimLine = new T3.Line(new T3.BufferGeometry().setFromPoints(pts), aimMat);
+  aimLine.computeLineDistances(); aimLine.renderOrder = 3; scene.add(aimLine);
+  drawLed(0, 0, false);
+  layout(); ui();
+  document.getElementById('load').style.display = 'none';
+  frame();
+  window.__skee = { S: S, SK: SK, start: startGame, roll: rollBall, live: function () { return live; } };   // for tests
+});
+})();
+</script>
+</body>
+</html>

@@ -108,6 +108,28 @@ Source: Steven's video of a working machine (`cyclone-ticket-redemption-game-fro
 - **Guessed:** a small win's flash (1.5 s before the payout), the sounds (synthesized, not the real machine's), green tickets as in the video.
 - **Textures:** `tools/stores/pocket_change/paint_whirlwind_game.py` re-runs the cabinet's painters, with the playfield at 2048 px.
 - **Tests:** `node tests/unit/whirlwind/logic.test.js` covers the window, the next-lamp rule, the bonus, the payout rate, and the win odds (3/1620 for random presses).
+- **Phone timing (Oct 11):** Steven: "do try to do the timing compensation for iPhone a little bit, just to make it a little bit easier." A touch is judged `touchLagMs` = 55 ms earlier (`logic.js` `seenAt`), where the light was when the player saw it. Mouse, keys and pads are unchanged.
+
+## SKEE-BALL is playable (Steven, Oct 11, 2026)
+Source: Steven's video of a restored classic ten-foot alley (`tnt-amusements-382-10-foot-classic-skeeball-arcade-machine-with-the-corner-100s.mp4`, a TNT Amusements showroom segment). The talk is mostly about the restoration, not the rules. The frames give the game.
+- **Page:** `play/skeeball.html?lane=<1..4>` (+ `play/skeeball/`: `logic.js` and textures; `play/lib/three.min.js`, three.js r160, MIT). Opened from any of the four alleys: stand at its front, facing up it, and press Play (tap, E/Enter, or a pad's A; `scripts/signs.gd` `_near_skee`). It runs in the same full-window frame as `emu.html` and `whirlwind.html` and posts `emu-close` to come back.
+- **Which alley you are on:** the page builds all four alleys side by side as they stand in the mall (from the player's left: 4, 3, 2, 1, `store.gd` wall_run) and stands you at the one you walked up to, so the neighbours are beside you. The others show their attract scores; the 3's WINNER beacon is lit, as in the mall.
+- **What the video gives:**
+  - **9 balls** a game. The LED shows the score (3 digits, multiples of 10) and the balls played; a ball counts when it drops through a hole.
+  - A good roller takes about **2.4 s a ball** (0 → 250 in 9 balls, 1:32 to 1:51), often with the last ball still on the board.
+  - The board: rings 10, 20, 30 round a 40 cup, a 50 cup above, and the two **corner 100s**. The mall alley's board (`paint_skee.py` RINGS/HOLES) has the same layout, so the page uses it.
+  - Not in the video: price, ticket table, settings.
+- **The roll (Steven: "based on clicks for accuracy, how long you hold down the ball, where you're lining it up"):**
+  - Press and hold to pick up the ball; slide (or ← →, a pad's stick) to line it up across the lane.
+  - While held, the meter fills in 0.95 s, then falls back and rises again. Let go to roll: the meter sets the release speed, 2.6 to 5.0 m/s.
+  - A touch release is read 55 ms earlier, as WHIRLWIND's touch timing.
+  - Each roll has a small imperfection (±1.2 % speed, ±0.35°), as a real lane does.
+- **Physics** (`logic.js` `roll`): a ball rolling on the lane (5/7 of g's slope pull, rolling resistance), up the hump, off its lip, through the air onto the board, against the side walls, the wire cage and the back. On the board the rims are walls a ball has to hop. A ball rolling into one faster than a threshold hops it; slower, it bounces off. A ball over a hole slowly enough drops. A ball that falls short drops into the gutter, or rolls back to you, for 0. A hard roll up the side can reach a 100; up the middle, the 50.
+- **Tickets (guessed):** 1 per 30 points, plus 5 for each 100 pocket. The mall alley's front says "TICKETS PAID ON SCORE" and "100 POCKETS = BONUS". They feed at 2.5 a second, as WHIRLWIND's; SKIP finishes the payout.
+- **Saved in the browser:** the best score (`skeeball.best`) and sound on/off.
+- **Guessed:** the ticket table and pocket bonus, the meter, every physics constant (tuned by sweeping position × power: about 50 % 10s, 16 % 20s, 10 % 30s, 2.5 % 40s, 3.4 % 50s, 3.4 % 100s, 15 % zeros over all rolls), and the sounds (synthesized).
+- **Textures:** `tools/stores/pocket_change/paint_skeeball_game.py` re-encodes the mall alley's own textures (`tex/pc/skee_*.png`) as WebP.
+- **Tests:** `node tests/unit/skeeball/logic.test.js` covers the meter, the speed range, the board frame, every roll ending with a real value, determinism, where soft and hard rolls go, how rare 100s are, and the ticket table.
 
 ## Sign pass (Oct 7, 2026)
 See photos/ (Steven's photos for this store) and tools/stores/signs/ (make_logos.py batch3, channel.gd sg_* materials).

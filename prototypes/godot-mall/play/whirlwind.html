@@ -596,8 +596,8 @@ function startGame(at) {
   hideFlash();
   ui();
 }
-function stopGame(t) {
-  var ms = t - S.t0;
+function stopGame(t, src) {
+  var ms = WW.seenAt(t, src) - S.t0;
   if (ms < CFG.lockoutMs) return;
   var r = WW.judge(ms, S.start);
   S.result = r; S.stopAt = t; S.mode = 'stopped';
@@ -637,7 +637,7 @@ function action(t, src) {
   if (document.getElementById('load').style.display !== 'none') return;
   if (S.mode === 'title' || S.mode === 'over') { if (src !== 'pad-any') startDollar(); return; }
   if (S.mode === 'ready') { startGame(now() + 250); return; }
-  if (S.mode === 'chase') { pressFx = now(); stopGame(t); return; }
+  if (S.mode === 'chase') { pressFx = now(); stopGame(t, src); return; }
 }
 
 // ------------------------------------------------------------------ input (exact timestamps)
@@ -646,7 +646,7 @@ stage.addEventListener('pointerdown', function (e) {
   if (e.target.closest('button') || e.target.closest('.card')) return;
   if (e.button && e.button !== 0) return;
   e.preventDefault();
-  action(evTime(e), 'pointer');
+  action(evTime(e), e.pointerType === 'touch' ? 'touch' : 'pointer');
 }, { passive: false });
 window.addEventListener('keydown', function (e) {
   if (e.repeat) return;

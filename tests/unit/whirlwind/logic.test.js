@@ -61,4 +61,16 @@ t('random presses win about 3/1620 of the time', () => {
   const p = w / N;
   assert.ok(Math.abs(p - 3 / 1620) < 0.0006, 'p ' + p);
 });
+t('a touch is judged touchLagMs earlier (phone lag); mouse, keys and pads are not', () => {
+  const lag = WW.CONFIG.touchLagMs;
+  assert.ok(lag > 0 && lag <= 80);
+  assert.strictEqual(WW.seenAt(1000, 'touch'), 1000 - lag);
+  assert.strictEqual(WW.seenAt(1000, 'pointer'), 1000);
+  assert.strictEqual(WW.seenAt(1000, 'key'), 1000);
+  assert.strictEqual(WW.seenAt(1000, 'pad'), 1000);
+  // a touch that lands `lag` late after the bonus lamp's centre still wins
+  const ms = (64 + 0.5) * L + lag;
+  assert.strictEqual(WW.judge(WW.seenAt(ms, 'touch'), 0).bonus, true);
+  assert.strictEqual(WW.judge(ms, 0).bonus, false);
+});
 console.log(n + ' passed');

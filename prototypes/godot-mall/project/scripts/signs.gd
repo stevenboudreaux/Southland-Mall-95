@@ -203,6 +203,8 @@ func _near_check() -> void:
 				break
 	if found == "" and cam != null:
 		found = _near_whirlwind(cam, fwd if fwd != null else Vector3.ZERO)
+	if found == "" and cam != null:
+		found = _near_skee(cam, fwd if fwd != null else Vector3.ZERO)
 	play_id = found
 	if b_play == null:
 		return
@@ -211,6 +213,8 @@ func _near_check() -> void:
 		var t = ""
 		if found.begins_with("pc.cyclone"):
 			t = text_of(found)
+		elif found.begins_with("pc.skee"):
+			t = "SKEE-BALL"
 		else:
 			t = str(roms[found].get("title", ""))
 			if t == "" or t == str(recs[found].title):
@@ -242,7 +246,31 @@ func _near_whirlwind(cam: Camera3D, fwd: Vector3) -> String:
 			return id
 	return ""
 
+## The four skee-ball alleys (play/skeeball.html, Steven Oct 11): standing at an alley's front
+## (0.15 to 1.6 m out, within its 0.76 m width) and facing up it. The alleys have no sign records,
+## so their places come from the layout: tools/stores/pocket_change/store.gd puts them against the
+## right wall (u = SIDE + skee.gd D = 3.27 m from the store's corner, x = -110 + 3.27) from
+## d = SKEE_D = 7.8 m (z = 60 + 7.8), 0.76 m apart, numbered 1..4, facing -x. Only Pocket Change's
+## wing has the cyclone's record, so that is the check that this wing has the alleys.
+const SKEE_FRONT_X = -106.73
+const SKEE_Z0 = 67.8
+const SKEE_W = 0.76
+
+func _near_skee(cam: Camera3D, fwd: Vector3) -> String:
+	if not recs.has("pc.cyclone.1"):
+		return ""
+	var dx = cam.global_position.x - SKEE_FRONT_X
+	if dx < 0.15 or dx > 1.6 or fwd.dot(Vector3(-1, 0, 0)) < 0.3:
+		return ""
+	var k = int(floor((cam.global_position.z - SKEE_Z0) / SKEE_W))
+	if k < 0 or k > 3:
+		return ""
+	return "pc.skee.%d" % (k + 1)
+
 func _play(id: String) -> void:
+	if id.begins_with("pc.skee."):
+		JavaScriptBridge.eval("window.mallRoms && window.mallRoms.open('skeeball.html?lane=" + id.get_slice(".", 2) + "')")
+		return
 	if id.begins_with("pc.cyclone"):
 		JavaScriptBridge.eval("window.mallRoms && window.mallRoms.open('whirlwind.html?name=' + encodeURIComponent(" + JSON.stringify(text_of(id)) + "))")
 		return
