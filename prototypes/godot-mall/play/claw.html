@@ -1,0 +1,828 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>CLAW</title>
+<!--
+  The playable claw machines in Pocket Change (Steven, Oct 11 2026).
+  Walk up to any of the three cranes in the mall and press Play (scripts/signs.gd), or open this
+  page directly: claw.html?machine=<1..3>&name=<title>. It stands you at that machine with the
+  other two beside you as they stand in the mall (from the player's left: 3, 2, 1).
+  Rules: claw/logic.js (the cycle from Steven's repair video; the rest guessed). Textures and
+  geometry are the mall cabinet's own (tools/stores/pocket_change/crane.gd, paint_claw_game.py).
+  The mall page shows this in a full-window frame and listens for "emu-close".
+  Kept in this browser (localStorage): each machine's pile ("claw.pile.<n>", so prizes you moved
+  stay moved and ones you won stay gone until the attendant refills it), the plays count, and
+  the player's prizes ("mall.inventory": every prize won, with its tickets and POGs; "mall.tickets":
+  the ticket total). The inventory is for the future: things to do with prizes later.
+-->
+<style>
+  :root { --bg: #07060a; --fg: #f4f0e8; --dim: #a49eb2; --accent: #ffd23c; --red: #ff3a1e; --line: #2a2634; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); overflow: hidden;
+               font: 16px/1.4 -apple-system, "Helvetica Neue", Arial, sans-serif; -webkit-user-select: none; user-select: none;
+               -webkit-touch-callout: none; touch-action: none; }
+  #bar { position: fixed; top: 0; left: 0; right: 0; height: 48px; display: flex; align-items: center; gap: 8px; padding: 0 10px;
+         padding-top: env(safe-area-inset-top); background: #000; border-bottom: 1px solid var(--line); z-index: 20; }
+  #bar b { flex: 1; letter-spacing: .06em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-style: italic; color: var(--accent); }
+  button { font: inherit; color: #1a0a20; background: var(--accent); border: 0; border-radius: 10px; padding: 9px 14px; font-weight: 800; cursor: pointer; }
+  button.ghost { background: transparent; color: var(--fg); border: 1px solid #3a3446; font-weight: 600; }
+  #stage { position: fixed; top: calc(48px + env(safe-area-inset-top)); left: 0; right: 0; bottom: 0; }
+  #gl { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .chip { position: absolute; top: 10px; padding: 6px 12px; border-radius: 999px; background: rgba(8, 6, 14, .72);
+          border: 1px solid rgba(255, 255, 255, .12); font-weight: 700; font-size: 15px; pointer-events: none; z-index: 5;
+          font-variant-numeric: tabular-nums; }
+  #clock { left: 10px; }
+  #clock.low { color: var(--red); }
+  #tix { right: 10px; text-align: right; }
+  #tix span { color: var(--accent); }
+  #tix small { display: block; font-size: 12px; color: var(--dim); font-weight: 600; }
+  #pad { position: absolute; left: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); width: 132px; height: 132px; border-radius: 50%;
+         background: rgba(8, 6, 14, .55); border: 1px solid rgba(255, 255, 255, .18); z-index: 6; display: none; touch-action: none; }
+  #pad i { position: absolute; left: 50%; top: 50%; width: 52px; height: 52px; margin: -26px 0 0 -26px; border-radius: 50%;
+           background: radial-gradient(circle at 35% 30%, #ff6a5a 0, #c01818 60%, #600a0a 100%); box-shadow: 0 4px 10px rgba(0,0,0,.6); }
+  #drop { position: absolute; right: 14px; bottom: calc(18px + env(safe-area-inset-bottom)); width: 108px; height: 108px; border-radius: 50%;
+          z-index: 6; display: none; font-size: 20px; letter-spacing: .06em; color: #2a0404;
+          background: radial-gradient(circle at 40% 35%, #ff8a7a 0, #e02a1a 55%, #8a0c08 100%); border: 4px solid #cfd3da; box-shadow: 0 5px 14px rgba(0,0,0,.6); touch-action: none; }
+  #drop:active { transform: translateY(2px); }
+  #msg { position: absolute; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom)); transform: translateX(-50%); z-index: 7;
+         width: min(440px, calc(100% - 24px)); text-align: center; pointer-events: none; }
+  #msg .card { background: rgba(10, 6, 18, .9); border: 1px solid rgba(255, 210, 60, .35); border-radius: 16px; padding: 14px 16px 16px;
+               box-shadow: 0 8px 30px rgba(0, 0, 0, .5); pointer-events: auto; }
+  #msg h2 { margin: 0 0 4px; font-size: 26px; font-style: italic; letter-spacing: .05em; color: var(--accent);
+            text-shadow: 0 0 12px rgba(255, 60, 30, .6), 2px 2px 0 #3a2a90; }
+  #msg p { margin: 4px 0 10px; color: #ddd6e8; font-size: 15px; }
+  #msg .big { font-size: 20px; padding: 12px 26px; }
+  #msg .hint { pointer-events: none; display: inline-block; background: rgba(10, 6, 18, .7); border-radius: 999px; padding: 7px 14px;
+               font-weight: 700; font-size: 14px; color: #fff; border: 1px solid rgba(255, 255, 255, .14); }
+  #flash { position: absolute; left: 50%; top: 22%; transform: translate(-50%, -50%); z-index: 6; pointer-events: none; text-align: center;
+           font-weight: 900; font-style: italic; font-size: clamp(30px, 8vw, 60px); color: #fff; letter-spacing: .04em; opacity: 0;
+           text-shadow: 0 0 18px #ff3a1e, 0 0 4px #ff3a1e, 3px 3px 0 #3a2a90; transition: opacity .25s; white-space: nowrap; }
+  #flash small { display: block; font-size: .42em; letter-spacing: .1em; }
+  #inv { position: fixed; inset: 0; z-index: 25; background: rgba(4, 3, 8, .92); display: none; overflow: auto; padding: 60px 14px 30px; }
+  #inv .wrap { max-width: 560px; margin: 0 auto; }
+  #inv h2 { font-style: italic; color: var(--accent); letter-spacing: .05em; margin: 0 0 4px; }
+  #inv .sub { color: var(--dim); margin-bottom: 14px; }
+  #inv ul { list-style: none; padding: 0; margin: 0; }
+  #inv li { display: flex; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; background: #0e0b16; }
+  #inv li .ic { width: 42px; height: 42px; border-radius: 10px; flex: none; background: #1a1424; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+  #inv li .nm { flex: 1; font-weight: 700; }
+  #inv li .nm small { display: block; color: var(--dim); font-weight: 500; font-size: 12px; }
+  #inv li.rare { border-color: #ffd23c; box-shadow: 0 0 14px rgba(255, 210, 60, .25); }
+  #inv .close { position: fixed; top: 10px; right: 10px; }
+  #inv .empty { color: var(--dim); padding: 30px 0; text-align: center; }
+  #load { position: fixed; inset: 0; z-index: 30; background: radial-gradient(circle at 50% 38%, #2c1010 0, #0b0710 60%, #050407 100%);
+          display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 16px; }
+  #load h1 { margin: 0; font-size: clamp(38px, 11vw, 76px); font-style: italic; letter-spacing: .06em; color: var(--accent);
+             text-shadow: 0 0 22px rgba(255, 60, 30, .75), 4px 4px 0 #3a2a90; }
+  #load .sub { color: var(--dim); margin: 8px 0 26px; }
+  #load .track { width: min(380px, 80vw); height: 10px; border-radius: 6px; background: #2a2236; overflow: hidden; }
+  #load .bar { height: 100%; width: 0; background: linear-gradient(90deg, #ff3a1e, #ffd23c); transition: width .2s; }
+  #load .err { color: #ff8a8a; margin-top: 14px; min-height: 1.4em; }
+</style>
+</head>
+<body>
+<div id="bar"><button class="ghost" id="back">&#8592; Mall</button><b id="title">CLAW</b><button class="ghost" id="prizes">Prizes</button><button class="ghost" id="snd" aria-label="Sound">&#128266;</button></div>
+<div id="stage">
+  <canvas id="gl"></canvas>
+  <div class="chip" id="clock">&nbsp;</div>
+  <div class="chip" id="tix">TICKETS <span id="tk">0</span><small><span id="pc">0</span> PRIZES</small></div>
+  <div id="pad"><i id="knob"></i></div>
+  <button id="drop">DROP</button>
+  <div id="flash"></div>
+  <div id="msg"></div>
+</div>
+<div id="inv"><button class="ghost close" id="invclose">Close</button><div class="wrap"><h2>YOUR PRIZES</h2><div class="sub" id="invsub"></div><ul id="invlist"></ul></div></div>
+<div id="load"><h1 id="ltitle">CLAW</h1><div class="sub" id="lsub">Pocket Change &middot; claw machine</div>
+  <div class="track"><div class="bar" id="lbar"></div></div><div class="err" id="lerr"></div></div>
+<script src="lib/three.min.js"></script>
+<script src="claw/logic.js"></script>
+<script>
+(function () {
+'use strict';
+var CL = window.CLAW, CFG = CL.CONFIG, K = CL.KINDS, T3 = window.THREE;
+var Q = new URLSearchParams(location.search);
+var M = Math.max(1, Math.min(3, parseInt(Q.get('machine'), 10) || 1));
+var TITLES = ['PRIZE CATCHER', 'LUCKY GRAB', 'SKILL CRANE'];
+var NAME = (Q.get('name') || TITLES[M - 1]).slice(0, 24);
+var inFrame = window.parent && window.parent !== window;
+document.getElementById('title').textContent = NAME;
+document.getElementById('ltitle').textContent = NAME;
+document.getElementById('lsub').textContent = 'Pocket Change · claw machine ' + M + ' of 3';
+document.title = NAME;
+
+// ------------------------------------------------------------------ storage (per browser)
+function load(k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } }
+function save(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+var soundOn = load('claw.sound', true) !== false;
+var inventory = load('mall.inventory', []); if (!Array.isArray(inventory)) inventory = [];
+var tickets = load('mall.tickets', 0); if (typeof tickets !== 'number' || tickets < 0) tickets = 0;
+var pileKey = 'claw.pile.' + M;
+var pile = load(pileKey, null);
+function newFill() { var seed = (Date.now() ^ (M * 7919)) >>> 0; return { seed: seed, plays: 0, items: CL.fill(seed) }; }
+if (!pile || !Array.isArray(pile.items) || !pile.items.every(function (i) { return i && K[i.kind] && typeof i.x === 'number'; })) pile = newFill();
+if (pile.items.length < CFG.refillBelow) pile = newFill();
+CL.settle(pile.items);
+save(pileKey, pile);
+function now() { return performance.now(); }
+
+// ------------------------------------------------------------------ renderer
+var stage = document.getElementById('stage'), canvas = document.getElementById('gl'), renderer;
+try { renderer = new T3.WebGLRenderer({ canvas: canvas, antialias: true, powerPreference: 'high-performance' }); }
+catch (e) { document.getElementById('lerr').textContent = 'This browser could not start 3D graphics.'; return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputColorSpace = T3.SRGBColorSpace;
+renderer.toneMapping = T3.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.0;
+var scene = new T3.Scene();
+scene.background = new T3.Color(0x050407);
+scene.fog = new T3.Fog(0x050407, 5, 11);
+var camera = new T3.PerspectiveCamera(50, 1, 0.03, 30);
+
+// The three cranes stand side by side as in the mall (store.gd wall_run, 0.02 m apart), from the
+// player's left: 3, 2, 1. This page's x = 0 is the middle of the chosen one; three's z = -lane z.
+var PITCH = 0.82;
+function mx(n) { return (M - n) * PITCH; }
+function V(n, x, y, z) { return new T3.Vector3(mx(n) + x, y, -z); }
+function H(x, y, z) { return new T3.Vector3(x, y, -z); }
+
+// ------------------------------------------------------------------ textures
+var TEX = {};
+var TEX_LIST = ['cab_0', 'cab_1', 'cab_2', 'header_0', 'header_1', 'header_2', 'panel', 'glass', 'fur', 'faces', 'pogs', 'capsule', 'store_carpet', 'store_wall'];
+var loader = new T3.TextureLoader();
+function loadAll(done) {
+  var n = 0, failed = false;
+  TEX_LIST.forEach(function (k) {
+    loader.load('claw/' + k + '.webp', function (t) {
+      t.colorSpace = T3.SRGBColorSpace; t.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+      TEX[k] = t; n++;
+      document.getElementById('lbar').style.width = (100 * n / TEX_LIST.length) + '%';
+      if (n === TEX_LIST.length && !failed) done();
+    }, undefined, function () { failed = true; document.getElementById('lerr').textContent = 'Could not load the machine (' + k + '). Check the connection and reload.'; });
+  });
+}
+
+// ------------------------------------------------------------------ geometry builder (as skeeball.html)
+function Builder() { this.s = {}; }
+Builder.prototype.surf = function (k) { return this.s[k] || (this.s[k] = { p: [], n: [], uv: [] }); };
+Builder.prototype.tri = function (k, a, b, c, ua, ub, uc, na, nb, nc) {
+  var s = this.surf(k);
+  [[a, ua, na], [b, ub, nb], [c, uc, nc]].forEach(function (e) { s.p.push(e[0].x, e[0].y, e[0].z); s.n.push(e[2].x, e[2].y, e[2].z); s.uv.push(e[1][0], 1 - e[1][1]); });
+};
+Builder.prototype.quad = function (k, p, uv, hint, normals) {
+  uv = uv || [[0, 1], [1, 1], [1, 0], [0, 0]];
+  var n = new T3.Vector3().subVectors(p[1], p[0]).cross(new T3.Vector3().subVectors(p[3], p[0]));
+  if (n.lengthSq() < 1e-12) n = new T3.Vector3().subVectors(p[2], p[1]).cross(new T3.Vector3().subVectors(p[3], p[1]));
+  n.normalize();
+  var flip = hint && n.dot(hint) < 0; if (flip) n.negate();
+  var N = normals || [n, n, n, n];
+  if (!flip) { this.tri(k, p[0], p[1], p[2], uv[0], uv[1], uv[2], N[0], N[1], N[2]); this.tri(k, p[0], p[2], p[3], uv[0], uv[2], uv[3], N[0], N[2], N[3]); }
+  else { this.tri(k, p[0], p[2], p[1], uv[0], uv[2], uv[1], N[0], N[2], N[1]); this.tri(k, p[0], p[3], p[2], uv[0], uv[3], uv[2], N[0], N[3], N[2]); }
+};
+// a box in the lane frame: c = centre (world), size [sx, sy, sz]; skip = faces to leave out ('+y' ...)
+Builder.prototype.box = function (k, c, size, skip) {
+  var hx = size[0] / 2, hy = size[1] / 2, hz = size[2] / 2, self = this; skip = skip || [];
+  function P(x, y, z) { return new T3.Vector3(c.x + x, c.y + y, c.z - z); }
+  var F = [['-z', [-hx, -hy, -hz], [hx, -hy, -hz], [hx, hy, -hz], [-hx, hy, -hz], [0, 0, -1]], ['+z', [hx, -hy, hz], [-hx, -hy, hz], [-hx, hy, hz], [hx, hy, hz], [0, 0, 1]],
+           ['+y', [-hx, hy, -hz], [hx, hy, -hz], [hx, hy, hz], [-hx, hy, hz], [0, 1, 0]], ['-y', [-hx, -hy, hz], [hx, -hy, hz], [hx, -hy, -hz], [-hx, -hy, -hz], [0, -1, 0]],
+           ['-x', [-hx, -hy, hz], [-hx, -hy, -hz], [-hx, hy, -hz], [-hx, hy, hz], [-1, 0, 0]], ['+x', [hx, -hy, -hz], [hx, -hy, hz], [hx, hy, hz], [hx, hy, -hz], [1, 0, 0]]];
+  F.forEach(function (f) { if (skip.indexOf(f[0]) >= 0) return; self.quad(k, [P.apply(null, f[1]), P.apply(null, f[2]), P.apply(null, f[3]), P.apply(null, f[4])], null, H(f[5][0], f[5][1], f[5][2])); });
+};
+Builder.prototype.meshes = function (mats, group) {
+  for (var k in this.s) {
+    var s = this.s[k], g = new T3.BufferGeometry();
+    g.setAttribute('position', new T3.Float32BufferAttribute(s.p, 3)); g.setAttribute('normal', new T3.Float32BufferAttribute(s.n, 3)); g.setAttribute('uv', new T3.Float32BufferAttribute(s.uv, 2));
+    group.add(new T3.Mesh(g, mats(k)));
+  }
+};
+function px(x0, y0, x1, y1, tw, th) { return [[x0 / tw, y1 / th], [x1 / tw, y1 / th], [x1 / tw, y0 / th], [x0 / tw, y0 / th]]; }
+
+// ------------------------------------------------------------------ materials (crane.gd fill_mat)
+var MATS = {}, S = T3.MeshStandardMaterial;
+var CAB_COL = [0x18181b, 0x1c3890, 0x961418], BTN_COL = [0xff2a1a, 0xffd21a, 0x27e04a];
+function texRepeat(t) { var c = t.clone(); c.wrapS = c.wrapT = T3.RepeatWrapping; c.needsUpdate = true; return c; }
+function mat(k) {
+  if (MATS[k]) return MATS[k];
+  var m, st = parseInt(k.slice(-1), 10), base = /\d$/.test(k) ? k.slice(0, -1) : k;
+  switch (base) {
+    case 'cab': m = new S({ map: TEX['cab_' + st], roughness: 0.45 }); break;
+    case 'body': m = new S({ color: CAB_COL[st], roughness: 0.45 }); break;
+    case 'hdr': m = new S({ map: TEX['header_' + st], emissiveMap: TEX['header_' + st], emissive: 0xffffff, emissiveIntensity: 0.9, roughness: 0.25 }); break;
+    case 'btn': m = new S({ color: BTN_COL[st], emissive: BTN_COL[st], emissiveIntensity: 0.8, roughness: 0.25 }); break;
+    case 'panel': m = new S({ map: TEX.panel, roughness: 0.5 }); break;
+    case 'lamp': m = new S({ map: TEX.panel, emissiveMap: TEX.panel, emissive: 0xffffff, emissiveIntensity: 1.2, roughness: 0.3 }); break;
+    case 'blk': m = new S({ color: 0x121214, roughness: 0.5 }); break;
+    case 'hole': m = new S({ color: 0x040404, roughness: 1 }); break;
+    case 'deck': m = new S({ color: 0x1e1e22, roughness: 0.95 }); break;
+    case 'alu': m = new S({ color: 0xc2c6cc, metalness: 0.85, roughness: 0.32 }); break;
+    case 'chrome': m = new S({ color: 0xe6e9ee, metalness: 0.75, roughness: 0.16 }); break;
+    case 'steel': m = new S({ color: 0x5a5d63, metalness: 0.6, roughness: 0.45 }); break;
+    case 'ball': m = new S({ color: 0xd01818, roughness: 0.2 }); break;
+    case 'glass': m = new S({ map: TEX.glass, transparent: true, opacity: 0.5, roughness: 0.05, metalness: 0.1, side: T3.DoubleSide, depthWrite: false }); break;
+    case 'tube': m = new S({ color: 0xffffff, emissive: 0xeef5ff, emissiveIntensity: 2.5 }); break;
+    case 'ceil': m = new S({ color: 0xe8ecf0, emissive: 0xe6eeff, emissiveIntensity: 0.5, roughness: 0.8 }); break;
+    case 'floor': var ct = texRepeat(TEX.store_carpet); ct.repeat.set(6, 6); m = new S({ map: ct, color: 0x9a9aa6, roughness: 0.95 }); break;
+    case 'wall': var wt = texRepeat(TEX.store_wall); wt.repeat.set(4, 1.5); m = new S({ map: wt, color: 0x6a6670, roughness: 0.85 }); break;
+    default: m = new S({ color: 0xff00ff });
+  }
+  MATS[k] = m; return m;
+}
+function furMat(hex) {
+  var key = 'fur' + hex; if (MATS[key]) return MATS[key];
+  var m = new S({ map: TEX.fur, color: hex, roughness: 0.95 }); MATS[key] = m; return m;
+}
+function faceMat(i) {
+  var key = 'face' + i; if (MATS[key]) return MATS[key];
+  var t = TEX.faces.clone(); t.needsUpdate = true; t.repeat.set(0.25, 0.5); t.offset.set((i % 4) * 0.25, 0.5 - Math.floor(i / 4) * 0.5);
+  var m = new S({ map: t, transparent: true, alphaTest: 0.4, roughness: 0.3, polygonOffset: true, polygonOffsetFactor: -2 }); MATS[key] = m; return m;
+}
+function pogMat(i) {
+  var key = 'pog' + i; if (MATS[key]) return MATS[key];
+  var t = TEX.pogs.clone(); t.needsUpdate = true; t.repeat.set(0.25, 0.5); t.offset.set((i % 4) * 0.25, 0.5 - Math.floor(i / 4) * 0.5);
+  var m = new S({ map: t, roughness: 0.4, metalness: i === 5 ? 0.6 : 0 }); MATS[key] = m; return m;
+}
+
+// ------------------------------------------------------------------ prizes (this mall's own characters)
+var G = { W: 0.80, D: 0.90, H: 1.98, Z_CAB: 0.05, Z_PNL: 0.17, Y_PF: 0.905, Y_PB: 0.93, Y_DECK: 0.955, Y_G0: 0.96, Y_G1: 1.60, Y_HD: 1.64, PX: 550 };
+function ell(rx, ry, rz, m, seg) { var g = new T3.SphereGeometry(1, seg || 14, seg ? Math.max(6, seg - 4) : 10); var o = new T3.Mesh(g, m); o.scale.set(rx, ry, rz); return o; }
+function at(o, x, y, z) { o.position.set(x, y, z); return o; }
+function decal(i, size, x, y, z, ry, rx) { var q = new T3.Mesh(new T3.PlaneGeometry(size, size), faceMat(i)); q.position.set(x, y, z); q.rotation.set(rx || 0, ry || 0, 0); return q; }
+var CAPSULE_MAT = null;
+function capsuleMats() {
+  if (CAPSULE_MAT) return CAPSULE_MAT;
+  CAPSULE_MAT = { clear: new S({ color: 0xffffff, transparent: true, opacity: 0.28, roughness: 0.05, metalness: 0.1, depthWrite: false, side: T3.DoubleSide }),
+                  rims: [new S({ color: 0xff4a3a, roughness: 0.3 }), new S({ color: 0x3a7aff, roughness: 0.3 }), new S({ color: 0x3ad06a, roughness: 0.3 }), new S({ color: 0xffd23c, roughness: 0.3 })],
+                  paper: new S({ color: 0xf3eee0, roughness: 0.9 }), card: pogMat(6), metal: pogMat(7) };
+  return CAPSULE_MAT;
+}
+function ticketRoll(val) {
+  var row = val === 75 ? 0 : val === 100 ? 1 : 2;
+  var t = TEX.capsule.clone(); t.needsUpdate = true; t.wrapS = T3.RepeatWrapping; t.repeat.set(2.4, 1 / 3); t.offset.set(0, 1 - (row + 1) / 3);
+  var side = new S({ map: t, roughness: 0.8 });
+  var g = new T3.Group();
+  var roll = new T3.Mesh(new T3.CylinderGeometry(0.026, 0.026, 0.022, 24, 1, false), [side, capsuleMats().paper, capsuleMats().paper]);
+  roll.rotation.z = Math.PI / 2; g.add(roll);
+  var core = new T3.Mesh(new T3.CylinderGeometry(0.009, 0.009, 0.024, 12), new S({ color: 0x2a2a2a })); core.rotation.z = Math.PI / 2; g.add(core);
+  return g;
+}
+function pogStack(faces, slammer) {
+  var g = new T3.Group();
+  for (var i = 0; i < faces.length; i++) {
+    var th = slammer ? 0.006 : 0.0015;
+    var disc = new T3.Mesh(new T3.CylinderGeometry(0.021, 0.021, th, 28), [slammer ? capsuleMats().metal : capsuleMats().card, pogMat(faces[i]), slammer ? pogMat(7) : pogMat(6)]);
+    disc.position.set(0, -0.012 + i * (th + 0.0012), 0); disc.rotation.y = i * 0.4; g.add(disc);
+  }
+  return g;
+}
+var POG_IDX = { 'Swamp Skull': 0, 'Gator Bite': 1, 'Lightning': 2, 'Eye Spy': 3, '8-Ball': 4, 'Hologram Eye slammer': 5 };
+function makeCapsule(kind, seed) {
+  var k = K[kind], g = new T3.Group(), c = capsuleMats();
+  var top = new T3.Mesh(new T3.SphereGeometry(0.038, 20, 12, 0, Math.PI * 2, 0, Math.PI / 2), c.clear); g.add(top);
+  var bot = new T3.Mesh(new T3.SphereGeometry(0.037, 20, 12, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), c.rims[kind === 'slammer' ? 3 : (seed % 3)]); g.add(bot);
+  var rim = new T3.Mesh(new T3.TorusGeometry(0.038, 0.0025, 8, 28), c.rims[kind === 'slammer' ? 3 : (seed % 3)]); rim.rotation.x = Math.PI / 2; g.add(rim);
+  var inner = k.tickets ? ticketRoll(k.tickets) : pogStack(k.pogs.map(function (p) { return POG_IDX[p]; }), kind === 'slammer');
+  inner.position.y = 0.002; g.add(inner);
+  g.userData.h = 0.076; g.userData.lift = 0.038;      // the centre sits a radius above the bottom
+  return g;
+}
+function makePlush(kind, seed) {
+  var g = new T3.Group(), r = CL.rng(seed);
+  var tag = function (y, z) { g.add(decal(7, 0.03, 0.0, y, z, Math.PI)); };
+  switch (kind) {
+    case 'gator': {
+      var gr = furMat(0x3f9a3c), yl = furMat(0xe6d27a), dk = furMat(0x2a6e2a);
+      g.add(at(ell(0.055, 0.03, 0.085, gr), 0, 0.03, 0));                         // body
+      g.add(at(ell(0.045, 0.02, 0.07, yl), 0, 0.022, 0.0));                        // belly
+      g.add(at(ell(0.034, 0.028, 0.05, gr), 0, 0.045, 0.1));                       // head / snout
+      g.add(at(ell(0.02, 0.012, 0.055, dk), 0, 0.02, -0.12));                      // tail
+      for (var k2 = 0; k2 < 4; k2++) g.add(at(ell(0.014, 0.012, 0.02, gr), (k2 % 2 ? 1 : -1) * 0.052, 0.015, k2 < 2 ? 0.045 : -0.045));
+      for (var k3 = 0; k3 < 5; k3++) g.add(at(ell(0.008, 0.012, 0.008, dk), 0, 0.058, 0.05 - k3 * 0.035));   // back ridges
+      g.add(decal(0, 0.06, 0, 0.056, 0.125, 0, -Math.PI / 2 + 0.3));
+      tag(0.03, -0.085); g.userData.h = 0.07; break;
+    }
+    case 'crawfish': {
+      var rd = furMat(0xc8201e), dr = furMat(0x8a1410);
+      g.add(at(ell(0.03, 0.028, 0.05, rd), 0, 0.03, 0.01));                        // carapace
+      for (var s1 = 0; s1 < 3; s1++) g.add(at(ell(0.026 - s1 * 0.004, 0.016, 0.022, dr), 0, 0.022, -0.045 - s1 * 0.026));
+      g.add(at(ell(0.04, 0.012, 0.016, dr), 0, 0.016, -0.12));                     // tail fan
+      for (var sx1 = -1; sx1 <= 1; sx1 += 2) {
+        g.add(at(ell(0.016, 0.012, 0.04, rd), sx1 * 0.045, 0.02, 0.055));          // claws
+        g.add(at(ell(0.01, 0.008, 0.02, rd), sx1 * 0.055, 0.02, 0.09));
+        var ant = new T3.Mesh(new T3.CylinderGeometry(0.0015, 0.001, 0.08, 5), dr); ant.position.set(sx1 * 0.012, 0.05, 0.06); ant.rotation.set(-1.1, 0, sx1 * 0.5); g.add(ant);
+      }
+      g.add(decal(1, 0.045, 0, 0.045, 0.058, 0, -0.9));
+      g.userData.h = 0.06; break;
+    }
+    case 'pelican': {
+      var wh = furMat(0xf2eee4), br = furMat(0x8a6a48), or = new S({ color: 0xf0a028, roughness: 0.5 });
+      g.add(at(ell(0.05, 0.045, 0.06, wh), 0, 0.045, -0.01));                      // body
+      for (var sx2 = -1; sx2 <= 1; sx2 += 2) g.add(at(ell(0.018, 0.035, 0.05, br), sx2 * 0.045, 0.05, -0.015));   // wings
+      g.add(at(ell(0.03, 0.03, 0.03, wh), 0, 0.085, 0.03));                        // head
+      var bill = new T3.Mesh(new T3.ConeGeometry(0.018, 0.08, 8), or); bill.position.set(0, 0.075, 0.09); bill.rotation.x = Math.PI / 2 + 0.25; bill.scale.set(1, 1, 0.6); g.add(bill);
+      var pouch = at(ell(0.016, 0.014, 0.035, or), 0, 0.064, 0.07); g.add(pouch);
+      for (var sx3 = -1; sx3 <= 1; sx3 += 2) g.add(at(ell(0.014, 0.004, 0.02, or), sx3 * 0.02, 0.004, 0.01));   // feet
+      g.add(decal(2, 0.05, 0, 0.09, 0.056, 0, 0));
+      tag(0.04, -0.07); g.userData.h = 0.11; break;
+    }
+    case 'nutria': {
+      var bn = furMat(0x6e4a2c), lt = furMat(0x9a7652);
+      g.add(at(ell(0.045, 0.035, 0.055, bn), 0, 0.035, -0.01));
+      g.add(at(ell(0.03, 0.027, 0.032, bn), 0, 0.052, 0.05));
+      for (var sx4 = -1; sx4 <= 1; sx4 += 2) g.add(at(ell(0.012, 0.012, 0.004, lt), sx4 * 0.024, 0.075, 0.04));   // round ears
+      var tl = new T3.Mesh(new T3.CylinderGeometry(0.004, 0.007, 0.11, 6), new S({ color: 0x4a3a30, roughness: 0.8 })); tl.position.set(0.02, 0.012, -0.1); tl.rotation.set(Math.PI / 2 - 0.2, 0, 0.3); g.add(tl);
+      g.add(decal(3, 0.05, 0, 0.052, 0.082, 0, 0));
+      tag(0.035, -0.067); g.userData.h = 0.062; break;
+    }
+    case 'rougarou': {
+      var gy = furMat(0x6e6e74), plaid = furMat(0xa82424), jeans = new S({ color: 0x2c4a8a, roughness: 0.9 });
+      var torso = new T3.Mesh(new T3.BoxGeometry(0.07, 0.06, 0.045), plaid); torso.position.set(0, 0.065, 0); g.add(torso);
+      for (var st1 = 0; st1 < 3; st1++) { var stripe = new T3.Mesh(new T3.BoxGeometry(0.072, 0.004, 0.047), furMat(0x1a1a1a)); stripe.position.set(0, 0.045 + st1 * 0.02, 0); g.add(stripe); }
+      for (var sx5 = -1; sx5 <= 1; sx5 += 2) {
+        g.add(at(ell(0.016, 0.03, 0.016, gy), sx5 * 0.05, 0.062, 0));              // arms (furry)
+        var leg = new T3.Mesh(new T3.BoxGeometry(0.026, 0.038, 0.026), jeans); leg.position.set(sx5 * 0.018, 0.018, 0); g.add(leg);
+      }
+      g.add(at(ell(0.034, 0.032, 0.034, gy), 0, 0.118, 0.0));                      // head
+      g.add(at(ell(0.016, 0.014, 0.024, gy), 0, 0.108, 0.034));                    // muzzle
+      for (var sx6 = -1; sx6 <= 1; sx6 += 2) { var ear = new T3.Mesh(new T3.ConeGeometry(0.01, 0.025, 6), gy); ear.position.set(sx6 * 0.024, 0.15, -0.005); ear.rotation.z = -sx6 * 0.3; g.add(ear); }
+      g.add(decal(4, 0.055, 0, 0.122, 0.036, 0, 0));
+      g.userData.h = 0.16; break;
+    }
+    case 'bruiser': {
+      var rub = new S({ color: 0x4fbf4a, roughness: 0.35 }), trunks = new S({ color: 0x6a2a9a, roughness: 0.5 });
+      g.add(at(ell(0.03, 0.038, 0.022, rub), 0, 0.075, 0));                         // chest
+      for (var sx7 = -1; sx7 <= 1; sx7 += 2) {
+        g.add(at(ell(0.016, 0.03, 0.016, rub), sx7 * 0.042, 0.08, 0));              // arms
+        g.add(at(ell(0.012, 0.012, 0.012, rub), sx7 * 0.046, 0.05, 0.012));         // fists
+        g.add(at(ell(0.013, 0.032, 0.013, rub), sx7 * 0.016, 0.02, 0));             // legs
+      }
+      g.add(at(ell(0.03, 0.014, 0.022, trunks), 0, 0.045, 0));
+      g.add(at(ell(0.02, 0.022, 0.02, rub), 0, 0.125, 0));                          // head
+      var hair = new T3.Mesh(new T3.BoxGeometry(0.036, 0.01, 0.034), new S({ color: 0x3a2412 })); hair.position.set(0, 0.146, 0); g.add(hair);
+      g.add(decal(5, 0.04, 0, 0.125, 0.021, 0, 0));
+      g.userData.h = 0.15; break;
+    }
+    case 'comet': {
+      var suit = furMat(0xf4f2ec), trim = furMat(0xf07a20), visor = new S({ color: 0x8ab4ff, roughness: 0.2, metalness: 0.3 });
+      g.add(at(ell(0.036, 0.04, 0.028, suit), 0, 0.06, 0));                         // body
+      g.add(at(ell(0.038, 0.008, 0.03, trim), 0, 0.062, 0));                        // belt
+      for (var sx8 = -1; sx8 <= 1; sx8 += 2) { g.add(at(ell(0.013, 0.03, 0.013, suit), sx8 * 0.042, 0.065, 0)); g.add(at(ell(0.014, 0.028, 0.014, suit), sx8 * 0.018, 0.02, 0)); g.add(at(ell(0.012, 0.01, 0.012, trim), sx8 * 0.042, 0.038, 0)); }
+      var pack = new T3.Mesh(new T3.BoxGeometry(0.05, 0.05, 0.02), trim); pack.position.set(0, 0.07, -0.03); g.add(pack);
+      g.add(at(ell(0.03, 0.03, 0.03, visor), 0, 0.12, 0));                          // helmet
+      g.add(at(ell(0.024, 0.024, 0.024, suit), 0, 0.12, -0.002));                   // the face inside
+      g.add(decal(6, 0.055, 0, 0.12, 0.032, 0, 0));
+      g.userData.h = 0.15; break;
+    }
+  }
+  g.rotation.y = r() * Math.PI * 2;
+  return g;
+}
+function makePrize(item) {
+  var k = K[item.kind], seed = 0;
+  for (var i = 0; i < item.id.length; i++) seed = (seed * 31 + item.id.charCodeAt(i)) >>> 0;
+  var g = k.capsule ? makeCapsule(item.kind, seed) : makePlush(item.kind, seed);
+  g.userData.item = item;
+  return g;
+}
+function placePrize(g, n, item) {
+  var k = K[item.kind], lift = g.userData.lift || 0;
+  g.position.copy(V(n, item.x, item.y + lift, item.z));
+  if (!k.capsule) g.rotation.y = item.rot;
+}
+
+// ------------------------------------------------------------------ one crane (crane.gd build, ported)
+var live = {};       // the chosen machine's dynamic parts
+function buildCrane(n, style, items) {
+  var b = new Builder(), grp = new T3.Group(), isLive = n === M, st = style;
+  function P(x, y, z) { return V(n, x, y, z); }
+  var cab = 'cab' + st, body = 'body' + st;
+  b.box(body, P(0, 0.485, 0.475), [G.W, 0.87, 0.85], ['-z', '+x', '-x', '+y']);
+  function fr(x0, y0, x1, y1) { b.quad(cab, [P(x0, y0, G.Z_CAB), P(x1, y0, G.Z_CAB), P(x1, y1, G.Z_CAB), P(x0, y1, G.Z_CAB)], px((x0 + 0.4) * G.PX, (0.84 - y1) * G.PX, (x1 + 0.4) * G.PX, (0.84 - y0) * G.PX, 1024, 512), H(0, 0, -1)); }
+  fr(-0.40, 0.05, -0.33, 0.84); fr(-0.13, 0.05, 0.40, 0.84); fr(-0.33, 0.05, -0.13, 0.30); fr(-0.33, 0.52, -0.13, 0.84);
+  var rz = G.Z_CAB + 0.03;
+  b.quad('hole', [P(-0.33, 0.30, G.Z_CAB), P(-0.13, 0.30, G.Z_CAB), P(-0.13, 0.30, rz), P(-0.33, 0.30, rz)], null, H(0, 1, 0));
+  b.quad('hole', [P(-0.33, 0.52, rz), P(-0.13, 0.52, rz), P(-0.13, 0.52, G.Z_CAB), P(-0.33, 0.52, G.Z_CAB)], null, H(0, -1, 0));
+  b.quad('hole', [P(-0.33, 0.30, rz), P(-0.33, 0.30, G.Z_CAB), P(-0.33, 0.52, G.Z_CAB), P(-0.33, 0.52, rz)], null, H(1, 0, 0));
+  b.quad('hole', [P(-0.13, 0.30, G.Z_CAB), P(-0.13, 0.30, rz), P(-0.13, 0.52, rz), P(-0.13, 0.52, G.Z_CAB)], null, H(-1, 0, 0));
+  b.quad('panel', [P(-0.33, 0.30, rz - 0.002), P(-0.13, 0.30, rz - 0.002), P(-0.13, 0.52, G.Z_CAB + 0.012), P(-0.33, 0.52, G.Z_CAB + 0.012)], px(0, 168, 80, 256, 512, 256), H(0, 0.1, -1));
+  var sr = px(448, 0, 916, 479, 1024, 512);
+  b.quad(cab, [P(0.40, 0.05, G.Z_CAB), P(0.40, 0.05, G.D), P(0.40, 0.92, G.D), P(0.40, 0.92, G.Z_CAB)], sr, H(1, 0, 0));
+  b.quad(cab, [P(-0.40, 0.05, G.D), P(-0.40, 0.05, G.Z_CAB), P(-0.40, 0.92, G.Z_CAB), P(-0.40, 0.92, G.D)], sr, H(-1, 0, 0));
+  // coin door
+  var cz = G.Z_CAB - 0.01;
+  b.quad(cab, [P(0.05, 0.40, cz), P(0.31, 0.40, cz), P(0.31, 0.74, cz), P(0.05, 0.74, cz)], px(0.45 * G.PX, 0.10 * G.PX, 0.71 * G.PX, 0.44 * G.PX, 1024, 512), H(0, 0, -1));
+  b.box('steel', P(0.18, 0.57, cz + 0.005), [0.26, 0.34, 0.0098], ['-z', '+z']);
+  for (var k = 0; k < 2; k++) { var lx = 0.05 + 0.26 * (0.27 + 0.46 * k);
+    b.quad('lamp', [P(lx - 0.022, 0.643, cz - 0.0015), P(lx + 0.022, 0.643, cz - 0.0015), P(lx + 0.022, 0.704, cz - 0.0015), P(lx - 0.022, 0.704, cz - 0.0015)], px(96, 168, 144, 232, 512, 256), H(0, 0, -1)); }
+  // control panel
+  b.quad('panel', [P(-0.40, G.Y_PF, 0), P(0.40, G.Y_PF, 0), P(0.40, G.Y_PB, G.Z_PNL), P(-0.40, G.Y_PB, G.Z_PNL)], px(0, 0, 512, 110, 512, 256), H(0, 1, -0.2));
+  b.quad('panel', [P(-0.40, 0.84, 0), P(0.40, 0.84, 0), P(0.40, G.Y_PF, 0), P(-0.40, G.Y_PF, 0)], px(0, 112, 512, 164, 512, 256), H(0, 0, -1));
+  b.quad('blk', [P(-0.40, 0.84, G.Z_CAB), P(0.40, 0.84, G.Z_CAB), P(0.40, 0.84, 0), P(-0.40, 0.84, 0)], null, H(0, -1, 0));
+  [-1, 1].forEach(function (sx) { var ex = sx * 0.403;
+    b.quad('alu', [P(ex, 0.835, 0), P(ex, 0.835, G.Z_PNL), P(ex, G.Y_PB + 0.004, G.Z_PNL), P(ex, G.Y_PF + 0.004, 0)], null, H(sx, 0, 0)); });
+  var nose = new T3.Mesh(new T3.CylinderGeometry(0.008, 0.008, 0.80, 8), mat('alu')); nose.rotation.z = Math.PI / 2; nose.position.copy(P(0, G.Y_PF - 0.004, 0.004)); grp.add(nose);
+  // joystick and drop button (the chosen machine's move)
+  var jz = 0.085, jy = G.Y_PF + (G.Y_PB - G.Y_PF) * jz / G.Z_PNL;
+  var jbase = new T3.Mesh(new T3.CylinderGeometry(0.026, 0.03, 0.006, 16), mat('blk')); jbase.position.copy(P(-0.12, jy + 0.003, jz)); grp.add(jbase);
+  var boot = new T3.Mesh(new T3.CylinderGeometry(0.008, 0.013, 0.02, 10), mat('blk')); boot.position.copy(P(-0.12, jy + 0.016, jz)); grp.add(boot);
+  var stick = new T3.Group(); stick.position.copy(P(-0.12, jy + 0.02, jz)); grp.add(stick);
+  var shaft = new T3.Mesh(new T3.CylinderGeometry(0.0055, 0.0055, 0.055, 8), mat('chrome')); shaft.position.y = 0.0275; stick.add(shaft);
+  var knob = new T3.Mesh(new T3.SphereGeometry(0.02, 14, 10), mat('ball')); knob.position.y = 0.068; stick.add(knob);
+  var bb = P(0.13, jy, jz);
+  var bezel = new T3.Mesh(new T3.CylinderGeometry(0.029, 0.031, 0.007, 18), mat('chrome')); bezel.position.copy(bb).add(new T3.Vector3(0, 0.0035, 0)); grp.add(bezel);
+  var btn = new T3.Mesh(new T3.CylinderGeometry(0.023, 0.024, 0.012, 18), mat('btn' + st)); btn.position.copy(bb).add(new T3.Vector3(0, 0.013, 0)); grp.add(btn);
+  if (isLive) { live.stick = stick; live.btn = btn; }
+  // glass box frame
+  [[0.925, G.Y_G0], [G.Y_G1, G.Y_HD]].forEach(function (yy) { var yc = (yy[0] + yy[1]) / 2, hh = yy[1] - yy[0];
+    b.box('alu', P(0, yc, G.Z_PNL + 0.01), [G.W, hh, 0.02]); b.box('alu', P(0, yc, G.D - 0.01), [G.W, hh, 0.02]);
+    [-1, 1].forEach(function (sx) { b.box('alu', P(sx * 0.39, yc, (G.Z_PNL + G.D) / 2), [0.02, hh, G.D - G.Z_PNL - 0.04]); }); });
+  [-1, 1].forEach(function (sx) { [G.Z_PNL + 0.015, G.D - 0.015].forEach(function (zz) { b.box('alu', P(sx * 0.385, (G.Y_G0 + G.Y_G1) / 2, zz), [0.03, G.Y_G1 - G.Y_G0, 0.03]); }); });
+  // deck and chute
+  var hx = -0.165, hz = 0.405;
+  b.quad('deck', [P(hx, G.Y_DECK, G.Z_PNL), P(0.39, G.Y_DECK, G.Z_PNL), P(0.39, G.Y_DECK, G.D), P(hx, G.Y_DECK, G.D)], null, H(0, 1, 0));
+  b.quad('deck', [P(-0.39, G.Y_DECK, hz), P(hx, G.Y_DECK, hz), P(hx, G.Y_DECK, G.D), P(-0.39, G.Y_DECK, G.D)], null, H(0, 1, 0));
+  var yb = 0.62;
+  b.quad('hole', [P(hx, yb, G.Z_PNL), P(hx, yb, hz), P(hx, G.Y_DECK, hz), P(hx, G.Y_DECK, G.Z_PNL)], null, H(-1, 0, 0));
+  b.quad('hole', [P(-0.39, yb, hz), P(hx, yb, hz), P(hx, G.Y_DECK, hz), P(-0.39, G.Y_DECK, hz)], null, H(0, 0, -1));
+  b.quad('hole', [P(-0.39, yb, G.Z_PNL), P(-0.39, yb, hz), P(-0.39, G.Y_DECK, hz), P(-0.39, G.Y_DECK, G.Z_PNL)], null, H(1, 0, 0));
+  b.quad('hole', [P(-0.39, yb, G.Z_PNL), P(hx, yb, G.Z_PNL), P(hx, G.Y_DECK, G.Z_PNL), P(-0.39, G.Y_DECK, G.Z_PNL)], null, H(0, 0, 1));
+  b.quad('hole', [P(-0.39, yb, G.Z_PNL), P(hx, yb, G.Z_PNL), P(hx, yb, hz), P(-0.39, yb, hz)], null, H(0, 1, 0));
+  var sh = 1.12;
+  b.box('alu', P(hx, sh, (G.Z_PNL + 0.02 + hz) / 2), [0.008, 0.01, hz - G.Z_PNL - 0.02]);
+  b.box('alu', P((-0.385 + hx) / 2, sh, hz), [hx + 0.385, 0.01, 0.008]);
+  // header
+  b.box(body, P(0, (G.Y_HD + G.H) / 2, (0.14 + G.D) / 2), [G.W, G.H - G.Y_HD, G.D - 0.14]);
+  var hm = 'hdr' + st;
+  b.quad(hm, [P(-0.37, 1.665, 0.138), P(0.37, 1.665, 0.138), P(0.37, 1.955, 0.138), P(-0.37, 1.955, 0.138)], px(0, 0, 1024, 400, 1024, 640), H(0, 0, -1));
+  var hs = px(0, 416, 512, 640, 1024, 640);
+  b.quad(hm, [P(0.406, 1.67, 0.20), P(0.406, 1.67, 0.84), P(0.406, 1.95, 0.84), P(0.406, 1.95, 0.20)], hs, H(1, 0, 0));
+  b.quad(hm, [P(-0.406, 1.67, 0.84), P(-0.406, 1.67, 0.20), P(-0.406, 1.95, 0.20), P(-0.406, 1.95, 0.84)], hs, H(-1, 0, 0));
+  b.box('chrome', P(0, 1.962, 0.133), [0.768, 0.016, 0.012]); b.box('chrome', P(0, 1.658, 0.133), [0.768, 0.016, 0.012]);
+  [-1, 1].forEach(function (sx) { b.box('chrome', P(sx * 0.377, 1.81, 0.133), [0.016, 0.288, 0.012]); b.box('chrome', P(sx * 0.402, 1.81, 0.52), [0.006, 0.31, 0.68]); });
+  // inside the top: ceiling, tube, rails
+  b.quad('ceil', [P(-0.39, G.Y_HD - 0.002, G.D), P(0.39, G.Y_HD - 0.002, G.D), P(0.39, G.Y_HD - 0.002, G.Z_PNL), P(-0.39, G.Y_HD - 0.002, G.Z_PNL)], null, H(0, -1, 0));
+  var tube = new T3.Mesh(new T3.CylinderGeometry(0.013, 0.013, 0.69, 10), mat('tube')); tube.rotation.z = Math.PI / 2; tube.position.copy(P(0, 1.588, 0.212)); grp.add(tube);
+  [-1, 1].forEach(function (sx) { b.box('blk', P(sx * 0.36, 1.598, 0.212), [0.03, 0.05, 0.04]); b.box('steel', P(sx * 0.355, 1.622, 0.55), [0.025, 0.022, 0.66]); });
+  b.meshes(mat, grp);
+  // glass (separate, transparent, drawn last)
+  var gb = new Builder(), gz0 = G.Z_PNL + 0.013, gz1 = G.D - 0.013;
+  gb.quad('glass', [P(-0.37, G.Y_G0, gz0), P(0.37, G.Y_G0, gz0), P(0.37, G.Y_G1, gz0), P(-0.37, G.Y_G1, gz0)], null, H(0, 0, -1));
+  gb.quad('glass', [P(0.37, G.Y_G0, gz1), P(-0.37, G.Y_G0, gz1), P(-0.37, G.Y_G1, gz1), P(0.37, G.Y_G1, gz1)], [[0.3, 1], [1, 1], [1, 0], [0.3, 0]], H(0, 0, 1));
+  gb.quad('glass', [P(0.387, G.Y_G0, G.Z_PNL + 0.03), P(0.387, G.Y_G0, G.D - 0.03), P(0.387, G.Y_G1, G.D - 0.03), P(0.387, G.Y_G1, G.Z_PNL + 0.03)], null, H(1, 0, 0));
+  gb.quad('glass', [P(-0.387, G.Y_G0, G.D - 0.03), P(-0.387, G.Y_G0, G.Z_PNL + 0.03), P(-0.387, G.Y_G1, G.Z_PNL + 0.03), P(-0.387, G.Y_G1, G.D - 0.03)], null, H(-1, 0, 0));
+  gb.quad('glass', [P(hx, G.Y_DECK, G.Z_PNL + 0.02), P(hx, G.Y_DECK, hz), P(hx, sh, hz), P(hx, sh, G.Z_PNL + 0.02)], [[0.1, 0.95], [0.4, 0.95], [0.4, 0.55], [0.1, 0.55]], H(1, 0, 0));
+  gb.quad('glass', [P(-0.385, G.Y_DECK, hz), P(hx, G.Y_DECK, hz), P(hx, sh, hz), P(-0.385, sh, hz)], [[0.5, 0.95], [0.8, 0.95], [0.8, 0.55], [0.5, 0.55]], H(0, 0, 1));
+  var glassGrp = new T3.Group(); gb.meshes(mat, glassGrp); glassGrp.renderOrder = 10; glassGrp.children.forEach(function (c) { c.renderOrder = 10; });
+  // lights: the tube inside the box
+  var L = new T3.PointLight(0xeef4ff, 1.6, 0, 2); L.position.copy(P(0, 1.56, 0.45)); grp.add(L);
+  // the gantry and the claw
+  var gantry = new T3.Group(), carriage = new T3.Group();
+  var bar = new T3.Mesh(new T3.BoxGeometry(0.70, 0.02, 0.04), mat('steel')); gantry.add(bar);
+  var hous = new T3.Mesh(new T3.BoxGeometry(0.10, 0.044, 0.09), mat('steel')); hous.position.y = -0.032; carriage.add(hous);
+  var motor = new T3.Mesh(new T3.BoxGeometry(0.04, 0.04, 0.03), mat('blk')); motor.position.set(0.035, -0.03, 0.055); carriage.add(motor);
+  gantry.add(carriage); grp.add(gantry);
+  var claw = new T3.Group();
+  var head = new T3.Mesh(new T3.CylinderGeometry(0.029, 0.032, 0.07, 14), mat('chrome')); head.position.y = -0.035; claw.add(head);
+  var band = new T3.Mesh(new T3.CylinderGeometry(0.0335, 0.0335, 0.014, 14), mat('blk')); band.position.y = -0.05; claw.add(band);
+  var neck = new T3.Mesh(new T3.CylinderGeometry(0.022, 0.017, 0.025, 10), mat('chrome')); neck.position.y = -0.0825; claw.add(neck);
+  var prongs = [];
+  for (var pk = 0; pk < 3; pk++) {
+    var pg = new T3.Group(); pg.rotation.y = pk * Math.PI * 2 / 3; pg.position.y = -0.095;
+    var pts = [new T3.Vector3(0.016, 0.004, 0), new T3.Vector3(0.050, -0.03, 0), new T3.Vector3(0.064, -0.075, 0), new T3.Vector3(0.052, -0.118, 0), new T3.Vector3(0.032, -0.136, 0)];
+    var tubeG = new T3.TubeGeometry(new T3.CatmullRomCurve3(pts), 10, 0.0042, 6, false);
+    var pr = new T3.Mesh(tubeG, mat('chrome')); pg.add(pr); prongs.push(pg); claw.add(pg);
+  }
+  var string = new T3.Mesh(new T3.CylinderGeometry(0.0018, 0.0018, 1, 3), mat('blk')); string.position.y = 0.5; claw.add(string);
+  grp.add(claw);
+  // the pile
+  var prizes = new T3.Group();
+  items.forEach(function (it) { var g = makePrize(it); placePrize(g, n, it); prizes.add(g); });
+  grp.add(prizes);
+  scene.add(grp); scene.add(glassGrp);
+  var ref = { n: n, gantry: gantry, carriage: carriage, claw: claw, prongs: prongs, string: string, prizes: prizes, btn: btn };
+  if (isLive) { live.gantry = gantry; live.carriage = carriage; live.claw = claw; live.prongs = prongs; live.string = string; live.prizes = prizes; }
+  return ref;
+}
+function setGantry(ref, n, x, z, clawY, open) {
+  ref.gantry.position.copy(V(n, 0, 1.604, z));
+  ref.carriage.position.set(x, 0, 0);
+  ref.claw.position.copy(V(n, x, clawY, z));
+  var L = 1.55 - clawY; ref.string.scale.y = Math.max(0.001, L); ref.string.position.y = L / 2;
+  ref.prongs.forEach(function (p) { p.rotation.x = 0; p.rotation.z = 0; });
+  ref.prongs.forEach(function (p, i) { var a = i * Math.PI * 2 / 3; var tilt = (1 - open) * 0.55; p.rotation.set(0, a, 0); p.rotateOnAxis(new T3.Vector3(0, 0, 1), tilt); });
+}
+
+function buildRoom() {
+  var g = new T3.Group(), x0 = mx(3) - 0.4 - 2.0, x1 = mx(1) + 0.4 + 2.0;
+  var floor = new T3.Mesh(new T3.PlaneGeometry(x1 - x0, 8), mat('floor')); floor.rotation.x = -Math.PI / 2; floor.position.set((x0 + x1) / 2, 0, -0.5); g.add(floor);
+  var wall = new T3.Mesh(new T3.PlaneGeometry(x1 - x0, 3.6), mat('wall')); wall.position.set((x0 + x1) / 2, 1.8, -(G.D + 0.02)); g.add(wall);
+  var ceil = new T3.Mesh(new T3.PlaneGeometry(x1 - x0, 8), new S({ color: 0x050506, roughness: 1 })); ceil.rotation.x = Math.PI / 2; ceil.position.set((x0 + x1) / 2, 3.6, -0.5); g.add(ceil);
+  scene.add(g);
+  scene.add(new T3.HemisphereLight(0x8a90b0, 0x1a1418, 0.3));
+  var spot = new T3.SpotLight(0xfff0d8, 5, 0, 0.8, 0.8, 2); spot.position.set(0, 3.5, 0.8); spot.target.position.set(0, 0.9, -0.4); scene.add(spot); scene.add(spot.target);
+}
+
+// ------------------------------------------------------------------ sound (synthesized)
+var ac = null, master = null, hum = null, humGain = null;
+function unlock() {
+  if (ac) { if (ac.state === 'suspended') ac.resume(); return; }
+  var C = window.AudioContext || window.webkitAudioContext; if (!C) return;
+  ac = new C(); master = ac.createGain(); master.gain.value = soundOn ? 0.6 : 0; master.connect(ac.destination);
+  hum = ac.createOscillator(); hum.type = 'sawtooth'; hum.frequency.value = 95;
+  var lp = ac.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 500;
+  humGain = ac.createGain(); humGain.gain.value = 0; hum.connect(lp); lp.connect(humGain); humGain.connect(master); hum.start();
+}
+function tone(f, t0, dur, type, vol, f2) {
+  if (!ac) return;
+  var o = ac.createOscillator(), g = ac.createGain();
+  o.type = type || 'square'; o.frequency.setValueAtTime(f, t0); if (f2) o.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
+  g.gain.setValueAtTime(0.0001, t0); g.gain.exponentialRampToValueAtTime(vol || 0.2, t0 + 0.008); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur);
+  o.connect(g); g.connect(master); o.start(t0); o.stop(t0 + dur + 0.02);
+}
+function knock(vol, freq) {
+  if (!ac) return;
+  var t = ac.currentTime, n = ac.createBufferSource(), len = ac.sampleRate * 0.05, buf = ac.createBuffer(1, len, ac.sampleRate), d = buf.getChannelData(0);
+  for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 3);
+  n.buffer = buf; var bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = freq || 900; bp.Q.value = 1.4;
+  var g = ac.createGain(); g.gain.value = Math.min(0.9, vol); n.connect(bp); bp.connect(g); g.connect(master); n.start(t);
+}
+var SFX = {
+  coin: function () { if (!ac) return; var t = ac.currentTime; tone(1320, t, 0.08, 'square', 0.15); tone(1760, t + 0.08, 0.16, 'square', 0.15); },
+  drop: function () { knock(0.4, 400); },
+  clack: function () { knock(0.6, 1500); knock(0.4, 700); },
+  tick: function () { if (!ac) return; tone(1800, ac.currentTime, 0.03, 'square', 0.08); },
+  thud: function () { knock(0.5, 250); },
+  chute: function () { knock(0.7, 350); setTimeout(function () { knock(0.5, 900); }, 90); setTimeout(function () { knock(0.4, 500); }, 220); },
+  win: function (rare) { if (!ac) return; var t = ac.currentTime + 0.1; var seq = rare ? [523, 659, 784, 1047, 784, 1047, 1319, 1568] : [784, 988, 1175, 1568];
+    seq.forEach(function (f, i) { tone(f, t + i * 0.11, 0.14, 'square', 0.16); }); },
+  lose: function () { if (!ac) return; var t = ac.currentTime; tone(330, t, 0.25, 'triangle', 0.15, 220); },
+  error: function () { if (!ac) return; var t = ac.currentTime; for (var i = 0; i < 3; i++) tone(880, t + i * 0.25, 0.12, 'square', 0.12); }
+};
+function setHum(on, pitch) { if (!humGain) return; humGain.gain.setTargetAtTime(on ? 0.08 : 0, ac.currentTime, 0.04); if (hum && pitch) hum.frequency.setTargetAtTime(pitch, ac.currentTime, 0.05); }
+
+// ------------------------------------------------------------------ game state
+var ST = { mode: 'title', pos: [CFG.home[0], CFG.home[1]], clawY: CFG.clawTopY, open: 1, t0: 0, phase: 0, phaseT0: 0,
+           tgt: null, res: null, carried: null, grip: 0, won: null, lastJoy: [0, 0], dropAt: 0, playNo: 0 };
+var joy = [0, 0], dropPressed = false, pressFx = 0, errorMode = false;
+var meshes = {};   // item id -> prize group (the live machine)
+var refLive = null;
+function syncPile() {
+  var ids = {};
+  pile.items.forEach(function (it) { ids[it.id] = true; var g = meshes[it.id]; if (!g) { g = makePrize(it); meshes[it.id] = g; live.prizes.add(g); } g.userData.item = it; placePrize(g, M, it); });
+  for (var id in meshes) if (!ids[id] && meshes[id] !== ST.carried) { live.prizes.remove(meshes[id]); delete meshes[id]; }
+}
+function insertToken() {
+  unlock(); SFX.coin();
+  pile.plays++; ST.playNo = pile.plays; save(pileKey, pile);
+  ST.mode = 'play'; ST.t0 = now(); ST.won = null; ST.tgt = null; ST.res = null; errorMode = false;
+  ST.grip = CL.grip(pile.plays, Math.random);
+  hideFlash(); ui();
+}
+function startDrop(auto) {
+  if (ST.mode !== 'play') return;
+  ST.mode = 'drop'; ST.phase = 'down'; ST.phaseT0 = now(); ST.phaseY = ST.clawY;
+  ST.tgt = CL.target(pile.items, ST.pos[0], ST.pos[1]);
+  ST.dropAt = ST.tgt ? ST.tgt.top + 0.075 : CFG.deckY + 0.075;   // the prongs' tips meet the top
+  if (CL.inChute(ST.pos[0], ST.pos[1])) ST.dropAt = CFG.deckY + 0.075;
+  SFX.drop(); setHum(true, 140); ui();
+}
+function finishPlay() {
+  var r = ST.res;
+  if (r && r.lifted) {
+    var out = CL.resolve(pile.items, ST.grabX, ST.grabZ, r);
+    pile.items = out.items;
+    if (out.won) {
+      var rec = CL.record(out.won, M, Date.now());
+      inventory.push(rec); save('mall.inventory', inventory);
+      if (rec.tickets) { tickets += rec.tickets; save('mall.tickets', tickets); }
+      ST.won = rec;
+    }
+  }
+  save(pileKey, pile);
+  if (ST.carried) { live.prizes.remove(ST.carried); delete meshes[ST.carried.userData.item.id]; ST.carried = null; }
+  syncPile();
+  ST.mode = 'over';
+  if (ST.won) { SFX.win(!!ST.won.rare); showFlash(ST.won.rare ? 'RARE!' : 'WINNER!', ST.won.name.toUpperCase()); }
+  else { SFX.lose(); }
+  if (pile.items.length < CFG.refillBelow) { pile = newFill(); save(pileKey, pile); syncPile(); }
+  ui();
+}
+
+// ------------------------------------------------------------------ the claw cycle (from the video: down until slack, close, up, home, open)
+function stepCycle(t, dt) {
+  var el = (t - ST.phaseT0) / 1000;
+  if (ST.phase === 'down') {
+    ST.clawY = Math.max(ST.dropAt, ST.phaseY - CFG.dropSpeed * el);
+    if (ST.clawY <= ST.dropAt + 1e-6) { ST.phase = 'close'; ST.phaseT0 = t; setHum(false); SFX.clack(); }
+  } else if (ST.phase === 'close') {
+    ST.open = Math.max(0, 1 - el * 1000 / CFG.closeMs);
+    if (el * 1000 >= CFG.closeMs) {
+      ST.res = CL.judge(ST.tgt, ST.grip); ST.grabX = ST.pos[0]; ST.grabZ = ST.pos[1];
+      if (ST.res.lifted) { ST.carried = meshes[ST.res.item.id]; ST.open = 0.15; }
+      else ST.open = ST.tgt ? 0.3 : 0.05;
+      ST.phase = 'up'; ST.phaseT0 = t; ST.phaseY = ST.clawY; setHum(true, 180);
+    }
+  } else if (ST.phase === 'up') {
+    ST.clawY = Math.min(CFG.clawTopY, ST.phaseY + CFG.liftSpeed * el);
+    if (ST.clawY >= CFG.clawTopY - 1e-6) {
+      if (errorMode) { ST.phase = 'error'; ST.phaseT0 = t; setHum(false); SFX.error(); }
+      else { ST.phase = 'home'; ST.phaseT0 = t; ST.homeFrom = ST.pos.slice(); ST.homeLen = Math.hypot(CFG.home[0] - ST.pos[0], CFG.home[1] - ST.pos[1]); setHum(true, 120); }
+    }
+  } else if (ST.phase === 'home') {
+    var f = ST.homeLen > 1e-6 ? Math.min(1, el * CFG.homeSpeed / ST.homeLen) : 1;
+    ST.pos = [ST.homeFrom[0] + (CFG.home[0] - ST.homeFrom[0]) * f, ST.homeFrom[1] + (CFG.home[1] - ST.homeFrom[1]) * f];
+    if (ST.carried && ST.res.carry < 1 && f >= ST.res.carry) {
+      // the grip gives: the prize slips and falls back into the pile (or into the chute)
+      var fellIn = CL.inChute(ST.pos[0], ST.pos[1]);
+      dropPrize(ST.carried, fellIn); ST.carried = null; ST.open = 0.6; SFX.thud();
+      if (fellIn) SFX.chute();
+    }
+    if (f >= 1) { ST.phase = 'open'; ST.phaseT0 = t; setHum(false); }
+  } else if (ST.phase === 'open') {
+    ST.open = Math.min(1, 0.15 + el * 1000 / CFG.openMs);
+    if (el * 1000 >= CFG.openMs) {
+      if (ST.carried) { dropPrize(ST.carried, true); ST.carried = null; SFX.chute(); }
+      ST.phase = 'done'; ST.phaseT0 = t;
+    }
+  } else if (ST.phase === 'done') {
+    if (el > 0.9) finishPlay();
+  } else if (ST.phase === 'error') {
+    if (el > 2.5) { errorMode = false; ST.phase = 'home'; ST.phaseT0 = t; ST.homeFrom = ST.pos.slice(); ST.homeLen = Math.hypot(CFG.home[0] - ST.pos[0], CFG.home[1] - ST.pos[1]); setHum(true, 120); }
+  }
+}
+var falling = [];
+function dropPrize(g, intoChute) {
+  // a quick fall animation; the pile's own state is settled by finishPlay
+  falling.push({ g: g, t0: now(), from: g.position.clone(), chute: intoChute, item: g.userData.item });
+  ST.carried = null;
+}
+
+// ------------------------------------------------------------------ input
+var pad = document.getElementById('pad'), knobEl = document.getElementById('knob'), dropBtn = document.getElementById('drop');
+var padId = null, padC = null;
+function padSet(e) {
+  var r = pad.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  var dx = (e.clientX - cx) / (r.width / 2), dy = (e.clientY - cy) / (r.height / 2), l = Math.hypot(dx, dy);
+  if (l > 1) { dx /= l; dy /= l; }
+  joy = [Math.abs(dx) > 0.12 ? dx : 0, Math.abs(dy) > 0.12 ? -dy : 0];
+  knobEl.style.transform = 'translate(' + (dx * 36) + 'px,' + (dy * 36) + 'px)';
+}
+pad.addEventListener('pointerdown', function (e) { e.preventDefault(); unlock(); padId = e.pointerId; try { pad.setPointerCapture(e.pointerId); } catch (er) {} padSet(e); });
+pad.addEventListener('pointermove', function (e) { if (padId === e.pointerId) padSet(e); });
+function padUp(e) { if (padId !== e.pointerId) return; padId = null; joy = [0, 0]; knobEl.style.transform = ''; }
+pad.addEventListener('pointerup', padUp); pad.addEventListener('pointercancel', padUp);
+dropBtn.addEventListener('pointerdown', function (e) { e.preventDefault(); e.stopPropagation(); unlock(); pressFx = now(); startDrop(); });
+stage.addEventListener('pointerdown', function (e) {
+  if (e.target.closest('button') || e.target.closest('.card') || e.target.closest('#pad')) return;
+  e.preventDefault(); unlock();
+  if (ST.mode === 'title' || ST.mode === 'over') insertToken();
+}, { passive: false });
+var keys = {};
+window.addEventListener('keydown', function (e) {
+  if (e.code === 'Escape') { back(); return; }
+  keys[e.code] = true;
+  if (e.repeat) return;
+  if (e.code === 'Space' || e.code === 'Enter' || e.code === 'NumpadEnter') {
+    e.preventDefault(); unlock();
+    if (document.activeElement && document.activeElement.tagName === 'BUTTON') document.activeElement.blur();
+    if (ST.mode === 'title' || ST.mode === 'over') insertToken();
+    else if (ST.mode === 'play') { pressFx = now(); startDrop(); }
+  }
+});
+window.addEventListener('keyup', function (e) { keys[e.code] = false; });
+var padPrev = {}, padSeen = false;
+function pollPads() {
+  var pads = navigator.getGamepads ? navigator.getGamepads() : [];
+  for (var i = 0; i < pads.length; i++) {
+    var p = pads[i]; if (!p) continue; padSeen = true;
+    var a = p.buttons[0] && p.buttons[0].pressed, st = p.buttons[9] && p.buttons[9].pressed;
+    var prev = padPrev[p.index] || {};
+    var ax = p.axes[0] || 0, ay = -(p.axes[1] || 0); if (Math.abs(ax) < 0.15) ax = 0; if (Math.abs(ay) < 0.15) ay = 0;
+    if (p.buttons[14] && p.buttons[14].pressed) ax = -1; if (p.buttons[15] && p.buttons[15].pressed) ax = 1;
+    if (p.buttons[12] && p.buttons[12].pressed) ay = 1; if (p.buttons[13] && p.buttons[13].pressed) ay = -1;
+    if (ax || ay) joy = [ax, ay]; else if (padId === null && !keys.ArrowLeft && !keys.ArrowRight && !keys.ArrowUp && !keys.ArrowDown) joy = [0, 0];
+    if ((a && !prev.a) || (st && !prev.st)) { unlock(); if (ST.mode === 'title' || ST.mode === 'over') insertToken(); else if (ST.mode === 'play' && a) { pressFx = now(); startDrop(); } }
+    padPrev[p.index] = { a: a, st: st };
+  }
+}
+function back() { setHum(false); if (inFrame) window.parent.postMessage('emu-close', '*'); else if (history.length > 1) history.back(); }
+document.getElementById('back').addEventListener('click', back);
+var sndBtn = document.getElementById('snd');
+function sndUi() { sndBtn.innerHTML = soundOn ? '&#128266;' : '&#128263;'; }
+sndBtn.addEventListener('click', function () { soundOn = !soundOn; save('claw.sound', soundOn); unlock(); if (master) master.gain.value = soundOn ? 0.6 : 0; sndUi(); });
+sndUi();
+
+// ------------------------------------------------------------------ inventory
+var ICON = { plush: '🧸', figure: '💪', tickets: '🎫', pogs: '🟣', slammer: '👁' };
+function showInv() {
+  var list = document.getElementById('invlist'), h = '';
+  inventory.slice().reverse().forEach(function (r) {
+    var sub = r.tickets ? r.tickets + ' tickets' : (r.pogs ? r.pogs.join(', ') : (r.kind === 'figure' ? 'stretch figure' : 'plush'));
+    h += '<li class="' + (r.rare ? 'rare' : '') + '"><div class="ic">' + (ICON[r.kind] || '⭐') + '</div><div class="nm">' + esc(r.name) + '<small>' + esc(sub) + ' · ' + esc(r.from || '') + '</small></div></li>';
+  });
+  list.innerHTML = h || '<div class="empty">Nothing yet. Win something.</div>';
+  document.getElementById('invsub').textContent = inventory.length + ' prize' + (inventory.length === 1 ? '' : 's') + ' · ' + tickets + ' tickets in capsules';
+  document.getElementById('inv').style.display = 'block';
+}
+function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c]; }); }
+document.getElementById('prizes').addEventListener('click', showInv);
+document.getElementById('invclose').addEventListener('click', function () { document.getElementById('inv').style.display = 'none'; });
+
+// ------------------------------------------------------------------ HUD
+var flashEl = document.getElementById('flash');
+function showFlash(a, b) { flashEl.innerHTML = a + (b ? '<small>' + esc(b) + '</small>' : ''); flashEl.style.opacity = 1; }
+function hideFlash() { flashEl.style.opacity = 0; }
+var lastMsg = '';
+function ui() {
+  document.getElementById('tk').textContent = tickets;
+  document.getElementById('pc').textContent = inventory.length;
+  var touch = matchMedia('(pointer: coarse)').matches, m = '';
+  if (ST.mode === 'title') {
+    m = '<div class="card"><h2>' + esc(NAME) + '</h2><p>1 token per play. Move the claw over a prize and press DROP before the clock runs out. ' +
+        'The claw closes when it touches down, winds up and carries what it holds to the chute.</p><button class="big" id="go">INSERT TOKEN</button>' +
+        '<p style="margin:10px 0 0;font-size:13px;color:#a49eb2">' + (touch ? 'The red stick moves the claw; the big button drops it.' : 'Arrows or WASD move the claw; Space drops it' + (padSeen ? ' (or the stick and Ⓐ)' : '') + '.') + '</p></div>';
+  } else if (ST.mode === 'play') {
+    m = '';
+  } else if (ST.mode === 'over') {
+    m = '<div class="card"><h2>' + (ST.won ? 'YOU WON' : 'NO PRIZE') + '</h2><p>' + (ST.won ? esc(ST.won.name) + (ST.won.tickets ? ' (' + ST.won.tickets + ' tickets, in your prizes)' : ', in your prizes') : 'The claw let go. Try again.') +
+        '</p><button class="big" id="go">PLAY AGAIN</button></div>';
+  }
+  if (m !== lastMsg) { lastMsg = m; document.getElementById('msg').innerHTML = m; var go = document.getElementById('go'); if (go) go.addEventListener('click', function (e) { e.stopPropagation(); insertToken(); }); }
+  var playing = ST.mode === 'play';
+  pad.style.display = playing && touch ? 'block' : 'none';
+  dropBtn.style.display = playing ? 'block' : 'none';
+}
+
+// ------------------------------------------------------------------ camera: standing at the panel
+function layout() {
+  var w = stage.clientWidth, h = stage.clientHeight; renderer.setSize(w, h, false);
+  var asp = w / h; camera.aspect = asp;
+  var hf = 40 * Math.PI / 180, vf = 2 * Math.atan(Math.tan(hf / 2) / asp) * 180 / Math.PI;
+  camera.fov = Math.max(52, Math.min(78, vf));
+  var portrait = asp < 0.8;
+  camera.position.set(0.05, portrait ? 1.58 : 1.52, portrait ? 0.62 : 0.55);
+  camera.lookAt(0, portrait ? 1.22 : 1.24, -0.55);
+  camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', layout);
+
+// ------------------------------------------------------------------ frame loop
+var tPrev = now(), refs = {};
+function frame() {
+  requestAnimationFrame(frame);
+  var t = now(), dt = Math.min(0.05, (t - tPrev) / 1000); tPrev = t;
+  pollPads();
+  if (ST.mode === 'play') {
+    var kx = (keys.ArrowLeft || keys.KeyA ? -1 : 0) + (keys.ArrowRight || keys.KeyD ? 1 : 0), kz = (keys.ArrowDown || keys.KeyS ? -1 : 0) + (keys.ArrowUp || keys.KeyW ? 1 : 0);
+    var jx = joy[0] || kx, jz = joy[1] || kz;
+    if (jx || jz) { ST.pos = CL.move(ST.pos, jx, jz, dt); setHum(true, 110 + 30 * Math.hypot(jx, jz)); } else setHum(false);
+    ST.lastJoy = [jx, jz];
+    var left = Math.max(0, CFG.playMs - (t - ST.t0));
+    var cl = document.getElementById('clock'); cl.textContent = Math.ceil(left / 1000) + ' s'; cl.classList.toggle('low', left < 6000);
+    if (left <= 0) startDrop(true);
+  } else if (ST.mode === 'drop') {
+    stepCycle(t, dt);
+    document.getElementById('clock').textContent = ST.phase === 'error' ? 'ERR 01' : '···';
+  } else { document.getElementById('clock').textContent = ST.mode === 'title' ? 'INSERT TOKEN' : ''; ST.lastJoy = [0, 0]; }
+  // the live machine's moving parts
+  setGantry(refLive, M, ST.pos[0], ST.pos[1], ST.clawY, ST.open);
+  if (live.stick) { live.stick.rotation.set(-ST.lastJoy[1] * 0.35, 0, -ST.lastJoy[0] * 0.35); }
+  if (live.btn) { live.btn.position.y = (t - pressFx < 150) ? -0.004 : 0; live.btn.material.emissiveIntensity = ST.mode === 'play' ? (Math.floor(t / 400) % 2 ? 1.6 : 0.6) : 0.8; }
+  if (ST.carried) {
+    var ci = ST.carried.userData.item, kk = K[ci.kind];
+    ST.carried.position.copy(V(M, ST.pos[0], ST.clawY - 0.19 - kk.h * 0.5 + (ST.carried.userData.lift || 0) + 0.02 * Math.sin(t / 150), ST.pos[1]));
+    ST.carried.rotation.z = 0.15 * Math.sin(t / 300);
+  }
+  falling = falling.filter(function (f) {
+    var el = (t - f.t0) / 1000, y;
+    if (f.chute) { y = f.from.y - 4.9 * el * el; f.g.position.set(f.from.x, y, f.from.z); f.g.rotation.x += dt * 3; if (y < 0.55) { live.prizes.remove(f.g); return false; } return true; }
+    var it = f.item, k = K[it.kind], target = CFG.deckY + (f.landY || 0);
+    if (f.landY === undefined) { // where the pile will hold it: settle a copy
+      var tmp = pile.items.filter(function (o) { return o.id !== it.id; }).map(function (o) { return { kind: o.kind, x: o.x, z: o.z, y: o.y }; });
+      tmp.push({ kind: it.kind, x: ST.pos[0], z: ST.pos[1], y: 0 }); CL.settle(tmp); f.landY = tmp[tmp.length - 1].y - CFG.deckY; target = tmp[tmp.length - 1].y; }
+    y = Math.max(target + (f.g.userData.lift || 0), f.from.y - 4.9 * el * el);
+    f.g.position.set(f.from.x, y, f.from.z);
+    return el < 1.2;
+  });
+  renderer.render(scene, camera);
+}
+
+// ------------------------------------------------------------------ start
+loadAll(function () {
+  [3, 2, 1].forEach(function (n) {
+    var st = n - 1, items = n === M ? pile.items : CL.fill(4000 + n);
+    refs[n] = buildCrane(n, st, items);
+    if (n === M) { refLive = refs[n]; pile.items.forEach(function (it) { refs[n].prizes.children.forEach(function (g) { if (g.userData.item === it) meshes[it.id] = g; }); }); }
+    else { var hp = [[-0.2, 0.5], [0.1, 0.6], [0.2, 0.4]][st]; setGantry(refs[n], n, hp[0], hp[1], 1.45, 1); }
+  });
+  buildRoom();
+  setGantry(refLive, M, ST.pos[0], ST.pos[1], ST.clawY, ST.open);
+  layout(); ui();
+  document.getElementById('load').style.display = 'none';
+  frame();
+  window.__claw = { ST: ST, CL: CL, pile: function () { return pile; }, start: insertToken, drop: startDrop, setPos: function (x, z) { ST.pos = [x, z]; },
+                    setGrip: function (g) { ST.grip = g; }, inventory: function () { return inventory; }, error: function () { errorMode = true; } };
+});
+})();
+</script>
+</body>
+</html>

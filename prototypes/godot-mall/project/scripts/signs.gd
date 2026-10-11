@@ -205,6 +205,8 @@ func _near_check() -> void:
 		found = _near_whirlwind(cam, fwd if fwd != null else Vector3.ZERO)
 	if found == "" and cam != null:
 		found = _near_skee(cam, fwd if fwd != null else Vector3.ZERO)
+	if found == "" and cam != null:
+		found = _near_crane(cam, fwd if fwd != null else Vector3.ZERO)
 	play_id = found
 	if b_play == null:
 		return
@@ -215,6 +217,8 @@ func _near_check() -> void:
 			t = text_of(found)
 		elif found.begins_with("pc.skee"):
 			t = "SKEE-BALL"
+		elif found.begins_with("pc.crane"):
+			t = text_of(found)
 		else:
 			t = str(roms[found].get("title", ""))
 			if t == "" or t == str(recs[found].title):
@@ -267,7 +271,33 @@ func _near_skee(cam: Camera3D, fwd: Vector3) -> String:
 		return ""
 	return "pc.skee.%d" % (k + 1)
 
+## The three claw machines (play/claw.html, Steven Oct 11): standing at a crane's control panel
+## (0.9 m out from its header marquee, within 1.4 m) and facing it. The record's face is the
+## front marquee; the machine's number is the record's.
+func _near_crane(cam: Camera3D, fwd: Vector3) -> String:
+	var me = Vector3(cam.global_position.x, 0.0, cam.global_position.z)
+	var best = ""
+	var best_d = 1.2
+	for id in order:
+		if not str(id).begins_with("pc.crane.") or not recs.has(id):
+			continue
+		var f = recs[id].faces[0]
+		var c = Vector3.ZERO
+		for p in f.p:
+			c += Vector3(p[0], 0.0, p[2])
+		c *= 0.25
+		var n = Vector3(f.n[0], 0.0, f.n[2]).normalized()
+		var spot = c + n * 0.9
+		var d = me.distance_to(spot)
+		if d < best_d and fwd.dot(-n) > 0.3:
+			best = id
+			best_d = d
+	return best
+
 func _play(id: String) -> void:
+	if id.begins_with("pc.crane."):
+		JavaScriptBridge.eval("window.mallRoms && window.mallRoms.open('claw.html?machine=" + id.get_slice(".", 2) + "&name=' + encodeURIComponent(" + JSON.stringify(text_of(id)) + "))")
+		return
 	if id.begins_with("pc.skee."):
 		JavaScriptBridge.eval("window.mallRoms && window.mallRoms.open('skeeball.html?lane=" + id.get_slice(".", 2) + "')")
 		return
