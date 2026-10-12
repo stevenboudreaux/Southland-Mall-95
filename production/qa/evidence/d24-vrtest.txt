@@ -1,0 +1,27 @@
+ok   enter: button shows 
+ok   enter: session starts [31, 1.7, 0, 90]
+ok   enter: head stands at the camera's spot [31, 1.7, 0, 90]
+ok   enter: head at the headset's height [31, 1.7, 0, 90]
+ok   enter: faces the way the camera did [31, 1.7, 0, 90]
+ok   enter: button hidden in VR 
+ok   enter: the hint shows 
+ok   walk: forward goes west [29.36, 1.7, 0, 90]
+ok   turn: one 30 degree snap to the right [29.36, 1.7, 0, 60]
+ok   turn: the head stays in place [29.36, 1.7, 0, 60]
+ok   menu: B opens it "Menu\n\u203a  Go to Sears\n    Go to Mall entrance\n    Go to Dillard's\n    Go to JCPenney\n    Lighting: night  (switch)\n    Benches & plants: off  (switch)\n    Leave VR\nstick up/down \u00b7 A chooses \u00b7 B closes\n"
+ok   menu: A jumps to Sears [-4, 1.7, -90, -180]
+ok   menu: stick up selects Leave VR "Menu\n    Go to Sears\n    Go to Mall entrance\n    Go to Dillard's\n    Go to JCPenney\n    Lighting: night  (switch)\n    Benches & plants: off  (switch)\n\u203a  Leave VR\nstick up/down \u00b7 A chooses \u00b7 B closes\n"
+ok   menu: Leave VR ends the session and shows the button 
+ok   enter: a second time works [-4, 1.7, -90, -180]
+ok   no errors (wing 1) []
+ok   play: button shows in wing 2 
+ok   play: the board offers the game "A   PLAY  WHIRLWIND\nopens on the browser's flat screen (leaves VR)\n"
+ok   play: A leaves VR and opens the flat game http://127.0.0.1:8765/p/whirlwind.html?name=WHIRLWIND
+ok   play: no Enter VR over the game 
+ok   no errors (wing 2) []
+ok   seam: the board offers the other wing A   Enter Wing 2 · Dillard's & JCPenney
+
+ok   seam: wing 2 loads and offers to go back into VR Back into VR
+ok   seam: back in VR in wing 2, past the seam [-8.7, 1.7, 49.3, -180]
+ok   no errors (seam) []
+ALL OK

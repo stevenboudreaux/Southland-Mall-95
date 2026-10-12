@@ -11,3 +11,10 @@ Run the .gd tools with `godot --headless --path . --script res://tools/qa/<tool>
 
 - `preview.sh <module|store:NAME> <out-prefix> "<x,y,z,yaw,pitch;...>" [opts-json] [lit|dark]`: renders one Pocket Change prop module, or a store with its hall, in ~30 s without building the mall or baking (xvfb + `--write-movie`, `preview.gd` reads PNGs raw). It uses realtime light, so it is for modelling and texture checks only.
 - `bakecheck.sh <prefix> <night|day> [cams-json]`: after a Mac bake, puts the staged lightmap in the project, exports and shoots the cameras (see its header).
+
+## VR (design/godot-vr.md)
+- `vrtest.py <url-path> <out-prefix> <iwer.min.js> <webxr-layers-polyfill.min.js>`: the VR mode
+  against an emulated Meta Quest 2 in a headless browser (`npm i iwer webxr-layers-polyfill`, the
+  files are in each package's `build/`). Serve a folder holding the export together with `play/`'s
+  pages on :8765. Prints ALL OK. Its in-VR screenshots are black; it checks behaviour.
+- `vrboard.gd`: the VR prompt board rendered natively (hint, menu, seam prompt).

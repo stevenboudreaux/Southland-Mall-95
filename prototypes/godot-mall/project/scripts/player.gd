@@ -57,6 +57,9 @@ var prompt_text: Label
 var fade: ColorRect
 var leaving := false
 var input_kind := "kb"      # "kb", "pad" or "touch": which glyph the prompt shows
+## In a VR headset (scripts/vr.gd, design/godot-vr.md): the headset and its sticks move the player.
+var vr: Node3D
+var vr_on := false
 const SEAM_NEAR := 2.6      # metres from the seam at which the prompt shows
 const WING_NAMES := {1: "Wing 1 · Sears & the main entrance", 2: "Wing 2 · Dillard's & JCPenney"}
 
@@ -125,6 +128,10 @@ func _ready() -> void:
 	_apply_rot()
 	_build_wing_ui()
 	_build_jump_ui()
+	vr = Node3D.new()
+	vr.name = "VR"
+	vr.set_script(load("res://scripts/vr.gd"))
+	add_child(vr)
 
 func _build_hud() -> void:
 	var cl := CanvasLayer.new()
@@ -281,7 +288,7 @@ func _process(dt: float) -> void:
 	if move_touch != -1:
 		iv = move_vec
 	iv = iv.limit_length(1.0)
-	if leaving:
+	if leaving or vr_on:
 		iv = Vector2.ZERO
 	if iv.length() > 0.05:
 		hint.visible = false
@@ -440,7 +447,7 @@ func _cross() -> void:
 			var cam_s := "%.2f,%.2f,%.1f,%.1f" % [tx, tz, rad_to_deg(yaw), rad_to_deg(pitch)]
 			var js := "(function(){try{sessionStorage.setItem('mall-xfer','%d')}catch(e){}var u=new URL(location.href);var p=u.searchParams;p.set('wing','%d');p.set('cam','%s');" % [other, other, cam_s]
 			js += "p.set('time','%s');" % ("day" if day else "night")
-			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not buttons[0].button_pressed else "false")
+			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not _refl_wanted() else "false")
 			js += "if(%s)p.set('fx','1');else p.delete('fx');" % ("true" if buttons[1].button_pressed else "false")
 			js += "console.log('crossing to '+u.toString());if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
 			JavaScriptBridge.eval(js, true)
@@ -453,6 +460,10 @@ func _cross() -> void:
 			else:
 				leaving = false
 				fade.modulate.a = 0.0)
+
+## Whether the floor reflection is wanted in the flat game (VR turns it off while it runs).
+func _refl_wanted() -> bool:
+	return vr._refl_was if vr_on else buttons[0].button_pressed
 
 # ------------------------------------------------------------------ quick jump
 ## A small menu (J, a gamepad's Y, or the "Jump to" button) that drops the player in front of
@@ -602,6 +613,8 @@ func _jump_go(i: int) -> void:
 		yaw = deg_to_rad(float(j[4]))
 		pitch = deg_to_rad(3.0)
 		_apply_rot()
+		if vr_on:
+			vr.recentre()
 		return
 	leaving = true
 	if prompt:
@@ -614,7 +627,7 @@ func _jump_go(i: int) -> void:
 			var cam_s := "%.2f,%.2f,%.1f,%.1f" % [float(j[2]), float(j[3]), float(j[4]), 3.0]
 			var js := "(function(){try{sessionStorage.setItem('mall-xfer','%d')}catch(e){}var u=new URL(location.href);var p=u.searchParams;p.set('wing','%d');p.set('cam','%s');" % [tw_wing, tw_wing, cam_s]
 			js += "p.set('time','%s');" % ("day" if day else "night")
-			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not buttons[0].button_pressed else "false")
+			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not _refl_wanted() else "false")
 			js += "if(%s)p.set('fx','1');else p.delete('fx');" % ("true" if buttons[1].button_pressed else "false")
 			js += "console.log('jumping to '+u.toString());if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
 			JavaScriptBridge.eval(js, true)

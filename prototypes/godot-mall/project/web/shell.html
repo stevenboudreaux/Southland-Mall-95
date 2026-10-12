@@ -79,6 +79,13 @@ body {
 #load-tip { font: 14px/1.5 -apple-system, system-ui, sans-serif; color: #8a7560; margin-top: 28px; }
 
 #status-progress { display: none !important; }
+/* VR headsets (scripts/vr.gd, design/godot-vr.md): shown only where the browser can do immersive VR */
+#vr-enter { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 900; display: none;
+	font: 600 22px/1 -apple-system, system-ui, sans-serif; color: #fbf6ea; background: #5b2a3a; border: 2px solid #efe6d3;
+	border-radius: 14px; padding: 18px 34px; cursor: pointer; box-shadow: 0 4px 18px rgba(0,0,0,0.5); }
+#vr-enter.big { bottom: 50%; transform: translate(-50%, 50%); font-size: 30px; padding: 26px 48px; }
+#vr-note { position: fixed; left: 0; right: 0; bottom: 96px; z-index: 900; display: none; text-align: center;
+	font: 15px/1.4 -apple-system, system-ui, sans-serif; color: #fbf6ea; text-shadow: 0 1px 3px #000; pointer-events: none; }
 /* crossing between the wings: a dark screen instead of the cream card (scripts/player.gd) */
 body.xfer #status { background: #000; color: #e9dfcb; }
 body.xfer #load-title { font-size: clamp(22px, 4.5vw, 34px); color: #efe6d3; }
@@ -108,6 +115,9 @@ body.xfer #load-tip { display: none; }
 		<canvas id="canvas">
 			Your browser does not support the canvas tag.
 		</canvas>
+
+		<button id="vr-enter" type="button">Enter VR</button>
+		<div id="vr-note"></div>
 
 		<noscript>
 			Your browser does not support JavaScript.
@@ -143,17 +153,84 @@ window.mallRoms = {
 		f.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:1000;background:#000';
 		document.body.appendChild(f);
 		this.frame = f;
+		if (window.mallVR) window.mallVR.show();
 	},
 	close: function () {
 		if (!this.frame) return;
 		this.frame.remove();
 		this.frame = null;
+		if (window.mallVR) window.mallVR.show();
 		var c = document.getElementById('canvas');
 		if (c) c.focus();
 	},
 	isOpen: function () { return this.frame ? '1' : '0'; }
 };
 window.addEventListener('message', function (e) { if (e.data === 'emu-close') window.mallRoms.close(); });
+// VR headsets (scripts/vr.gd, design/godot-vr.md). The game calls offer() when the browser can do
+// immersive VR and has set window.mallVREnter; the button's press starts the session. Crossing to
+// the other wing loads a new page, which ends the session: 'mall-vr' in sessionStorage remembers
+// it, the new page makes the button big, and where the browser hands the session over
+// ("sessiongranted", Meta Quest Browser) VR resumes without a press.
+// Tuning from the URL: ?vrscale=0.8 draws fewer pixels per eye, ?vrfov=0..1 sets how much the
+// edges of the view are drawn coarser (fixed foveation, default 1 = most).
+window.mallVR = {
+	offered: false, inSession: false, granted: false, session: null, state: 'none',
+	q: function (k) { try { return new URLSearchParams(location.search).get(k); } catch (e) { return null; } },
+	was: function () { try { return sessionStorage.getItem('mall-vr') === '1'; } catch (e) { return false; } },
+	remember: function (on) { try { if (on) sessionStorage.setItem('mall-vr', '1'); else sessionStorage.removeItem('mall-vr'); } catch (e) {} },
+	note: function (t) { var n = document.getElementById('vr-note'); n.textContent = t || ''; n.style.display = t ? 'block' : 'none'; },
+	show: function () {
+		var b = document.getElementById('vr-enter');
+		b.style.display = (this.offered && !this.inSession && !window.mallRoms.frame) ? 'block' : 'none';
+		b.classList.toggle('big', this.was());
+		b.textContent = this.was() ? 'Back into VR' : 'Enter VR';
+	},
+	offer: function () {
+		this.offered = true; this.state = 'offered';
+		this.show();
+		if (this.granted) this.enter();
+	},
+	enter: function () { this.note(''); if (window.mallVREnter && !this.inSession) window.mallVREnter(); },
+	started: function () { this.inSession = true; this.state = 'in'; this.remember(false); this.show(); },
+	ended: function () { this.inSession = false; this.state = 'out'; this.session = null; this.show(); },
+	failed: function (msg) { this.state = 'failed'; this.note('VR did not start: ' + msg); this.show(); },
+	tune: function (s) {
+		// coarser edges cost nothing you look at and save a lot of drawing; the layer exists a moment after the session
+		var want = parseFloat(this.q('vrfov')); if (!(want >= 0 && want <= 1)) want = 1;
+		var n = 0, t = setInterval(function () {
+			n++;
+			try {
+				// Godot draws into a WebXR projection layer (renderState.layers); older engines used baseLayer
+				var rs = s.renderState || {}, l = (rs.layers && rs.layers[0]) || rs.baseLayer;
+				if (l) { if ('fixedFoveation' in l) l.fixedFoveation = want; clearInterval(t); }
+			} catch (e) { clearInterval(t); }
+			if (n > 40) clearInterval(t);
+		}, 100);
+	}
+};
+(function () {
+	var V = window.mallVR;
+	document.getElementById('vr-enter').addEventListener('click', function () { V.enter(); });
+	if (!navigator.xr) return;
+	try {
+		var rs = navigator.xr.requestSession.bind(navigator.xr);
+		navigator.xr.requestSession = function (mode, opts) {
+			return rs(mode, opts).then(function (s) { V.session = s; V.tune(s); return s; });
+		};
+		navigator.xr.addEventListener('sessiongranted', function () { V.granted = true; if (V.offered) V.enter(); });
+		var sc = parseFloat(V.q('vrscale'));
+		if (sc > 0.3 && sc <= 1.5 && window.XRWebGLBinding && XRWebGLBinding.prototype.createProjectionLayer) {
+			var mk = XRWebGLBinding.prototype.createProjectionLayer;
+			XRWebGLBinding.prototype.createProjectionLayer = function (o) { o = Object.assign({}, o || {}); o.scaleFactor = sc; return mk.call(this, o); };
+		}
+	} catch (e) { console.warn('VR setup:', e); }
+	if (/OculusBrowser|Quest/.test(navigator.userAgent)) {
+		window.addEventListener('DOMContentLoaded', function () {
+			var tip = document.getElementById('load-tip');
+			if (tip) tip.innerHTML = 'When the mall appears, press <b>Enter VR</b><br>Left stick walks · right stick turns · B opens the menu';
+		});
+	}
+}());
 window.mallSigns = {
 	status: '',
 	path: 'prototypes/godot-mall/play/signs.json',
@@ -271,7 +348,7 @@ window.mallPrefetchOther = function () {
 		.catch((e) => console.warn('could not keep the other wing for later:', e));
 };
 // the game calls this when you cross the seam (scripts/player.gd _cross)
-window.mallGoWing = function (url) { location.replace(url); };
+window.mallGoWing = function (url) { if (window.mallVR.inSession) { window.mallVR.remember(true); } location.replace(url); };
 let mallXfer = '';
 try { mallXfer = sessionStorage.getItem('mall-xfer') || ''; } catch (e) { /* ignore */ }
 if (mallXfer) {
