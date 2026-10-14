@@ -9,10 +9,14 @@ store. His reference pictures: the Audubon Zoo's Rougarou sign, a swamp painting
 Halloween animatronic — the mood, not a model.
 
 ## The figure (`scripts/rougarou.gd`)
-- Our own design from the folklore: a man's body with a wolf's head, tall and gaunt, hunched,
-  ragged black fur, digitigrade legs, long arms with clawed hands, a short ragged tail, two amber
-  eyes that catch the light. Hunched, the top of its head is about 1.9 m up (it would be 2.3 m
-  upright). No film or game creature is copied.
+- **The paradigm (Steven, 16:50): the old engraving "Le Rougarou, animal légendaire des Bayous de
+  la Louisiane / Le Loup-garou des Créoles"**: a tall gaunt man-wolf stooped forward, the long
+  back arched into a hump at the shoulders, the head thrust forward on the neck with the jaws
+  open and the ears laid back, long sinewy arms hanging past the knees with clawed fingers, thin
+  bent digitigrade legs in a stride, a bushy tail to the ground, a shaggy mane. The pose in
+  `_pose()` is set to it; the first build (upright, head up, short arms) was "postured weird".
+- Our own build from the folklore and that plate; no film or game creature is copied. Stooped,
+  the top of its head is about 1.8 m up (it would be about 2.3 m upright).
 - Built from primitives at runtime, no model file: a joint tree of Node3D pivots (`J`) carrying
   tapered cylinders and spheres; the fur is MultiMesh spikes riding each part (about 600 in all).
   Materials are flat colours; the eyes are emissive (energy 3) so they bloom at distance.
