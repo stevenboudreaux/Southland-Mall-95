@@ -1,0 +1,23 @@
+{
+ "_": "The Rougarou's timings (scripts/rougarou_ai.gd). Seconds and metres.",
+ "first_sighting_s": 180.0,
+ "between_sightings_s": [
+  45.0,
+  120.0
+ ],
+ "far_m": [
+  25.0,
+  45.0
+ ],
+ "behind_m": 3.2,
+ "behind_chance": 0.3,
+ "see_m": 70.0,
+ "see_cone_deg": 28.0,
+ "look_to_bolt_s": 1.0,
+ "behind_look_to_bolt_s": 0.35,
+ "stand_timeout_s": 40.0,
+ "behind_timeout_s": 12.0,
+ "bolt_mps": 6.8,
+ "hide_m": 14.0,
+ "gone_after_unseen_s": 2.0
+}

@@ -362,6 +362,20 @@ func mat(name):
 					push_error("unknown material " + name)
 			elif name.begins_with("standin_w"):
 				m = standin_mat(name)
+			elif name.begins_with("ad_"):
+				# a framed newspaper ad on a wall (tools/stores/posters/posters.gd): matte newsprint.
+				# Dynamic meshes get no lightmap, so the print carries a little of its own light,
+				# as if the downlights fell on it (less by day, when the halls are bright)
+				var at = tex("ads/" + name.substr(3) + ".png")
+				m.albedo_texture = at; m.roughness = 0.9
+				m.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
+				m.emission_enabled = true; m.emission_texture = at; m.emission = Color.WHITE
+				m.emission_energy_multiplier = 0.55
+				m.set_meta("e_day", 0.35); m.set_meta("e_night", 0.55)
+			elif name == "poster_mat":
+				m.albedo_color = Color("#f4efe4"); m.roughness = 0.9
+				m.emission_enabled = true; m.emission = Color("#f4efe4"); m.emission_energy_multiplier = 0.4
+				m.set_meta("e_day", 0.25); m.set_meta("e_night", 0.4)
 			elif name.begins_with("floorz_"):
 				# bake-time stand-in; the runtime swaps in the procedural floor shader
 				m.albedo_color = Color("#d4c4aa"); m.roughness = 0.14; m.metallic_specular = 0.6
@@ -2224,6 +2238,8 @@ func build():
 		standin_quads()
 	var avoid = kiosks()
 	place_fixtures(avoid)
+	# framed Courier ads on the bare walls (Steven, Oct 14: tools/stores/posters/posters.gd)
+	load("res://tools/stores/posters/posters.gd").build(self)
 	# K&B's mall-facing wall: pink with plum stripes instead of a full storefront
 	# is a per-store look we add in Phase 2 (decision 6); its storefront is generic for now.
 

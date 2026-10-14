@@ -1,0 +1,16 @@
+tools/qa/rougarou_test.gd, Oct 14 2026 16:47 CT, wing 1, night, native opengl3 (xvfb)
+rougarou: far at (21.0, 0.0, -93.0)
+ok   far sighting 25.1 m away at (21.0, 0.0, -93.0)
+ok   figure visible
+ok   in line of sight
+ok   seen when looked at
+rougarou: bolts, 5 tiles
+ok   bolts after being looked at for 1.1 s
+ok   gone after the bolt (1.4 s)
+rougarou: behind at (-7.2, 0.0, -91.0)
+ok   behind-you sighting 3.2 m away
+ok   not seen while behind
+rougarou: bolts, 12 tiles
+ok   bolts when the player turns round
+ok   gone again
+ROUGAROU TEST OK (12 checks)

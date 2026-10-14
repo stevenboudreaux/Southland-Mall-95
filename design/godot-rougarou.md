@@ -1,0 +1,59 @@
+# The Rougarou: the mall's first NPC (Godot mall, since Demo 25, Oct 14 2026)
+
+**Asked for (Steven, Oct 14, 16:23):** "the first NPC that we'll have in the game ... the
+Rougarou. It's a thing of Cajun folklore, a monster that's in the swamp, akin to a werewolf but
+it's not." When you log in it's not there; after a few minutes you see it at the far side of the
+mall, just standing; sometimes it shows up right behind you; very ominous, hunched over. It
+doesn't attack. When you turn and see it, it runs: scatters off behind another wing or into a
+store. His reference pictures: the Audubon Zoo's Rougarou sign, a swamp painting, a poster and a
+Halloween animatronic — the mood, not a model.
+
+## The figure (`scripts/rougarou.gd`)
+- Our own design from the folklore: a man's body with a wolf's head, tall and gaunt, hunched,
+  ragged black fur, digitigrade legs, long arms with clawed hands, a short ragged tail, two amber
+  eyes that catch the light. Hunched, the top of its head is about 1.9 m up (it would be 2.3 m
+  upright). No film or game creature is copied.
+- Built from primitives at runtime, no model file: a joint tree of Node3D pivots (`J`) carrying
+  tapered cylinders and spheres; the fur is MultiMesh spikes riding each part (about 600 in all).
+  Materials are flat colours; the eyes are emissive (energy 3) so they bloom at distance.
+- Procedural animation in `_process`: breathing and a slow sway while standing; the head turns
+  to `watch` (a world point) or scans; a lope when `gait` is 1 (legs and arms crossing, a bob, a
+  lean, the jaw open). `hunch` 0..1 sets the pose.
+- Faces -Z like a camera, so `look_at` points it at things.
+- Cost: about 110 draw calls. Fine for one. If more appear, merge the body into one mesh.
+
+## The behaviour (`scripts/rougarou_ai.gd`, tunables in `scripts/rougarou.json`)
+A node under the wing, made by `player.gd`. States:
+- **hidden:** nothing for `first_sighting_s` (180 s) after the game starts, then
+  `between_sightings_s` (45–120 s) between sightings.
+- **far:** it stands, hunched, 25–45 m from the player (`far_m`) in their line of sight, with a
+  70 % preference for somewhere behind them, head turned to them. Unseen for `stand_timeout_s`
+  (40 s), it fades out.
+- **behind:** `behind_m` (3.2 m) straight behind the player, facing them. From the second
+  sighting on, `behind_chance` (30 %) of sightings are this. If the player turns and sees it, it
+  bolts after `behind_look_to_bolt_s` (0.35 s); otherwise it leaves after `behind_timeout_s`.
+- **bolt:** once looked at for `look_to_bolt_s` (1 s), it runs at `bolt_mps` (6.8 m/s) along the
+  walk grid to the nearest tile at least `hide_m` (14 m) from the player and out of their line of
+  sight (round a corner, into a side hall, into an open store), and vanishes there, or earlier
+  once it has been out of sight for `gone_after_unseen_s`.
+- **Seen** means: within `see_m` (70 m), inside `see_cone_deg` (28°) of the camera's forward,
+  and the straight line to it crosses only walkable tiles (`_los`). Line of sight uses the walk
+  grid, so glass storefronts count as walls; good enough for v1.
+- It never collides with the player and never attacks.
+- URL: `?rougarou=0` keeps it away; `?rougarou=now` brings the first sighting at once;
+  `?rougarou=behind` makes it the behind-you one. Scheduled tests and screenshots are not
+  affected: the first sighting is three minutes in.
+
+## Checks
+- `tools/qa/rougarou_shot.gd`: renders the figure in a studio (`--studio`) or in a wing at night
+  (`--wing=1 --npc=x,z,yaw,hunch,gait --cam=...`).
+- `tools/qa/rougarou_test.gd`: plays the cycle natively and prints ROUGAROU TEST OK: the far
+  sighting in sight and in range, the bolt once looked at, the vanish, the behind-you sighting,
+  its bolt. Screenshots at each beat.
+- Evidence: `production/qa/evidence/d25-*`.
+
+## Guessed, open
+- Every number above is a first guess; Steven tunes `rougarou.json`.
+- Not yet: sound (a breath, claws on terrazzo), a glimpse through a storefront, it watching from
+  a store doorway, the day mode (it appears by day too for now), VR (it works, untested there).
+- The bolt path can cut a corner of a storefront since it follows tile centres.

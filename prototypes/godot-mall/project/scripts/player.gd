@@ -128,6 +128,12 @@ func _ready() -> void:
 	_apply_rot()
 	_build_wing_ui()
 	_build_jump_ui()
+	# the Rougarou, the mall's first NPC (scripts/rougarou_ai.gd; Steven, Oct 14 2026)
+	var rg = load("res://scripts/rougarou_ai.gd").new()
+	rg.name = "RougarouAI"; rg.player = self
+	if OS.has_feature("web"):
+		rg.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('rougarou') || ''"))
+	get_parent().add_child.call_deferred(rg)
 	vr = Node3D.new()
 	vr.name = "VR"
 	vr.set_script(load("res://scripts/vr.gd"))
