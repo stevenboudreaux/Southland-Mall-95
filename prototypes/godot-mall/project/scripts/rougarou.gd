@@ -30,6 +30,7 @@ var t := 0.0
 var hunch := 0.85            # 0 upright .. 1 deeply hunched
 var gait := 0.0              # 0 standing .. 1 running
 var watch: Vector3 = Vector3.INF   # world point the head turns to; INF for none
+var still := false           # stock-still, like the mannequin it stands in for: no breath, no scan
 var rng := RandomNumberGenerator.new()
 var m_fur: StandardMaterial3D
 var m_fur2: StandardMaterial3D
@@ -250,13 +251,14 @@ func _process(dt: float) -> void:
 	_pose(hunch)
 	var g = clamp(gait, 0.0, 1.0)
 	# breathing and a slow sway while standing
-	var br = sin(t * 1.4) * (1.0 - g)
+	var life = 0.0 if still else 1.0
+	var br = sin(t * 1.4) * (1.0 - g) * life
 	J["spine"].rotation_degrees.x += br * 1.2
 	J["chest"].rotation_degrees.x += br * 0.8
 	J["chest"].scale = Vector3(1.0 + br * 0.012, 1.0 + br * 0.02, 1.0 + br * 0.012)
-	J["hips"].rotation_degrees.z = sin(t * 0.37) * 1.3 * (1.0 - g)
-	J["tail1"].rotation_degrees.z = sin(t * 0.9) * 6.0
-	J["tail2"].rotation_degrees.z = sin(t * 0.9 - 0.7) * 8.0
+	J["hips"].rotation_degrees.z = sin(t * 0.37) * 1.3 * (1.0 - g) * life
+	J["tail1"].rotation_degrees.z = sin(t * 0.9) * 6.0 * life
+	J["tail2"].rotation_degrees.z = sin(t * 0.9 - 0.7) * 8.0 * life
 	# the run: a lope, legs and arms crossing, the body bobbing and leaning in
 	if g > 0.0:
 		var w = t * 6.4
@@ -280,12 +282,12 @@ func _process(dt: float) -> void:
 		neck.rotation_degrees.y = yaw * 0.45
 		head.rotation_degrees.y = yaw * 0.55
 		head.rotation_degrees.x += up * 0.8
-	else:
+	elif not still:
 		neck.rotation_degrees.y = sin(t * 0.23) * 22.0
 		head.rotation_degrees.y = sin(t * 0.23 + 0.4) * 18.0
 		head.rotation_degrees.z = sin(t * 0.11) * 4.0
 	# an occasional ear twitch
-	if fmod(t, 4.7) < 0.12:
+	if fmod(t, 4.7) < 0.12 and not still:
 		head.rotation_degrees.z += 2.5
 
 ## Where the eyes are, in world space (the AI uses it to test whether the player can see them).

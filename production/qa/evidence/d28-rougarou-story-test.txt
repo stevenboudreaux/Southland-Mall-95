@@ -1,0 +1,19 @@
+ok   idle at the start (stage 0)
+ok   the window form is there
+ok   Pocket Change entered
+ok   it stands in Merry-Go-Round's window
+ok   in the form's place
+ok   the form is gone
+ok   stays still while you stand
+ok   runs into the store at 12.9 m
+ok   gone into the store
+ok   the window stays empty
+ok   in front of Cucos (stage 2, stand)
+ok   at Cucos' doors
+ok   runs into Cucos at 20.0 m
+ok   lurking in Woolworth (lurk)
+ok   at the back ((-37.0, 0.0, -9.0))
+ok   ducks behind the aisles
+ok   gone after the close look; route back to idle
+ok   idle saved (0,0)
+STORY TEST OK (18 checks)

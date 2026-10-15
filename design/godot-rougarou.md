@@ -41,6 +41,27 @@ a distance. If you try to get close to it it runs away. But you always see it at
 - Check: `tools/qa/rougarou_stalk_test.gd` (STALK TEST OK, 10 checks); evidence
   `production/qa/evidence/d26-rougarou-stalk*.png`.
 
+## Story mode, the default since Demo 28 (Steven, Oct 15, 06:45)
+He played five minutes without a sighting, so it now follows a route set off by a place:
+1. **Idle** until you walk into Pocket Change (past its threshold, by the Whirlwind) and back out.
+2. **The window.** It stands stock-still (no breath, no scan; head turns to you once you are
+   near) in Merry-Go-Round's right-hand window, exactly where the form stood; that form is its
+   own mesh (`dyn_rg_mannequin`, `more.gd windows(own_k, own_group)`) and is hidden from now until
+   the route ends. Within 9 m, or walking at it inside 15 m, it runs to the back of the store
+   and is gone.
+3. **Cucos** (Wing 1). It stands at the doors. Within 16 m, or walking at it inside 22 m, it runs
+   in and is gone.
+4. **Woolworth.** It lurks at the back, turned to you, ducking to another spot out of your sight
+   (5 m+ from where it was, 10 m+ from you, paths kept clear of the shelves) when you see it
+   inside 22 m, come within 8 m, or every 6–11 s. A close look (seen within 10 m, shelves
+   counted) and it runs and is gone.
+5. Back to idle: the form returns to the window; Pocket Change starts it again.
+- The stage survives crossing wings (`sessionStorage` "mall-rg"; `Engine` meta natively).
+- Tunables `story_*` in `rougarou.json`; `?rougarou=s1|s2|s3` jumps to a stage, `?rougarou=stalk`
+  the stalk mode below.
+- Test `tools/qa/rougarou_story_test.gd` (STORY TEST OK, 18 checks); evidence
+  `production/qa/evidence/d28-*`.
+
 ## Stalk tuning, Demo 27 (Steven, Oct 15, 05:16: "a happy medium")
 - First appears 30 s into play (`stalk_first_s`), always ahead: 27–34 m off (`stalk_m`).
 - Runs when you get within 24 m (`flee_m`, doubled from 12), toward the nearest tile out of

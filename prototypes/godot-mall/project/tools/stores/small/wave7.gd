@@ -90,7 +90,9 @@ static func merry(b, a, t, n, W, D, rng):
 		AK.letters(b, F, LET + p[0], cc, n, p[2], p[2], 0.02, 0.08)
 	var rng2 = RandomNumberGenerator.new()
 	M2.windows(b, F, a, t, n, 0.1, 2.2, head, "ap_black", "ap_black", rng2, ["#c83a3a", "#2e2e34", "#e8c040"])
-	M2.windows(b, F, a, t, n, W - 2.2, W - 0.1, head, "ap_black", "ap_black", rng2, ["#3a7a4a", "#e8e2d2", "#2e3a5c"])
+	# the form in the right-hand window is the one the Rougarou takes the place of (Steven, Oct 15:
+	# scripts/rougarou_ai.gd story mode), so it is its own mesh, dyn_rg_mannequin, the game hides
+	M2.windows(b, F, a, t, n, W - 2.2, W - 0.1, head, "ap_black", "ap_black", rng2, ["#3a7a4a", "#e8e2d2", "#2e3a5c"], 0, "rg_mannequin")
 	M2.soffit(b, F, a, t, n, W, head, "ap_black")
 	var c = {"cash": "right", "seed": 47, "slat": "gb_slat_black", "door": 7.0, "fit": 2, "cols": [4.0], "cards": [9, 10, 11], "floor": "ap_wood", "wall": "ap_cream", "rows": [1.6, 5.6]}
 	apparel(b, a, t, n, W, D, c, rng)

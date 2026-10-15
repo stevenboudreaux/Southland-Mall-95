@@ -111,7 +111,8 @@ static func soffit(b, G, a, t, n, W, head, mat = "ap_white"):
 		u += 2.0
 
 ## Glass windows from u0..u1 over a bulkhead, dark frames; a mannequin or two behind.
-static func windows(b, G, a, t, n, u0, u1, head, frame_mat, base_mat, rng, cols = ["#e8e2d2", "#2e3a5c"]):
+## own_k / own_group: the form at index own_k goes in a mesh group of its own (the Rougarou's).
+static func windows(b, G, a, t, n, u0, u1, head, frame_mat, base_mat, rng, cols = ["#e8e2d2", "#2e3a5c"], own_k = -1, own_group = ""):
 	b.box(G, base_mat, P(a, t, n, (u0 + u1) * 0.5, 0.2, 0.05), b.abs_size(t, u1 - u0, 0.4, 0.1, n), Transform3D.IDENTITY, ["-y"])
 	b.quad("glass", "glass", [P(a, t, n, u0, 0.4, 0.02), P(a, t, n, u1, 0.4, 0.02), P(a, t, n, u1, head, 0.02), P(a, t, n, u0, head, 0.02)], n,
 		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
@@ -122,7 +123,7 @@ static func windows(b, G, a, t, n, u0, u1, head, frame_mat, base_mat, rng, cols 
 	var k = 0
 	var u = u0 + 0.7
 	while u < u1 - 0.5:
-		K.mannequin(b, P(a, t, n, u, 0.4, 0.55), -n, cols[k % cols.size()], cols[(k + 1) % cols.size()])
+		K.mannequin(b, P(a, t, n, u, 0.4, 0.55), -n, cols[k % cols.size()], cols[(k + 1) % cols.size()], 1.0, own_group if k == own_k else "ap_small")
 		u += 1.2
 		k += 1
 	K.ob(b, P(a, t, n, u0, 0, -0.1), P(a, t, n, u1, 0, 1.0), 0.1)

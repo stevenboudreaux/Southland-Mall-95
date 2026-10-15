@@ -20,7 +20,7 @@
  "bolt_mps": 6.8,
  "hide_m": 14.0,
  "gone_after_unseen_s": 2.0,
- "mode": "stalk",
+ "mode": "story",
  "stalk_first_s": 30.0,
  "stalk_m": [
   27.0,
@@ -35,5 +35,16 @@
  "reappear_s": [
   30.0,
   120.0
+ ],
+ "story_mq_flee_m": 9.0,
+ "story_mq_approach_m": 15.0,
+ "story_cucos_flee_m": 16.0,
+ "story_cucos_approach_m": 22.0,
+ "story_seen_close_m": 10.0,
+ "story_dart_m": 22.0,
+ "story_run_mps": 7.5,
+ "story_shuffle_s": [
+  6.0,
+  11.0
  ]
 }

@@ -213,8 +213,10 @@ static func fitting_rooms(b, a, t, n, u0, u1, d_back, deep, count, door_mat = "a
 	ob(b, P(a, t, n, u0, 0, df), P(a, t, n, u1, 0, d_back), 0.1)
 
 ## A plain mannequin of the period: grey-white figure, top and bottom in garment colours.
-static func mannequin(b, c, facing, top_col, bot_col, s = 1.0):
-	var S = "ap_small"
+## group: the dynamic mesh group (default "ap_small", all the mall's forms in one mesh); the
+## Rougarou's stand-in form at Merry-Go-Round has its own so the game can hide it.
+static func mannequin(b, c, facing, top_col, bot_col, s = 1.0, group = "ap_small"):
+	var S = group
 	var r = facing.cross(UP)
 	b.cur_color = Color("#3a3a3e")
 	b.cyl(S, "ap_mq", c, 0.18, 0.18, 0.02, 12, true, false, true)
