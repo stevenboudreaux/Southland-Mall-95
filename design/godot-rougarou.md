@@ -41,6 +41,13 @@ a distance. If you try to get close to it it runs away. But you always see it at
 - Check: `tools/qa/rougarou_stalk_test.gd` (STALK TEST OK, 10 checks); evidence
   `production/qa/evidence/d26-rougarou-stalk*.png`.
 
+## The coat (Demo 33, Steven Oct 15 12:30)
+- The first fur was thin cone spikes and read as quills up close. Now the body parts carry a
+  streaked dark-brown hair texture (`_tex_coat`, long along each part), and the fur is soft cards:
+  quads of a dozen wavy, tapering strands cut out by alpha (`_tex_strands`), hanging from each
+  part's surface along its droop, faces turned out. About 1,100 cards (chest/mane 260, spine 110,
+  each arm 94, each leg 90+), one draw call per part.
+
 ## Demo 32 changes (Steven, Oct 15 11:43)
 - It got stuck at the corner (the shelves counted as blocking your view of it). Now the corner
   counts as seen when it is in your view cone with no wall between (`_seen_wall`), and once you

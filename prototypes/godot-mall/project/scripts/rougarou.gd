@@ -53,9 +53,20 @@ func _materials() -> void:
 	m_teeth = StandardMaterial3D.new(); m_teeth.albedo_color = TEETH; m_teeth.roughness = 0.4
 	m_eye = StandardMaterial3D.new(); m_eye.albedo_color = EYE; m_eye.emission_enabled = true
 	m_eye.emission = EYE; m_eye.emission_energy_multiplier = 3.0; m_eye.roughness = 0.2
-	var sp = CylinderMesh.new(); sp.top_radius = 0.0; sp.bottom_radius = 0.009; sp.height = 0.15
-	sp.radial_segments = 4; sp.rings = 1; sp.material = m_fur
-	spike_mesh = sp
+	# the coat (Oct 15 12:30: the first version's spikes read as quills up close): the body takes a
+	# streaked hair texture, and the fur is soft cards, strands of matted hair cut out by alpha,
+	# hanging off every part like the plate's sinewy hatching
+	var coat = _tex_coat()
+	for m in [m_fur, m_fur2]:
+		m.albedo_texture = coat; m.uv1_scale = Vector3(3.0, 2.0, 1.0)
+	m_fur.albedo_color = Color(1, 1, 1); m_fur2.albedo_color = Color(1.35, 1.25, 1.15)   # the texture carries the colour
+	var m_card = StandardMaterial3D.new()
+	m_card.albedo_texture = _tex_strands(); m_card.albedo_color = Color("#2e2620")
+	m_card.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA_SCISSOR; m_card.alpha_scissor_threshold = 0.45
+	m_card.cull_mode = BaseMaterial3D.CULL_DISABLED; m_card.roughness = 0.95; m_card.metallic_specular = 0.12
+	m_card.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	var q = QuadMesh.new(); q.size = Vector2(0.075, 0.2); q.center_offset = Vector3(0, -0.1, 0); q.material = m_card
+	spike_mesh = q
 
 # ------------------------------------------------------------------ building
 func _pivot(parent: Node3D, name: String, pos: Vector3, rot_deg: Vector3) -> Node3D:
@@ -87,8 +98,14 @@ func _fur(joint: Node3D, n: int, L: float, r0: float, r1: float, droop := 0.9) -
 		var p = Vector3(cos(a) * r, -y, sin(a) * r)
 		var out = Vector3(cos(a), 0, sin(a))
 		var dir = (out * (1.0 - droop * 0.75) + Vector3.DOWN * droop * 1.6 + Vector3(rng.randf() - 0.5, 0, rng.randf() - 0.5) * 0.3).normalized()
-		var sc = 0.6 + rng.randf() * 0.9
-		mm.set_instance_transform(i, Transform3D(_basis_y(dir).scaled(Vector3(sc, sc, sc)), p + dir * 0.08 * sc))
+		var sc = 0.7 + rng.randf() * 0.8
+		# a card hangs from its root along dir (its -Y), its face turned out from the body
+		var yv = -dir
+		var xv = out.cross(yv)
+		if xv.length() < 0.01: xv = Vector3.RIGHT
+		xv = xv.normalized().rotated(yv.normalized(), rng.randf_range(-0.5, 0.5))
+		var zv = xv.cross(yv).normalized()
+		mm.set_instance_transform(i, Transform3D(Basis(xv, yv.normalized(), zv).scaled(Vector3(sc, sc * rng.randf_range(0.8, 1.3), sc)), p - out * 0.01))
 	var mi = MultiMeshInstance3D.new(); mi.multimesh = mm
 	joint.add_child(mi)
 
@@ -122,8 +139,8 @@ func build() -> void:
 	var tmi = MeshInstance3D.new(); tmi.mesh = torso; tmi.position = Vector3(0, 0.3, 0); spine.add_child(tmi)
 	_ball(chest, Vector3(0, 0.0, 0.0), 0.27, m_fur, 1.2, 0.75, 0.95)
 	_ball(chest, Vector3(0, -0.12, -0.14), 0.17, m_fur2, 0.9, 0.9, 0.5)   # the chest's lighter front
-	_fur(chest, 190, 0.5, 0.28, 0.2, 0.95)                                 # the mane over the shoulders
-	_fur(spine, 50, 0.55, 0.16, 0.24, 0.95)
+	_fur(chest, 260, 0.5, 0.28, 0.2, 0.95)                                 # the mane over the shoulders
+	_fur(spine, 110, 0.55, 0.16, 0.24, 0.95)
 	# neck and head, thrust forward
 	var neck = _pivot(chest, "neck", Vector3(0, 0.12, -0.1), Vector3.ZERO)
 	var nk = CylinderMesh.new(); nk.top_radius = 0.1; nk.bottom_radius = 0.13; nk.height = 0.26; nk.radial_segments = 10; nk.material = m_fur
@@ -134,16 +151,16 @@ func build() -> void:
 	for side in [-1.0, 1.0]:
 		var sname = "l" if side < 0 else "r"
 		var sh = _pivot(chest, sname + "_sh", Vector3(0.3 * side, 0.04, 0.0), Vector3(0, 0, 0))
-		_limb(sh, 0.62, 0.085, 0.06, m_fur, 18)
+		_limb(sh, 0.62, 0.085, 0.06, m_fur, 52)
 		var el = _pivot(sh, sname + "_el", Vector3(0, -0.62, 0), Vector3.ZERO)
-		_limb(el, 0.6, 0.06, 0.045, m_fur, 16)
+		_limb(el, 0.6, 0.06, 0.045, m_fur, 42)
 		var wr = _pivot(el, sname + "_wr", Vector3(0, -0.6, 0), Vector3.ZERO)
 		_hand(wr, side)
 		# legs: digitigrade. Thigh forward-down, shin back, a long foot (metatarsus) down to toes.
 		var hp = _pivot(hips, sname + "_hip", Vector3(0.13 * side, -0.04, 0), Vector3.ZERO)
-		_limb(hp, 0.55, 0.1, 0.065, m_fur, 18)
+		_limb(hp, 0.55, 0.1, 0.065, m_fur, 54)
 		var kn = _pivot(hp, sname + "_knee", Vector3(0, -0.55, 0), Vector3.ZERO)
-		_limb(kn, 0.5, 0.065, 0.045, m_fur, 12)
+		_limb(kn, 0.5, 0.065, 0.045, m_fur, 36)
 		var an = _pivot(kn, sname + "_ank", Vector3(0, -0.5, 0), Vector3.ZERO)
 		_limb(an, 0.28, 0.045, 0.04, m_fur, 6)
 		var ft = _pivot(an, sname + "_foot", Vector3(0, -0.28, 0), Vector3.ZERO)
@@ -293,3 +310,42 @@ func _process(dt: float) -> void:
 ## Where the eyes are, in world space (the AI uses it to test whether the player can see them).
 func eye_pos() -> Vector3:
 	return J["head"].to_global(Vector3(0, 0.058, -0.135))
+
+## Coarse dark hair along the length of a part: streaks of lighter and darker brown-black.
+func _tex_coat() -> ImageTexture:
+	var W = 128; var H = 128
+	var n = FastNoiseLite.new(); n.seed = 77; n.frequency = 0.08
+	var im = Image.create(W, H, false, Image.FORMAT_RGB8)
+	for y in H:
+		for x in W:
+			# stretched noise: long along v (the length of the part), fine across u
+			var v = n.get_noise_2d(x * 3.0, y * 0.25) * 0.5 + 0.5
+			var k = 0.55 + v * 0.75
+			im.set_pixel(x, y, Color(0.125 * k, 0.105 * k, 0.09 * k))
+	im.generate_mipmaps()
+	return ImageTexture.create_from_image(im)
+
+## A fur card: a dozen strands from the root at the top, wavy, tapering to points at the bottom.
+func _tex_strands() -> ImageTexture:
+	var W = 64; var H = 128
+	var im = Image.create(W, H, false, Image.FORMAT_RGBA8)
+	im.fill(Color(0, 0, 0, 0))
+	var r = RandomNumberGenerator.new(); r.seed = 13
+	for k in 14:
+		var x0 = r.randf_range(6.0, W - 6.0)
+		var len = r.randf_range(0.6, 1.0) * H
+		var wav = r.randf_range(1.5, 4.0); var ph = r.randf() * TAU
+		var shade = r.randf_range(0.6, 1.25)
+		for y in int(len):
+			var f = float(y) / len
+			var w = lerp(3.2, 0.6, f)
+			var cx = x0 + sin(f * 6.0 + ph) * wav + f * r.randf_range(-0.4, 0.4)
+			for x in range(int(cx - w - 1), int(cx + w + 2)):
+				if x < 0 or x >= W: continue
+				var a = clamp(1.0 - abs(x - cx) / w, 0.0, 1.0)
+				if a <= 0.0: continue
+				var old = im.get_pixel(x, y)
+				var c = Color(shade, shade * 0.92, shade * 0.85, max(old.a, a))
+				im.set_pixel(x, y, c)
+	im.generate_mipmaps()
+	return ImageTexture.create_from_image(im)
