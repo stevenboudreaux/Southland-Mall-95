@@ -101,7 +101,7 @@ func _process(dt: float) -> bool:
 					["3-s1-bay", Vector2(49.5, 186.0), 0.0, 0.0],
 					["4-s1-bay-west", Vector2(46.0, 171.5), 90.0, 0.0],
 					["5-long-corridor", Vector2(26.5, 170.0), 0.0, 0.0],
-					["6-s2-ladder", Vector2(129.5, 182.0), 20.0, 4.0],
+					["6-s2-ladder", Vector2(131.0, 168.5), -61.0, 12.0],
 					["7-s3-rooms", Vector2(229.0, 171.5), -90.0, 0.0],
 					["8-code-room", Vector2(243.5, 168.5), 10.0, 0.0],
 					["9-stick-room", Vector2(299.5, 55.0), -20.0, -6.0],

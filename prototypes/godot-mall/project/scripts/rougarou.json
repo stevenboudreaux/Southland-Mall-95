@@ -38,8 +38,8 @@
  ],
  "story_mq_flee_m": 5.0,
  "story_mq_approach_m": 0.0,
- "story_cucos_flee_m": 16.0,
- "story_cucos_approach_m": 22.0,
+ "story_cucos_flee_m": 8.0,
+ "story_cucos_approach_m": 11.0,
  "story_seen_close_m": 10.0,
  "story_dart_m": 22.0,
  "story_run_mps": 7.5,
@@ -48,5 +48,6 @@
   11.0
  ],
  "story_exit_mps": 3.0,
- "story_ducks_before_exit": 3
+ "story_ducks_before_exit": 3,
+ "story_wall_look_s": 0.8
 }

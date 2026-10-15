@@ -59,6 +59,11 @@ camcorder on a tripod with its red light on, stacked boxes, stacked chairs.
   (`story_ducks_before_exit`), and it walks at 3 m/s (`story_exit_mps`, a slow lope) along free
   floor to the back corner and on into the wall, then the route ends and the door unlocks.
 
+## Demo 31
+- The ladder rebuilt upright in a pivot and tilted as one, rungs between the rails.
+- Sounds with no source to find: every 15–45 s, 4–9 muffled footsteps walking past, or a paper
+  rustle, 9–22 m away (generated PCM, AudioStreamPlayer3D).
+
 ## Checks
 - `tools/qa/stockrooms_test.gd`: STOCKROOMS TEST OK (12 checks) with renders.
 - `tools/qa/rougarou_story_test.gd`: the whole route through the walk into the wall and the unlock.

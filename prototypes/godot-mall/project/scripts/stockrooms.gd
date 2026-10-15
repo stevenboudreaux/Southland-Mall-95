@@ -117,6 +117,7 @@ func _process(dt: float) -> void:
 		var on = sin(t * 13.0 + f[1]) + sin(t * 31.0 + f[1] * 2.0) > -0.9 or fmod(t + f[1], 7.0) > 0.3
 		m.emission_energy_multiplier = 2.6 if on else 0.15
 	_hum(dt)
+	_sfx(dt)
 
 # ------------------------------------------------------------------ in and out
 func enter(instant: bool) -> void:
@@ -208,6 +209,78 @@ func _fade_to(a: float, s: float) -> void:
 	await tw.finished
 
 # ------------------------------------------------------------------ the hum
+# ------------------------------------------------------------------ the sounds you never see the
+# source of (Steven, Oct 15 10:26: "faint footsteps sometimes, or papers shuffling"): every
+# 15-45 s, a short walk of muffled steps or a rustle of paper, from somewhere 9-22 m off.
+var snd_step: AudioStreamWAV
+var snd_paper: AudioStreamWAV
+var sfx_next := 12.0
+var sfx_rng := RandomNumberGenerator.new()
+
+func _wav(samples: PackedFloat32Array) -> AudioStreamWAV:
+	var w = AudioStreamWAV.new(); w.format = AudioStreamWAV.FORMAT_16_BITS; w.mix_rate = 22050
+	var b = PackedByteArray(); b.resize(samples.size() * 2)
+	for i in samples.size():
+		b.encode_s16(i * 2, int(clamp(samples[i], -1.0, 1.0) * 32000.0))
+	w.data = b
+	return w
+
+func _make_sounds() -> void:
+	sfx_rng.seed = 1031
+	var r = RandomNumberGenerator.new(); r.seed = 7
+	# a footstep on carpet: a dull low thump with a little muffled scuff
+	var n = int(22050 * 0.22); var a = PackedFloat32Array(); a.resize(n)
+	var lp = 0.0
+	for i in n:
+		var tt = float(i) / 22050.0
+		lp += (r.randf_range(-1, 1) - lp) * 0.08
+		a[i] = (sin(TAU * 68.0 * tt) * 0.9 * exp(-tt * 28.0) + lp * 1.6 * exp(-tt * 18.0)) * min(1.0, tt * 400.0)
+	snd_step = _wav(a)
+	# paper: hiss with crackle bursts, shaped like a sheet being turned over
+	n = int(22050 * 1.1); var p = PackedFloat32Array(); p.resize(n)
+	var lp2 = 0.0; var burst = 0.0
+	for i in n:
+		var tt = float(i) / 22050.0
+		var x = r.randf_range(-1, 1)
+		lp2 += (x - lp2) * 0.35
+		if r.randf() < 0.0025: burst = r.randf_range(0.5, 1.0)
+		burst *= 0.9993
+		var env = sin(PI * clamp(tt / 1.1, 0.0, 1.0))
+		p[i] = (x - lp2) * (0.25 + burst) * env * 0.7
+	snd_paper = _wav(p)
+
+func _sfx(dt: float) -> void:
+	sfx_next -= dt
+	if sfx_next > 0.0: return
+	sfx_next = sfx_rng.randf_range(15.0, 45.0)
+	# somewhere on the floor 9-22 m away
+	var pp = player.position - ORIGIN
+	var spot = null
+	for k in 40:
+		var a = sfx_rng.randf() * TAU; var d = sfx_rng.randf_range(9.0, 22.0)
+		var c = Vector2(pp.x + cos(a) * d, pp.z + sin(a) * d)
+		var ix = int(c.x); var iy = int(c.y)
+		if iy >= 0 and iy < rows.size() and ix >= 0 and ix < rows[0].length() and rows[iy][ix] == "1":
+			spot = ORIGIN + Vector3(c.x, 0.1, c.y); break
+	if spot == null: return
+	var src = AudioStreamPlayer3D.new(); src.position = spot; add_child(src)
+	src.unit_size = 4.0; src.max_db = -6.0; src.volume_db = -10.0
+	if sfx_rng.randf() < 0.6:
+		src.stream = snd_step
+		var dir = Vector3(sfx_rng.randf_range(-1, 1), 0, sfx_rng.randf_range(-1, 1)).normalized()
+		var steps = sfx_rng.randi_range(4, 9)
+		for k in steps:
+			if not inside: break
+			src.position += dir * 0.7
+			src.pitch_scale = sfx_rng.randf_range(0.9, 1.08)
+			src.play()
+			await get_tree().create_timer(sfx_rng.randf_range(0.5, 0.62)).timeout
+	else:
+		src.stream = snd_paper; src.pitch_scale = sfx_rng.randf_range(0.85, 1.15)
+		src.play()
+		await get_tree().create_timer(1.3).timeout
+	if is_instance_valid(src): src.queue_free()
+
 func _hum_start() -> void:
 	if hum == null:
 		hum = AudioStreamPlayer.new()
@@ -287,6 +360,7 @@ func _build() -> void:
 	J.obstacles = []
 	for p in J.props:
 		_prop(root, p)
+	_make_sounds()
 	visible = false
 	built = true
 	print("stockrooms: built, ", panels_on.size() + panels_dead.size() + panels_flick.size(), " panels, ", J.props.size(), " props")
@@ -383,14 +457,17 @@ func _prop(root: Node3D, p: Dictionary) -> void:
 			_box(node, Vector3(0, 0.445, 0), Vector3(0.47, 0.01, 0.06), Color("#6a4e2a"))
 			J.obstacles.append([wpos.x, wpos.z, 0.4])
 		"ladder":
-			# a ladder up the wall to a dark square in the ceiling (a landmark)
-			for sx in [-0.22, 0.22]:
-				var r = _box(node, Vector3(sx, CEIL * 0.5, 0.18), Vector3(0.04, CEIL + 0.05, 0.05), Color("#8c8c86"))
-				r.rotation.x = -0.12
-			for k in 8:
-				var yy = 0.3 + k * 0.32
-				_box(node, Vector3(0, yy, 0.18 + (yy - CEIL * 0.5) * 0.12), Vector3(0.44, 0.03, 0.03), Color("#8c8c86"))
-			_box(node, Vector3(0, CEIL - 0.005, -0.15), Vector3(0.7, 0.02, 0.7), Color("#050403"))
+			# a ladder leaning on the wall (local +z) up to a dark square in the ceiling (a landmark).
+			# Built upright in a pivot at its foot, then the whole thing tilted, so the rungs stay
+			# between the rails (Steven, Oct 15 10:26: they stuck out to one side)
+			var piv = Node3D.new(); piv.position = Vector3(0, 0, -0.12); node.add_child(piv)
+			var L = 2.85
+			for sx in [-0.21, 0.21]:
+				_box(piv, Vector3(sx, L * 0.5, 0), Vector3(0.045, L, 0.06), Color("#9a9a92"))
+			for k in 9:
+				_box(piv, Vector3(0, 0.28 + k * 0.29, 0), Vector3(0.42, 0.032, 0.032), Color("#9a9a92"))
+			piv.rotation.x = atan2(0.55, CEIL)          # the top leans 0.55 m toward the wall
+			_box(node, Vector3(0, CEIL - 0.006, 0.14), Vector3(0.72, 0.01, 0.62), Color("#050403"))
 		"stick":
 			_stick(node)
 			stick_pos = wpos

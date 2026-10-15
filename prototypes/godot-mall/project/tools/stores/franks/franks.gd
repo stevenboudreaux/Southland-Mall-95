@@ -1,10 +1,10 @@
 ## Franks (s33), the hot dog stand near the Shoe Dept. court (Courier, May 8 1988: "Franks, a
 ## restaurant specializing in a variety of gourmet hot dogs", owned with the Orange Julius next
 ## door by Mehrhoff Corp.). Steven, Oct 8 2026: the sign is the ads' lowercase "franks" as bare
-## red neon, no backing, straight on the cream facade. Oct 8, 11:44: storefront only; Oct 14,
-## 16:23: back on the side wall facing the east hall too ("you took the neon off that side wall"),
-## and the tubes made "sturdier ... if it was a font you would almost put bold on it": 32 mm glass
-## in place of 21 mm (38 mm), 65 mm off the wall, wider light pools. The unit is the corner of the row
+## red neon, no backing, straight on the cream facade, on the storefront only (Oct 8, 11:44; Oct
+## 15, 10:26: "it's only on one storefront", after a day on the east-hall side wall too). Oct 14,
+## 16:23: the tubes made "sturdier ... if it was a font you would almost put bold on it": 38 mm
+## glass in place of 21 mm, 65 mm off the wall, wider light pools. The unit is the corner of the row
 ## Franks, Orange Julius, Tee Tai's on the entrance hall (directory units 53, 52, 51).
 ##
 ## The facade is the mall's generic storefront (build_mall.gd storefront(), no sign box, no
@@ -30,10 +30,6 @@ static func build(b, g, e, a, b_, n, t, Ln, sd):
 	b.storefront(g, e, a, b_, n, t, Ln, true)
 	# the storefront: centred on the frontage, on the face of the cream bulkhead (16 cm proud)
 	neon(b, "frf_sign", a + t * (Ln * 0.5) + n * 0.16 + UP * BOTTOM, n)
-	# the side wall on the east hall (layout edge [2,6]-[2,16], a plain cream wall at the a end of
-	# the front, facing -t): the same sign, centred on the unit's depth (Steven, Oct 14)
-	var deep = float(e.get("depth", 10.0))
-	neon(b, "frf_sign", a - n * (deep * 0.5) + (-t) * 0.0 + UP * BOTTOM, -t)
 
 ## The neon with the middle of its bottom at c on a wall facing nn.
 static func neon(b, g, c, nn):

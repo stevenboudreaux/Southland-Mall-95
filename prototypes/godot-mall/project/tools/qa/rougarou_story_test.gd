@@ -19,6 +19,11 @@ var oks := 0
 var ducks := 0
 var min_d := 1e9
 var wait_scene := false
+var notes_wait := false
+var wait_clock := 0.0
+var placed := false
+var shot_go := false
+var shot_half := false
 
 func _initialize() -> void:
 	for a in OS.get_cmdline_user_args():
@@ -74,10 +79,17 @@ func _process(dt: float) -> bool:
 				_check(ai.stage == 0 and not fig.visible, "idle at the start (stage %d)" % ai.stage)
 				_check(_mq() != null and _mq().visible, "the window form is there")
 				player.position = Vector3(-106, 0, 70)        # into Pocket Change, by the Whirlwind
+				player.yaw = PI; player._apply_rot()          # facing in, away from the window
 				step = 1; clock = 0.0
 		1:
-			if clock > 0.5:
-				_check(ai.pc_in, "Pocket Change entered")
+			if clock > 0.5 and clock < 0.6 + dt:
+				_check(ai.stage == 1 and fig.visible, "set off on entering Pocket Change (stage %d)" % ai.stage)
+				# turn round inside the arcade: it is there in the window across the concourse
+				player.position = Vector3(-106, 0, 63)
+				_face(ai.MQ_POS)
+			if clock > 1.3:
+				_check(ai.state == "stand", "standing in the window while you look from the arcade")
+				_shot("0-from-pocket-change")
 				player.position = Vector3(-106, 0, 56)        # back out to the concourse
 				_face(ai.MQ_POS)
 				step = 2; clock = 0.0
@@ -168,8 +180,29 @@ func _process(dt: float) -> bool:
 			if ai.state == "exit_walk" and not wait_scene:
 				wait_scene = true
 				_check(true, "walks off toward the back corner")
-			if ai.state == "exit_walk" and clock > 3.0 and clock < 3.0 + dt * 1.5:
-				_shot("8-woolworth-exit-walk")
+			if ai.state == "wall_wait" and not notes_wait:
+				notes_wait = true; wait_clock = 0.0
+				# look away first: it must not go while unseen
+				player.yaw += PI; player._apply_rot()
+			if notes_wait and ai.state == "wall_wait":
+				wait_clock += dt
+				if wait_clock > 2.0 and not placed:
+					_check(true, "waits by the wall while you are not looking")
+					# then stand in the aisle where the corner shows, and watch
+					var best = null
+					for k in 40:
+						var p = ai.fig.position + Vector3(3.0 + (k % 8) * 0.8, 0, -0.4 - (k / 8) * 0.35)
+						if player._free(p.x, p.z) and ai._los_obs(p, ai.fig.position):
+							best = p; break
+					if best == null:
+						_check(false, "no spot that sees the corner"); return _done()
+					player.position = best; _face(ai.fig.position); placed = true
+					_shot("8-woolworth-wall-wait")
+			if ai.state == "wall_go" and not shot_go:
+				shot_go = true
+				_check(placed, "steps into the wall only once watched")
+			if ai.state == "wall_go" and fig.position.x < -45.7 and not shot_half:
+				shot_half = true; _shot("9-woolworth-into-wall")
 			if ai.stage == 0:
 				_check(not fig.visible, "gone through the wall; route back to idle")
 				_check(fig.position.x < -45.8 and abs(fig.position.z - 21.62) < 0.2, "went through the back corner (%s)" % str(fig.position))

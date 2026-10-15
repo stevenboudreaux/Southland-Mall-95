@@ -51,10 +51,10 @@ var cfg := {
 	"hide_m": 14.0, "gone_after_unseen_s": 2.0,
 	"mode": "story", "stalk_first_s": 30.0, "stalk_m": [27.0, 34.0], "stalk_cone_deg": 30.0,
 	"flee_m": 24.0, "flee_to_m": 28.0, "lost_m": 55.0, "reappear_s": [30.0, 120.0],
-	"story_mq_flee_m": 5.0, "story_mq_approach_m": 0.0, "story_cucos_flee_m": 16.0,
-	"story_cucos_approach_m": 22.0, "story_seen_close_m": 10.0, "story_dart_m": 22.0,
+	"story_mq_flee_m": 5.0, "story_mq_approach_m": 0.0, "story_cucos_flee_m": 8.0,
+	"story_cucos_approach_m": 11.0, "story_seen_close_m": 10.0, "story_dart_m": 22.0,
 	"story_run_mps": 7.5, "story_shuffle_s": [6.0, 11.0], "story_exit_mps": 3.0,
-	"story_ducks_before_exit": 3, "relocate_after_s": 1.0, "flee_mps": 7.5,
+	"story_ducks_before_exit": 3, "story_wall_look_s": 0.8, "relocate_after_s": 1.0, "flee_mps": 7.5,
 }
 var mode := "stalk"
 var player: Node3D
@@ -427,7 +427,7 @@ var approach := 0.0        # smoothed speed of the player toward it, m/s
 var wool_obs := []         # obstacle rects inside Woolworth, for line of sight
 var shuffle := 0.0
 var ducks := 0
-const WOOL_EXIT = [Vector3(-44.85, 0, 21.62), Vector3(-46.5, 0, 21.62)]   # the back corner, into the wall
+const WOOL_EXIT = [Vector3(-44.65, 0, 21.62), Vector3(-46.5, 0, 21.62)]   # in front of the back corner; into the wall
 
 func _story_ready() -> void:
 	var saved = _story_load()
@@ -499,12 +499,14 @@ func _story(dt: float) -> void:
 		approach = lerp(approach, (d0 - d1) / dt, min(1.0, dt * 4.0))
 	last_pp = pp
 	since += dt
-	# Pocket Change arms it, from idle
+	# Pocket Change sets it off, from idle, the moment you are inside (Steven, Oct 15 10:26: so you
+	# can turn round in the arcade and see it in the window). The form and the Rougarou swap places
+	# only while the window is out of your view, so you never see the swap itself.
 	if stage == 0 and _wing_ok(2):
 		var inside = PC_RECT.has_point(Vector2(pp.x, pp.z))
 		if inside and not pc_in:
 			pc_in = true; _story_save()
-		elif pc_in and pp.z < 60.0:
+		if pc_in and (_angle(MQ_POS) > 55.0 or not _los(pp, MQ_POS)):
 			pc_in = false
 			_story_next(1)
 			return
@@ -539,6 +541,23 @@ func _story(dt: float) -> void:
 			_run_at(dt, float(cfg.story_exit_mps))
 			fig.gait = 0.55
 			if path.is_empty():
+				# it stops in front of the corner and waits, turned to you, until you can see it
+				state = "wall_wait"; fig.gait = 0.0; fig.hunch = 0.9; looked = 0.0; since = 0.0
+				print("rougarou story: waits by the wall")
+		"wall_wait":
+			fig.watch = pp + Vector3(0, 1.5, 0)
+			if _seen_obs(): looked += dt
+			else: looked = max(0.0, looked - dt)
+			if looked > float(cfg.story_wall_look_s) or (_dist() < 3.0 and _seen_obs()):
+				# you are watching: it turns to the wall and steps into it
+				state = "wall_go"; fig.watch = Vector3.INF; fig.gait = 0.35; fig.hunch = 0.75
+				path = [WOOL_EXIT[1]]
+				print("rougarou story: steps into the wall")
+		"wall_go":
+			# only while you watch: look away and it waits, half in the wall, until you look back
+			if _seen_obs() or fig.position.x < -45.85:
+				_run_at(dt, 1.1)
+			if path.is_empty() or fig.position.x < -46.45:
 				fig.visible = false
 				var sr = get_parent().get_node_or_null("Stockrooms")
 				if sr: sr.unlock()
@@ -562,8 +581,10 @@ func _seen_obs() -> bool:
 func _los_obs(a: Vector3, b: Vector3) -> bool:
 	var d = Vector2(b.x - a.x, b.z - a.z)
 	var n = int(ceil(d.length() / 0.6))
+	var L = d.length()
 	for i in range(1, n):
 		var p = Vector2(a.x, a.z) + d * (float(i) / n)
+		if L * (1.0 - float(i) / n) < 0.8: break      # the last 0.8 m is its own body, not in the way
 		if not _walk(p.x, p.y): return false
 		for r in wool_obs:
 			if r.has_point(p): return false
@@ -646,7 +667,7 @@ func _exit_walk() -> void:
 			path.push_front(_centre(t.x, t.y))
 			t = prev[t]
 		if not path.is_empty(): path.pop_back()      # the goal tile's centre is by the shelf end
-	for w in WOOL_EXIT: path.append(w)
+	path.append(WOOL_EXIT[0])
 	fig.gait = 0.55; fig.hunch = 0.8; fig.watch = Vector3.INF; since = 0.0
 	state = "exit_walk"
 	print("rougarou story: walks to the wall (", path.size(), " steps)")

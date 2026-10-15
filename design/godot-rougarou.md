@@ -41,6 +41,14 @@ a distance. If you try to get close to it it runs away. But you always see it at
 - Check: `tools/qa/rougarou_stalk_test.gd` (STALK TEST OK, 10 checks); evidence
   `production/qa/evidence/d26-rougarou-stalk*.png`.
 
+## Demo 31 changes (Steven, Oct 15 10:26)
+- Pocket Change sets it off the moment you are inside (the swap waits until the window is out of
+  your view), so you can turn round in the arcade and see it in the window.
+- Cucos: runs at 8 m, or walking at it inside 11 m (half of before).
+- Woolworth finale: it walks to just in front of the back corner and stops, turned to you, until
+  you have watched it for 0.8 s (`story_wall_look_s`); then it steps into the wall at 1.1 m/s, and
+  freezes half in whenever you look away.
+
 ## Story mode, the default since Demo 28 (Steven, Oct 15, 06:45)
 He played five minutes without a sighting, so it now follows a route set off by a place:
 1. **Idle** until you walk into Pocket Change (past its threshold, by the Whirlwind) and back out.
