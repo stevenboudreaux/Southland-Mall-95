@@ -908,9 +908,9 @@ func _build_ui() -> void:
 	brow.alignment = BoxContainer.ALIGNMENT_CENTER
 	brow.add_theme_constant_override("separation", 14)
 	bar.add_child(brow)
-	btn_prev = _mk_btn("◀", sb, func(): step_view(-1))
+	btn_prev = _mk_btn("<", sb, func(): step_view(-1))
 	btn_back = _mk_btn("Back", sb, func(): close_look())
-	btn_next = _mk_btn("▶", sb, func(): step_view(1))
+	btn_next = _mk_btn(">", sb, func(): step_view(1))
 	for b in [btn_prev, btn_back, btn_next]:
 		brow.add_child(b)
 	btn_back.custom_minimum_size = Vector2(120, 52)
@@ -957,6 +957,10 @@ func open_look(i := -1) -> void:
 		if c:
 			saved_vis.append([c, c.visible])
 			c.visible = false
+	var sg = get_parent().get_node_or_null("Signs")
+	if sg and sg.get("ui") is CanvasLayer:
+		saved_vis.append([sg.ui, sg.ui.visible])
+		sg.ui.visible = false
 	prompt.visible = false
 	if lcam == null:
 		lcam = Camera3D.new()
@@ -990,7 +994,7 @@ func close_look() -> void:
 		player.frozen = false
 		looking = false
 		for e in saved_vis:
-			if e[0] != player.hint:
+			if e[0] != player.hint and is_instance_valid(e[0]):
 				e[0].visible = e[1])
 
 func step_view(k: int) -> void:
@@ -1011,9 +1015,9 @@ func _fov_for(i: int) -> Array:
 
 func _go(i: int, dur: float) -> void:
 	title.text = views[i].name + "   (%d / %d)" % [i + 1, views.size()]
-	hint.text = {"pad": "◀ ▶ move along · ▲ ▼ pick a prize · B to step back",
-		"touch": "Tap a prize to see its price · swipe or ◀ ▶ to move along"}.get(input_kind,
-		"Point at a prize to see its price · A / D or ◀ ▶ to move along · Esc to step back")
+	hint.text = {"pad": "D-pad left / right to move along · up / down to pick a prize · B to step back",
+		"touch": "Tap a prize to see its price · swipe or < > to move along"}.get(input_kind,
+		"Point at a prize to see its price · A / D or < > to move along · Esc to step back")
 	if tw:
 		tw.kill()
 	var from := lcam.global_transform
@@ -1327,10 +1331,11 @@ func _owner_ui() -> void:
 		return
 	btn_edit = Button.new()
 	btn_pub = Button.new()
-	var y := 52
+	var y := 72
 	for b in [btn_edit, btn_pub]:
-		b.position = Vector2(12, y)
-		b.custom_minimum_size = Vector2(190, 42)
+		b.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+		b.offset_left = -212; b.offset_right = -12
+		b.offset_top = y; b.offset_bottom = y + 42
 		b.mouse_filter = Control.MOUSE_FILTER_IGNORE   # hit-tested in _owner_input (touch skips mouse emulation)
 		b.focus_mode = Control.FOCUS_NONE
 		b.add_theme_font_size_override("font_size", 17)
@@ -1338,7 +1343,10 @@ func _owner_ui() -> void:
 		y += 50
 	btn_edit.toggle_mode = true
 	status_l = Label.new()
-	status_l.position = Vector2(14, y + 2)
+	status_l.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	status_l.offset_left = -330; status_l.offset_right = -12
+	status_l.offset_top = y + 2; status_l.offset_bottom = y + 26
+	status_l.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	status_l.add_theme_font_size_override("font_size", 16)
 	status_l.add_theme_color_override("font_color", Color.WHITE)
 	status_l.add_theme_color_override("font_outline_color", Color.BLACK)

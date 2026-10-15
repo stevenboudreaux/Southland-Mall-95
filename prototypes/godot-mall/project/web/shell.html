@@ -337,7 +337,7 @@ window.mallPrizeEdit = {
 			rows.push(r); box.appendChild(fs);
 		});
 		var bar = el('div', 'display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px');
-		var close = function (res) { S.result = JSON.stringify(res); wrap.remove(); };
+		var close = function (res) { S.result = JSON.stringify(res); wrap.remove(); var cv = document.getElementById('canvas'); if (cv) cv.focus(); };
 		var btn = function (t, css, fn) { var b = el('button', 'font-size:16px;padding:8px 14px;border-radius:8px;border:1px solid #8a7a60;' + css, t); b.onclick = fn; bar.appendChild(b); };
 		btn('Restore originals', 'background:#fff;margin-right:auto', function () { close({ reset: rows.map(function (r) { return r.id; }) }); });
 		btn('Cancel', 'background:#fff', function () { close({ cancel: 1 }); });
