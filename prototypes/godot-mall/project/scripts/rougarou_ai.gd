@@ -53,7 +53,7 @@ var cfg := {
 	"flee_m": 24.0, "flee_to_m": 28.0, "lost_m": 55.0, "reappear_s": [30.0, 120.0],
 	"story_mq_flee_m": 5.0, "story_mq_approach_m": 0.0, "story_cucos_flee_m": 8.0,
 	"story_cucos_approach_m": 11.0, "story_seen_close_m": 10.0, "story_dart_m": 22.0,
-	"story_run_mps": 7.5, "story_shuffle_s": [6.0, 11.0], "story_exit_mps": 3.0,
+	"story_run_mps": 7.5, "story_shuffle_s": [6.0, 11.0], "story_exit_mps": 3.0, "story_exit_frac": 0.93,
 	"story_ducks_before_exit": 3, "story_wall_look_s": 0.8, "relocate_after_s": 1.0, "flee_mps": 7.5,
 }
 var mode := "stalk"
@@ -538,26 +538,28 @@ func _story(dt: float) -> void:
 			elif (seen and d < float(cfg.story_dart_m)) or d < 8.0 or shuffle <= 0.0:
 				_dart(false)
 		"exit_walk":
-			_run_at(dt, float(cfg.story_exit_mps))
-			fig.gait = 0.55
+			# a hair slower than you can run, so running you nearly catch it, but it keeps a metre or
+			# two ahead (Steven, Oct 15 11:43): if you get within 2.5 m it pulls away a little
+			var run = player.SPEED * player.RUN
+			_run_at(dt, run * (1.12 if _dist() < 2.5 else float(cfg.story_exit_frac)))
+			fig.gait = 1.0
 			if path.is_empty():
 				# it stops in front of the corner and waits, turned to you, until you can see it
 				state = "wall_wait"; fig.gait = 0.0; fig.hunch = 0.9; looked = 0.0; since = 0.0
 				print("rougarou story: waits by the wall")
 		"wall_wait":
 			fig.watch = pp + Vector3(0, 1.5, 0)
-			if _seen_obs(): looked += dt
+			if _seen_wall(): looked += dt
 			else: looked = max(0.0, looked - dt)
-			if looked > float(cfg.story_wall_look_s) or (_dist() < 3.0 and _seen_obs()):
+			if looked > float(cfg.story_wall_look_s) or _dist() < 3.0:
 				# you are watching: it turns to the wall and steps into it
-				state = "wall_go"; fig.watch = Vector3.INF; fig.gait = 0.35; fig.hunch = 0.75
+				state = "wall_go"; fig.watch = Vector3.INF; fig.gait = 0.5; fig.hunch = 0.75; since = 0.0
 				path = [WOOL_EXIT[1]]
 				print("rougarou story: steps into the wall")
 		"wall_go":
-			# only while you watch: look away and it waits, half in the wall, until you look back
-			if _seen_obs() or fig.position.x < -45.85:
-				_run_at(dt, 1.1)
-			if path.is_empty() or fig.position.x < -46.45:
+			# straight into the wall in front of it and gone (Steven, Oct 15 11:43: it got stuck there)
+			_run_at(dt, 2.5)
+			if path.is_empty() or fig.position.x < -45.95 or since > 0.7:
 				fig.visible = false
 				var sr = get_parent().get_node_or_null("Stockrooms")
 				if sr: sr.unlock()
@@ -572,6 +574,12 @@ func _story(dt: float) -> void:
 			_run_at(dt, float(cfg.story_run_mps))
 			if path.is_empty() or (since > 0.6 and not _seen_obs()) or since > 4.0:
 				_story_next(0)
+
+## Seen at the corner: in the view cone, nothing solid between (shelves not counted: the corner
+## shows down the aisle past their ends, and counting them left it waiting there unseen).
+func _seen_wall() -> bool:
+	if _angle() > 35.0 or _dist() > 30.0: return false
+	return _los(player.global_position, fig.position)
 
 ## Seen, with Woolworth's shelves in the way: in the view cone and nothing between.
 func _seen_obs() -> bool:
@@ -656,7 +664,7 @@ func _exit_walk() -> void:
 			var u = t + nb
 			if prev.has(u): continue
 			var uc = _centre(u.x, u.y)
-			if not WOOL.has_point(Vector2(uc.x, uc.z)): continue
+			if not WOOL.grow(1.1).has_point(Vector2(uc.x, uc.z)): continue    # (the goal tile sits on the edge)
 			if u != goal and not player._free(uc.x, uc.z): continue
 			prev[u] = t
 			queue.append(u)

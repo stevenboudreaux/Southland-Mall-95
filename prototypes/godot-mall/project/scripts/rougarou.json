@@ -49,5 +49,6 @@
  ],
  "story_exit_mps": 3.0,
  "story_ducks_before_exit": 3,
- "story_wall_look_s": 0.8
+ "story_wall_look_s": 0.8,
+ "story_exit_frac": 0.93
 }

@@ -41,6 +41,14 @@ a distance. If you try to get close to it it runs away. But you always see it at
 - Check: `tools/qa/rougarou_stalk_test.gd` (STALK TEST OK, 10 checks); evidence
   `production/qa/evidence/d26-rougarou-stalk*.png`.
 
+## Demo 32 changes (Steven, Oct 15 11:43)
+- It got stuck at the corner (the shelves counted as blocking your view of it). Now the corner
+  counts as seen when it is in your view cone with no wall between (`_seen_wall`), and once you
+  have watched it it slides straight into the wall in front of it and is gone (≤ 0.7 s).
+- The walk to the corner runs at 93 % of your running speed (`story_exit_frac`), and pulls away
+  at 112 % if you get within 2.5 m: running, you nearly catch it but stay a metre or two behind.
+- The route to the corner is found again (the corner tile sat on the edge of the search area).
+
 ## Demo 31 changes (Steven, Oct 15 10:26)
 - Pocket Change sets it off the moment you are inside (the swap waits until the window is out of
   your view), so you can turn round in the arcade and see it in the window.
