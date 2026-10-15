@@ -41,6 +41,16 @@ a distance. If you try to get close to it it runs away. But you always see it at
 - Check: `tools/qa/rougarou_stalk_test.gd` (STALK TEST OK, 10 checks); evidence
   `production/qa/evidence/d26-rougarou-stalk*.png`.
 
+## Stalk tuning, Demo 27 (Steven, Oct 15, 05:16: "a happy medium")
+- First appears 30 s into play (`stalk_first_s`), always ahead: 27–34 m off (`stalk_m`).
+- Runs when you get within 24 m (`flee_m`, doubled from 12), toward the nearest tile out of
+  sight, and is gone the moment it is out of view.
+- Stays away a fresh random 30 s – 2 min every time (`reappear_s`), then stands ahead again.
+- If there is no spot far enough ahead (a short hall), it waits out of sight instead of standing
+  behind you.
+- Test: `rougarou_stalk_test.gd --fast` (STALK TEST OK, 10 checks); evidence
+  `production/qa/evidence/d27-rougarou-stalk-test.png`.
+
 ## The sightings cycle (`scripts/rougarou_ai.gd`, tunables in `scripts/rougarou.json`)
 A node under the wing, made by `player.gd`. States:
 - **hidden:** nothing for `first_sighting_s` (180 s) after the game starts, then

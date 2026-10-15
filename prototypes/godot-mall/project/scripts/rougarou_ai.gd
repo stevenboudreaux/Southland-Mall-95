@@ -36,8 +36,8 @@ var cfg := {
 	"behind_m": 3.2, "behind_chance": 0.3, "see_m": 70.0, "see_cone_deg": 28.0, "look_to_bolt_s": 1.0,
 	"behind_look_to_bolt_s": 0.35, "stand_timeout_s": 40.0, "behind_timeout_s": 12.0, "bolt_mps": 6.8,
 	"hide_m": 14.0, "gone_after_unseen_s": 2.0,
-	"mode": "stalk", "stalk_first_s": 1.5, "stalk_m": [18.0, 28.0], "stalk_cone_deg": 30.0,
-	"flee_m": 12.0, "flee_to_m": 24.0, "lost_m": 45.0, "relocate_after_s": 1.0, "flee_mps": 7.5,
+	"mode": "stalk", "stalk_first_s": 30.0, "stalk_m": [27.0, 34.0], "stalk_cone_deg": 30.0,
+	"flee_m": 24.0, "flee_to_m": 28.0, "lost_m": 55.0, "reappear_s": [30.0, 120.0], "relocate_after_s": 1.0, "flee_mps": 7.5,
 }
 var mode := "stalk"
 var player: Node3D
@@ -278,12 +278,20 @@ func _stalk(dt: float) -> void:
 			unseen = unseen + dt if lost else 0.0
 			if unseen > float(cfg.relocate_after_s):
 				if not _stalk_place():
-					unseen = 0.0
+					# no spot far enough ahead (a short hall, a store): it waits out of sight
+					# rather than standing behind the player, and tries again every half second
+					fig.visible = false; state = "hidden"; timer = 0.5; unseen = 0.0
 		"run":
+			# it runs until it is out of sight, then stays away 30 s – 2 min (reappear_s, a new
+			# random wait each time) and comes back ahead of the player (Steven, Oct 15)
 			_run_at(dt, float(cfg.flee_mps))
-			if path.is_empty():
-				state = "keep"; fig.gait = 0.0; fig.hunch = 0.9; unseen = 0.0
-				fig.look_at(Vector3(player.global_position.x, 0, player.global_position.z), Vector3.UP)
+			var gone = not _los(player.global_position, fig.position) or _angle() > 75.0
+			unseen = unseen + dt if gone else 0.0
+			if path.is_empty() or unseen > 0.4:
+				fig.visible = false; fig.gait = 0.0; path = []
+				state = "hidden"
+				timer = rng.randf_range(float(cfg.reappear_s[0]), float(cfg.reappear_s[1]))
+				print("rougarou: gone for %.0f s" % timer)
 
 func _dist() -> float:
 	var pp = player.global_position
@@ -342,10 +350,11 @@ func _flee() -> void:
 		var d = Vector2(c.x - pp.x, c.z - pp.z).length()
 		if d > far_d: far_d = d; far_t = t
 		if d >= float(cfg.flee_to_m) and player._free(c.x, c.z):
-			if _los(pp, c):
-				seen_t = t; break
-			elif hid_t == null:
-				hid_t = t
+			# out of sight first: it disappears round a corner or into a store
+			if not _los(pp, c):
+				hid_t = t; break
+			elif seen_t == null:
+				seen_t = t
 		for nb in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
 			var u = t + nb
 			if prev.has(u): continue
@@ -356,7 +365,7 @@ func _flee() -> void:
 			if Vector2(uc.x - pp.x, uc.z - pp.z).length() < 3.0: continue
 			prev[u] = t
 			queue.append(u)
-	var target = seen_t if seen_t != null else (hid_t if hid_t != null else far_t)
+	var target = hid_t if hid_t != null else (seen_t if seen_t != null else far_t)
 	path = []
 	var t = target
 	while t != null and t != start:
@@ -365,7 +374,7 @@ func _flee() -> void:
 	if path.is_empty():
 		return
 	state = "run"; fig.gait = 1.0; fig.hunch = 0.6; fig.watch = Vector3.INF
-	print("rougarou: flees ", path.size(), " tiles, ", "in sight" if seen_t != null else "round a corner")
+	print("rougarou: flees ", path.size(), " tiles, ", "out of sight" if hid_t != null else "in sight")
 
 func _run_at(dt: float, mps: float) -> void:
 	var keep = cfg.bolt_mps

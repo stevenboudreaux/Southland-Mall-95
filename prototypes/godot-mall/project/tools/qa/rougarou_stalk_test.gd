@@ -1,9 +1,12 @@
 ## Checks the Rougarou's stalk mode (scripts/rougarou_ai.gd) natively in Wing 1 at night, from the
 ## game's default spawn (the main entrance hall, looking west):
-##   1. within 3 s it stands ahead, stalk_m off, in line of sight, inside the view cone;
-##   2. the player walks at it: it runs before they get within flee_m, and ends about flee_to_m off;
+##   1. after stalk_first_s (not before) it stands ahead, stalk_m off, in line of sight, inside the view cone;
+##   2. the player walks at it: it runs before they get within flee_m, goes out of sight and stays
+##      away reappear_s (random), then is back ahead;
 ##   3. the player turns round: within 3 s it is ahead of them again.
-##   xvfb-run -a godot --path . --rendering-driver opengl3 --script res://tools/qa/rougarou_stalk_test.gd -- --out=/tmp/st
+##   xvfb-run -a godot --path . --rendering-driver opengl3 --script res://tools/qa/rougarou_stalk_test.gd -- --fast --out=/tmp/st
+## (--fast: the first sighting after 2 s instead of 30; a software-GL wing render runs far slower
+## than real time, so the real 30 s wait takes ~25 min here)
 ## Prints STALK TEST OK, or the failed checks.
 extends SceneTree
 var out := "/tmp/st"
@@ -16,10 +19,14 @@ var errors := []
 var oks := 0
 var min_d := 1e9
 var fled := false
+var first := 0.0
+var fast := false
+var tick := 0.0
 
 func _initialize() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--out="): out = a.substr(6)
+		elif a == "--fast": fast = true      # skip the 30 s wait before the first sighting
 	Engine.set_meta("mall_xfer", {"x": 33.0, "z": 0.0, "yaw": deg_to_rad(90.0), "pitch": deg_to_rad(3.0)})
 	var scn = load("res://wing1.tscn").instantiate()
 	root.add_child(scn)
@@ -28,7 +35,7 @@ func _initialize() -> void:
 	player = scn.get_node("Player")
 
 func _check(ok: bool, what: String) -> void:
-	print(("ok   " if ok else "FAIL ") + what)
+	printerr(("ok   " if ok else "FAIL ") + what)
 	if ok: oks += 1
 	else: errors.append(what)
 
@@ -36,26 +43,37 @@ func _shot(name: String) -> void:
 	root.get_texture().get_image().save_png("%s-%s.png" % [out, name])
 
 func _done() -> bool:
-	print("STALK TEST OK (%d checks)" % oks if errors.is_empty() else "STALK TEST FAILED: " + str(errors))
+	printerr("STALK TEST OK (%d checks)" % oks if errors.is_empty() else "STALK TEST FAILED: " + str(errors))
 	return true
 
 func _process(dt: float) -> bool:
 	clock += dt
+	tick += dt
+	if tick > 5.0 and ai:
+		tick = 0.0
+		printerr("t step %d state %s d %.1f clock %.1f" % [step, ai.state, ai._dist(), clock])
 	if ai == null:
 		ai = current_scene.get_node_or_null("RougarouAI")
-		if ai: fig = ai.fig
+		if ai:
+			fig = ai.fig
+			first = float(ai.cfg.stalk_first_s)
+			if fast:
+				first = 2.0; ai.timer = 2.0
+			clock = 0.0
 		return false
 	match step:
 		0:
 			if fig.visible and ai.state == "keep":
 				var d = ai._dist()
-				_check(clock < 3.0, "visible %.1f s after spawn" % clock)
+				_check(clock >= first - 0.5 and clock < first + 3.0, "first seen %.1f s after spawn (want %.0f)" % [clock, first])
 				_check(d >= float(ai.cfg.stalk_m[0]) and d <= float(ai.cfg.stalk_m[1]), "ahead at %.1f m (%s)" % [d, str(fig.position)])
 				_check(ai._angle() < 30.0, "inside the view (%.0f°)" % ai._angle())
 				_check(ai._los(player.position, fig.position), "in line of sight")
 				step = 1; clock = 0.0
-			elif clock > 5.0:
-				_check(false, "not visible 5 s after spawn"); return _done()
+			elif clock > first + 5.0:
+				_check(false, "not visible %.0f s after spawn" % (first + 5.0)); return _done()
+			elif fig.visible:
+				_check(false, "visible before %.0f s" % first); return _done()
 		1:
 			if clock > 0.5:
 				_shot("1-spawn")
@@ -72,22 +90,26 @@ func _process(dt: float) -> bool:
 				fled = true
 				_check(ai._dist() > float(ai.cfg.flee_m) - 3.0, "runs at %.1f m" % ai._dist())
 				_shot("2-running")
-			if fled and ai.state == "keep":
-				_check(ai._dist() >= float(ai.cfg.flee_to_m) - 2.0, "stops %.1f m off" % ai._dist())
-				_check(fig.visible, "still there after running")
+			if fled and ai.state == "hidden":
+				_check(not fig.visible, "gone after running (%.1f s)" % clock)
+				_check(ai.timer >= float(ai.cfg.reappear_s[0]) and ai.timer <= float(ai.cfg.reappear_s[1]), "stays away %.0f s" % ai.timer)
 				_check(min_d > float(ai.cfg.flee_m) - 3.0, "never closer than %.1f m" % min_d)
 				_shot("3-after-run")
+				ai.timer = 0.3          # skip the wait for the test
 				step = 3; clock = 0.0
 			elif clock > 25.0:
 				_check(false, "no run within 25 s (state %s, d %.1f)" % [ai.state, ai._dist()]); return _done()
 		3:
-			if clock > 0.3:
+			if clock > 1.0:
+				_check(ai.state == "keep" and fig.visible, "back, ahead at %.1f m (%.0f°)" % [ai._dist(), ai._angle()])
+				_shot("3b-back")
 				player.yaw += PI; player._apply_rot()
 				step = 4; clock = 0.0
 		4:
 			if clock > 3.0:
-				_check(ai.state == "keep" and fig.visible, "there after turning round")
-				_check(ai._angle() < 50.0, "ahead again (%.0f°, %.1f m)" % [ai._angle(), ai._dist()])
+				# ahead again, or (when the view is too short for its distance) out of sight: never behind
+				var ok = (not fig.visible) or ai._angle() < 50.0
+				_check(ok, "after turning round: %s" % ("waiting out of sight (short view)" if not fig.visible else "ahead again (%.0f°, %.1f m)" % [ai._angle(), ai._dist()]))
 				_shot("4-turned")
 				return _done()
 	return false
