@@ -12,6 +12,7 @@ extends Node3D
 @export var obstacles: Array = []
 var fx_obstacles: Array = []     # benches, planters, trash cans (only when shown)
 var fixtures_on := false
+var frozen := false        # the prize counter's closer look has the camera (scripts/prizes.gd)
 var jump_locked := false   # inside the Stockrooms on a visitor's browser: no Jump menu (scripts/stockrooms.gd)
 ## Walkable map tiles (rows of "0"/"1"), and how map tiles map to metres.
 @export var walk_rows: PackedStringArray = []
@@ -142,6 +143,11 @@ func _ready() -> void:
 		if OS.has_feature("web"):
 			sr.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('stockrooms') || ''"))
 		get_parent().add_child.call_deferred(sr)
+	# Pocket Change's ticket prizes and the closer look at them (scripts/prizes.gd; Steven, Oct 15 2026)
+	if wing == 2 or wing == 0:
+		var pz = load("res://scripts/prizes.gd").new()
+		pz.name = "Prizes"; pz.player = self
+		get_parent().add_child.call_deferred(pz)
 	vr = Node3D.new()
 	vr.name = "VR"
 	vr.set_script(load("res://scripts/vr.gd"))
@@ -229,6 +235,8 @@ func _input(e: InputEvent) -> void:
 		input_kind = "kb"
 	elif e is InputEventScreenTouch:
 		input_kind = "touch"
+	if frozen:
+		return
 	if _jump_input(e):
 		get_viewport().set_input_as_handled()
 		return
@@ -302,7 +310,7 @@ func _process(dt: float) -> void:
 	if move_touch != -1:
 		iv = move_vec
 	iv = iv.limit_length(1.0)
-	if leaving or vr_on:
+	if leaving or vr_on or frozen:
 		iv = Vector2.ZERO
 	if iv.length() > 0.05:
 		hint.visible = false

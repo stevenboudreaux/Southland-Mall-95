@@ -1,0 +1,37 @@
+{
+ "_": "Pocket Change's ticket prizes (scripts/prizes.gd). The catalogue an inventory and redemption system will read later. tickets = the price. case slots: counter A (the long case, bays 0-3 from the customer's left) or B (the short case by the door), level 0 deck / 1 lower shelf / 2 upper shelf, side full|left|right.",
+ "items": {
+  "finger_trap": {"name": "Chinese finger trap", "tickets": 15},
+  "jelly_trap": {"name": "Jelly finger trap", "tickets": 20},
+  "chew": {"name": "Chocolate chews", "tickets": 5},
+  "candy_cig": {"name": "Candy cigarettes", "tickets": 25},
+  "candy_neck": {"name": "Candy necklace", "tickets": 20},
+  "slap": {"name": "Slap bracelet", "tickets": 75},
+  "pogs": {"name": "Pog pack", "tickets": 100},
+  "spring": {"name": "Rainbow coil spring", "tickets": 150},
+  "dice": {"name": "Fuzzy dice", "tickets": 300},
+  "vpet": {"name": "Virtual pet", "tickets": 1500},
+  "alien": {"name": "Alien plush", "tickets": 800},
+  "lava": {"name": "Lava lamp", "tickets": 2500},
+  "big_dice": {"name": "Giant fuzzy dice", "tickets": 600},
+  "boombox": {"name": "Boom box", "tickets": 5000},
+  "ball": {"name": "Basketball", "tickets": 900}
+ },
+ "case": [
+  ["A", 0, 2, "left", "finger_trap"], ["A", 0, 2, "right", "jelly_trap"],
+  ["A", 1, 2, "full", "pogs"],
+  ["A", 2, 2, "left", "slap"], ["A", 2, 2, "right", "candy_neck"],
+  ["A", 3, 2, "full", "vpet"],
+  ["A", 0, 1, "left", "candy_cig"], ["A", 0, 1, "right", "chew"],
+  ["A", 1, 1, "full", "spring"],
+  ["A", 2, 1, "full", "dice"],
+  ["A", 3, 1, "left", "finger_trap"], ["A", 3, 1, "right", "jelly_trap"],
+  ["A", 0, 0, "full", "spring"],
+  ["A", 1, 0, "left", "candy_cig"], ["A", 1, 0, "right", "chew"],
+  ["A", 2, 0, "left", "pogs"], ["A", 2, 0, "right", "slap"],
+  ["A", 3, 0, "left", "candy_neck"], ["A", 3, 0, "right", "dice"],
+  ["B", 0, 2, "full", "vpet"],
+  ["B", 0, 1, "left", "pogs"], ["B", 0, 1, "right", "finger_trap"],
+  ["B", 0, 0, "left", "chew"], ["B", 0, 0, "right", "candy_cig"]
+ ]
+}
