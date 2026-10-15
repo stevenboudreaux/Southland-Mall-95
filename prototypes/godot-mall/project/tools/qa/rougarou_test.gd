@@ -44,6 +44,7 @@ func _process(dt: float) -> bool:
 		ai = current_scene.get_node_or_null("RougarouAI")
 		if ai == null: return false
 		fig = ai.fig
+		ai.mode = "sightings"; ai.state = "hidden"; fig.visible = false
 		ai.cfg.first_sighting_s = 0.0
 		ai.timer = 0.0
 		return false

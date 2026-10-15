@@ -19,5 +19,17 @@
  "behind_timeout_s": 12.0,
  "bolt_mps": 6.8,
  "hide_m": 14.0,
- "gone_after_unseen_s": 2.0
+ "gone_after_unseen_s": 2.0,
+ "mode": "stalk",
+ "stalk_first_s": 1.5,
+ "stalk_m": [
+  18.0,
+  28.0
+ ],
+ "stalk_cone_deg": 30.0,
+ "flee_m": 12.0,
+ "flee_to_m": 24.0,
+ "lost_m": 45.0,
+ "relocate_after_s": 1.0,
+ "flee_mps": 7.5
 }

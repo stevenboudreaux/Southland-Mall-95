@@ -17,6 +17,17 @@
 ## grid. Timings and distances come from res://scripts/rougarou.json so Steven can tune them.
 ## URL: ?rougarou=0 keeps it away; ?rougarou=now brings the first sighting at once;
 ## ?rougarou=behind makes that first sighting the behind-you one.
+##
+## STALK mode, the default since Oct 14 evening (Steven, 20:48): "immediately visible down the
+## first long corridor you travel, in front of you at a distance. If you try to get close to it
+## it runs away. But you always see it at a distance." So from the first seconds it stands
+## `stalk_m` ahead, in the player's line of sight and inside `stalk_cone_deg` of where they look.
+## Walk within `flee_m` and it runs along the walk grid to a tile at least `flee_to_m` away that
+## the player can still see (round a corner only if there is no such tile), then stands again.
+## If the player turns away or rounds a corner so it is out of sight (or more than `lost_m` off)
+## for `relocate_after_s`, it is put ahead of them again, far down whatever they now face.
+## "mode" in rougarou.json: "stalk" or "sightings" (the cycle above); ?rougarou=now|behind use
+## the cycle.
 extends Node
 
 const CFG = "res://scripts/rougarou.json"
@@ -25,7 +36,10 @@ var cfg := {
 	"behind_m": 3.2, "behind_chance": 0.3, "see_m": 70.0, "see_cone_deg": 28.0, "look_to_bolt_s": 1.0,
 	"behind_look_to_bolt_s": 0.35, "stand_timeout_s": 40.0, "behind_timeout_s": 12.0, "bolt_mps": 6.8,
 	"hide_m": 14.0, "gone_after_unseen_s": 2.0,
+	"mode": "stalk", "stalk_first_s": 1.5, "stalk_m": [18.0, 28.0], "stalk_cone_deg": 30.0,
+	"flee_m": 12.0, "flee_to_m": 24.0, "lost_m": 45.0, "relocate_after_s": 1.0, "flee_mps": 7.5,
 }
+var mode := "stalk"
 var player: Node3D
 var fig: Node3D            # scripts/rougarou.gd
 var rows: PackedStringArray
@@ -55,11 +69,20 @@ func _ready() -> void:
 	add_child(fig)
 	if force == "0":
 		disabled = true
-	timer = 0.0 if force in ["now", "behind"] else float(cfg.first_sighting_s)
+	mode = str(cfg.mode)
+	if force in ["now", "behind", "sightings"]:
+		mode = "sightings"
+	if mode == "stalk":
+		timer = float(cfg.stalk_first_s)
+	else:
+		timer = 0.0 if force in ["now", "behind"] else float(cfg.first_sighting_s)
 	set_process(true)
 
 func _process(dt: float) -> void:
 	if disabled or player == null:
+		return
+	if mode == "stalk":
+		_stalk(dt)
 		return
 	match state:
 		"hidden":
@@ -236,3 +259,116 @@ func _run(dt: float) -> void:
 	# turn into the run smoothly
 	var want = atan2(-dir.x, -dir.z)
 	fig.rotation.y = lerp_angle(fig.rotation.y, want, min(1.0, dt * 10.0))
+
+# ------------------------------------------------------------------ stalk mode
+func _stalk(dt: float) -> void:
+	match state:
+		"hidden":
+			timer -= dt
+			if timer <= 0.0:
+				if not _stalk_place():
+					timer = 0.5
+		"keep":
+			fig.watch = player.global_position + Vector3(0, 1.5, 0)
+			var d = _dist()
+			if d < float(cfg.flee_m):
+				_flee()
+				return
+			var lost = d > float(cfg.lost_m) or not _los(player.global_position, fig.position) or _angle() > 75.0
+			unseen = unseen + dt if lost else 0.0
+			if unseen > float(cfg.relocate_after_s):
+				if not _stalk_place():
+					unseen = 0.0
+		"run":
+			_run_at(dt, float(cfg.flee_mps))
+			if path.is_empty():
+				state = "keep"; fig.gait = 0.0; fig.hunch = 0.9; unseen = 0.0
+				fig.look_at(Vector3(player.global_position.x, 0, player.global_position.z), Vector3.UP)
+
+func _dist() -> float:
+	var pp = player.global_position
+	return Vector2(fig.position.x - pp.x, fig.position.z - pp.z).length()
+
+## Degrees between where the camera looks (flattened) and the figure.
+func _angle(c = null) -> float:
+	var pp = player.global_position
+	var to = (c if c != null else fig.position) - pp; to.y = 0
+	if to.length() < 0.01: return 0.0
+	var cam: Camera3D = player.cam
+	var fwd = -(cam.global_transform.basis.z if cam else player.global_transform.basis.z); fwd.y = 0
+	return rad_to_deg(fwd.normalized().angle_to(to.normalized()))
+
+## Stands it ahead of the player: the tile in range and in sight nearest the middle of the view,
+## widening the search if the view is short (a store, a corner). False if nowhere fits.
+func _stalk_place() -> bool:
+	var pp = player.global_position
+	var ranges = [[float(cfg.stalk_m[0]), float(cfg.stalk_m[1]), float(cfg.stalk_cone_deg)],
+		[float(cfg.flee_m) + 2.0, float(cfg.lost_m) - 5.0, float(cfg.stalk_cone_deg) * 1.6]]
+	for r in ranges:
+		var best = null; var best_a = 1e9
+		for ty in rows.size():
+			for tx in rows[ty].length():
+				if rows[ty][tx] != "1": continue
+				var c = _centre(tx, ty)
+				var d = Vector2(c.x - pp.x, c.z - pp.z).length()
+				if d < r[0] or d > r[1]: continue
+				var a = _angle(c)
+				if a > r[2]: continue
+				# the middle of the view first, then the far end of the range
+				var score = a - d * 0.15
+				if score >= best_a: continue
+				if not player._free(c.x, c.z): continue
+				if not _los(pp, c): continue
+				best = c; best_a = score
+		if best != null:
+			_show(best, pp, "keep", 0.0)
+			fig.hunch = 0.9
+			unseen = 0.0
+			return true
+	return false
+
+## Runs from the player along the grid: the nearest tile (from the figure) at least flee_to_m from
+## the player that they can still see; else one out of sight; else the farthest reachable.
+func _flee() -> void:
+	var start = _tile(fig.position)
+	var pp = player.global_position
+	var prev = {start: null}
+	var queue = [start]; var qi = 0
+	var seen_t = null; var hid_t = null
+	var far_t = start; var far_d = 0.0
+	while qi < queue.size() and qi < 6000:
+		var t = queue[qi]; qi += 1
+		var c = _centre(t.x, t.y)
+		var d = Vector2(c.x - pp.x, c.z - pp.z).length()
+		if d > far_d: far_d = d; far_t = t
+		if d >= float(cfg.flee_to_m) and player._free(c.x, c.z):
+			if _los(pp, c):
+				seen_t = t; break
+			elif hid_t == null:
+				hid_t = t
+		for nb in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			var u = t + nb
+			if prev.has(u): continue
+			if u.y < 0 or u.y >= rows.size() or u.x < 0 or u.x >= rows[u.y].length(): continue
+			if rows[u.y][u.x] != "1": continue
+			# never run through the player
+			var uc = _centre(u.x, u.y)
+			if Vector2(uc.x - pp.x, uc.z - pp.z).length() < 3.0: continue
+			prev[u] = t
+			queue.append(u)
+	var target = seen_t if seen_t != null else (hid_t if hid_t != null else far_t)
+	path = []
+	var t = target
+	while t != null and t != start:
+		path.push_front(_centre(t.x, t.y))
+		t = prev[t]
+	if path.is_empty():
+		return
+	state = "run"; fig.gait = 1.0; fig.hunch = 0.6; fig.watch = Vector3.INF
+	print("rougarou: flees ", path.size(), " tiles, ", "in sight" if seen_t != null else "round a corner")
+
+func _run_at(dt: float, mps: float) -> void:
+	var keep = cfg.bolt_mps
+	cfg.bolt_mps = mps
+	_run(dt)
+	cfg.bolt_mps = keep

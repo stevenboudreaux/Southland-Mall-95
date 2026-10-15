@@ -26,7 +26,22 @@ Halloween animatronic — the mood, not a model.
 - Faces -Z like a camera, so `look_at` points it at things.
 - Cost: about 110 draw calls. Fine for one. If more appear, merge the body into one mesh.
 
-## The behaviour (`scripts/rougarou_ai.gd`, tunables in `scripts/rougarou.json`)
+## Stalk mode, the default since Demo 26 (Steven, Oct 14, 20:48)
+"Make the rougarou immediately visible down the first long corridor you travel, in front of you at
+a distance. If you try to get close to it it runs away. But you always see it at a distance."
+- 1.5 s after the wing loads it stands 18–28 m ahead (`stalk_m`), in line of sight, within 30°
+  of where the camera looks (`stalk_cone_deg`), facing the player. From the default spawn that
+  is the far end of the main entrance hall, at the Shoe Dept. court.
+- Walk within 12 m (`flee_m`) and it lopes off at 7.5 m/s (`flee_mps`) along the walk grid to the
+  nearest tile at least 24 m away (`flee_to_m`) that the player can still see; only if there is
+  none does it go round a corner. Then it stands and watches again. It never runs past the player.
+- Out of sight (behind them, round a corner, or beyond 45 m, `lost_m`) for 1 s
+  (`relocate_after_s`), it is put ahead of them again; if the view is short it widens the search.
+- `"mode": "sightings"` in `rougarou.json` (or `?rougarou=now|behind`) brings back the cycle below.
+- Check: `tools/qa/rougarou_stalk_test.gd` (STALK TEST OK, 10 checks); evidence
+  `production/qa/evidence/d26-rougarou-stalk*.png`.
+
+## The sightings cycle (`scripts/rougarou_ai.gd`, tunables in `scripts/rougarou.json`)
 A node under the wing, made by `player.gd`. States:
 - **hidden:** nothing for `first_sighting_s` (180 s) after the game starts, then
   `between_sightings_s` (45–120 s) between sightings.
