@@ -47,12 +47,16 @@ static func build(b):
 			continue
 		var eb = b.edge_basics(e)
 		var a = eb[0]; var n = eb[2]; var t = eb[3]; var Ln = eb[4]
+		# the print reads left to right for someone facing the wall. The wall's own direction t
+		# runs whichever way the layout drew it, and on the south walls of the Sears hall it ran
+		# right to left, so those prints came out mirrored (Steven, Oct 15 2026).
+		var r: Vector3 = (-n).cross(UP).normalized()
 		for ad in pl.ads:
 			var px = sizes.get(ad[1])
 			if px == null:
 				push_warning("posters: no ad " + ad[1]); continue
 			var s = LONG / float(max(px[0], px[1]))
-			poster(b, "posters", ad[1], a + t * (Ln * float(ad[0])) + UP * EYE, n, t, float(px[0]) * s, float(px[1]) * s)
+			poster(b, "posters", ad[1], a + t * (Ln * float(ad[0])) + UP * EYE, n, r, float(px[0]) * s, float(px[1]) * s)
 			hung += 1
 	print("posters: ", hung)
 
@@ -68,8 +72,8 @@ static func _wall(b, a, bb):
 static func _near(p, q):
 	return abs(float(p[0]) - float(q[0])) < 0.01 and abs(float(p[1]) - float(q[1])) < 0.01
 
-## One framed print, w by h metres, centred at c on a wall whose face normal is n and whose
-## along-direction is t.
+## One framed print, w by h metres, centred at c on a wall whose face normal is n; t is the
+## viewer's right as they face the wall (the print's left edge is at -t).
 static func poster(b, g, name, c, n, t, w, h):
 	var hw = w * 0.5 + MAT; var hh = h * 0.5 + MAT       # the opening, with the mat
 	var fw = hw + FRAME; var fh = hh + FRAME             # the frame's outside

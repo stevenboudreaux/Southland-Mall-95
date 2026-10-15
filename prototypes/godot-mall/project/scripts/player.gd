@@ -106,8 +106,17 @@ func _ready() -> void:
 		debug = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('debug') || ''")) == "1"
 		if str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('refl') || ''")) == "0":
 			buttons[0].button_pressed = false
-		if str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('time') || ''")) == "day":
+		var tq := str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('time') || ''"))
+		if tq == "day":
 			buttons[2].button_pressed = false
+		elif tq == "night":
+			buttons[2].button_pressed = true
+		# ?hour=13.5&bright=1.1: an exact lighting (the owner's panel shows these numbers)
+		var hq := str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('hour') || ''"))
+		var bq := str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('bright') || ''"))
+		if hq.is_valid_float() or bq.is_valid_float():
+			_light_url = Vector2(float(hq) if hq.is_valid_float() else -1.0, float(bq) if bq.is_valid_float() else -1.0)
+		_light_owner = str(JavaScriptBridge.eval("(function(){try{var q=new URLSearchParams(location.search).get('owner');if(q==='1')localStorage.setItem('southland-editor','1');return localStorage.getItem('southland-editor')==='1'?'1':'0'}catch(e){return '0'}})()")) == "1"
 		if str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('fx') || ''")) == "1":
 			buttons[1].button_pressed = true
 		var q = JavaScriptBridge.eval("new URLSearchParams(location.search).get('cam') || ''")
@@ -128,6 +137,7 @@ func _ready() -> void:
 		pitch = x.pitch
 		hint.visible = false
 	_apply_rot()
+	_light_start.call_deferred()
 	_build_wing_ui()
 	_build_jump_ui()
 	# the Rougarou, the mall's first NPC (scripts/rougarou_ai.gd; Steven, Oct 14 2026)
@@ -173,10 +183,19 @@ func _build_hud() -> void:
 		var fxn = get_tree().current_scene.get_node_or_null("Dynamic/dyn_fixtures")
 		if fxn:
 			fxn.visible = on)
-	_add_button("Lighting", true, 88, func(night: bool):
+	var night0 := true
+	if FileAccess.file_exists("res://scripts/lighting.json"):
+		var lj = JSON.parse_string(FileAccess.get_file_as_string("res://scripts/lighting.json"))
+		if lj is Dictionary:
+			night0 = str(lj.get("default", "night")) != "day"
+	_add_button("Lighting", night0, 88, func(night: bool):
 		var rt = get_tree().current_scene.get_node_or_null("Runtime")
 		if rt:
-			rt.set_time("night" if night else "day"), ["day", "night"])
+			if rt.has_method("set_preset"):
+				rt.set_preset(night)
+				_light_panel_sync(rt)
+			else:
+				rt.set_time("night" if night else "day"), ["day", "night"])
 	# the day lighting ships separately; hide the switch until it's baked
 	var scn := get_tree().current_scene
 	if scn == null:
@@ -206,6 +225,53 @@ func _build_hud() -> void:
 	cl.add_child(stick)
 
 var _cl: CanvasLayer
+
+# ---- the owner's lighting panel (web/shell.html mallLight; scripts/lighting.json)
+var _light_owner := false
+var _light_url := Vector2(-1, -1)   # ?hour= / ?bright=, -1 when not given
+var _light_t := 0.0
+
+## After the Lighting button's first (deferred) call: apply ?hour=/?bright= and show the owner's panel.
+func _light_start() -> void:
+	await get_tree().process_frame
+	var rt = get_tree().current_scene.get_node_or_null("Runtime")
+	if rt == null or not rt.has_method("set_clock"):
+		return
+	if _light_url.x >= 0.0 or _light_url.y >= 0.0:
+		var h: float = _light_url.x if _light_url.x >= 0.0 else rt.hour
+		var b: float = _light_url.y if _light_url.y >= 0.0 else rt.bright
+		rt.set_clock(clampf(h, 0.0, 24.0), clampf(b, 0.2, 3.0))
+		_light_button_sync(rt)
+	if _light_owner and OS.has_feature("web"):
+		JavaScriptBridge.eval("window.mallLight && window.mallLight.show(%s, %s, %s)" % [rt.hour, rt.bright, JSON.stringify(JSON.stringify(rt.lighting()))], true)
+
+## Show the Lighting button as day or night without firing it.
+func _light_button_sync(rt) -> void:
+	var night: bool = rt.mode == "night"
+	if buttons.size() > 2:
+		buttons[2].set_pressed_no_signal(night)
+		buttons[2].text = "Lighting: %s" % ("night" if night else "day")
+
+func _light_panel_sync(rt) -> void:
+	if _light_owner and OS.has_feature("web"):
+		JavaScriptBridge.eval("window.mallLight && window.mallLight.set(%s, %s)" % [rt.hour, rt.bright], true)
+
+## The owner moved a slider: light the mall to match (polled 10 times a second).
+func _light_poll(dt: float) -> void:
+	if not _light_owner or not OS.has_feature("web"):
+		return
+	_light_t += dt
+	if _light_t < 0.1:
+		return
+	_light_t = 0.0
+	var c = JavaScriptBridge.eval("window.mallLight ? window.mallLight.poll() : ''", true)
+	if not (c is String) or c == "":
+		return
+	var v = JSON.parse_string(c)
+	var rt = get_tree().current_scene.get_node_or_null("Runtime")
+	if v is Dictionary and rt and rt.has_method("set_clock"):
+		rt.set_clock(float(v.get("hour", rt.hour)), float(v.get("bright", rt.bright)))
+		_light_button_sync(rt)
 
 ## A toggle button in the top-right corner: "<name>: on/off".
 func _add_button(name: String, on: bool, top: int, cb: Callable, words := ["off", "on"]) -> void:
@@ -321,6 +387,7 @@ func _process(dt: float) -> void:
 		_try_move(Vector3(step.x, 0, 0))
 		_try_move(Vector3(0, 0, step.z))
 	_update_prompt()
+	_light_poll(dt)
 	fps_t += dt
 	if fps_t > 0.5:
 		fps_t = 0.0

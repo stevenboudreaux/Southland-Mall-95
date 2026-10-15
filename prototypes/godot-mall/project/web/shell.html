@@ -358,6 +358,70 @@ window.mallPrizeEdit = {
 		document.body.appendChild(wrap);
 	}
 };
+// The owner's lighting panel (scripts/player.gd, scripts/lighting.json; Steven, Oct 15 2026): a
+// time-of-day slider and a brightness slider, shown only on the owner's browser. The game calls
+// show(hour, bright) once and set(hour, bright) when the Lighting button changes things; it reads
+// poll(), which returns '{"hour":h,"bright":b}' after the owner moves a slider and '' otherwise.
+// Nothing here is published: Steven reads the values off the panel and they become the default.
+window.mallLight = {
+	changed: '', hour: 22, bright: 1, def: null,
+	clock: function (h) { var m = Math.round(h * 60) % 1440, hh = Math.floor(m / 60), mm = m % 60, ap = hh < 12 ? 'am' : 'pm', h12 = hh % 12 || 12; return h12 + ':' + (mm < 10 ? '0' : '') + mm + ' ' + ap; },
+	text: function () { return 'Time ' + this.clock(this.hour) + ' (' + this.hour.toFixed(2) + ') · brightness ' + Math.round(this.bright * 100) + '%'; },
+	poll: function () { var c = this.changed; this.changed = ''; return c; },
+	set: function (h, b) {
+		this.hour = h; this.bright = b;
+		if (!this.el) return;
+		this.el.hr.value = h; this.el.br.value = Math.round(b * 100); this.sync();
+	},
+	sync: function () {
+		var E = this.el; if (!E) return;
+		E.hv.textContent = this.clock(this.hour); E.bv.textContent = Math.round(this.bright * 100) + '%';
+		E.pill.textContent = '☀ Lighting · ' + this.clock(this.hour) + ' · ' + Math.round(this.bright * 100) + '%';
+		E.out.textContent = this.text();
+	},
+	show: function (h, b, defJson) {
+		var S = this; S.hour = h; S.bright = b;
+		try { S.def = JSON.parse(defJson || 'null'); } catch (e) { S.def = null; }
+		if (S.el) { S.set(h, b); return; }
+		var el = function (tag, css, txt) { var e = document.createElement(tag); if (css) e.style.cssText = css; if (txt != null) e.textContent = txt; return e; };
+		var root = el('div', 'position:fixed;left:10px;top:34px;z-index:900;font:14px system-ui,-apple-system,sans-serif;color:#1e1a18;touch-action:none');
+		root.id = 'light-panel';
+		var pill = el('button', 'font:600 14px system-ui,-apple-system,sans-serif;padding:6px 12px;border-radius:16px;border:1px solid #8a7a60;background:rgba(251,246,234,.92);color:#1e1a18;cursor:pointer');
+		var box = el('div', 'display:none;margin-top:6px;background:rgba(251,246,234,.96);border:2px solid #8a7a60;border-radius:10px;padding:10px 12px;width:min(320px,calc(100vw - 44px));box-sizing:border-box');
+		var row = function (label, min, max, step) {
+			var line = el('div', 'display:flex;justify-content:space-between;font-weight:600;margin-top:4px');
+			line.appendChild(el('span', null, label)); var v = el('span'); line.appendChild(v); box.appendChild(line);
+			var r = el('input', 'width:100%;margin:6px 0 4px;height:28px'); r.type = 'range'; r.min = min; r.max = max; r.step = step; box.appendChild(r);
+			return [r, v];
+		};
+		var a = row('Time of day', 5, 24, 0.25), c = row('Brightness', 40, 180, 1);
+		var tick = el('div', 'display:flex;justify-content:space-between;font-size:11px;color:#6b5f4c;margin:-4px 0 6px'); ['5am', 'noon', '6pm', 'midnight'].forEach(function (t) { tick.appendChild(el('span', null, t)); }); box.insertBefore(tick, box.children[2]);
+		var out = el('div', 'font-size:12px;color:#4a4033;margin:6px 0 8px;user-select:text');
+		box.appendChild(out);
+		var bar = el('div', 'display:flex;gap:8px;flex-wrap:wrap');
+		var btn = function (t, fn) { var b = el('button', 'font-size:14px;padding:6px 10px;border-radius:8px;border:1px solid #8a7a60;background:#fff;cursor:pointer', t); b.onclick = fn; bar.appendChild(b); return b; };
+		var cp = btn('Copy values', function () {
+			var t = 'Lighting: ' + S.text();
+			var done = function () { cp.textContent = 'Copied'; setTimeout(function () { cp.textContent = 'Copy values'; }, 1500); };
+			try { navigator.clipboard.writeText(t).then(done, function () { prompt('Copy this:', t); }); } catch (e) { prompt('Copy this:', t); }
+		});
+		btn('Midday default', function () { var d = S.def || {}; S.move(d.day_hour || 12, d.day_brightness || 1); });
+		btn('Night default', function () { var d = S.def || {}; S.move(d.night_hour || 22, d.night_brightness || 1); });
+		btn('Close', function () { box.style.display = 'none'; var cv = document.getElementById('canvas'); if (cv) cv.focus(); });
+		box.appendChild(bar);
+		box.appendChild(el('div', 'font-size:11px;color:#6b5f4c;margin-top:8px', 'Only you see this. The mall swaps to its night lighting before about 6:30 am and after about 6:45 pm. Send Claude the values to make them everyone’s default.'));
+		S.move = function (h, b) { S.hour = +h; S.bright = +b; S.el.hr.value = S.hour; S.el.br.value = Math.round(S.bright * 100); S.sync(); S.changed = JSON.stringify({ hour: S.hour, bright: S.bright }); };
+		a[0].addEventListener('input', function () { S.hour = parseFloat(a[0].value); S.sync(); S.changed = JSON.stringify({ hour: S.hour, bright: S.bright }); });
+		c[0].addEventListener('input', function () { S.bright = parseFloat(c[0].value) / 100; S.sync(); S.changed = JSON.stringify({ hour: S.hour, bright: S.bright }); });
+		var refocus = function () { var cv = document.getElementById('canvas'); if (cv) cv.focus(); };
+		a[0].addEventListener('change', refocus); c[0].addEventListener('change', refocus);
+		pill.onclick = function () { box.style.display = box.style.display === 'none' ? 'block' : 'none'; refocus(); };
+		['keydown', 'keyup'].forEach(function (k) { root.addEventListener(k, function (e) { if (e.target.tagName === 'INPUT') e.stopPropagation(); }); });
+		root.appendChild(pill); root.appendChild(box); document.body.appendChild(root);
+		S.el = { hr: a[0], hv: a[1], br: c[0], bv: c[1], out: out, pill: pill };
+		S.set(h, b);
+	}
+};
 		</script>
 		<script src="$GODOT_URL"></script>
 		<script>

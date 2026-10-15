@@ -234,8 +234,92 @@ var mode := "night"
 func set_time(m: String) -> void:
 	mode = m
 	load("res://scripts/time_of_day.gd").apply(get_tree().current_scene, m)
+	_env_base = null
 	# the ribbed vaults glow softly at night instead of reading as a lit ceiling
 	set_reflections(refl_on)
+
+# ---- lighting through the day (Steven, Oct 15 2026: "a sliding scale to control lighting
+# throughout the day"). There are only two bakes, day and night, so the hour picks the bake
+# and then shapes the look on top of it without a rebake: exposure and sky follow the sun's
+# height (brightest at noon, warmer and dimmer toward morning and evening), and the night bake
+# gets a dusk sky either side of dark. Brightness scales the exposure. At the presets in
+# scripts/lighting.json (noon and 10 pm at 100 %) the look is exactly the bake as it shipped.
+var hour := 22.0
+var bright := 1.0
+var _env_base = null     # the unmodified Environment of the current bake
+var LIGHT := {}
+
+## scripts/lighting.json: everyone's defaults and the curve's knobs.
+func lighting() -> Dictionary:
+	if LIGHT.is_empty():
+		var j = JSON.parse_string(FileAccess.get_file_as_string("res://scripts/lighting.json"))
+		LIGHT = j if j is Dictionary else {}
+	return LIGHT
+
+## The day or night preset from scripts/lighting.json.
+func set_preset(night: bool) -> void:
+	var L := lighting()
+	if night:
+		set_clock(float(L.get("night_hour", 22.0)), float(L.get("night_brightness", 1.0)))
+	else:
+		set_clock(float(L.get("day_hour", 12.0)), float(L.get("day_brightness", 1.0)))
+
+## Which bake an hour uses.
+func mode_at(h: float) -> String:
+	var L := lighting()
+	return "day" if h >= float(L.get("day_from", 6.5)) and h < float(L.get("day_to", 18.75)) else "night"
+
+## Light the mall for hour h (5-24, 12 = noon) at brightness b (1 = as baked).
+func set_clock(h: float, b: float) -> void:
+	hour = h; bright = b
+	var L := lighting()
+	var m := mode_at(h)
+	if m != mode or _env_base == null:
+		set_time(m)
+	var env_node = get_tree().current_scene.get_node_or_null("Env")
+	if env_node == null:
+		return
+	if _env_base == null:
+		_env_base = env_node.environment
+		var e: Environment = _env_base.duplicate()
+		if _env_base.sky:
+			e.sky = _env_base.sky.duplicate()
+			e.sky.sky_material = _env_base.sky.sky_material.duplicate()
+		env_node.environment = e
+	var base: Environment = _env_base
+	var env: Environment = env_node.environment
+	var exp_k := 1.0
+	var sky_k := 1.0
+	var top_to = null; var hor_to = null; var w := 0.0
+	if m == "day":
+		# the sun's height: 0 at 6 am and 6 pm, 1 at noon
+		var sun := clampf(sin(PI * (h - 6.0) / 12.0), 0.0, 1.0)
+		exp_k = lerpf(float(L.get("low_sun_exposure", 0.8)), 1.0, sun)
+		sky_k = lerpf(float(L.get("low_sun_sky", 0.55)), 1.0, sun)
+		w = pow(1.0 - sun, 2.0) * 0.85
+		top_to = L.get("warm_top", [0.52, 0.56, 0.78]); hor_to = L.get("warm_horizon", [1.0, 0.64, 0.42])
+	else:
+		# dusk and dawn: how close to the day bake, 1 at the switch, 0 when fully dark
+		var dh := float(L.get("dusk_hours", 1.75))
+		var from := float(L.get("day_from", 6.5)); var to := float(L.get("day_to", 18.75))
+		var k := 0.0
+		if h >= to:
+			k = 1.0 - (h - to) / dh
+		elif h < from:
+			k = 1.0 - (from - h) / dh
+		k = clampf(k, 0.0, 1.0)
+		exp_k = 1.0 + 0.12 * k
+		sky_k = 1.0 + 0.8 * k
+		w = k
+		top_to = L.get("dusk_top", [0.17, 0.19, 0.40]); hor_to = L.get("dusk_horizon", [0.62, 0.38, 0.40])
+	env.tonemap_exposure = base.tonemap_exposure * exp_k * b
+	var bm = base.sky.sky_material if base.sky else null
+	var em = env.sky.sky_material if env.sky else null
+	if bm is ProceduralSkyMaterial and em is ProceduralSkyMaterial:
+		em.sky_energy_multiplier = bm.sky_energy_multiplier * sky_k
+		em.sky_top_color = bm.sky_top_color.lerp(Color(top_to[0], top_to[1], top_to[2]), w)
+		em.sky_horizon_color = bm.sky_horizon_color.lerp(Color(hor_to[0], hor_to[1], hor_to[2]), w)
+		em.ground_horizon_color = bm.ground_horizon_color.lerp(Color(hor_to[0], hor_to[1], hor_to[2]), w * 0.5)
 
 func _set_emission(mat_name: String, e: float) -> void:
 	for mi in _meshes(get_tree().current_scene):

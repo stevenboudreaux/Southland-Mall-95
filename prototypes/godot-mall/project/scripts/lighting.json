@@ -1,0 +1,17 @@
+{
+	"_about": "Everyone's default lighting (scripts/mall_runtime.gd set_clock; Steven, Oct 15 2026). The Lighting button picks the day or night preset below; the owner's lighting panel shows the hour and brightness to copy back here. hour is 5-24 (12 = noon), brightness 1 = as baked.",
+	"default": "night",
+	"day_hour": 12.0,
+	"day_brightness": 1.0,
+	"night_hour": 22.0,
+	"night_brightness": 1.0,
+	"day_from": 6.5,
+	"day_to": 18.75,
+	"low_sun_exposure": 0.8,
+	"low_sun_sky": 0.55,
+	"warm_horizon": [1.0, 0.64, 0.42],
+	"warm_top": [0.52, 0.56, 0.78],
+	"dusk_horizon": [0.62, 0.38, 0.40],
+	"dusk_top": [0.17, 0.19, 0.40],
+	"dusk_hours": 1.75
+}
