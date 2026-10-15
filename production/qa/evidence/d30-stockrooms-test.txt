@@ -1,0 +1,13 @@
+ok   locked before the Rougarou has gone through
+ok   walking into Woolworth's back corner goes in
+ok   the maze's walk grid is in use
+ok   the mall is hidden (0 visible)
+ok   lighting button hidden
+ok   Jump locked for a visitor
+ok   the stick can be reached from the start room
+ok   the caption shows within 2 m of the stick
+ok   the seam S1-W moved you into the real entry (49.5, 183.1)
+ok   back out in Woolworth
+ok   the mall's walk grid is back
+ok   buttons and Jump back
+STOCKROOMS TEST OK (12 checks)

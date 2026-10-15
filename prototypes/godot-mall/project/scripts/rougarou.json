@@ -46,5 +46,7 @@
  "story_shuffle_s": [
   6.0,
   11.0
- ]
+ ],
+ "story_exit_mps": 3.0,
+ "story_ducks_before_exit": 3
 }

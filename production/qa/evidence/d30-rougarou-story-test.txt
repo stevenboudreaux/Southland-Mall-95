@@ -1,0 +1,22 @@
+ok   idle at the start (stage 0)
+ok   the window form is there
+ok   Pocket Change entered
+ok   it stands in Merry-Go-Round's window
+ok   in the form's place
+ok   the form is gone
+ok   stays still while you stand
+ok   stands until 5 m, runs at 4.4 m
+ok   gone into the store
+ok   the window stays empty
+ok   in front of Cucos (stage 2, stand)
+ok   at Cucos' doors
+ok   runs into Cucos at 20.0 m
+ok   lurking in Woolworth (lurk)
+ok   at the back ((-43.0, 0.0, -11.0))
+ok   ducks behind the aisles
+ok   walks off toward the back corner
+ok   gone through the wall; route back to idle
+ok   went through the back corner ((-46.5, 0.0, 21.62))
+ok   the Stockrooms door is unlocked
+ok   idle saved (0,0)
+STORY TEST OK (21 checks)

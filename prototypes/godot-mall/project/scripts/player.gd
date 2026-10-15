@@ -12,6 +12,7 @@ extends Node3D
 @export var obstacles: Array = []
 var fx_obstacles: Array = []     # benches, planters, trash cans (only when shown)
 var fixtures_on := false
+var jump_locked := false   # inside the Stockrooms on a visitor's browser: no Jump menu (scripts/stockrooms.gd)
 ## Walkable map tiles (rows of "0"/"1"), and how map tiles map to metres.
 @export var walk_rows: PackedStringArray = []
 @export var map_origin := Vector2(148, 100)
@@ -134,6 +135,13 @@ func _ready() -> void:
 	if OS.has_feature("web"):
 		rg.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('rougarou') || ''"))
 	get_parent().add_child.call_deferred(rg)
+	# the Stockrooms, behind Woolworth's back corner (scripts/stockrooms.gd; Steven, Oct 15 2026)
+	if wing == 1 or wing == 0:
+		var sr = load("res://scripts/stockrooms.gd").new()
+		sr.name = "Stockrooms"; sr.player = self
+		if OS.has_feature("web"):
+			sr.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('stockrooms') || ''"))
+		get_parent().add_child.call_deferred(sr)
 	vr = Node3D.new()
 	vr.name = "VR"
 	vr.set_script(load("res://scripts/vr.gd"))
@@ -530,7 +538,7 @@ func _build_jump_ui() -> void:
 	_jump_select(0)
 
 func _jump_show(on: bool) -> void:
-	if leaving:
+	if leaving or jump_locked:
 		on = false
 	jump_panel.visible = on
 	if on:

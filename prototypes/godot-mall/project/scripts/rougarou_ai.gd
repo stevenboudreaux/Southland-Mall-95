@@ -53,7 +53,8 @@ var cfg := {
 	"flee_m": 24.0, "flee_to_m": 28.0, "lost_m": 55.0, "reappear_s": [30.0, 120.0],
 	"story_mq_flee_m": 5.0, "story_mq_approach_m": 0.0, "story_cucos_flee_m": 16.0,
 	"story_cucos_approach_m": 22.0, "story_seen_close_m": 10.0, "story_dart_m": 22.0,
-	"story_run_mps": 7.5, "story_shuffle_s": [6.0, 11.0], "relocate_after_s": 1.0, "flee_mps": 7.5,
+	"story_run_mps": 7.5, "story_shuffle_s": [6.0, 11.0], "story_exit_mps": 3.0,
+	"story_ducks_before_exit": 3, "relocate_after_s": 1.0, "flee_mps": 7.5,
 }
 var mode := "stalk"
 var player: Node3D
@@ -425,6 +426,8 @@ var last_pp := Vector3.INF
 var approach := 0.0        # smoothed speed of the player toward it, m/s
 var wool_obs := []         # obstacle rects inside Woolworth, for line of sight
 var shuffle := 0.0
+var ducks := 0
+const WOOL_EXIT = [Vector3(-44.85, 0, 21.62), Vector3(-46.5, 0, 21.62)]   # the back corner, into the wall
 
 func _story_ready() -> void:
 	var saved = _story_load()
@@ -460,7 +463,7 @@ func _story_enter() -> void:
 	var mq = get_parent().get_node_or_null("Dynamic/dyn_rg_mannequin")
 	if mq: mq.visible = stage == 0
 	fig.visible = false; fig.still = false; fig.gait = 0.0; fig.watch = Vector3.INF
-	path = []; since = 0.0; approach = 0.0; state = "hidden"
+	path = []; since = 0.0; approach = 0.0; state = "hidden"; ducks = 0
 	match stage:
 		1:
 			if _wing_ok(2):
@@ -526,11 +529,21 @@ func _story(dt: float) -> void:
 			var seen = _seen_obs()
 			fig.watch = pp + Vector3(0, 1.5, 0)
 			shuffle -= dt
-			if seen and d < float(cfg.story_seen_close_m):
-				# a close look: it runs and is gone; the route ends
-				_dart(true)
+			if seen and (d < float(cfg.story_seen_close_m) or ducks >= int(cfg.story_ducks_before_exit)):
+				# a close look, or spotted again after ducking enough: it walks off, slower than
+				# it ever runs, into the back corner and through the wall (Steven, Oct 15 08:29)
+				_exit_walk()
 			elif (seen and d < float(cfg.story_dart_m)) or d < 8.0 or shuffle <= 0.0:
 				_dart(false)
+		"exit_walk":
+			_run_at(dt, float(cfg.story_exit_mps))
+			fig.gait = 0.55
+			if path.is_empty():
+				fig.visible = false
+				var sr = get_parent().get_node_or_null("Stockrooms")
+				if sr: sr.unlock()
+				print("rougarou story: through the wall")
+				_story_next(0)
 		"dart":
 			_run_at(dt, float(cfg.story_run_mps))
 			if path.is_empty():
@@ -601,8 +614,39 @@ func _dart(gone: bool) -> void:
 		t = prev[t]
 	fig.gait = 1.0; fig.hunch = 0.7; fig.watch = Vector3.INF; since = 0.0
 	state = "gone_run" if gone else "dart"
+	if not gone: ducks += 1
 	if path.is_empty() and gone:
 		_story_next(0)
 	elif path.is_empty():
 		state = "lurk"; fig.gait = 0.0; shuffle = 3.0
 	print("rougarou story: ", "gone" if gone else "ducks", " (", path.size(), " tiles)")
+
+## The last Woolworth encounter: it walks (3 m/s, a slow lope you can follow) along free floor to
+## the back corner and on into the wall there, the patch that is the Stockrooms' door from then on.
+func _exit_walk() -> void:
+	var start = _tile(fig.position)
+	var goal = _tile(Vector3(-45.0, 0, 21.0))
+	var prev = {start: null}
+	var queue = [start]; var qi = 0
+	while qi < queue.size() and qi < 2000:
+		var t = queue[qi]; qi += 1
+		if t == goal: break
+		for nb in [Vector2i(1, 0), Vector2i(-1, 0), Vector2i(0, 1), Vector2i(0, -1)]:
+			var u = t + nb
+			if prev.has(u): continue
+			var uc = _centre(u.x, u.y)
+			if not WOOL.has_point(Vector2(uc.x, uc.z)): continue
+			if u != goal and not player._free(uc.x, uc.z): continue
+			prev[u] = t
+			queue.append(u)
+	path = []
+	if prev.has(goal):
+		var t = goal
+		while t != null and t != start:
+			path.push_front(_centre(t.x, t.y))
+			t = prev[t]
+		if not path.is_empty(): path.pop_back()      # the goal tile's centre is by the shelf end
+	for w in WOOL_EXIT: path.append(w)
+	fig.gait = 0.55; fig.hunch = 0.8; fig.watch = Vector3.INF; since = 0.0
+	state = "exit_walk"
+	print("rougarou story: walks to the wall (", path.size(), " steps)")

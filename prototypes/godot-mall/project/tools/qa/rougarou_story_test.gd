@@ -24,6 +24,7 @@ func _initialize() -> void:
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--out="): out = a.substr(6)
 	if Engine.has_meta("mall_rg"): Engine.remove_meta("mall_rg")
+	if Engine.has_meta("mall_stockrooms"): Engine.remove_meta("mall_stockrooms")
 	_load(2, Vector3(-106, 0, 56), 0.0)
 
 func _load(w: int, p: Vector3, yaw: float) -> void:
@@ -126,6 +127,7 @@ func _process(dt: float) -> bool:
 				_check(fig.visible and ai.state == "lurk", "lurking in Woolworth (%s)" % ai.state)
 				_check(ai.WOOL_BACK.has_point(Vector2(fig.position.x, fig.position.z)), "at the back (%s)" % str(fig.position))
 				player.position = Vector3(-12, 0, 4)          # just inside Woolworth's mall doors
+				wait_scene = false
 				_face(fig.position)
 				step = 7; clock = 0.0
 			elif clock > 30.0:
@@ -163,10 +165,17 @@ func _process(dt: float) -> bool:
 		9:
 			if clock > 0.3 and clock < 0.4 + dt:
 				_shot("7-woolworth-close")
+			if ai.state == "exit_walk" and not wait_scene:
+				wait_scene = true
+				_check(true, "walks off toward the back corner")
+			if ai.state == "exit_walk" and clock > 3.0 and clock < 3.0 + dt * 1.5:
+				_shot("8-woolworth-exit-walk")
 			if ai.stage == 0:
-				_check(not fig.visible, "gone after the close look; route back to idle")
+				_check(not fig.visible, "gone through the wall; route back to idle")
+				_check(fig.position.x < -45.8 and abs(fig.position.z - 21.62) < 0.2, "went through the back corner (%s)" % str(fig.position))
+				_check(bool(Engine.get_meta("mall_stockrooms", false)), "the Stockrooms door is unlocked")
 				_check(str(Engine.get_meta("mall_rg", "")).begins_with("0"), "idle saved (%s)" % str(Engine.get_meta("mall_rg", "")))
 				return _done()
-			elif clock > 10.0:
+			elif clock > 40.0:
 				_check(false, "not gone after a close look (state %s)" % ai.state); return _done()
 	return false
