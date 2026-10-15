@@ -231,9 +231,11 @@ window.mallVR = {
 		});
 	}
 }());
-window.mallSigns = {
+function mallPublisher(path, key, what) { return {
 	status: '',
-	path: 'prototypes/godot-mall/play/signs.json',
+	path: path,
+	key: key,
+	what: what,
 	repo: function (cfg) {
 		if (cfg.repo) return cfg.repo;
 		var h = location.hostname, seg = location.pathname.split('/').filter(Boolean)[0];
@@ -251,7 +253,7 @@ window.mallSigns = {
 		var cfg = {};
 		try { cfg = JSON.parse(localStorage.getItem('southland-gh') || '{}'); } catch (e) {}
 		var repo = S.repo(cfg), br = cfg.branch || 'main', tok = cfg.token;
-		if (!tok) tok = prompt('GitHub token to publish the signs (the one the mall editor uses). It is not saved.');
+		if (!tok) tok = prompt('GitHub token to publish the ' + S.what + ' (the one the mall editor uses). It is not saved.');
 		if (!tok) { S.status = 'error: no GitHub token'; return; }
 		var draft = JSON.parse(draftJson);
 		var H = { 'Authorization': 'Bearer ' + tok, 'Accept': 'application/vnd.github.object+json', 'X-GitHub-Api-Version': '2022-11-28' };
@@ -263,25 +265,97 @@ window.mallSigns = {
 			return r.json();
 		}).then(function (cur) {
 			// merge into the live list so nothing published elsewhere is lost
-			var live = { signs: {} };
+			var live = {};
 			if (cur && cur.content) {
 				try {
 					var bin = atob(cur.content.replace(/\n/g, '')), arr = new Uint8Array(bin.length);
 					for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
 					live = JSON.parse(new TextDecoder().decode(arr));
-				} catch (e) { live = { signs: {} }; }
+				} catch (e) { live = {}; }
 			}
-			live.signs = live.signs || {};
-			Object.keys(draft).forEach(function (k) { live.signs[k] = draft[k]; });
-			var body = { message: 'Update the mall signs from the Godot mall', content: S.b64(JSON.stringify(live, null, 1) + '\n'), branch: br };
+			var K = S.key;
+			live[K] = live[K] || {};
+			Object.keys(draft).forEach(function (k) {
+				var v = draft[k];
+				// text edits are partial (only the fields changed): merge them field by field
+				if (v && typeof v === 'object' && !Array.isArray(v)) live[K][k] = Object.assign({}, live[K][k] || {}, v);
+				else live[K][k] = v;
+			});
+			var body = { message: 'Update the ' + S.what + ' from the Godot mall', content: S.b64(JSON.stringify(live, null, 1) + '\n'), branch: br };
 			if (cur && cur.sha) body.sha = cur.sha;
 			return fetch(u, { method: 'PUT', headers: Object.assign({ 'Content-Type': 'application/json' }, H), body: JSON.stringify(body) });
 		}).then(function (r) {
 			if (r.ok) { S.status = 'ok'; return; }
 			if (r.status === 403 || r.status === 404) throw 'this token cannot write to ' + repo;
-			if (r.status === 409) throw 'someone else changed the signs; reload and publish again';
+			if (r.status === 409) throw 'someone else changed the ' + S.what + '; reload and publish again';
 			throw 'GitHub said ' + r.status;
 		}).catch(function (e) { S.status = 'error: ' + (typeof e === 'string' ? e : (e && e.message) || 'network error'); });
+	}
+}; }
+window.mallSigns = mallPublisher('prototypes/godot-mall/play/signs.json', 'signs', 'mall signs');
+// Pocket Change's prize words (scripts/prizes.gd): play/prize_text.json {"text": {id: {text, font, size, fill, outline}}}
+window.mallPrizeText = mallPublisher('prototypes/godot-mall/play/prize_text.json', 'text', 'prize words');
+// The owner's form for a prize's words: open(specJson) shows it; result becomes
+// '{"save": {id: fields}}', '{"reset": [ids]}' or '{"cancel": 1}' when it closes.
+window.mallPrizeEdit = {
+	result: '',
+	open: function (specJson) {
+		var S = this, spec = JSON.parse(specJson), fonts = { sans: 'Sans', sans_italic: 'Sans italic', serif: 'Serif', script: 'Script' };
+		S.result = '';
+		var old = document.getElementById('pz-edit'); if (old) old.remove();
+		var el = function (tag, css, txt) { var e = document.createElement(tag); if (css) e.style.cssText = css; if (txt != null) e.textContent = txt; return e; };
+		var wrap = el('div', 'position:fixed;inset:0;z-index:1000;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font:15px system-ui,-apple-system,sans-serif');
+		wrap.id = 'pz-edit';
+		var box = el('div', 'background:#fbf6ea;color:#1e1a18;border:2px solid #c0141e;border-radius:10px;width:min(520px,calc(100% - 32px));max-height:calc(100% - 32px);overflow:auto;padding:14px 16px;box-sizing:border-box');
+		box.appendChild(el('div', 'font-weight:700;font-size:18px;margin-bottom:8px', 'Words on: ' + spec.title));
+		var rows = [];
+		spec.fields.forEach(function (f) {
+			var fs = el('fieldset', 'border:1px solid #d8cfbc;border-radius:8px;margin:0 0 10px;padding:8px 10px');
+			fs.appendChild(el('legend', 'font-weight:600;padding:0 4px', f.label));
+			var r = { id: f.id };
+			if (f.text !== null) {
+				r.text = el('input', 'width:100%;box-sizing:border-box;font-size:16px;padding:6px;margin-bottom:6px');
+				r.text.value = f.text; fs.appendChild(r.text);
+			}
+			if (f.style) {
+				var line = el('div', 'display:flex;flex-wrap:wrap;gap:8px;align-items:center');
+				r.font = el('select', 'font-size:15px;padding:4px');
+				spec.fonts.forEach(function (k) { var o = el('option', null, fonts[k] || k); o.value = k; if (k === f.font) o.selected = true; r.font.appendChild(o); });
+				line.appendChild(r.font);
+				line.appendChild(el('span', null, 'size'));
+				r.size = el('input', 'width:64px;font-size:15px;padding:4px'); r.size.type = 'number'; r.size.min = 6; r.size.max = 200; r.size.value = f.size;
+				line.appendChild(r.size);
+				line.appendChild(el('span', null, 'colour'));
+				r.fill = el('input'); r.fill.type = 'color'; r.fill.value = f.fill; line.appendChild(r.fill);
+				var lab = el('label', 'display:flex;gap:4px;align-items:center');
+				r.ol = el('input'); r.ol.type = 'checkbox'; r.ol.checked = !!f.outline;
+				lab.appendChild(r.ol); lab.appendChild(el('span', null, 'outline'));
+				line.appendChild(lab);
+				r.olc = el('input'); r.olc.type = 'color'; r.olc.value = f.outline || '#000000'; line.appendChild(r.olc);
+				fs.appendChild(line);
+			}
+			rows.push(r); box.appendChild(fs);
+		});
+		var bar = el('div', 'display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:6px');
+		var close = function (res) { S.result = JSON.stringify(res); wrap.remove(); };
+		var btn = function (t, css, fn) { var b = el('button', 'font-size:16px;padding:8px 14px;border-radius:8px;border:1px solid #8a7a60;' + css, t); b.onclick = fn; bar.appendChild(b); };
+		btn('Restore originals', 'background:#fff;margin-right:auto', function () { close({ reset: rows.map(function (r) { return r.id; }) }); });
+		btn('Cancel', 'background:#fff', function () { close({ cancel: 1 }); });
+		btn('Save', 'background:#c0141e;color:#fff;border-color:#c0141e', function () {
+			var out = {};
+			rows.forEach(function (r) {
+				var o = {};
+				if (r.text) o.text = r.text.value;
+				if (r.font) { o.font = r.font.value; o.size = parseInt(r.size.value, 10) || 24; o.fill = r.fill.value; o.outline = r.ol.checked ? r.olc.value : ''; }
+				out[r.id] = o;
+			});
+			close({ save: out });
+		});
+		box.appendChild(bar);
+		box.addEventListener('keydown', function (e) { e.stopPropagation(); });
+		box.addEventListener('keyup', function (e) { e.stopPropagation(); });
+		wrap.appendChild(box);
+		document.body.appendChild(wrap);
 	}
 };
 		</script>

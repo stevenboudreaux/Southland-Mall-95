@@ -80,6 +80,8 @@ func _process(dt: float) -> bool:
 		2:
 			if clock > 0.4:
 				_check(pz.prompt.visible, "the prompt shows at the long case")
+				_check(pz.art_mats.size() >= 15 and pz.art_mats["card:vpet"].get_shader_parameter("tex") is ImageTexture
+					and pz.art_mats["pog_card"].get_shader_parameter("tex") is ImageTexture, "the words are painted on %d pictures" % pz.art_mats.size())
 				_shot("5-prompt")
 				pz.open_look()
 				_check(player.frozen, "the player is held while looking")

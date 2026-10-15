@@ -12,6 +12,12 @@
 ## 3. Standing at either case, a prompt offers a closer look: the camera glides to an angled view
 ##    down through the glass at one bay (or at half the back wall); ◀ ▶ walk along the counter,
 ##    tapping or hovering a prize names it and its price. No redemption yet.
+## 4. Every word on a prize (each price card's number, name and TICKETS band, the packaging's
+##    printing) is drawn over word-free art at load time (SubViewports → textures), from
+##    prizes.json "text"/"art" and the published edits in play/prize_text.json. On the owner's
+##    browser the closer look has "Edit words": tap a prize, change its words, font, size and
+##    colours in a form (web/shell.html mallPrizeEdit), then "Publish words" writes
+##    play/prize_text.json to GitHub with the mall editor's token (mallPrizeText). No rebuild.
 extends Node3D
 
 var player: Node3D
@@ -66,6 +72,25 @@ var saved_vis := []
 var touch_start := Vector2.ZERO
 var stick_latch := false
 var input_kind := "kb"
+# words (section 4)
+const FONT_FILES := {"sans": "sans.otf", "sans_italic": "sans_italic.otf", "serif": "serif.ttf", "script": "script.ttf"}
+const DRAFT_KEY := "southland-prizes-draft"
+var pub := {}          # text id -> fields, published (play/prize_text.json)
+var draft := {}        # text id -> fields, the owner's unpublished edits
+var fonts := {}
+var art_mats := {}     # "card:<item>", "pog_card", "candy_box" -> material whose texture carries the words
+var painting := false
+var paint_again := false
+var web := false
+var is_owner := false
+var edit_on := false
+var dialog_open := false
+var dialog_item := ""
+var publishing := false
+var poll_t := 0.0
+var btn_edit: Button
+var btn_pub: Button
+var status_l: Label
 
 func _ready() -> void:
 	var p = "res://scripts/prizes.json"
@@ -78,6 +103,19 @@ func _ready() -> void:
 	_views()
 	_build_ui()
 	built = true
+	web = OS.has_feature("web")
+	if web:
+		var o = JavaScriptBridge.eval("(function(){try{var q=new URLSearchParams(location.search).get('owner');if(q==='1')localStorage.setItem('southland-editor','1');return localStorage.getItem('southland-editor')==='1'?'1':'0'}catch(e){return '0'}})()")
+		is_owner = str(o) == "1"
+		if is_owner:
+			var d = JavaScriptBridge.eval("(function(){try{return localStorage.getItem('" + DRAFT_KEY + "')||''}catch(e){return ''}})()")
+			if d is String and d != "":
+				var dj = JSON.parse_string(d)
+				if dj is Dictionary:
+					draft = dj
+		_fetch_published()
+	_owner_ui()
+	paint_words()
 
 # ------------------------------------------------------------------ frames
 func W(fr: String, u: float, y: float, d: float) -> Vector3:
@@ -282,7 +320,7 @@ func _build() -> void:
 		var y: float = LY[lv]
 		_bin(bins, fr, span, y)
 		var tk := int(cat.get(it, {}).get("tickets", 0))
-		_card(fr, (span.x + span.y) * 0.5, y, tk)
+		_card(fr, (span.x + span.y) * 0.5, y, it)
 		match it:
 			"finger_trap": _traps(rng, fr, span, y, false)
 			"jelly_trap": _traps(rng, fr, span, y, true)
@@ -312,11 +350,11 @@ func _kinds() -> void:
 	kind("jelly", cyl(0.0085, 0.0085, 0.115, 8, true), M("", Color.WHITE, 0.6, 0.12, 0.0, 0.8))
 	kind("chew", cyl(0.0075, 0.0075, 0.036, 8, true), M("chew", Color.WHITE, 0.35, 0.5))
 	kind("cbox", box(Vector3(0.05, 0.075, 0.014)), M("", Color(0.97, 0.96, 0.94), 0.35, 0.6))
-	kind("cface", quad(Vector2(0.05, 0.075)), M("candy_box", Color.WHITE, 0.35, 0.55))
+	kind("cface", quad(Vector2(0.05, 0.075)), _art_mat("candy_box", "candy_box", 0.35, 0.55))
 	kind("neck", _necklace_mesh(), M("", Color.WHITE, 0.35, 0.35))
 	for i in 4:
 		kind("slap%d" % i, quad(Vector2(0.22, 0.026)), M("slap%d" % i, Color.WHITE, 0.35, 0.3, 0.2))
-	kind("pogcard", quad(Vector2(0.09, 0.135)), M("pog_card", Color.WHITE, 0.35, 0.5))
+	kind("pogcard", quad(Vector2(0.09, 0.135)), _art_mat("pog_card", "pog_card", 0.35, 0.5))
 	kind("bubble", box(Vector3(0.072, 0.086, 0.012)), M("", Color(0.92, 0.97, 1.0), 0.2, 0.05, 0.0, 0.28))
 	kind("cap", cyl(0.021, 0.021, 0.003, 14, true), M("", Color.WHITE, 0.35, 0.5))
 	kind("spring", _tube(0.034, 0.06, 18), M("rainbow", Color.WHITE, 0.45, 0.35, 0.3))
@@ -326,7 +364,6 @@ func _kinds() -> void:
 	kind("egg", sphere(0.5, 16, 8), M("", Color.WHITE, 0.35, 0.28))
 	kind("lcd", quad(Vector2(0.024, 0.021)), M("vpet_screen", Color.WHITE, 0.45, 0.2))
 	kind("btn", sphere(0.0036, 8, 4), M("", Color.WHITE, 0.3, 0.3))
-	kind("tag", quad(Vector2(0.07, 0.045)), M("tag", Color.WHITE, 0.6, 0.6))
 	# the wall
 	kind("hook", cyl(0.003, 0.003, 1.0, 5, false), M("", Color(0.82, 0.82, 0.86), 0.1, 0.2, 0.8))
 	kind("green", sphere(0.5, 16, 8), M("", Color.WHITE, 0.6, 1.0))
@@ -398,26 +435,17 @@ func _quad(st: SurfaceTool, a: Vector3, b: Vector3, c: Vector3, d: Vector3) -> v
 		st.set_uv(Vector2.ZERO)
 		st.add_vertex(v)
 
-## A price card standing on the bin's front lip, leaning back, its number on top.
-func _card(fr: String, u: float, y: float, tickets: int) -> void:
+## A price card standing on the bin's front lip, leaning back: the number, the prize's name,
+## the TICKETS band (one picture per item, painted by paint_words).
+func _card(fr: String, u: float, y: float, it: String) -> void:
 	var lean := Basis(Vector3(1, 0, 0), -0.28)
-	var c := XF(fr, u, y + 0.05, D0 - 0.006, lean)
-	add("tag", c)
-	_number(c, tickets, 0.0062)
+	_card_at(XF(fr, u, y + 0.055, D0 - 0.006, lean), it, 1.0)
 
-func _number(c: Transform3D, tickets: int, up: float, size := 1.0) -> void:
-	var l := Label3D.new()
-	l.text = str(tickets)
-	l.font = font
-	l.font_size = 96
-	l.pixel_size = 0.00024 * size
-	l.modulate = Color(0.75, 0.05, 0.08)
-	l.outline_size = 0
-	l.alpha_cut = Label3D.ALPHA_CUT_DISCARD
-	l.double_sided = false
-	l.transform = c * Transform3D(Basis(), Vector3(0, up * size, 0.0008))
-	l.visibility_range_end = 9.0
-	add_child(l)
+func _card_at(c: Transform3D, it: String, size: float) -> void:
+	var key := "card_" + it
+	if not acc.has(key):
+		kind(key, quad(Vector2(0.07, 0.0558)), _art_mat("card:" + it, "tag", 0.6, 0.6))
+	add(key, c * Transform3D(Basis().scaled(Vector3.ONE * size), Vector3.ZERO))
 
 # ---- the case prizes. Each fills the bin [span] x [D0, D1] at height y.
 func _rand_in(rng: RandomNumberGenerator, span: Vector2, m: float) -> Vector2:
@@ -645,12 +673,11 @@ func _wall_item(rng: RandomNumberGenerator, cat: Dictionary, it: String, u: floa
 			_lava(rng, XF("W", u, y, mid + 0.02))
 			anchor = W("W", u, y + 0.22, mid)
 	var tagz := zf - 0.008
-	_wall_tag(XF("W", u, y - 0.03, tagz), cat, it, anchor)
+	_wall_tag(XF("W", u, y - 0.036, tagz), cat, it, anchor)
 
 func _wall_tag(c: Transform3D, cat: Dictionary, it: String, anchor: Vector3) -> void:
 	var tk := int(cat.get(it, {}).get("tickets", 0))
-	add("tag", c * Transform3D(Basis().scaled(Vector3.ONE * 1.6), Vector3.ZERO))
-	_number(c, tk, 0.0062, 1.4 if tk >= 1000 else 1.6)
+	_card_at(c, it, 1.6)
 	items.append({"pos": anchor, "name": str(cat.get(it, {}).get("name", it)), "tickets": tk, "key": it})
 
 ## A green alien plush, height h; c at its bottom centre (or, hanging, at the bottom of the
@@ -745,6 +772,10 @@ func _process(dt: float) -> void:
 	anim_t += dt
 	if not blobs.is_empty() and player.position.distance_to(blobs[0][1]) < 25.0:
 		_blob_place(0, anim_t)
+	if dialog_open:
+		_poll_dialog()
+	if publishing:
+		_poll_publish(dt)
 	if looking:
 		return
 	_update_prompt()
@@ -1025,7 +1056,8 @@ func _show_tip(k: int) -> void:
 		tip.visible = false
 		return
 	var it = items[k]
-	tip_label.text = "%s — %s tickets" % [it.name, _commas(int(it.tickets))]
+	var tks: String = str(tget(it.key + ".tickets").get("text", it.tickets))
+	tip_label.text = "%s — %s tickets" % [str(tget(it.key + ".name").get("text", it.name)), _commas(int(tks)) if tks.is_valid_int() else tks]
 	tip.visible = true
 	tip.reset_size()
 	var s := lcam.unproject_position(it.pos)
@@ -1057,6 +1089,13 @@ func _input(e: InputEvent) -> void:
 	elif e is InputEventScreenTouch:
 		input_kind = "touch"
 	if not built or player == null:
+		return
+	if dialog_open:
+		if e is InputEventKey or e is InputEventMouseButton or e is InputEventScreenTouch or e is InputEventJoypadButton:
+			get_viewport().set_input_as_handled()
+		return
+	if looking and is_owner and _owner_input(e):
+		get_viewport().set_input_as_handled()
 		return
 	if not looking:
 		if prompt.visible:
@@ -1128,3 +1167,332 @@ func _input(e: InputEvent) -> void:
 		handled = false
 	if handled:
 		get_viewport().set_input_as_handled()
+
+# ------------------------------------------------------------------ words (section 4)
+## The text and style of one text id: prizes.json, then published edits, then the owner's
+## draft. "<item>.name" and "<item>.tickets" take their style from card.name / card.number.
+func tget(id: String) -> Dictionary:
+	var parts := id.split(".")
+	var d := {}
+	var items_j: Dictionary = J.get("items", {})
+	if parts.size() == 2 and parts[1] in ["name", "tickets"] and items_j.has(parts[0]):
+		d = tget("card." + ("number" if parts[1] == "tickets" else "name")).duplicate()
+		d["text"] = str(items_j[parts[0]].get("name", parts[0])) if parts[1] == "name" else str(int(items_j[parts[0]].get("tickets", 0)))
+	else:
+		d = J.get("text", {}).get(id, {}).duplicate()
+	for src in [pub, draft]:
+		if src.get(id) is Dictionary:
+			d.merge(src[id], true)
+	return d
+
+## The same without the owner's draft (what visitors see now).
+func tlive(id: String) -> Dictionary:
+	var keep := draft
+	draft = {}
+	var d := tget(id)
+	draft = keep
+	return d
+
+## The same as shipped in prizes.json (no edits at all).
+func tship(id: String) -> Dictionary:
+	var kp := pub
+	var kd := draft
+	pub = {}; draft = {}
+	var d := tget(id)
+	pub = kp; draft = kd
+	return d
+
+func _font(name: String) -> Font:
+	if not FONT_FILES.has(name):
+		name = "sans"
+	if not fonts.has(name):
+		fonts[name] = load("res://fonts/" + FONT_FILES[name])
+	return fonts[name]
+
+func _art_mat(key: String, bg: String, emit: float, rough: float) -> ShaderMaterial:
+	if not art_mats.has(key):
+		var m := ShaderMaterial.new()
+		m.shader = sh_opa
+		m.set_shader_parameter("tex", load("res://prizes/%s.png" % bg))
+		m.set_shader_parameter("tint", Color.WHITE)
+		m.set_shader_parameter("emit", emit)
+		m.set_shader_parameter("rough", rough)
+		art_mats[key] = m
+	return art_mats[key]
+
+## [bg, size, [[text id, rect]]] for an art key.
+func _art_spec(key: String) -> Array:
+	var art: Dictionary = J.get("art", {})
+	var it := ""
+	var name := key
+	if key.begins_with("card:"):
+		it = key.substr(5)
+		name = "card"
+	var a: Dictionary = art.get(name, {})
+	var fields := []
+	for f in a.get("fields", []):
+		fields.append([str(f[0]).replace("{item}", it), f[1]])
+	var sz: Array = a.get("size", [256, 256])
+	return [str(a.get("bg", "tag")), Vector2i(int(sz[0]), int(sz[1])), fields]
+
+## Paints every picture that carries words, each in a SubViewport, and puts the results on
+## their materials. Called again after any edit.
+func paint_words() -> void:
+	if painting:
+		paint_again = true
+		return
+	painting = true
+	var jobs := []
+	for key in art_mats:
+		var sp := _art_spec(key)
+		var vp := SubViewport.new()
+		vp.size = sp[1]
+		vp.disable_3d = true
+		vp.transparent_bg = false
+		vp.render_target_update_mode = SubViewport.UPDATE_ONCE
+		var tr := TextureRect.new()
+		tr.texture = load("res://prizes/%s.png" % sp[0])
+		tr.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		tr.stretch_mode = TextureRect.STRETCH_SCALE
+		tr.size = Vector2(sp[1])
+		vp.add_child(tr)
+		for f in sp[2]:
+			vp.add_child(_word_label(tget(f[0]), f[1], str(f[0]).ends_with(".name")))
+		add_child(vp)
+		jobs.append([key, vp])
+	await RenderingServer.frame_post_draw
+	await RenderingServer.frame_post_draw
+	for j in jobs:
+		var img: Image = j[1].get_texture().get_image()
+		if img:
+			img.generate_mipmaps()
+			art_mats[j[0]].set_shader_parameter("tex", ImageTexture.create_from_image(img))
+		j[1].queue_free()
+	painting = false
+	if paint_again:
+		paint_again = false
+		paint_words()
+
+## A Label for one text field, shrunk until it fits its rect (names may wrap to two lines).
+func _word_label(st: Dictionary, rect: Array, wrap: bool) -> Label:
+	var l := Label.new()
+	l.position = Vector2(rect[0], rect[1])
+	l.size = Vector2(rect[2], rect[3])
+	var txt := str(st.get("text", ""))
+	l.text = txt
+	var f := _font(str(st.get("font", "sans")))
+	var sz := clampi(int(st.get("size", 24)), 6, 200)
+	var oc := str(st.get("outline", ""))
+	var has_ol := oc != ""
+	var w := float(rect[2]) - 4.0
+	var h := float(rect[3])
+	while sz > 7:
+		var osz := maxi(2, sz / 9) if has_ol else 0
+		var one := f.get_string_size(txt, HORIZONTAL_ALIGNMENT_LEFT, -1, sz)
+		if one.x + osz * 2 <= w and f.get_height(sz) <= h + 6:
+			break
+		if wrap and f.get_multiline_string_size(txt, HORIZONTAL_ALIGNMENT_CENTER, w, sz).y <= h + 2:
+			l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			break
+		sz -= 1
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	l.add_theme_font_override("font", f)
+	l.add_theme_font_size_override("font_size", sz)
+	l.add_theme_color_override("font_color", Color.from_string(str(st.get("fill", "#000000")), Color.BLACK))
+	l.add_theme_constant_override("line_spacing", -int(sz * 0.18))
+	if has_ol:
+		l.add_theme_color_override("font_outline_color", Color.from_string(oc, Color.BLACK))
+		l.add_theme_constant_override("outline_size", maxi(2, sz / 9) * 2)
+	return l
+
+func _fetch_published() -> void:
+	var url = JavaScriptBridge.eval("new URL('prize_text.json', location.href).href")
+	if not (url is String):
+		return
+	var h := HTTPRequest.new()
+	add_child(h)
+	h.request_completed.connect(func(result, code, _headers, body):
+		if result == HTTPRequest.RESULT_SUCCESS and code == 200:
+			var j = JSON.parse_string(body.get_string_from_utf8())
+			if j is Dictionary and j.get("text") is Dictionary:
+				pub = j.text
+				paint_words()
+		h.queue_free())
+	h.request(url + "?t=" + str(Time.get_unix_time_from_system()))
+
+# ---- the owner's editing
+func _owner_ui() -> void:
+	if not is_owner:
+		return
+	btn_edit = Button.new()
+	btn_pub = Button.new()
+	var y := 52
+	for b in [btn_edit, btn_pub]:
+		b.position = Vector2(12, y)
+		b.custom_minimum_size = Vector2(190, 42)
+		b.mouse_filter = Control.MOUSE_FILTER_IGNORE   # hit-tested in _owner_input (touch skips mouse emulation)
+		b.focus_mode = Control.FOCUS_NONE
+		b.add_theme_font_size_override("font_size", 17)
+		bar.add_child(b)
+		y += 50
+	btn_edit.toggle_mode = true
+	status_l = Label.new()
+	status_l.position = Vector2(14, y + 2)
+	status_l.add_theme_font_size_override("font_size", 16)
+	status_l.add_theme_color_override("font_color", Color.WHITE)
+	status_l.add_theme_color_override("font_outline_color", Color.BLACK)
+	status_l.add_theme_constant_override("outline_size", 5)
+	bar.add_child(status_l)
+	_owner_refresh()
+
+func _owner_refresh() -> void:
+	if btn_edit == null:
+		return
+	btn_edit.text = "Edit words: on" if edit_on else "Edit words"
+	btn_edit.button_pressed = edit_on
+	btn_pub.disabled = draft.is_empty() or publishing
+	btn_pub.text = "Publish words (%d)" % draft.size() if not draft.is_empty() else "Publish words"
+	if publishing:
+		status_l.text = "Publishing..."
+	elif edit_on:
+		status_l.text = "Tap a prize to change its words"
+	elif status_l.text.begins_with("Tap"):
+		status_l.text = ""
+
+## Owner buttons and, with Edit words on, a tap on a prize. True when it took the event.
+func _owner_input(e: InputEvent) -> bool:
+	var pos = null
+	var down := false
+	if e is InputEventScreenTouch:
+		pos = e.position; down = e.pressed
+	elif e is InputEventMouseButton and e.button_index == MOUSE_BUTTON_LEFT:
+		pos = e.position; down = e.pressed
+	if pos == null:
+		return false
+	if down:
+		if btn_edit.get_global_rect().has_point(pos):
+			edit_on = not edit_on
+			_owner_refresh()
+			return true
+		if btn_pub.get_global_rect().has_point(pos):
+			if not btn_pub.disabled:
+				_publish()
+			return true
+		for b in [btn_prev, btn_back, btn_next]:
+			if b.get_global_rect().has_point(pos):
+				return false
+		if edit_on:
+			touch_start = pos
+			return true
+	elif edit_on and pos.distance_to(touch_start) < 14.0:
+		var best := -1
+		var bd := 95.0
+		for en in _on_screen():
+			var dd: float = en[1].distance_to(pos)
+			if dd < bd:
+				bd = dd; best = en[0]
+		if best >= 0:
+			_open_dialog(str(items[best].key))
+		return true
+	return false
+
+## The text ids one item shows: its card's name and number, its packaging, then the styles
+## every card shares.
+func _ids_for(it: String) -> Array:
+	var out := [[it + ".name", "Name on its card", true, false], [it + ".tickets", "Ticket number on its card", true, false]]
+	for key in J.get("text", {}):
+		if str(key).begins_with(it + ".") or (it == "pogs" and str(key).begins_with("pogs.")):
+			out.append([key, "Packaging: " + str(key).get_slice(".", 1), true, true])
+	out.append(["card.number", "Every card: the number", false, true])
+	out.append(["card.name", "Every card: the name", false, true])
+	out.append(["card.band", "Every card: the band", true, true])
+	return out
+
+func _open_dialog(it: String) -> void:
+	var fields := []
+	for e in _ids_for(it):
+		var st := tget(e[0])
+		fields.append({"id": e[0], "label": e[1], "text": str(st.get("text", "")) if e[2] else null, "style": e[3],
+			"font": str(st.get("font", "sans")), "size": int(st.get("size", 24)),
+			"fill": _hex(str(st.get("fill", "#000000"))), "outline": str(st.get("outline", ""))})
+	var spec := {"title": str(tget(it + ".name").get("text", it)), "fields": fields, "fonts": FONT_FILES.keys()}
+	var ok = JavaScriptBridge.eval("(function(){if(!window.mallPrizeEdit)return '0';window.mallPrizeEdit.open(" + JSON.stringify(JSON.stringify(spec)) + ");return '1'})()")
+	if str(ok) != "1":
+		status_l.text = "Editing isn't available on this page"
+		return
+	dialog_open = true
+	dialog_item = it
+
+func _hex(c: String) -> String:
+	return "#" + Color.from_string(c, Color.BLACK).to_html(false)
+
+func _poll_dialog() -> void:
+	var r = JavaScriptBridge.eval("window.mallPrizeEdit ? window.mallPrizeEdit.result : '{\"cancel\":1}'")
+	if not (r is String) or r == "":
+		return
+	dialog_open = false
+	var j = JSON.parse_string(r)
+	if not (j is Dictionary):
+		return
+	if j.get("save") is Dictionary:
+		for id in j.save:
+			_set_draft(id, j.save[id])
+	elif j.get("reset") is Array:
+		for id in j.reset:
+			_set_draft(str(id), tship(str(id)))
+	JavaScriptBridge.eval("(function(){try{localStorage.setItem('" + DRAFT_KEY + "'," + JSON.stringify(JSON.stringify(draft)) + ")}catch(e){}})()")
+	paint_words()
+	_owner_refresh()
+
+## Keeps in the draft only the fields that differ from what visitors see now.
+func _set_draft(id: String, want: Dictionary) -> void:
+	var live := tlive(id)
+	var diff := {}
+	for k in ["text", "font", "size", "fill", "outline"]:
+		if not want.has(k) or want[k] == null:
+			continue
+		var a = want[k]
+		var b = live.get(k, "")
+		if k == "size":
+			a = int(a); b = int(b)
+		elif k in ["fill", "outline"] and str(a) != "" and str(b) != "":
+			a = _hex(str(a)); b = _hex(str(b))
+		if str(a) != str(b):
+			diff[k] = a
+	if diff.is_empty():
+		draft.erase(id)
+	else:
+		draft[id] = diff
+
+func _publish() -> void:
+	if draft.is_empty() or publishing:
+		return
+	var ok = JavaScriptBridge.eval("(function(){if(!window.mallPrizeText)return '0';window.mallPrizeText.publish(" + JSON.stringify(JSON.stringify(draft)) + ");return '1'})()")
+	if str(ok) != "1":
+		status_l.text = "Publishing isn't available on this page"
+		return
+	publishing = true
+	poll_t = 0.0
+	_owner_refresh()
+
+func _poll_publish(dt: float) -> void:
+	poll_t += dt
+	if poll_t < 0.5:
+		return
+	poll_t = 0.0
+	var s = JavaScriptBridge.eval("window.mallPrizeText ? window.mallPrizeText.status : 'error: no publisher'")
+	if not (s is String) or s == "busy":
+		return
+	publishing = false
+	if s == "ok":
+		for id in draft:
+			var cur: Dictionary = pub.get(id, {}) if pub.get(id) is Dictionary else {}
+			cur.merge(draft[id], true)
+			pub[id] = cur
+		draft.clear()
+		JavaScriptBridge.eval("(function(){try{localStorage.setItem('" + DRAFT_KEY + "','{}')}catch(e){}})()")
+		status_l.text = "Published. Everyone sees it in about a minute."
+	else:
+		status_l.text = "Not published: " + s.trim_prefix("error:").strip_edges()
+	_owner_refresh()

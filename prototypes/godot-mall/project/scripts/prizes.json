@@ -1,37 +1,394 @@
 {
  "_": "Pocket Change's ticket prizes (scripts/prizes.gd). The catalogue an inventory and redemption system will read later. tickets = the price. case slots: counter A (the long case, bays 0-3 from the customer's left) or B (the short case by the door), level 0 deck / 1 lower shelf / 2 upper shelf, side full|left|right.",
  "items": {
-  "finger_trap": {"name": "Chinese finger trap", "tickets": 15},
-  "jelly_trap": {"name": "Jelly finger trap", "tickets": 20},
-  "chew": {"name": "Chocolate chews", "tickets": 5},
-  "candy_cig": {"name": "Candy cigarettes", "tickets": 25},
-  "candy_neck": {"name": "Candy necklace", "tickets": 20},
-  "slap": {"name": "Slap bracelet", "tickets": 75},
-  "pogs": {"name": "Pog pack", "tickets": 100},
-  "spring": {"name": "Rainbow coil spring", "tickets": 150},
-  "dice": {"name": "Fuzzy dice", "tickets": 300},
-  "vpet": {"name": "Virtual pet", "tickets": 1500},
-  "alien": {"name": "Alien plush", "tickets": 800},
-  "lava": {"name": "Lava lamp", "tickets": 2500},
-  "big_dice": {"name": "Giant fuzzy dice", "tickets": 600},
-  "boombox": {"name": "Boom box", "tickets": 5000},
-  "ball": {"name": "Basketball", "tickets": 900}
+  "finger_trap": {
+   "name": "Chinese finger trap",
+   "tickets": 15
+  },
+  "jelly_trap": {
+   "name": "Jelly finger trap",
+   "tickets": 20
+  },
+  "chew": {
+   "name": "Chocolate chews",
+   "tickets": 5
+  },
+  "candy_cig": {
+   "name": "Candy cigarettes",
+   "tickets": 25
+  },
+  "candy_neck": {
+   "name": "Candy necklace",
+   "tickets": 20
+  },
+  "slap": {
+   "name": "Slap bracelet",
+   "tickets": 75
+  },
+  "pogs": {
+   "name": "Pog pack",
+   "tickets": 100
+  },
+  "spring": {
+   "name": "Rainbow coil spring",
+   "tickets": 150
+  },
+  "dice": {
+   "name": "Fuzzy dice",
+   "tickets": 300
+  },
+  "vpet": {
+   "name": "Virtual pet",
+   "tickets": 1500
+  },
+  "alien": {
+   "name": "Alien plush",
+   "tickets": 800
+  },
+  "lava": {
+   "name": "Lava lamp",
+   "tickets": 2500
+  },
+  "big_dice": {
+   "name": "Giant fuzzy dice",
+   "tickets": 600
+  },
+  "boombox": {
+   "name": "Boom box",
+   "tickets": 5000
+  },
+  "ball": {
+   "name": "Basketball",
+   "tickets": 900
+  }
  },
  "case": [
-  ["A", 0, 2, "left", "finger_trap"], ["A", 0, 2, "right", "jelly_trap"],
-  ["A", 1, 2, "full", "pogs"],
-  ["A", 2, 2, "left", "slap"], ["A", 2, 2, "right", "candy_neck"],
-  ["A", 3, 2, "full", "vpet"],
-  ["A", 0, 1, "left", "candy_cig"], ["A", 0, 1, "right", "chew"],
-  ["A", 1, 1, "full", "spring"],
-  ["A", 2, 1, "full", "dice"],
-  ["A", 3, 1, "left", "finger_trap"], ["A", 3, 1, "right", "jelly_trap"],
-  ["A", 0, 0, "full", "spring"],
-  ["A", 1, 0, "left", "candy_cig"], ["A", 1, 0, "right", "chew"],
-  ["A", 2, 0, "left", "pogs"], ["A", 2, 0, "right", "slap"],
-  ["A", 3, 0, "left", "candy_neck"], ["A", 3, 0, "right", "dice"],
-  ["B", 0, 2, "full", "vpet"],
-  ["B", 0, 1, "left", "pogs"], ["B", 0, 1, "right", "finger_trap"],
-  ["B", 0, 0, "left", "chew"], ["B", 0, 0, "right", "candy_cig"]
- ]
+  [
+   "A",
+   0,
+   2,
+   "left",
+   "finger_trap"
+  ],
+  [
+   "A",
+   0,
+   2,
+   "right",
+   "jelly_trap"
+  ],
+  [
+   "A",
+   1,
+   2,
+   "full",
+   "pogs"
+  ],
+  [
+   "A",
+   2,
+   2,
+   "left",
+   "slap"
+  ],
+  [
+   "A",
+   2,
+   2,
+   "right",
+   "candy_neck"
+  ],
+  [
+   "A",
+   3,
+   2,
+   "full",
+   "vpet"
+  ],
+  [
+   "A",
+   0,
+   1,
+   "left",
+   "candy_cig"
+  ],
+  [
+   "A",
+   0,
+   1,
+   "right",
+   "chew"
+  ],
+  [
+   "A",
+   1,
+   1,
+   "full",
+   "spring"
+  ],
+  [
+   "A",
+   2,
+   1,
+   "full",
+   "dice"
+  ],
+  [
+   "A",
+   3,
+   1,
+   "left",
+   "finger_trap"
+  ],
+  [
+   "A",
+   3,
+   1,
+   "right",
+   "jelly_trap"
+  ],
+  [
+   "A",
+   0,
+   0,
+   "full",
+   "spring"
+  ],
+  [
+   "A",
+   1,
+   0,
+   "left",
+   "candy_cig"
+  ],
+  [
+   "A",
+   1,
+   0,
+   "right",
+   "chew"
+  ],
+  [
+   "A",
+   2,
+   0,
+   "left",
+   "pogs"
+  ],
+  [
+   "A",
+   2,
+   0,
+   "right",
+   "slap"
+  ],
+  [
+   "A",
+   3,
+   0,
+   "left",
+   "candy_neck"
+  ],
+  [
+   "A",
+   3,
+   0,
+   "right",
+   "dice"
+  ],
+  [
+   "B",
+   0,
+   2,
+   "full",
+   "vpet"
+  ],
+  [
+   "B",
+   0,
+   1,
+   "left",
+   "pogs"
+  ],
+  [
+   "B",
+   0,
+   1,
+   "right",
+   "finger_trap"
+  ],
+  [
+   "B",
+   0,
+   0,
+   "left",
+   "chew"
+  ],
+  [
+   "B",
+   0,
+   0,
+   "right",
+   "candy_cig"
+  ]
+ ],
+ "_text": "Every word on the prizes. Each entry: text, font (sans, sans_italic, serif, script), size (pixels on its picture), fill and outline (#rrggbb, outline '' for none). card.* style every price card; <item>.name is the name under the number (default: the item's name), <item>.tickets the number (default: its tickets). The owner's published edits (play/prize_text.json, made in the game's closer look: Edit words) override these.",
+ "text": {
+  "card.number": {
+   "font": "sans",
+   "size": 92,
+   "fill": "#c0141e",
+   "outline": ""
+  },
+  "card.name": {
+   "font": "sans",
+   "size": 34,
+   "fill": "#1e1a18",
+   "outline": ""
+  },
+  "card.band": {
+   "text": "TICKETS",
+   "font": "sans",
+   "size": 28,
+   "fill": "#ffffff",
+   "outline": ""
+  },
+  "pogs.title": {
+   "text": "MILK CAPS",
+   "font": "sans",
+   "size": 36,
+   "fill": "#c8141e",
+   "outline": ""
+  },
+  "pogs.sub": {
+   "text": "10 CAPS + SLAMMER",
+   "font": "sans",
+   "size": 21,
+   "fill": "#ffffff",
+   "outline": ""
+  },
+  "candy_cig.top": {
+   "text": "10 STICKS",
+   "font": "sans",
+   "size": 24,
+   "fill": "#1e3ca0",
+   "outline": ""
+  },
+  "candy_cig.mid": {
+   "text": "CANDY",
+   "font": "sans",
+   "size": 44,
+   "fill": "#ffffff",
+   "outline": ""
+  },
+  "candy_cig.bottom": {
+   "text": "STICKS",
+   "font": "sans",
+   "size": 40,
+   "fill": "#d21e28",
+   "outline": ""
+  }
+ },
+ "_art": "Where the words sit on each picture: [text id, [x, y, w, h] in pixels]. {item} is the card's item.",
+ "art": {
+  "card": {
+   "bg": "tag",
+   "size": [
+    256,
+    204
+   ],
+   "fields": [
+    [
+     "{item}.tickets",
+     [
+      10,
+      4,
+      236,
+      96
+     ]
+    ],
+    [
+     "{item}.name",
+     [
+      12,
+      98,
+      232,
+      62
+     ]
+    ],
+    [
+     "card.band",
+     [
+      8,
+      162,
+      240,
+      36
+     ]
+    ]
+   ]
+  },
+  "pog_card": {
+   "bg": "pog_card",
+   "size": [
+    256,
+    384
+   ],
+   "fields": [
+    [
+     "pogs.title",
+     [
+      6,
+      20,
+      244,
+      50
+     ]
+    ],
+    [
+     "pogs.sub",
+     [
+      6,
+      326,
+      244,
+      44
+     ]
+    ]
+   ]
+  },
+  "candy_box": {
+   "bg": "candy_box",
+   "size": [
+    192,
+    288
+   ],
+   "fields": [
+    [
+     "candy_cig.top",
+     [
+      6,
+      8,
+      180,
+      52
+     ]
+    ],
+    [
+     "candy_cig.mid",
+     [
+      6,
+      72,
+      180,
+      66
+     ]
+    ],
+    [
+     "candy_cig.bottom",
+     [
+      6,
+      142,
+      180,
+      70
+     ]
+    ]
+   ]
+  }
+ }
 }

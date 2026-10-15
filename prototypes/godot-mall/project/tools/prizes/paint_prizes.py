@@ -3,6 +3,9 @@
 
 Writes prizes/*.png (outside tex/, so a prize change never makes a wing's stand-in stale).
 All generic: no brand names or logos. Run from the project folder.
+The packaging and price-card art carries no words: scripts/prizes.gd draws them over it at load
+time from scripts/prizes.json ("text", "art") and the owner's published edits
+(play/prize_text.json), so Steven can change any of them in the game (Oct 15 2026).
 """
 import math, random
 from PIL import Image, ImageDraw, ImageFont
@@ -22,7 +25,6 @@ def pog_card():
     for y in range(384):
         d.line([(0, y), (256, y)], fill=(24 + y // 8, 40 + y // 10, 140 - y // 6))
     d.rectangle([0, 0, 256, 70], fill=(250, 210, 30))
-    d.text((128, 36), "MILK CAPS", font=font(34), fill=(200, 20, 30), anchor="mm")
     d.ellipse([110, 6, 146, 20], fill=(24, 40, 140))      # the hang hole
     cols = [(230, 60, 40), (40, 170, 70), (250, 200, 40), (140, 50, 180), (30, 140, 220)]
     for k, c in enumerate(cols):
@@ -33,7 +35,6 @@ def pog_card():
             a = i * math.pi / 3 + k
             d.line([(cx, cy), (cx + 22 * math.cos(a), cy + 22 * math.sin(a))], fill=(255, 255, 255), width=3)
     d.ellipse([170, 240, 236, 306], fill=(40, 40, 46)); d.ellipse([180, 250, 226, 296], fill=(190, 190, 200))
-    d.text((128, 350), "10 CAPS + SLAMMER", font=font(20), fill=(255, 255, 255), anchor="mm")
     save(im, "pog_card")
 
 # Candy cigarettes: a white box, red band, a little cartoon on the front
@@ -41,10 +42,7 @@ def candy_box():
     im = Image.new("RGB", (192, 288), (248, 246, 240))
     d = ImageDraw.Draw(im)
     d.rectangle([0, 70, 192, 140], fill=(210, 30, 40))
-    d.text((96, 105), "CANDY", font=font(40), fill=(255, 255, 255), anchor="mm")
-    d.text((96, 175), "STICKS", font=font(38), fill=(210, 30, 40), anchor="mm")
     d.rectangle([0, 250, 192, 288], fill=(30, 60, 160))
-    d.text((96, 30), "10 STICKS", font=font(22), fill=(30, 60, 160), anchor="mm")
     save(im, "candy_box")
 
 # A chocolate chew's wax-paper wrapper: brown with a white band, wraps round a cylinder
@@ -130,12 +128,12 @@ def vpet_screen():
     save(im, "vpet_screen")
 
 # The price-tag card behind each bin's number
+# (256 x 204: the number, the prize's name, a red band for "TICKETS"; words drawn by prizes.gd)
 def tag():
-    im = Image.new("RGB", (128, 80), (252, 252, 248))
+    im = Image.new("RGB", (256, 204), (252, 252, 248))
     d = ImageDraw.Draw(im)
-    d.rectangle([0, 0, 127, 79], outline=(30, 30, 30), width=3)
-    d.rectangle([3, 58, 124, 76], fill=(200, 24, 36))
-    d.text((64, 67), "TICKETS", font=font(15), fill=(255, 255, 255), anchor="mm")
+    d.rectangle([0, 0, 255, 203], outline=(30, 30, 30), width=5)
+    d.rectangle([5, 162, 250, 198], fill=(200, 24, 36))
     save(im, "tag")
 
 # A basketball on a SphereMesh's UV: pebbled orange, black seams (four meridians, the equator, two curves)

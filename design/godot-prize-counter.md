@@ -48,6 +48,33 @@ bins with price cards, glass prize cases, back walls of hanging plush.
 - While looking, the player is held (`player.frozen`), the HUD buttons and Jump are hidden.
 - Landscape keeps the height (vertical FOV 46°, wall 52°); portrait keeps the width.
 
+## Words on the prizes, editable by Steven (Steven, Oct 15, 13:51)
+"add what the prize is, the name of it, under the ticket amount number on the white labels. and
+make all of that font and all font on the packaging of the prizes be able to be edited directly
+by me."
+- Each price card now reads: the number, the prize's name (wraps to two lines if long), the red
+  TICKETS band. One card picture per prize.
+- No word is baked into any picture any more: the card, the milk-cap blister card and the
+  candy-stick box are word-free art (`paint_prizes.py`), and `prizes.gd` draws the words over
+  them at load time (a SubViewport per picture, shrinking a line until it fits its box).
+- Where the words come from, in order: `scripts/prizes.json` "text" (defaults) and "art" (where
+  each sits on its picture); the published edits, `play/prize_text.json` on main
+  (`{"text": {id: {text, font, size, fill, outline}}}`, only changed fields); on the owner's
+  browser, unpublished edits in localStorage "southland-prizes-draft".
+- **Editing:** on the owner's browser (the mall editor unlocked, or `?owner=1`), the closer look
+  has **Edit words** and **Publish words** buttons top left. With Edit words on, tap a prize: a
+  form shows every word it carries: its name and ticket number (that card only), its packaging
+  lines, and the styles every card shares (number, name, band). Each has the words, a font
+  (sans, sans italic, serif, script), a size, a colour and an outline. Save shows the change at
+  once on that browser; Publish writes `play/prize_text.json` to GitHub with the token the mall
+  editor already keeps (`web/shell.html` `mallPrizeText`, the same publisher as the signs), and
+  everyone sees it about a minute later. No rebuild. "Restore originals" puts a prize's words
+  back to `prizes.json`.
+- Text ids: `card.number`, `card.name`, `card.band`, `<item>.name`, `<item>.tickets`,
+  `pogs.title`, `pogs.sub`, `candy_cig.top`, `candy_cig.mid`, `candy_cig.bottom`.
+- The ticket number shown is words only for now; the redemption system will read the price from
+  `prizes.json` (or adopt the edited number then).
+
 ## Period notes (for the mall historian)
 - The Godot mall is 1995. **Virtual pets** reached the US in May 1997: an anachronism in 1995
   (kept because Steven listed them; flagged). **Alien plush** peaked 1996–97; plausible-to-early
