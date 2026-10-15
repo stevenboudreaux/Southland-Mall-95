@@ -47,8 +47,9 @@ He played five minutes without a sighting, so it now follows a route set off by 
 2. **The window.** It stands stock-still (no breath, no scan; head turns to you once you are
    near) in Merry-Go-Round's right-hand window, exactly where the form stood; that form is its
    own mesh (`dyn_rg_mannequin`, `more.gd windows(own_k, own_group)`) and is hidden from now until
-   the route ends. Within 9 m, or walking at it inside 15 m, it runs to the back of the store
-   and is gone.
+   the route ends. It stays stock-still until you are within 5 m (Demo 29, Steven Oct 15 07:47:
+   "the only time you can get close"; it had bolted on the walk out of Pocket Change), then it
+   runs to the back of the store and is gone.
 3. **Cucos** (Wing 1). It stands at the doors. Within 16 m, or walking at it inside 22 m, it runs
    in and is gone.
 4. **Woolworth.** It lurks at the back, turned to you, ducking to another spot out of your sight

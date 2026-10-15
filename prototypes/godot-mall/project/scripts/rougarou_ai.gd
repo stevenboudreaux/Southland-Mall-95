@@ -33,7 +33,8 @@
 ##   0 idle      nothing. Walk into Pocket Change (past the Whirlwind) and back out to arm it.
 ##   1 mannequin it stands stock-still in Merry-Go-Round's right-hand window, in place of the
 ##               form there (Wing 2's dyn_rg_mannequin, hidden from now until the route ends).
-##               Come close, or walk at it, and it runs to the back of the store and is gone.
+##               It stays stock-still until you are within story_mq_flee_m (5 m: the one time
+##               you get close, Steven Oct 15 07:47), then runs to the back and is gone.
 ##   2 cucos     it stands in front of Cucos (Wing 1). Come close and it runs in and is gone.
 ##   3 woolworth it lurks at the back of Woolworth, ducking from aisle to aisle out of your sight.
 ##               Get a close look (seen within story_seen_close_m) and it runs and is gone.
@@ -50,7 +51,7 @@ var cfg := {
 	"hide_m": 14.0, "gone_after_unseen_s": 2.0,
 	"mode": "story", "stalk_first_s": 30.0, "stalk_m": [27.0, 34.0], "stalk_cone_deg": 30.0,
 	"flee_m": 24.0, "flee_to_m": 28.0, "lost_m": 55.0, "reappear_s": [30.0, 120.0],
-	"story_mq_flee_m": 9.0, "story_mq_approach_m": 15.0, "story_cucos_flee_m": 16.0,
+	"story_mq_flee_m": 5.0, "story_mq_approach_m": 0.0, "story_cucos_flee_m": 16.0,
 	"story_cucos_approach_m": 22.0, "story_seen_close_m": 10.0, "story_dart_m": 22.0,
 	"story_run_mps": 7.5, "story_shuffle_s": [6.0, 11.0], "relocate_after_s": 1.0, "flee_mps": 7.5,
 }

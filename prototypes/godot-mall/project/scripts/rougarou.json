@@ -36,8 +36,8 @@
   30.0,
   120.0
  ],
- "story_mq_flee_m": 9.0,
- "story_mq_approach_m": 15.0,
+ "story_mq_flee_m": 5.0,
+ "story_mq_approach_m": 0.0,
  "story_cucos_flee_m": 16.0,
  "story_cucos_approach_m": 22.0,
  "story_seen_close_m": 10.0,

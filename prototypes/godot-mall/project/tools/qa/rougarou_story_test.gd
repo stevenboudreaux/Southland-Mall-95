@@ -96,7 +96,7 @@ func _process(dt: float) -> bool:
 				_walk_at(ai.MQ_POS, dt)
 			min_d = min(min_d, ai._dist())
 			if ai.state == "run_out" and clock < 50.0 and not wait_scene:
-				_check(ai._dist() > 5.0, "runs into the store at %.1f m" % ai._dist())
+				_check(ai._dist() > 3.5 and ai._dist() < 6.0 and min_d > 3.5, "stands until 5 m, runs at %.1f m" % ai._dist())
 				_shot("2-mannequin-runs")
 				wait_scene = true
 			if ai.stage == 2:
