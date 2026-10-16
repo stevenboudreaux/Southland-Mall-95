@@ -152,6 +152,10 @@ func _ready() -> void:
 	if OS.has_feature("web"):
 		np.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('npcs') || ''"))
 	get_parent().add_child.call_deferred(np)
+	# the words on Ch02's sweatshirt, owner-editable (scripts/npc_shirt.gd; Steven, Oct 16 2026)
+	var ns = load("res://scripts/npc_shirt.gd").new()
+	ns.name = "ShirtWords"; ns.player = self
+	get_parent().add_child.call_deferred(ns)
 	# the Stockrooms, behind Woolworth's back corner (scripts/stockrooms.gd; Steven, Oct 15 2026)
 	if wing == 1 or wing == 0:
 		var sr = load("res://scripts/stockrooms.gd").new()

@@ -295,12 +295,14 @@ function mallPublisher(path, key, what) { return {
 window.mallSigns = mallPublisher('prototypes/godot-mall/play/signs.json', 'signs', 'mall signs');
 // Pocket Change's prize words (scripts/prizes.gd): play/prize_text.json {"text": {id: {text, font, size, fill, outline}}}
 window.mallPrizeText = mallPublisher('prototypes/godot-mall/play/prize_text.json', 'text', 'prize words');
+// The words on Ch02's sweatshirt (scripts/npc_shirt.gd): play/shirt_text.json {"text": {"ch02": {text, font, size, fill, outline}}}
+window.mallShirtText = mallPublisher('prototypes/godot-mall/play/shirt_text.json', 'text', 'shirt words');
 // The owner's form for a prize's words: open(specJson) shows it; result becomes
 // '{"save": {id: fields}}', '{"reset": [ids]}' or '{"cancel": 1}' when it closes.
 window.mallPrizeEdit = {
 	result: '',
 	open: function (specJson) {
-		var S = this, spec = JSON.parse(specJson), fonts = { sans: 'Sans', sans_italic: 'Sans italic', serif: 'Serif', script: 'Script' };
+		var S = this, spec = JSON.parse(specJson), fonts = { sans: 'Sans', sans_italic: 'Sans italic', serif: 'Serif', script: 'Script', forza: 'Forza-style' };
 		S.result = '';
 		var old = document.getElementById('pz-edit'); if (old) old.remove();
 		var el = function (tag, css, txt) { var e = document.createElement(tag); if (css) e.style.cssText = css; if (txt != null) e.textContent = txt; return e; };
