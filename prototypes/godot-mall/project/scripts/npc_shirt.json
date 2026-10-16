@@ -4,7 +4,7 @@
 	"label": "Front of the sweatshirt",
 	"scn": "res://npc/skins/Ch02.scn",
 	"atlas": "res://npc/skins/Ch02_0.png",
-	"rect": [30, 585, 180, 85],
+	"rect": [50, 585, 140, 85],
 	"button_top": 128,
 	"text": {"text": "HOUMA", "font": "forza", "size": 60, "fill": "#FDD023", "outline": ""}
 }
