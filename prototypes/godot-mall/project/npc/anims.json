@@ -1,0 +1,1495 @@
+{
+	"clips": {
+		"acknowledge": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 1.933,
+			"loop": false,
+			"src": "gest_acknowledging"
+		},
+		"angry": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 2.2,
+			"loop": false,
+			"src": "gest_angry_gesture"
+		},
+		"argue": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.004,
+				0.003
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 20.8,
+			"loop": true,
+			"src": "standing_arguing"
+		},
+		"argue_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.004,
+				0.003
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 20.8,
+			"loop": true,
+			"src": "standing_arguing_2"
+		},
+		"argue_3": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "loop",
+			"len": 20.8,
+			"loop": true,
+			"src": "standing_arguing_3"
+		},
+		"bored": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				0.01
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "loop",
+			"len": 10.667,
+			"loop": true,
+			"src": "bored"
+		},
+		"briefcase_idle": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				-0.016
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "loop",
+			"len": 14.333,
+			"loop": true,
+			"src": "standing_w_briefcase_idle"
+		},
+		"buttons": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				-0.01
+			],
+			"hips_y": [
+				1.0,
+				1.0
+			],
+			"kind": "loop",
+			"len": 3.233,
+			"loop": true,
+			"src": "button_pushing"
+		},
+		"cheer": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.03,
+				-0.266
+			],
+			"hips_y": [
+				0.95,
+				0.95
+			],
+			"kind": "once",
+			"len": 2.9,
+			"loop": false,
+			"src": "cheering"
+		},
+		"cheer_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.026,
+				0.009
+			],
+			"hips_y": [
+				0.91,
+				0.91
+			],
+			"kind": "once",
+			"len": 1.9,
+			"loop": false,
+			"src": "cheering_2"
+		},
+		"clap": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				0.003
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "once",
+			"len": 1.167,
+			"loop": false,
+			"src": "clapping"
+		},
+		"cocky": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 2.9,
+			"loop": false,
+			"src": "gest_being_cocky"
+		},
+		"dismiss": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 3.267,
+			"loop": false,
+			"src": "gest_dismissing_gesture"
+		},
+		"drive": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.01,
+				0.004
+			],
+			"hips_y": [
+				0.62,
+				0.62
+			],
+			"kind": "loop",
+			"len": 5.0,
+			"loop": true,
+			"src": "driving"
+		},
+		"drunk_idle": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				0.001
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "loop",
+			"len": 7.4,
+			"loop": true,
+			"src": "drunk_idle"
+		},
+		"drunk_idle_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				0.001
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "loop",
+			"len": 3.967,
+			"loop": true,
+			"src": "drunk_idle_variation"
+		},
+		"drunk_idle_3": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				0.001
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "loop",
+			"len": 5.4,
+			"loop": true,
+			"src": "drunk_idle_variation_2"
+		},
+		"drunk_turn": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				0.001
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "once",
+			"len": 1.567,
+			"loop": false,
+			"src": "drunk_turn"
+		},
+		"excited": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.003,
+				0.003
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "once",
+			"len": 6.567,
+			"loop": false,
+			"src": "excited"
+		},
+		"happy_hands": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 2.933,
+			"loop": false,
+			"src": "gest_happy_hand_gesture"
+		},
+		"head_no": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 1.8,
+			"loop": false,
+			"src": "gest_shaking_head_no"
+		},
+		"head_shake_annoyed": {
+			"drift_m": 0.01,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 2.567,
+			"loop": false,
+			"src": "gest_annoyed_head_shake"
+		},
+		"head_shake_thoughtful": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 3.067,
+			"loop": false,
+			"src": "gest_thoughtful_head_shake"
+		},
+		"head_yes": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 2.6,
+			"loop": false,
+			"src": "gest_head_nod_yes"
+		},
+		"honk": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				-0.037
+			],
+			"hips_y": [
+				0.4,
+				0.4
+			],
+			"kind": "once",
+			"len": 3.333,
+			"loop": false,
+			"src": "honking_horn"
+		},
+		"idle": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				0.002
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "loop",
+			"len": 10.0,
+			"loop": true,
+			"src": "idle"
+		},
+		"idle_f": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.003,
+				0.003
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 8.333,
+			"loop": true,
+			"src": "floco_idle"
+		},
+		"idle_m": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "loop",
+			"len": 8.333,
+			"loop": true,
+			"src": "mloco_idle"
+		},
+		"look": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "loop",
+			"len": 13.333,
+			"loop": true,
+			"src": "look_around"
+		},
+		"look_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.065,
+				0.014
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 6.333,
+			"loop": true,
+			"src": "look_around_2"
+		},
+		"look_away": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 2.333,
+			"loop": false,
+			"src": "gest_look_away_gesture"
+		},
+		"look_down": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "loop",
+			"len": 4.767,
+			"loop": true,
+			"src": "looking_down"
+		},
+		"looking_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				-0.002
+			],
+			"hips_y": [
+				0.91,
+				0.91
+			],
+			"kind": "loop",
+			"len": 6.467,
+			"loop": true,
+			"src": "looking_around_2"
+		},
+		"looking_3": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				0.005
+			],
+			"hips_y": [
+				0.94,
+				0.94
+			],
+			"kind": "loop",
+			"len": 6.333,
+			"loop": true,
+			"src": "looking_around_3"
+		},
+		"nervous": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				0.003
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 6.267,
+			"loop": true,
+			"src": "nervously_look_around"
+		},
+		"nod_hard": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 1.633,
+			"loop": false,
+			"src": "gest_hard_head_nod"
+		},
+		"nod_long": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 1.733,
+			"loop": false,
+			"src": "gest_lengthy_head_nod"
+		},
+		"nod_sarcastic": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 2.333,
+			"loop": false,
+			"src": "gest_sarcastic_head_nod"
+		},
+		"phone": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 23.567,
+			"loop": false,
+			"src": "texting_while_standing"
+		},
+		"play": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.029,
+				0.027
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "loop",
+			"len": 15.467,
+			"loop": true,
+			"src": "texting_while_standing"
+		},
+		"point": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				0.001
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 2.767,
+			"loop": false,
+			"src": "pointing"
+		},
+		"point_fwd": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.003,
+				-0.001
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 4.7,
+			"loop": false,
+			"src": "pointing_forward"
+		},
+		"rally": {
+			"drift_m": 1.14,
+			"hips0": [
+				-0.002,
+				-0.001
+			],
+			"hips_y": [
+				0.95,
+				0.95
+			],
+			"kind": "once",
+			"len": 6.2,
+			"loop": false,
+			"src": "rallying"
+		},
+		"secret": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				0.01
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "once",
+			"len": 10.9,
+			"loop": false,
+			"src": "telling_a_secret"
+		},
+		"sigh": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "once",
+			"len": 3.0,
+			"loop": false,
+			"src": "gest_relieved_sigh"
+		},
+		"sit": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				0.013
+			],
+			"hips_y": [
+				0.55,
+				0.55
+			],
+			"kind": "loop",
+			"len": 7.0,
+			"loop": true,
+			"src": "sitting"
+		},
+		"sit_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				-0.002
+			],
+			"hips_y": [
+				0.86,
+				0.86
+			],
+			"kind": "loop",
+			"len": 2.1,
+			"loop": true,
+			"src": "sitting_2"
+		},
+		"sit_idle_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				0.016
+			],
+			"hips_y": [
+				0.6,
+				0.6
+			],
+			"kind": "loop",
+			"len": 2.967,
+			"loop": true,
+			"src": "sitting_idle_2"
+		},
+		"sit_idle_3": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				0.013
+			],
+			"hips_y": [
+				0.55,
+				0.55
+			],
+			"kind": "loop",
+			"len": 4.3,
+			"loop": true,
+			"src": "sitting_idle_3"
+		},
+		"sit_idle_4": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				0.016
+			],
+			"hips_y": [
+				0.6,
+				0.6
+			],
+			"kind": "loop",
+			"len": 6.4,
+			"loop": true,
+			"src": "sitting_idle_4"
+		},
+		"sit_rub_arm": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				-0.045
+			],
+			"hips_y": [
+				0.68,
+				0.68
+			],
+			"kind": "loop",
+			"len": 7.967,
+			"loop": true,
+			"src": "sitting_rubbing_arm"
+		},
+		"sit_talk": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.003,
+				0.009
+			],
+			"hips_y": [
+				0.61,
+				0.61
+			],
+			"kind": "loop",
+			"len": 44.967,
+			"loop": true,
+			"src": "sitting_talking"
+		},
+		"sit_talk_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.003,
+				0.009
+			],
+			"hips_y": [
+				0.61,
+				0.61
+			],
+			"kind": "loop",
+			"len": 44.967,
+			"loop": true,
+			"src": "sitting_talking_2"
+		},
+		"sit_talk_3": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				0.004
+			],
+			"hips_y": [
+				0.61,
+				0.61
+			],
+			"kind": "loop",
+			"len": 5.0,
+			"loop": true,
+			"src": "talking_6"
+		},
+		"sit_to_stand": {
+			"drift_m": 0.47,
+			"hips0": [
+				-0.002,
+				0.013
+			],
+			"hips_y": [
+				0.55,
+				0.99
+			],
+			"kind": "move",
+			"len": 2.267,
+			"loop": false,
+			"src": "sit_to_stand"
+		},
+		"stand_to_sit": {
+			"drift_m": 0.48,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.55
+			],
+			"kind": "move",
+			"len": 2.233,
+			"loop": false,
+			"src": "stand_to_sit"
+		},
+		"steer_right": {
+			"drift_m": 0.17,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "once",
+			"len": 1.3,
+			"loop": false,
+			"src": "holding_turn_right"
+		},
+		"talk": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.044,
+				-0.009
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 10.267,
+			"loop": true,
+			"src": "talking"
+		},
+		"talk_2": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.012,
+				0.016
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 5.167,
+			"loop": true,
+			"src": "talking_2"
+		},
+		"talk_3": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				0.007
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "loop",
+			"len": 3.767,
+			"loop": true,
+			"src": "talking_3"
+		},
+		"talk_4": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.003,
+				0.005
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 3.933,
+			"loop": true,
+			"src": "talking_4"
+		},
+		"talk_5": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.036,
+				-0.005
+			],
+			"hips_y": [
+				0.95,
+				0.95
+			],
+			"kind": "loop",
+			"len": 5.933,
+			"loop": true,
+			"src": "talking_5"
+		},
+		"thankful": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.003,
+				0.003
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "once",
+			"len": 3.0,
+			"loop": false,
+			"src": "thankful"
+		},
+		"thinking": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.003,
+				0.003
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "loop",
+			"len": 4.233,
+			"loop": true,
+			"src": "thinking"
+		},
+		"walk_bag": {
+			"dir": [
+				1.0,
+				-0.03
+			],
+			"drift_m": 0.0,
+			"hips0": [
+				-0.004,
+				0.011
+			],
+			"hips_y": [
+				0.95,
+				0.95
+			],
+			"in_place": true,
+			"kind": "walk",
+			"len": 1.267,
+			"loop": true,
+			"mps": 1.026,
+			"src": "walking_with_shopping_bag"
+		},
+		"walk_drunk": {
+			"dir": [
+				0.0,
+				1.0
+			],
+			"drift_m": 2.52,
+			"hips0": [
+				0.0,
+				0.005
+			],
+			"hips_y": [
+				1.0,
+				1.0
+			],
+			"kind": "walk",
+			"len": 3.0,
+			"loop": true,
+			"mps": 0.839,
+			"src": "drunk_walk"
+		},
+		"walk_f": {
+			"dir": [
+				0.0,
+				1.0
+			],
+			"drift_m": 1.57,
+			"hips0": [
+				0.002,
+				0.003
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"kind": "walk",
+			"len": 0.967,
+			"loop": true,
+			"mps": 1.623,
+			"src": "floco_walking"
+		},
+		"walk_f2": {
+			"dir": [
+				0.39,
+				0.92
+			],
+			"drift_m": 0.0,
+			"hips0": [
+				-0.037,
+				0.004
+			],
+			"hips_y": [
+				0.98,
+				0.98
+			],
+			"in_place": true,
+			"kind": "walk",
+			"len": 1.167,
+			"loop": true,
+			"mps": 1.242,
+			"src": "female_walk"
+		},
+		"walk_m": {
+			"dir": [
+				0.0,
+				1.0
+			],
+			"drift_m": 1.67,
+			"hips0": [
+				0.0,
+				0.004
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "walk",
+			"len": 1.033,
+			"loop": true,
+			"mps": 1.616,
+			"src": "mloco_walking"
+		},
+		"walk_m2": {
+			"dir": [
+				0.0,
+				0.0
+			],
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.003
+			],
+			"hips_y": [
+				0.96,
+				0.96
+			],
+			"in_place": true,
+			"kind": "walk",
+			"len": 1.0,
+			"loop": true,
+			"mps": 1.648,
+			"src": "walk"
+		},
+		"weight_shift": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.002,
+				0.002
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "loop",
+			"len": 9.433,
+			"loop": true,
+			"src": "gest_weight_shift"
+		}
+	},
+	"hips": 0.993095934391022,
+	"rest": {
+		"mixamorig_Head": [
+			0.0,
+			0.0,
+			0.0,
+			1.0
+		],
+		"mixamorig_HeadTop_End": [
+			0.0,
+			0.0,
+			0.0,
+			1.0
+		],
+		"mixamorig_Hips": [
+			0.0,
+			0.0,
+			0.0,
+			1.0
+		],
+		"mixamorig_LeftArm": [
+			0.47334411740303,
+			0.47334411740303,
+			-0.525305092334747,
+			0.525304973125458
+		],
+		"mixamorig_LeftFoot": [
+			0.0280465222895145,
+			0.480232149362564,
+			0.875025391578674,
+			-0.0540466271340847
+		],
+		"mixamorig_LeftForeArm": [
+			0.472016274929047,
+			0.472016274929047,
+			-0.526498436927795,
+			0.526498436927795
+		],
+		"mixamorig_LeftHand": [
+			-0.477358430624008,
+			-0.510996997356415,
+			0.538323581218719,
+			-0.470339000225067
+		],
+		"mixamorig_LeftHandIndex1": [
+			0.495580077171326,
+			0.493127048015594,
+			-0.504326105117798,
+			0.50683468580246
+		],
+		"mixamorig_LeftHandIndex2": [
+			0.493198871612549,
+			0.495519697666168,
+			-0.506761848926544,
+			0.504388272762299
+		],
+		"mixamorig_LeftHandIndex3": [
+			0.494252443313599,
+			0.494563221931458,
+			-0.505689322948456,
+			0.505371391773224
+		],
+		"mixamorig_LeftHandIndex4": [
+			0.494252443313599,
+			0.494563221931458,
+			-0.505689322948456,
+			0.505371391773224
+		],
+		"mixamorig_LeftHandMiddle1": [
+			0.494687885046005,
+			0.493614017963409,
+			-0.505231261253357,
+			0.506330370903015
+		],
+		"mixamorig_LeftHandMiddle2": [
+			0.493289411067963,
+			0.494970411062241,
+			-0.506660878658295,
+			0.504940211772919
+		],
+		"mixamorig_LeftHandMiddle3": [
+			0.494458377361298,
+			0.493863672018051,
+			-0.505467176437378,
+			0.506075739860535
+		],
+		"mixamorig_LeftHandMiddle4": [
+			0.494458377361298,
+			0.493863672018051,
+			-0.505467176437378,
+			0.506075739860535
+		],
+		"mixamorig_LeftHandPinky1": [
+			0.493516176939011,
+			0.492613315582275,
+			-0.506376028060913,
+			0.507304012775421
+		],
+		"mixamorig_LeftHandPinky2": [
+			0.492036104202271,
+			0.493999391794205,
+			-0.507893443107605,
+			0.505874812602997
+		],
+		"mixamorig_LeftHandPinky3": [
+			0.493538081645966,
+			0.492592185735703,
+			-0.506353378295898,
+			0.507325649261475
+		],
+		"mixamorig_LeftHandPinky4": [
+			0.493538081645966,
+			0.492592185735703,
+			-0.506353378295898,
+			0.507325649261475
+		],
+		"mixamorig_LeftHandRing1": [
+			0.491814285516739,
+			0.491993933916092,
+			-0.508059740066528,
+			0.507874071598053
+		],
+		"mixamorig_LeftHandRing2": [
+			0.491385161876678,
+			0.492386251688004,
+			-0.50850111246109,
+			0.507467210292816
+		],
+		"mixamorig_LeftHandRing3": [
+			0.492566585540771,
+			0.491168856620789,
+			-0.507279455661774,
+			0.508722901344299
+		],
+		"mixamorig_LeftHandRing4": [
+			0.492566585540771,
+			0.491168856620789,
+			-0.507279455661774,
+			0.508722901344299
+		],
+		"mixamorig_LeftHandThumb1": [
+			0.699614465236664,
+			0.318559885025024,
+			-0.483974665403366,
+			0.418124139308929
+		],
+		"mixamorig_LeftHandThumb2": [
+			0.729109346866608,
+			0.238668859004974,
+			-0.437150925397873,
+			0.469399392604828
+		],
+		"mixamorig_LeftHandThumb3": [
+			0.745746314525604,
+			0.166753098368645,
+			-0.394623279571533,
+			0.510223805904388
+		],
+		"mixamorig_LeftHandThumb4": [
+			0.745746314525604,
+			0.166753098368645,
+			-0.394623279571533,
+			0.510223805904388
+		],
+		"mixamorig_LeftLeg": [
+			-0.00218052044510841,
+			-0.0394767075777054,
+			0.999218106269836,
+			-0.0000268319436145248
+		],
+		"mixamorig_LeftShoulder": [
+			-0.534425437450409,
+			-0.396093249320984,
+			0.601036608219147,
+			-0.443006247282028
+		],
+		"mixamorig_LeftToeBase": [
+			0.0928985625505447,
+			0.718090832233429,
+			0.688388824462891,
+			-0.0428510792553425
+		],
+		"mixamorig_LeftToe_End": [
+			0.0928985625505447,
+			0.718090832233429,
+			0.688388824462891,
+			-0.0428510792553425
+		],
+		"mixamorig_LeftUpLeg": [
+			-0.00217318721115589,
+			-0.0364189334213734,
+			0.999334216117859,
+			0.000183037016540766
+		],
+		"mixamorig_Neck": [
+			0.0,
+			0.0,
+			0.0,
+			1.0
+		],
+		"mixamorig_RightArm": [
+			0.474210679531097,
+			-0.474210649728775,
+			0.52452290058136,
+			0.52452290058136
+		],
+		"mixamorig_RightFoot": [
+			-0.0223382599651814,
+			0.49618998169899,
+			0.866290926933289,
+			0.0532592050731182
+		],
+		"mixamorig_RightForeArm": [
+			0.472778856754303,
+			-0.472778826951981,
+			0.525813817977905,
+			0.525813817977905
+		],
+		"mixamorig_RightHand": [
+			0.475432842969894,
+			-0.514299869537354,
+			0.535889029502869,
+			0.471468150615692
+		],
+		"mixamorig_RightHandIndex1": [
+			0.497119545936584,
+			-0.493628680706024,
+			0.502799451351166,
+			0.506355166435242
+		],
+		"mixamorig_RightHandIndex2": [
+			0.494344651699066,
+			-0.496520161628723,
+			0.505631625652313,
+			0.503416121006012
+		],
+		"mixamorig_RightHandIndex3": [
+			0.494518756866455,
+			-0.496362835168839,
+			0.505455315113068,
+			0.503577351570129
+		],
+		"mixamorig_RightHandIndex4": [
+			0.494518756866455,
+			-0.496362835168839,
+			0.505455315113068,
+			0.503577351570129
+		],
+		"mixamorig_RightHandMiddle1": [
+			0.496399164199829,
+			-0.494452208280563,
+			0.503539562225342,
+			0.50552225112915
+		],
+		"mixamorig_RightHandMiddle2": [
+			0.493895769119263,
+			-0.496860384941101,
+			0.50608503818512,
+			0.503065288066864
+		],
+		"mixamorig_RightHandMiddle3": [
+			0.49604195356369,
+			-0.494850307703018,
+			0.503905355930328,
+			0.505118787288666
+		],
+		"mixamorig_RightHandMiddle4": [
+			0.49604195356369,
+			-0.494850307703018,
+			0.503905355930328,
+			0.505118787288666
+		],
+		"mixamorig_RightHandPinky1": [
+			0.495311290025711,
+			-0.493024677038193,
+			0.504592001438141,
+			0.506932258605957
+		],
+		"mixamorig_RightHandPinky2": [
+			0.492679357528687,
+			-0.495586454868317,
+			0.507282614707947,
+			0.50430691242218
+		],
+		"mixamorig_RightHandPinky3": [
+			0.494314849376678,
+			-0.494133144617081,
+			0.505617022514343,
+			0.505802989006042
+		],
+		"mixamorig_RightHandPinky4": [
+			0.494314849376678,
+			-0.494133144617081,
+			0.505617022514343,
+			0.505802989006042
+		],
+		"mixamorig_RightHandRing1": [
+			0.493855863809586,
+			-0.493491441011429,
+			0.506060540676117,
+			0.506434082984924
+		],
+		"mixamorig_RightHandRing2": [
+			0.492292881011963,
+			-0.494908720254898,
+			0.507656455039978,
+			0.504973232746124
+		],
+		"mixamorig_RightHandRing3": [
+			0.494941622018814,
+			-0.492251396179199,
+			0.504939079284668,
+			0.507698655128479
+		],
+		"mixamorig_RightHandRing4": [
+			0.494941622018814,
+			-0.492251396179199,
+			0.504939079284668,
+			0.507698655128479
+		],
+		"mixamorig_RightHandThumb1": [
+			0.704434812068939,
+			-0.316252797842026,
+			0.476259410381317,
+			0.420633763074875
+		],
+		"mixamorig_RightHandThumb2": [
+			0.729637384414673,
+			-0.245999813079834,
+			0.436837673187256,
+			0.465065836906433
+		],
+		"mixamorig_RightHandThumb3": [
+			0.74748307466507,
+			-0.173233076930046,
+			0.393714964389801,
+			0.506209433078766
+		],
+		"mixamorig_RightHandThumb4": [
+			0.74748307466507,
+			-0.173233076930046,
+			0.393714964389801,
+			0.506209433078766
+		],
+		"mixamorig_RightLeg": [
+			0.00201708893291652,
+			-0.0565490536391735,
+			0.998397767543793,
+			-0.00000122329129226273
+		],
+		"mixamorig_RightShoulder": [
+			0.536067247390747,
+			-0.394869983196259,
+			0.599573075771332,
+			0.44409653544426
+		],
+		"mixamorig_RightToeBase": [
+			-0.103291012346745,
+			0.718700170516968,
+			0.68678230047226,
+			0.0336317233741283
+		],
+		"mixamorig_RightToe_End": [
+			-0.103291012346745,
+			0.718700170516968,
+			0.68678230047226,
+			0.0336317233741283
+		],
+		"mixamorig_RightUpLeg": [
+			0.00201232661493123,
+			-0.033713698387146,
+			0.99942946434021,
+			-0.000172048341482878
+		],
+		"mixamorig_Spine": [
+			-0.054721012711525,
+			0.0,
+			0.0,
+			0.998501658439636
+		],
+		"mixamorig_Spine1": [
+			-0.054721012711525,
+			0.0,
+			0.0,
+			0.998501658439636
+		],
+		"mixamorig_Spine2": [
+			-0.054721012711525,
+			0.0,
+			0.0,
+			0.998501658439636
+		]
+	}
+}

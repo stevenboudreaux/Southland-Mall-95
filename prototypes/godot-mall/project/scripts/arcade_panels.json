@@ -1,0 +1,132 @@
+{
+	"_about": "Pocket Change upright cabinets (tools/stores/pocket_change/video.gd STYLES): where a player's wrists go (L, R) and the screen's centre, in the machine frame (x = player's right, y up, z into the machine, 0 = panel front). Written by hand from STYLES on Oct 16 2026 for scripts/npcs.gd; wrists sit 7 cm behind and 5 cm above each control so the fingers land on it.",
+	"styles": {
+		"0": {
+			"screen": [
+				0.0,
+				1.255,
+				0.365
+			],
+			"L": [
+				-0.255,
+				1.02,
+				0.064
+			],
+			"R": [
+				-0.143,
+				1.022,
+				0.078
+			]
+		},
+		"1": {
+			"screen": [
+				0.0,
+				1.265,
+				0.42
+			],
+			"L": [
+				-0.195,
+				1.022,
+				0.078
+			],
+			"R": [
+				-0.09,
+				1.025,
+				0.095
+			]
+		},
+		"2": {
+			"screen": [
+				0.0,
+				1.265,
+				0.37
+			],
+			"skip": true
+		},
+		"3": {
+			"screen": [
+				0.0,
+				1.25,
+				0.325
+			],
+			"L": [
+				-0.205,
+				1.011,
+				0.058
+			],
+			"R": [
+				-0.108,
+				1.013,
+				0.073
+			]
+		},
+		"4": {
+			"screen": [
+				0.0,
+				1.235,
+				0.325
+			],
+			"L": [
+				-0.225,
+				1.005,
+				0.059
+			],
+			"R": [
+				-0.108,
+				1.007,
+				0.072
+			]
+		},
+		"5": {
+			"screen": [
+				0.0,
+				1.235,
+				0.335
+			],
+			"L": [
+				-0.13,
+				1.003,
+				0.078
+			],
+			"R": [
+				0.0,
+				1.003,
+				0.078
+			]
+		},
+		"6": {
+			"screen": [
+				0.0,
+				1.26,
+				0.395
+			],
+			"L": [
+				-0.13,
+				1.08,
+				0.06
+			],
+			"R": [
+				0.13,
+				1.08,
+				0.06
+			]
+		},
+		"7": {
+			"screen": [
+				0.0,
+				1.19,
+				0.34
+			],
+			"L": [
+				-0.15,
+				0.995,
+				0.034
+			],
+			"R": [
+				0.0,
+				0.995,
+				0.034
+			]
+		}
+	}
+}

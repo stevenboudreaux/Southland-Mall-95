@@ -1,51 +1,50 @@
 ## The shoppers: the mall's crowd (Steven, Oct 15 2026: "an engine for NPCs where they walk through
-## the mall on the sides, not in the middle of the walkways, and go into stores").
+## the mall on the sides, not in the middle of the walkways, and go into stores"; Oct 16: "use as
+## many of these animations as possible to make truly unique interactions of NPCs").
 ##
-## One node under the wing, made by player.gd, that owns every shopper (a small Shopper record plus
-## a NpcBody). There are no physics bodies: shoppers walk the same 2 m walk grid as the player and
+## One node under the wing, made by player.gd, that owns every NPC (a small Shopper record plus
+## a NpcBody). There are no physics bodies: NPCs walk the same 2 m walk grid as the player and
 ## the Rougarou, split into 1 m cells with the wing's columns, benches and planters closed off.
 ##
 ## Lanes. A distance-to-wall field over the cells gives every cell a path cost: cheapest 1.5–4 m
 ## from a wall, dearer toward the middle of a hall, dear right against a wall. AStarGrid2D (C++)
 ## finds routes with those costs, so people keep to the sides on their own, and a keep-right
 ## nudge while following the route makes the two directions pass each other like real mall
-## traffic. Courts are wide, so their middles cost most and people round them along the edges.
+## traffic.
 ##
-## Goals (scripts/npcs.json weights): a store with an open interior (walk in through its door,
-## stand at two or three spots inside looking around, walk out), a closed store's window (stand
-## facing it a few seconds), or a far point of the hall. Then the next goal. The shape follows the
-## Rembot Games tutorial Steven sent: a tiny state machine (walk / dwell) with a one-shot timer, the
-## animation chosen on state entry, and a `_decide()` hook that picks the next goal; its navmesh
-## agent is replaced by the grid, and its stats hook is where shopper personality can go later.
-##
-## Spawning happens out of the player's sight (grid line of sight, like the Rougarou), the count
-## follows the clock in scripts/lighting.json (thin at 7 am and 9 pm, full at noon–7 pm), and a
-## shopper far away and unseen for a while is quietly re-placed elsewhere. NPCs never block the
-## player; they step aside and slow for the player and for each other.
+## Who is who (scripts/npcs.json): one of each Mixamo character per wing ("unique"), each with a
+## sex-matched walk and idle. Shopper types: browser (windows), shopper (stores), heavy shopper
+## (long store visits, shopping-bag walk), confused (looks around nervously, shakes their head),
+## each with their own browsing loops and gestures. Special roles: the drunk (drunk walk and
+## sways, hall only), pairs who meet to talk (on a bench: stand-to-sit, sitting and talking,
+## sit-to-stand; or standing: talking, arguing, nodding), and the Pocket Change players (the
+## "play" loop from Texting While Standing, hands on the stick and buttons, eyes on the screen,
+## a cheer or a groan now and then). Goals: a store with an open interior, a closed store's
+## window, a far hall point, then the next. Spawning happens out of the player's sight; NPCs
+## never block the player; they step aside and slow for the player and for each other.
 ## URL: ?npcs=0 turns them off, ?npcs=40 sets the count (tests, screenshots).
 extends Node
 
 const CFG := "res://scripts/npcs.json"
 const LAYOUT := "res://layout_mall.json"
+const PANELS := "res://scripts/arcade_panels.json"
 var cfg := {
-	"count": 24, "hours": {"6": 0.0, "8": 0.2, "10": 0.6, "12": 1.0, "17": 1.0, "19": 0.7, "20": 0.4, "21": 0.15, "22": 0.0},
+	"count": 17, "hours": {"6": 0.0, "8": 0.2, "10": 0.6, "12": 1.0, "17": 1.0, "19": 0.7, "20": 0.4, "21": 0.15, "22": 0.0},
 	"speed_mps": [1.0, 1.45], "lane_m": [1.5, 4.0], "centre_penalty": 0.5, "wall_hug_penalty": 1.6,
 	"keep_right_m": 0.5, "separation_m": 1.3, "player_m": 1.8, "goals": {"store": 0.5, "window": 0.25, "hall": 0.25},
 	"shop_s": [20.0, 60.0], "window_s": [5.0, 15.0], "pause_s": [1.0, 4.0], "store_max_m": 70.0,
 	"spawn_min_m": 22.0, "see_m": 70.0, "see_cone_deg": 70.0, "recycle_unseen_s": 8.0, "recycle_m": 55.0,
-	"lod_anim_m": 45.0, "groups": {"civ": 1.0, "police": 0.0, "fire": 0.0, "doctor": 0.0, "hazmat": 0.0},
-	"exclude": [], "retire_after_goals": [4, 9],
-	"self_light_day": 0.18, "self_light_night": 0.3, "mannequin_skins": ["Ch36"], "mannequin_pose": ["idle", 0.4],
-	"types": {
-		"browser": {"w": 0.4, "speed_mps": [1.1, 1.5], "goals": {"store": 0.15, "window": 0.45, "hall": 0.4}, "shop_s": [8.0, 20.0]},
-		"shopper": {"w": 0.4, "speed_mps": [0.95, 1.35], "goals": {"store": 0.5, "window": 0.25, "hall": 0.25}, "shop_s": [20.0, 50.0]},
-		"heavy": {"w": 0.2, "speed_mps": [0.85, 1.2], "goals": {"store": 0.75, "window": 0.15, "hall": 0.1}, "shop_s": [35.0, 80.0]}},
-	"arcade_fill": 0.5, "arcade_mods": ["video", "driver", "crane"], "arcade_hands_m": [0.42, 0.97, 0.16], "arcade_yield_m": 0.9,
-	"unique": false, "arcade_max": 999,
+	"lod_anim_m": 45.0, "groups": {"mixamo": 1.0}, "exclude": [], "retire_after_goals": [4, 9],
+	"self_light_day": 0.0, "self_light_night": 0.3, "mannequins": false, "mannequin_skins": ["Ch36"], "mannequin_pose": ["idle", 0.4],
+	"unique": true, "skin_sex": {}, "walks": {"m": ["walk_m"], "f": ["walk_f"]}, "idles": {"m": ["idle"], "f": ["idle"]},
+	"hall_pause": {"phone": 0.2}, "types": {},
+	"drunk": {}, "pairs": [], "pair_talk_s": [50.0, 120.0], "pair_apart_s": [60.0, 150.0], "pair_gestures": [],
+	"arcade_ids": [], "arcade_fill": 0.5, "arcade_mods": ["video"], "arcade_max": 5, "arcade_back_m": 0.22,
+	"arcade_yield_m": 0.9, "arcade_bases": ["play"], "arcade_react_s": [10.0, 28.0], "arcade_reacts": ["cheer"],
 }
-var in_use := {}              # unique mode: skin id -> true while a shopper or player wears it
-var players := []             # arcade: {body, pos, face, left, right, t}
-var mannequins := []          # frozen bodies in the windows (gen/w*/mannequins.json)
+var players := []             # arcade: {body, pos, face, x, L, R, screen, t, react, aside}
+var mannequins := []          # frozen bodies in the windows (off since Oct 16 2026)
+var pairs := []               # {kind, ids, m: [Shopper, Shopper], state, timer, spots}
 var light_mode := ""
 var player: Node3D
 var force := ""              # ?npcs=
@@ -59,10 +58,14 @@ var oc := Vector2.ZERO        # cell offset of world origin
 var open := PackedByteArray()
 var wdist := PackedInt32Array()
 var grid: AStarGrid2D
-var skins := []
+var skins := []               # the crowd pool
+var all_skins := {}           # id -> manifest entry
 var weights := []             # cumulative
+var in_use := {}              # unique mode: skin id -> true while someone wears it
+var reserved := {}            # ids kept for the drunk, the pairs and the arcade
 var stores := []              # {door, n, spots, name}
 var windows := []             # {door, n, spot, name}
+var benches := []             # {pos, face, shown}
 var hall_cells := []          # open cells 2+ m from walls (Vector2i)
 var shoppers := []
 var rt = null
@@ -85,8 +88,13 @@ class Shopper:
 	var stuck := 0.0
 	var goals := 0
 	var retire := 6
-	var dwell_clip := "idle"
-	var type := {}          # one of cfg.types
+	var type := {}          # one of cfg.types (or the drunk's)
+	var type_name := ""
+	var sex := "m"
+	var role := ""          # "", "drunk", "pair"
+	var pair = null         # the pair Dictionary
+	var slot := 0           # 0 / 1 in the pair
+	var gest_t := 5.0       # seconds to the next gesture while dwelling
 
 func _ready() -> void:
 	rng.randomize()
@@ -104,12 +112,16 @@ func _ready() -> void:
 	map_scale = player.map_scale
 	map_origin = player.map_origin
 	_build_grid()
-	_load_skins()
 	_load_places()
+	_load_benches()
 	rt = get_tree().current_scene.get_node_or_null("Runtime")
+	var machines := _arcade_machines()
+	_load_skins(not machines.is_empty())
 	_place_mannequins()
-	_place_players()
-	print("npcs: grid %dx%d, %d open cells, %d stores, %d windows, %d skins" % [W, H, _count_open(), stores.size(), windows.size(), skins.size()])
+	_place_players(machines)
+	_spawn_drunk()
+	_spawn_pairs()
+	print("npcs: grid %dx%d, %d open cells, %d stores, %d windows, %d benches, %d crowd skins, %d pairs" % [W, H, _count_open(), stores.size(), windows.size(), benches.size(), skins.size(), pairs.size()])
 	set_process(true)
 
 # ------------------------------------------------------------------ the grid
@@ -200,11 +212,21 @@ func _los(a: Vector3, b: Vector3) -> bool:
 	return true
 
 # ------------------------------------------------------------------ skins and places
-func _load_skins() -> void:
+## The crowd pool: manifest skins whose group has weight, minus exclusions and the reserved roles
+## (the drunk, the pairs, and the arcade players when this wing has Pocket Change).
+func _load_skins(arcade_here: bool) -> void:
 	var m := NpcBody.manifest()
+	if bool(cfg.get("unique", false)):
+		var d: Dictionary = cfg.get("drunk", {})
+		if d.has("id"): reserved[str(d.id)] = true
+		for p in cfg.get("pairs", []):
+			for i in p.ids: reserved[str(i)] = true
+		if arcade_here:
+			for i in cfg.get("arcade_ids", []): reserved[str(i)] = true
 	var total := 0.0
 	for e in m.get("skins", []):
-		if str(e.id) in cfg.exclude: continue
+		all_skins[str(e.id)] = e
+		if str(e.id) in cfg.exclude or reserved.has(str(e.id)): continue
 		var w := float(cfg.groups.get(str(e.group), 0.0))
 		if w <= 0.0: continue
 		skins.append(e); total += w; weights.append(total)
@@ -219,10 +241,33 @@ func _pick_skin() -> Dictionary:
 		var e: Dictionary = free[rng.randi() % free.size()]
 		in_use[str(e.id)] = true
 		return e
+	if weights.is_empty(): return {}
 	var r: float = rng.randf() * float(weights[weights.size() - 1])
 	for i in range(weights.size()):
 		if r <= weights[i]: return skins[i]
 	return skins[skins.size() - 1]
+
+func _sex(id: String) -> String:
+	return str(cfg.skin_sex.get(id, "m"))
+
+func _pick(list: Array, fallback := "idle") -> String:
+	var ok := []
+	for c in list:
+		if NpcBody.has_clip(str(c)): ok.append(str(c))
+	return ok[rng.randi() % ok.size()] if not ok.is_empty() else fallback
+
+## A body for a skin, dressed with its sex's walk and idle and a gesture hook.
+func _make_body(e: Dictionary, s: Shopper = null) -> NpcBody:
+	var b := NpcBody.new()
+	b.set_skin(e)
+	add_child(b)
+	var sx := _sex(str(e.id))
+	b.walk_clip = _pick(cfg.walks.get(sx, ["walk_m"]), "walk_m")
+	b.play(_pick(cfg.idles.get(sx, ["idle"])))
+	if s:
+		s.sex = sx
+		b.gesture_done.connect(func(n: String): _on_gesture_done(s, n))
+	return b
 
 ## Store doors from the layout: a store is "open" when cells inside its door are walkable in this
 ## wing (the 3D interiors of design/godot-wings.md); otherwise its window is a place to stop.
@@ -251,6 +296,33 @@ func _load_places() -> void:
 		else:
 			windows.append({"door": door, "n": n, "spot": door + n * 1.3, "name": name})
 
+## Benches from the wing's fixture obstacles (radius 0.85 m, tools/build_mall.gd bench()). A hall
+## bench faces the planter it is paired across; the shoe court's benches sit back to its palm bed.
+## The hall benches are only drawn when "Benches & plants" is on; the court's always are.
+func _load_benches() -> void:
+	var fx: Array = player.fx_obstacles
+	var court := Vector2(1.0, -2.0)       # the shoe court C2 (layout_mall.json), palm bed in the middle
+	for o in fx:
+		if o.size() != 3 or o[0] is String or absf(float(o[2]) - 0.85) > 0.01: continue
+		var p := Vector2(float(o[0]), float(o[1]))
+		var f := Vector2.ZERO
+		# the court's benches are drawn by wing 1 only (zone C2); wing 2 lists them but has no court props
+		var in_court := p.distance_to(court) < 3.0 and str(get_tree().current_scene.get_meta("gen", "res://gen/w1/")).contains("/w1/")
+		if in_court:
+			f = Vector2(signf(p.x - court.x), 0.0)
+		else:
+			var best := 9.0
+			for q in fx:
+				if q.size() != 3 or q[0] is String or absf(float(q[2]) - 0.6) > 0.01: continue
+				var d := p.distance_to(Vector2(float(q[0]), float(q[1])))
+				if d < best: best = d; f = (Vector2(float(q[0]), float(q[1])) - p).normalized()
+		if f == Vector2.ZERO: continue
+		benches.append({"pos": Vector3(p.x, 0, p.y), "face": Vector3(f.x, 0, f.y), "court": in_court})
+
+func _bench_shown(_b: Dictionary) -> bool:
+	# every bench (the court's too) is in the fixtures mesh, off unless "Benches & plants" is on
+	return bool(player.get("fixtures_on"))
+
 # ------------------------------------------------------------------ the crowd
 func _process(dt: float) -> void:
 	if disabled or player == null: return
@@ -259,6 +331,7 @@ func _process(dt: float) -> void:
 		tick = 0.0
 		_balance()
 		_light_check()
+		_pairs_tick()
 	for s in shoppers:
 		_step(s, dt)
 	for p in players:
@@ -275,18 +348,17 @@ func _light_check() -> void:
 	for b in mannequins: b.set_self_light(k)
 	for p in players: p.body.set_self_light(k)
 
-## Window mannequins: the spots the builder recorded (gen/w*/mannequins.json), each with a
-## frozen body from `mannequin_skins`, facing out of the window the way the form did.
+## Window mannequins (off since Oct 16 2026: "delete all the mannequin NPCs").
 func _place_mannequins() -> void:
-	if not bool(cfg.get("mannequins", true)): return   # off since Oct 16 2026 (Steven: "delete all the mannequin NPCs")
+	if not bool(cfg.get("mannequins", true)): return
 	var gen := str(get_tree().current_scene.get_meta("gen", "res://gen/"))
 	var path := gen + "mannequins.json"
 	if not FileAccess.file_exists(path): return
 	var j = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if not (j is Dictionary): return
 	var pool := []
-	for e in NpcBody.manifest().get("skins", []):
-		if str(e.id) in cfg.mannequin_skins: pool.append(e)
+	for id in cfg.mannequin_skins:
+		if all_skins.has(str(id)): pool.append(all_skins[str(id)])
 	if pool.is_empty(): return
 	var i := 0
 	for m in j.get("mannequins", []):
@@ -295,78 +367,243 @@ func _place_mannequins() -> void:
 		add_child(b)
 		var p: Array = m.pos
 		b.position = Vector3(float(p[0]), float(p[1]), float(p[2]))
-		b.scale = Vector3.ONE * float(m.get("s", 1.0))   # the skin scene carries its own metre scale
 		var f: Array = m.face
 		b.face(Vector3(float(f[0]), 0, float(f[1])))
 		var pose: Array = cfg.mannequin_pose
 		b.freeze(str(pose[0]), float(pose[1]) + 0.37 * (i % 3))
 		mannequins.append(b)
-	print("npcs: ", mannequins.size(), " window mannequins")
 
-## Pocket Change: a share (`arcade_fill`) of the machines the builder recorded (gen/w*/machines.json)
-## get a player standing at the stand spot, facing the screen, hands on the panel.
-func _place_players() -> void:
+# ------------------------------------------------------------------ Pocket Change
+## The upright video cabinets this wing's builder recorded (gen/w*/machines.json) whose style has a
+## player position in scripts/arcade_panels.json.
+func _arcade_machines() -> Array:
 	var gen := str(get_tree().current_scene.get_meta("gen", "res://gen/"))
 	var path := gen + "machines.json"
-	if not FileAccess.file_exists(path) or skins.is_empty(): return
+	if not FileAccess.file_exists(path) or not FileAccess.file_exists(PANELS): return []
 	var j = JSON.parse_string(FileAccess.get_file_as_string(path))
-	if not (j is Dictionary): return
+	var pj = JSON.parse_string(FileAccess.get_file_as_string(PANELS))
+	if not (j is Dictionary) or not (pj is Dictionary): return []
 	var list := []
 	for m in j.get("machines", []):
 		if not (str(m.get("mod", "")) in cfg.arcade_mods): continue
-		if str(m.get("mod", "")) == "driver" and str(m.get("opts", {}).get("kind", "")) == "racer": continue   # sit-down racers: no seated clip yet
-		list.append(m)
+		var st: Dictionary = pj.styles.get(str(int(m.get("opts", {}).get("style", 0))), {})
+		if st.is_empty() or st.get("skip", false) or not st.has("L"): continue
+		var mm: Dictionary = m.duplicate()
+		mm["panel"] = st
+		list.append(mm)
+	return list
+
+## A share of the machines get a player: body centred on their controls, set back from the panel
+## (arcade_back_m) so the legs stay clear of the cabinet, hands on the stick and buttons, eyes on
+## the screen. Players are the arcade_ids characters (one of each), then the crowd.
+func _place_players(list: Array) -> void:
+	if list.is_empty(): return
 	list.shuffle()
 	var n := int(round(list.size() * float(cfg.arcade_fill)))
 	n = mini(n, int(cfg.get("arcade_max", 999)))
-	if bool(cfg.get("unique", false)): n = mini(n, skins.size())
-	var hm: Array = cfg.arcade_hands_m
-	var deck := skins.duplicate(); deck.shuffle()    # dealt round, so neighbours differ
-	for i in range(mini(n, list.size())):
-		var m: Dictionary = list[i]
-		var b := NpcBody.new()
-		b.set_skin(deck[i % deck.size()])
-		in_use[str(deck[i % deck.size()].id)] = true
-		add_child(b)
-		var pa: Array = m.pos; var fa: Array = m.face
-		var pos := Vector3(float(pa[0]), 0, float(pa[2]))
-		var face := Vector3(float(fa[0]), 0, float(fa[1])).normalized()
-		b.position = pos
-		b.face(face)
-		b.freeze("idle", [0.3, 0.9, 1.5][i % 3])   # calm frames of the idle, varied
-		var right := face.cross(Vector3.UP)
-		var panel := pos + face * float(hm[0]) + Vector3(0, float(hm[1]), 0)
-		players.append({"body": b, "pos": pos, "face": face, "left": panel - right * float(hm[2]), "right": panel + right * float(hm[2]),
-			"t": rng.randf() * 10.0, "tap": 0.0, "aside": false})
-	print("npcs: ", players.size(), " of ", list.size(), " machines have players")
+	var ids := []
+	for i in cfg.get("arcade_ids", []):
+		if all_skins.has(str(i)): ids.append(str(i))
+	n = mini(n, ids.size()) if bool(cfg.get("unique", false)) else n
+	# spread them out: never two neighbours
+	var chosen := []
+	for m in list:
+		if chosen.size() >= n: break
+		var pa: Array = m.pos
+		var p := Vector3(float(pa[0]), 0, float(pa[2]))
+		var near := false
+		for c in chosen:
+			if c.p.distance_to(p) < 1.6: near = true
+		if not near: chosen.append({"m": m, "p": p})
+	for i in range(chosen.size()):
+		var m: Dictionary = chosen[i].m
+		var e: Dictionary = all_skins[ids[i % ids.size()]] if not ids.is_empty() else _pick_skin()
+		in_use[str(e.id)] = true
+		var b := _make_body(e)
+		var fa: Array = m.face
+		var pos: Vector3 = chosen[i].p
+		var f := Vector3(float(fa[0]), 0, float(fa[1])).normalized()
+		var X := f.cross(Vector3.UP)                     # the player's right (video.gd X())
+		var st: Dictionary = m.panel
+		var w := func(a: Array) -> Vector3: return pos + X * float(a[0]) + Vector3.UP * float(a[1]) + f * float(a[2])
+		var L: Vector3 = w.call(st.L); var R: Vector3 = w.call(st.R)
+		var xc := (float(st.L[0]) + float(st.R[0])) * 0.5
+		var stand := pos + X * xc - f * float(cfg.arcade_back_m)
+		b.position = stand
+		b.face(f)
+		var base := _pick(cfg.arcade_bases, "play")
+		b.play(base)
+		var p := {"body": b, "pos": stand, "face": f, "L": L, "R": R, "screen": w.call(st.screen), "base": base, "style": int(m.get("opts", {}).get("style", 0)),
+			"react": rng.randf_range(float(cfg.arcade_react_s[0]), float(cfg.arcade_react_s[1])), "aside": false}
+		b.hands_to(L, R)
+		b.look_at_point(p.screen)
+		b.gesture_done.connect(func(_n: String):
+			if not p.aside:
+				b.hands_to(p.L, p.R); b.look_at_point(p.screen))
+		players.append(p)
+	print("npcs: ", players.size(), " of ", list.size(), " cabinets have players")
 
-## A player at a machine: hands on the stick and the buttons, with a little life in them; steps
-## aside when the real player wants that machine.
+## A player at a machine: hands on the controls, a reaction now and then (a cheer, a groan),
+## steps aside when the real player wants the machine.
 func _step_player(p: Dictionary, dt: float) -> void:
 	var b: NpcBody = p.body
 	var d: float = Vector2(player.global_position.x - p.pos.x, player.global_position.z - p.pos.z).length()
 	b.visible = d < float(cfg.see_m)
+	b.set_animated(d < float(cfg.lod_anim_m))
 	if not b.visible: return
-	p.t += dt
 	var want_aside: bool = d < float(cfg.arcade_yield_m)
 	if want_aside != p.aside:
 		p.aside = want_aside
 		var right: Vector3 = p.face.cross(Vector3.UP)
-		b.position = p.pos + (right * 0.9 if want_aside else Vector3.ZERO)
-	if p.aside or not bool(cfg.get("arcade_hands", true)):
-		b.hands_off(); return
-	# joystick: slow wander; buttons: taps every so often
-	var right: Vector3 = p.face.cross(Vector3.UP)
-	var jx := sin(p.t * 2.3) * 0.03 + sin(p.t * 5.1) * 0.015
-	var jz := cos(p.t * 1.7) * 0.02
-	p.tap -= dt
-	var tap_y := 0.0
-	if p.tap <= 0.0:
-		p.tap = rng.randf_range(0.15, 0.9)
-	elif p.tap > 0.08: tap_y = 0.0
-	else: tap_y = -0.025
-	b.hands_to(p.left + right * jx + p.face * jz, p.right + Vector3(0, tap_y, 0) + right * (0.03 if int(p.t * 3.0) % 2 == 0 else -0.03))
+		b.position = p.pos + (right * 0.9 - p.face * 0.3 if want_aside else Vector3.ZERO)
+		if want_aside:
+			b.hands_off(); b.look_at_point(Vector3.INF); b.play(_pick(cfg.idles.get(_sex(b.id), ["idle"])))
+		else:
+			b.play(p.base); b.hands_to(p.L, p.R); b.look_at_point(p.screen)
+	if p.aside: return
+	p.react -= dt
+	if p.react <= 0.0 and not b.busy():
+		p.react = rng.randf_range(float(cfg.arcade_react_s[0]), float(cfg.arcade_react_s[1]))
+		b.hands_off(); b.look_at_point(Vector3.INF)
+		b.gesture(_pick(cfg.arcade_reacts, "clap"))
 
+# ------------------------------------------------------------------ special people
+## The drunk: one character, the drunk walk and sways, wandering the hall.
+func _spawn_drunk() -> void:
+	var d: Dictionary = cfg.get("drunk", {})
+	if not d.has("id") or not all_skins.has(str(d.id)): return
+	var s := _new_shopper(all_skins[str(d.id)], _free_hall_point(true))
+	if s == null: return
+	s.role = "drunk"
+	s.type = d
+	s.type_name = "drunk"
+	s.body.walk_clip = "walk_drunk"
+	var sp: Array = d.get("speed_mps", [0.75, 0.9])
+	s.speed = rng.randf_range(float(sp[0]), float(sp[1]))
+	s.body.play(_pick(d.get("idles", ["drunk_idle"])))
+
+## Pairs who meet to talk: on a bench (shown) or standing in the hall.
+func _spawn_pairs() -> void:
+	for pc in cfg.get("pairs", []):
+		var ids: Array = pc.ids
+		if ids.size() != 2 or not all_skins.has(str(ids[0])) or not all_skins.has(str(ids[1])): continue
+		var pr := {"kind": str(pc.kind), "m": [], "state": "", "timer": 0.0, "spots": []}
+		if not _pair_spots(pr): continue
+		for i in range(2):
+			var sp: Dictionary = pr.spots[i]
+			var s := _new_shopper(all_skins[str(ids[i])], sp.stand)
+			if s == null: continue
+			s.role = "pair"; s.pair = pr; s.slot = i
+			_pick_type(s)
+			pr.m.append(s)
+		if pr.m.size() != 2: continue
+		pairs.append(pr)
+		_pair_start(pr, true)
+
+## Spots for a pair: two seats on one shown bench, or two hall points 1.1 m apart facing each other.
+func _pair_spots(pr: Dictionary) -> bool:
+	pr.spots = []
+	var kind := str(pr.kind)
+	if kind == "bench":
+		var shown := []
+		for b in benches:
+			if _bench_shown(b): shown.append(b)
+		if shown.is_empty(): kind = "chat"
+		else:
+			var b: Dictionary = shown[rng.randi() % shown.size()]
+			var f: Vector3 = b.face
+			var side := f.cross(Vector3.UP)
+			for k in [-1.0, 1.0]:
+				var seat: Vector3 = b.pos + side * 0.42 * k - f * 0.05
+				pr.spots.append({"seat": seat, "stand": seat + f * 0.48, "face": f})
+			pr.cur = "bench"
+			return true
+	for i in range(40):
+		var c: Vector2i = hall_cells[rng.randi() % hall_cells.size()]
+		var p := _centre(c)
+		var dv := Vector3(1, 0, 0) if rng.randf() < 0.5 else Vector3(0, 0, 1)
+		var a := p - dv * 0.55; var b := p + dv * 0.55
+		if _open(a) and _open(b) and _open(a - dv * 0.6) and _open(b + dv * 0.6):
+			pr.spots = [{"stand": a, "face": dv}, {"stand": b, "face": -dv}]
+			pr.cur = "chat"
+			return true
+	return false
+
+## Both are at their spots: sit down (bench) or start talking (standing). `now` skips the walk-in.
+func _pair_start(pr: Dictionary, now := false) -> void:
+	pr.state = "together"
+	pr.timer = rng.randf_range(float(cfg.pair_talk_s[0]), float(cfg.pair_talk_s[1]))
+	for s in pr.m:
+		var sp: Dictionary = pr.spots[s.slot]
+		s.state = "pair"; s.path = PackedVector3Array()
+		s.body.set_speed(0.0)
+		s.body.face(sp.face)
+		s.gest_t = rng.randf_range(3.0, 8.0)
+		if pr.cur == "bench":
+			if now:
+				var sc: String = ["sit_talk", "sit_talk_2"][s.slot]
+				s.pos = sp.seat; s.body.play(sc); s.body.place_at(sp.seat, sc)
+			else:
+				s.body.gesture("stand_to_sit")
+		else:
+			s.pos = sp.stand; s.body.position = sp.stand
+			s.body.play(_pick(["talk", "talk_2", "talk_3", "talk_4", "talk_5", "argue", "argue_3"]))
+
+## Once a second: pairs end their talk, walk apart for a while, then meet again somewhere else.
+func _pairs_tick() -> void:
+	var shown := bool(player.get("fixtures_on"))
+	for pr in pairs:
+		pr.timer -= 1.0
+		# benches switched off under a sitting pair, or on while a bench pair stands: change now
+		if str(pr.state) == "together" and ((pr.cur == "bench" and not shown) or (pr.cur == "chat" and pr.kind == "bench" and shown)):
+			pr.timer = 0.0
+		if str(pr.state) == "apart" and pr.kind == "bench" and shown and pr.timer > 8.0:
+			pr.timer = 8.0
+		match str(pr.state):
+			"together":
+				if pr.timer <= 0.0:
+					pr.state = "parting"
+					for s in pr.m:
+						if pr.cur == "bench": s.body.gesture("sit_to_stand")
+						else: _pair_release(s)
+			"apart":
+				if pr.timer <= 0.0 and _pair_spots(pr):
+					pr.state = "gather"
+					for s in pr.m:
+						s.goal = {"type": "pair"}
+						if s.state == "pair" or not _route(s, pr.spots[s.slot].stand):
+							s.pos = pr.spots[s.slot].stand; s.body.position = s.pos; s.state = "pairwait"
+			"gather":
+				var ready := true
+				for s in pr.m:
+					if s.state != "pairwait": ready = false
+				if ready: _pair_start(pr)
+
+func _pair_release(s: Shopper) -> void:
+	var pr: Dictionary = s.pair
+	s.state = "dwell"; s.timer = rng.randf_range(0.5, 2.0); s.goal = {"type": "start"}
+	s.body.play(_pick(cfg.idles.get(s.sex, ["idle"])))
+	var all_free := true
+	for o in pr.m:
+		if o.state == "pair": all_free = false
+	if all_free:
+		pr.state = "apart"
+		pr.timer = rng.randf_range(float(cfg.pair_apart_s[0]), float(cfg.pair_apart_s[1]))
+
+## A one-shot finished on a shopper's body: transitions move the body to where the clip left it.
+func _on_gesture_done(s: Shopper, n: String) -> void:
+	if s.pair == null: return
+	var sp: Dictionary = s.pair.spots[s.slot] if s.slot < s.pair.spots.size() else {}
+	if n == "stand_to_sit" and not sp.is_empty():
+		var sc: String = ["sit_talk", "sit_talk_2"][s.slot]
+		s.pos = sp.seat
+		s.body.play(sc, 0.15)
+		s.body.place_at(sp.seat, sc)
+	elif n == "sit_to_stand" and not sp.is_empty():
+		s.pos = sp.stand; s.body.position = sp.stand
+		_pair_release(s)
+
+# ------------------------------------------------------------------ the general crowd
 ## How many people the hour wants, and spawn or retire unseen ones to get there.
 func _balance() -> void:
 	var h := 13.0
@@ -374,14 +611,21 @@ func _balance() -> void:
 	var dens := _density(h)
 	want = int(round(float(cfg.count) * dens))
 	if force.is_valid_int() and int(force) > 0: want = int(force)
-	if bool(cfg.get("unique", false)): want = mini(want, skins.size() - players.size())
+	var crowd := 0
+	for s in shoppers:
+		if s.role == "": crowd += 1
+	if bool(cfg.get("unique", false)):
+		var free := 0
+		for e in skins:
+			if not in_use.has(str(e.id)): free += 1
+		want = mini(want, crowd + free)
 	var tries := 0
-	while shoppers.size() < want and tries < (200 if spawn_all_now else 20):
+	while crowd < want and tries < (200 if spawn_all_now else 20):
 		tries += 1
-		if _spawn() == null: continue
-	if shoppers.size() > want:
+		if _spawn() != null: crowd += 1
+	if crowd > want:
 		for s in shoppers:
-			if s.unseen > 2.0:
+			if s.role == "" and s.unseen > 2.0:
 				_remove(s); break
 
 func _density(h: float) -> float:
@@ -407,46 +651,63 @@ func _seen(p: Vector3) -> bool:
 	if fwd.normalized().dot(to / d) < cos(deg_to_rad(float(cfg.see_cone_deg))): return false
 	return _los(pp, p)
 
-## A new shopper somewhere the player cannot see.
-func _spawn() -> Shopper:
-	if skins.is_empty() or hall_cells.is_empty(): return null
-	var p := Vector3.ZERO; var ok := false
-	for i in range(30):
-		var c: Vector2i = hall_cells[rng.randi() % hall_cells.size()]
-		p = _centre(c)
+## A hall point out of the player's sight (or anywhere 6 m+ away when `any`).
+func _free_hall_point(any := false) -> Vector3:
+	if hall_cells.is_empty(): return Vector3.INF
+	for i in range(40):
+		var p := _centre(hall_cells[rng.randi() % hall_cells.size()])
 		var d := Vector2(p.x - player.global_position.x, p.z - player.global_position.z).length()
-		if d < (6.0 if spawn_all_now else float(cfg.spawn_min_m)): continue
-		if not spawn_all_now and _seen(p): continue
-		ok = true; break
-	if not ok: return null
-	var e := _pick_skin()
-	if e.is_empty(): return null
+		if any or spawn_all_now:
+			if d > 6.0: return p
+			continue
+		if d < float(cfg.spawn_min_m) or _seen(p): continue
+		return p
+	return Vector3.INF
+
+## A shopper record with a body at p.
+func _new_shopper(e: Dictionary, p: Vector3) -> Shopper:
+	if p == Vector3.INF or e.is_empty(): return null
 	var s := Shopper.new()
-	s.body = NpcBody.new()
-	s.body.set_skin(e)
-	add_child(s.body)
+	in_use[str(e.id)] = true
+	s.body = _make_body(e, s)
 	s.body.set_self_light(float(cfg.self_light_night if light_mode == "night" else cfg.self_light_day))
 	s.pos = p
 	s.body.position = p
 	s.body.face(Vector3(rng.randf() - 0.5, 0, rng.randf() - 0.5))
-	s.type = _pick_type()
-	var sp: Array = s.type.get("speed_mps", cfg.speed_mps)
-	s.speed = rng.randf_range(float(sp[0]), float(sp[1]))
-	var ra: Array = cfg.retire_after_goals
-	s.retire = rng.randi_range(int(ra[0]), int(ra[1]))
+	s.speed = rng.randf_range(float(cfg.speed_mps[0]), float(cfg.speed_mps[1]))
 	s.state = "dwell"; s.timer = rng.randf_range(0.2, 2.0); s.goal = {"type": "start"}
 	shoppers.append(s)
 	return s
 
-## A browser, a shopper or a heavy shopper (scripts/npcs.json "types", weighted by "w").
-func _pick_type() -> Dictionary:
+## A new crowd shopper somewhere the player cannot see, with a type (browser, shopper, …).
+func _spawn() -> Shopper:
+	if hall_cells.is_empty(): return null
+	var p := _free_hall_point()
+	if p == Vector3.INF: return null
+	var e := _pick_skin()
+	if e.is_empty(): return null
+	var s := _new_shopper(e, p)
+	_pick_type(s)
+	var sp: Array = s.type.get("speed_mps", cfg.speed_mps)
+	s.speed = rng.randf_range(float(sp[0]), float(sp[1]))
+	var wk: Array = s.type.get("walks", [])
+	if not wk.is_empty() and rng.randf() < float(s.type.get("walks_p", 0.5)):
+		s.body.walk_clip = _pick(wk, s.body.walk_clip)
+	var ra: Array = cfg.retire_after_goals
+	s.retire = rng.randi_range(int(ra[0]), int(ra[1]))
+	return s
+
+## A browser, a shopper, a heavy shopper or a confused one (scripts/npcs.json "types", by "w").
+func _pick_type(s: Shopper) -> void:
 	var total := 0.0
 	for k in cfg.types: total += float(cfg.types[k].get("w", 1.0))
 	var r := rng.randf() * total
 	for k in cfg.types:
 		r -= float(cfg.types[k].get("w", 1.0))
-		if r <= 0.0: return cfg.types[k]
-	return cfg.types[cfg.types.keys()[0]] if not cfg.types.is_empty() else {}
+		if r <= 0.0:
+			s.type = cfg.types[k]; s.type_name = k; return
+	if not cfg.types.is_empty():
+		s.type_name = cfg.types.keys()[0]; s.type = cfg.types[s.type_name]
 
 func _remove(s: Shopper) -> void:
 	shoppers.erase(s)
@@ -456,14 +717,17 @@ func _remove(s: Shopper) -> void:
 ## The next goal: a store to go into, a window to look in, or a far point of the hall.
 func _decide(s: Shopper) -> void:
 	s.goals += 1
+	if s.pair and str(s.pair.state) == "gather":
+		s.goal = {"type": "pair"}
+		if _route(s, s.pair.spots[s.slot].stand): return
 	var g: Dictionary = s.type.get("goals", cfg.goals)
-	var r := rng.randf() * (float(g.store) + float(g.window) + float(g.hall))
+	var r := rng.randf() * (float(g.get("store", 0)) + float(g.get("window", 0)) + float(g.get("hall", 1)))
 	var target := Vector3.ZERO
-	if r < float(g.store) and not stores.is_empty():
+	if r < float(g.get("store", 0)) and not stores.is_empty():
 		var st: Dictionary = _near_place(stores, s.pos)
 		s.goal = {"type": "store", "spots": st.spots, "i": 0, "name": st.name, "face": -st.n}
 		target = st.spots[0]
-	elif r < float(g.store) + float(g.window) and not windows.is_empty():
+	elif r < float(g.get("store", 0)) + float(g.get("window", 0)) and not windows.is_empty():
 		var wn: Dictionary = _near_place(windows, s.pos)
 		s.goal = {"type": "window", "name": wn.name, "face": -wn.n}
 		target = wn.spot
@@ -499,34 +763,49 @@ func _route(s: Shopper, target: Vector3) -> bool:
 	s.stuck = 0.0
 	return true
 
+## Arrived: the type's loop for the place, and a timer.
 func _arrive(s: Shopper) -> void:
 	var g := s.goal
+	s.body.set_speed(0.0)
+	s.gest_t = rng.randf_range(2.0, 6.0)
 	match str(g.get("type", "")):
+		"pair":
+			s.state = "pairwait"
+			s.body.face(s.pair.spots[s.slot].face)
+			s.body.play(_pick(cfg.idles.get(s.sex, ["idle"])))
 		"store":
 			var spots: Array = g.spots
-			var n := spots.size()
 			s.state = "dwell"
 			var ss: Array = s.type.get("shop_s", cfg.shop_s)
-			s.timer = rng.randf_range(float(ss[0]), float(ss[1])) / n
-			s.dwell_clip = "look" if rng.randf() < 0.6 else "idle"
+			s.timer = rng.randf_range(float(ss[0]), float(ss[1])) / spots.size()
 			s.body.face(Vector3(rng.randf() - 0.5, 0, rng.randf() - 0.5))
-			s.body.set_speed(0.0); s.body.play(s.dwell_clip)
+			s.body.play(_pick(s.type.get("store_clips", ["look"])))
 		"window":
 			s.state = "dwell"
-			s.timer = rng.randf_range(float(cfg.window_s[0]), float(cfg.window_s[1]))
+			var ws: Array = s.type.get("window_s", cfg.window_s)
+			s.timer = rng.randf_range(float(ws[0]), float(ws[1]))
 			s.body.face(g.face)
-			s.body.set_speed(0.0); s.body.play("look")
+			s.body.play(_pick(s.type.get("window_clips", ["look"])))
 		_:
 			s.state = "dwell"
 			s.timer = rng.randf_range(float(cfg.pause_s[0]), float(cfg.pause_s[1]))
-			s.body.set_speed(0.0); s.body.play("idle" if rng.randf() < 0.7 else "look")
+			var hp: Dictionary = s.type.get("hall_pause", cfg.hall_pause)
+			var r := rng.randf()
+			for k in hp:
+				r -= float(hp[k])
+				if r < 0.0 and NpcBody.has_clip(k):
+					# a once clip in the hall (checking the phone): stay for all of it
+					s.body.gesture(k)
+					s.timer = maxf(s.timer, NpcBody.clip_len(k) - 0.3)
+					return
+			s.body.play(_pick(s.type.get("idles", cfg.idles.get(s.sex, ["idle"]))))
 
 func _dwell_done(s: Shopper) -> void:
 	var g := s.goal
 	if g.get("type", "") == "store" and int(g.i) + 1 < g.spots.size():
 		g.i = int(g.i) + 1
 		if _route(s, g.spots[g.i]): return
-	if s.goals >= s.retire and s.unseen > 1.0:
+	if s.role == "" and s.goals >= s.retire and s.unseen > 1.0:
 		_remove(s); return
 	_decide(s)
 
@@ -536,18 +815,30 @@ func _step(s: Shopper, dt: float) -> void:
 	var d := Vector2(s.pos.x - pp.x, s.pos.z - pp.z).length()
 	var seen := _seen(s.pos) if d < float(cfg.see_m) else false
 	s.unseen = 0.0 if seen else s.unseen + dt
-	if s.unseen > float(cfg.recycle_unseen_s) and d > float(cfg.recycle_m) and s.goals >= 1 and rng.randf() < dt * 0.1:
+	if s.role == "" and s.unseen > float(cfg.recycle_unseen_s) and d > float(cfg.recycle_m) and s.goals >= 1 and rng.randf() < dt * 0.1:
 		_remove(s); return
 	s.body.visible = d < float(cfg.see_m) + 10.0
-	if s.body.ap:
-		s.body.ap.active = d < float(cfg.lod_anim_m)
+	s.body.set_animated(d < float(cfg.lod_anim_m))
 	match s.state:
 		"dwell":
 			s.timer -= dt
-			if s.timer <= 0.0:
+			_maybe_gesture(s, dt, s.type.get("gestures", []))
+			if s.timer <= 0.0 and not s.body.busy():
 				_dwell_done(s)
+		"pair":
+			if s.pair and str(s.pair.cur) == "chat":
+				_maybe_gesture(s, dt, cfg.pair_gestures)
 		"walk":
 			_follow(s, dt)
+
+## Now and then a one-shot from `list` over the loop (a nod, a point, a head shake).
+func _maybe_gesture(s: Shopper, dt: float, list: Array) -> void:
+	if list.is_empty() or s.body.busy(): return
+	s.gest_t -= dt
+	if s.gest_t > 0.0: return
+	s.gest_t = rng.randf_range(4.0, 10.0)
+	if rng.randf() < 0.6:
+		s.body.gesture(_pick(list, "head_yes"))
 
 ## Walk the route: keep right, step round people and the player, never through a wall.
 func _follow(s: Shopper, dt: float) -> void:

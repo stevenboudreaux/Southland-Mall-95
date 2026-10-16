@@ -38,8 +38,8 @@
 		15
 	],
 	"pause_s": [
-		1,
-		4
+		3,
+		9
 	],
 	"store_max_m": 70,
 	"spawn_min_m": 22,
@@ -75,7 +75,7 @@
 	],
 	"types": {
 		"browser": {
-			"w": 0.4,
+			"w": 0.35,
 			"speed_mps": [
 				1.1,
 				1.5
@@ -88,10 +88,26 @@
 			"shop_s": [
 				8,
 				20
+			],
+			"store_clips": [
+				"look",
+				"look_2",
+				"looking_2"
+			],
+			"window_clips": [
+				"look_down",
+				"look",
+				"point_fwd",
+				"thinking"
+			],
+			"gestures": [
+				"point",
+				"head_yes",
+				"acknowledge"
 			]
 		},
 		"shopper": {
-			"w": 0.4,
+			"w": 0.35,
 			"speed_mps": [
 				0.95,
 				1.35
@@ -104,10 +120,27 @@
 			"shop_s": [
 				20,
 				50
+			],
+			"store_clips": [
+				"look_down",
+				"look",
+				"thinking",
+				"looking_3"
+			],
+			"window_clips": [
+				"look_down",
+				"thinking",
+				"look_2"
+			],
+			"gestures": [
+				"point",
+				"head_yes",
+				"thankful",
+				"nod_long"
 			]
 		},
 		"heavy": {
-			"w": 0.2,
+			"w": 0.15,
 			"speed_mps": [
 				0.85,
 				1.2
@@ -120,22 +153,78 @@
 			"shop_s": [
 				35,
 				80
+			],
+			"walks": [
+				"walk_bag"
+			],
+			"walks_p": 0.6,
+			"store_clips": [
+				"look_down",
+				"thinking",
+				"look"
+			],
+			"window_clips": [
+				"look_down",
+				"point_fwd"
+			],
+			"gestures": [
+				"point",
+				"thankful",
+				"happy_hands",
+				"head_yes"
+			]
+		},
+		"confused": {
+			"w": 0.15,
+			"speed_mps": [
+				0.8,
+				1.15
+			],
+			"goals": {
+				"store": 0.5,
+				"window": 0.2,
+				"hall": 0.3
+			},
+			"shop_s": [
+				25,
+				60
+			],
+			"window_s": [
+				8,
+				20
+			],
+			"store_clips": [
+				"nervous",
+				"looking_2",
+				"looking_3",
+				"thinking"
+			],
+			"window_clips": [
+				"nervous",
+				"thinking",
+				"looking_2"
+			],
+			"hall_pause": {
+				"nervous": 0.0
+			},
+			"idles": [
+				"nervous",
+				"looking_2"
+			],
+			"gestures": [
+				"head_shake_thoughtful",
+				"head_no",
+				"sigh",
+				"head_shake_annoyed",
+				"look_away"
 			]
 		}
 	},
 	"arcade_fill": 0.5,
 	"arcade_mods": [
-		"video",
-		"driver",
-		"crane"
-	],
-	"arcade_hands_m": [
-		0.42,
-		0.92,
-		0.16
+		"video"
 	],
 	"arcade_yield_m": 0.9,
-	"arcade_hands": true,
 	"unique": true,
 	"arcade_max": 5,
 	"day_tint": [
@@ -143,5 +232,140 @@
 		0.96,
 		0.9
 	],
-	"mannequins": false
+	"mannequins": false,
+	"skin_sex": {
+		"Ch01": "m",
+		"Ch02": "f",
+		"Ch06": "m",
+		"Ch08": "m",
+		"Ch12": "m",
+		"Ch13": "f",
+		"Ch17": "m",
+		"Ch21": "f",
+		"Ch22": "f",
+		"Ch23": "m",
+		"Ch26": "f",
+		"Ch27": "f",
+		"Ch28": "m",
+		"Ch36": "m",
+		"Ch37": "f",
+		"Ch38": "m",
+		"Ch41": "f",
+		"Ch42": "m",
+		"Remy": "m"
+	},
+	"walks": {
+		"m": [
+			"walk_m",
+			"walk_m2"
+		],
+		"f": [
+			"walk_f",
+			"walk_f2"
+		]
+	},
+	"idles": {
+		"m": [
+			"idle",
+			"idle_m",
+			"weight_shift",
+			"bored"
+		],
+		"f": [
+			"idle",
+			"idle_f",
+			"weight_shift",
+			"bored"
+		]
+	},
+	"hall_pause": {
+		"phone": 0.15,
+		"look_2": 0.1
+	},
+	"drunk": {
+		"id": "Remy",
+		"speed_mps": [
+			0.75,
+			0.9
+		],
+		"goals": {
+			"store": 0.0,
+			"window": 0.15,
+			"hall": 0.85
+		},
+		"idles": [
+			"drunk_idle",
+			"drunk_idle_2",
+			"drunk_idle_3"
+		],
+		"window_clips": [
+			"drunk_idle_2"
+		],
+		"gestures": [
+			"drunk_turn"
+		],
+		"hall_pause": {}
+	},
+	"pairs": [
+		{
+			"kind": "bench",
+			"ids": [
+				"Ch23",
+				"Ch27"
+			]
+		},
+		{
+			"kind": "chat",
+			"ids": [
+				"Ch12",
+				"Ch21"
+			]
+		}
+	],
+	"pair_talk_s": [
+		60,
+		150
+	],
+	"pair_apart_s": [
+		60,
+		150
+	],
+	"pair_gestures": [
+		"nod_long",
+		"head_yes",
+		"happy_hands",
+		"cocky",
+		"acknowledge",
+		"look_away",
+		"nod_sarcastic",
+		"dismiss",
+		"secret"
+	],
+	"arcade_ids": [
+		"Ch01",
+		"Ch06",
+		"Ch08",
+		"Ch42",
+		"Ch38"
+	],
+	"arcade_back_m": 0.12,
+	"arcade_bases": [
+		"play",
+		"play",
+		"buttons"
+	],
+	"arcade_react_s": [
+		10,
+		28
+	],
+	"arcade_reacts": [
+		"cheer",
+		"cheer_2",
+		"excited",
+		"clap",
+		"head_shake_annoyed",
+		"sigh",
+		"head_no",
+		"rally"
+	]
 }
