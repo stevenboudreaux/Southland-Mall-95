@@ -34,6 +34,7 @@ var signs = []             # owner-editable signs (scripts/signs.gd), written to
 var mannequins = []        # window spots for the NPC mannequins (scripts/npcs.gd), gen/mannequins.json
 var machines = []          # Pocket Change's machines: stand spot and facing (scripts/npcs.gd), gen/machines.json
 var fx = false            # while true, geometry goes to the switchable "fixtures" mesh
+var force_dyn = false     # while true, geometry goes to dynamic (unbaked, probe-lit) meshes
 var cur_color = Color.WHITE
 var atlas_index = {}       # store id -> atlas cell
 var fronts = {}            # "x,z|x,z" of a store edge -> captured front (fronts.json)
@@ -390,6 +391,8 @@ func mat(name):
 func st(group, mname, dynamic = false):
 	if fx:
 		group = "fixtures"
+		dynamic = true
+	if force_dyn:
 		dynamic = true
 	var A = dyn_acc if dynamic else acc
 	if not A.has(group):
@@ -1758,18 +1761,55 @@ func cinema_front(g, a, n, t, Ln):
 		box(g, "brass", pc + n * 0.035, abs_size(t, 1.1, 1.55, 0.02, n))
 	add_omni(mc + Vector3(0, -0.8, 0) + n * 0.6, 0.8, 6.0, Color(1.0, 0.9, 0.7))
 
-## Jewelry kiosks (decision 1) under lit rings (decision 7): the Mr. Silverman island only, since
-## Oct 8.
+## The Concourse's island under its lit ring (decision 7). Until Oct 16 2026 it was the Mr. Silverman
+## jewelry island; Steven: "what was actually right here was the information desk ... we don't need
+## those glass cases up top, and it actually extended a little bit" (east, toward the cookie shop).
+## Mr. Silverman's was deeper in the mall: re-add him when the kiosks are done (handoff notes).
+## Built dynamic (dyn_info, lit by the bake's probes) so the change needs no rebake.
 func kiosks():
 	var centers = []
 	# the gold kiosk that stood in front of Gumballs (east of the cookie shop) is gone: Steven,
 	# Oct 8 ("remove the Goldman's kiosk in front of Gumballs"); gold_kiosk() is kept for now
-	# Mr. Silverman island: position is a guess (concourse, west of the cookie shop)
 	var ms = Vector3(-52.0, 0, 54.0)
-	island_kiosk("kiosks", ms)
-	lit_ring("kiosks", ms)
+	force_dyn = true
+	info_desk("info", ms + Vector3(1.2, 0, 0), ms)
+	lit_ring("info", ms)
+	force_dyn = false
 	centers.append(ms)
 	return centers
+
+## The mall's Information desk: a long counter, no glass, a dark top under a brass rail, an
+## "Information" plaque on the fascia of each long side and a two-sided board hung under the ring.
+func info_desk(g, c, rc):
+	var sx = 5.8
+	var sz = 1.8
+	var h = 1.05
+	# the counter: solid body, a kick plate, a brass rail and a dark top with a lip
+	box(g, "column", c + Vector3(0, h * 0.5, 0), Vector3(sx, h, sz))
+	box(g, "black", c + Vector3(0, 0.06, 0), Vector3(sx + 0.04, 0.12, sz + 0.04))
+	box(g, "brass", c + Vector3(0, h - 0.07, 0), Vector3(sx + 0.03, 0.04, sz + 0.03))
+	box(g, "black", c + Vector3(0, h + 0.02, 0), Vector3(sx + 0.16, 0.04, sz + 0.16))
+	# a lower work surface inside for the staff (seen over the top)
+	box(g, "velvet", c + Vector3(0, h + 0.045, 0), Vector3(sx - 0.6, 0.01, sz - 0.5))
+	for side in [-1.0, 1.0]:
+		var f = Vector3(0, 0, side)
+		var face = c + f * (sz * 0.5 + 0.01)
+		# the plaque: a dark panel framed in brass, "Information" in cream
+		cur_color = Color("#20242e")
+		box(g, "vcolor", face + Vector3(0, 0.62, 0) + f * 0.012, Vector3(2.3, 0.36, 0.02))
+		cur_color = Color.WHITE
+		box(g, "brass", face + Vector3(0, 0.62, 0) + f * 0.004, Vector3(2.38, 0.44, 0.012))
+		label("Information", "serif", "#efe2c2", face + Vector3(0, 0.62, 0) + f * 0.025, f, 2.0, 0.22)
+	# the board under the ring: dark, brass-edged, on two cables
+	var by = 3.05
+	cur_color = Color("#20242e")
+	box(g, "vcolor", rc + Vector3(0, by, 0), Vector3(2.6, 0.5, 0.08))
+	cur_color = Color.WHITE
+	box(g, "brass", rc + Vector3(0, by, 0), Vector3(2.68, 0.58, 0.05))
+	for sd in [-1.0, 1.0]:
+		cyl(g, "metal_dark", rc + Vector3(sd * 1.1, by + 0.29, 0), 0.006, 0.006, 6.5 - by - 0.29, 4, false)
+		label("Information", "serif", "#efe2c2", rc + Vector3(0, by, sd * 0.045), Vector3(0, 0, sd), 2.2, 0.26)
+	obst(["rect", c.x - sx * 0.5 - 0.5, c.z - sz * 0.5 - 0.5, c.x + sx * 0.5 + 0.5, c.z + sz * 0.5 + 0.5])
 
 func gold_kiosk(g, c, t, n):
 	# two runs of waist-high cases at a right angle: one along the stores, one out into the hall

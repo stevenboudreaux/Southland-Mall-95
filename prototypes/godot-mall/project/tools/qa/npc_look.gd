@@ -57,6 +57,7 @@ func _collect() -> void:
 	for s in sh.shoppers:
 		if s.role == "drunk": targets.append(["drunk-" + s.body.id, s.body, Vector3(0.6, 0, 2.4)])
 		elif s.role == "pair": targets.append(["pair%d-%s-%s" % [s.slot, s.pair.cur, s.body.id], s.body, Vector3(0.8, 0, 2.4)])
+		elif s.role == "salon" and s.state == "salon": targets.append(["salon-%s" % s.body.id, s.body, Vector3(0.3, 0, 2.2)])
 		elif shop < 4:
 			targets.append(["shopper-%s-%s-%s" % [s.type_name, s.state, s.body.id], s.body, Vector3(0.5, 0, 2.6)])
 			shop += 1

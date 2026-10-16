@@ -12,7 +12,10 @@
 ## is the owner's browser. Seams: a wrong turn ends in a copy of the station you left; crossing
 ## the line in the copy's entry moves you by the seam's offset into the real entry.
 ##
-## Made by player.gd in Wing 1. URL: ?stockrooms=1 unlocks the door; ?stockrooms=in starts inside.
+## Made by player.gd in Wing 1. URL: ?stockrooms=in starts inside.
+## Since Oct 16 2026 (Steven: "on anyone's initial startup, as long as they know that spot, they
+## can go into the stock rooms ... not tied to following the Rougarou") the door is open for
+## everyone from the start; the Rougarou is gone (the Runner, scripts/runner_ai.gd, replaced it).
 extends Node3D
 
 const MAP = "res://scripts/stockrooms_map.json"
@@ -45,9 +48,7 @@ var t := 0.0
 var force := ""
 
 func _ready() -> void:
-	unlocked = _load_unlock()
-	if force == "1" or force == "in":
-		unlocked = true; _save_unlock()
+	unlocked = true
 	var cl = CanvasLayer.new(); cl.layer = 30; add_child(cl)
 	fade = ColorRect.new(); fade.color = Color(0, 0, 0, 0); fade.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	fade.set_anchors_preset(Control.PRESET_FULL_RECT); cl.add_child(fade)
@@ -180,10 +181,9 @@ func _restore() -> void:
 		rt.set_reflections(saved.get("refl", true))
 	player.walk_rows = saved.walk; player.map_scale = saved.scale; player.map_origin = saved.origin
 	player.obstacles = saved.obs; player.fx_obstacles = saved.fx
-	var ai = root.get_node_or_null("RougarouAI")
-	if ai:
-		ai.set_process(true)
-		if ai.mode == "story": ai._story_enter()
+	for an in ["RougarouAI", "RunnerAI"]:
+		var ai = root.get_node_or_null(an)
+		if ai: ai.set_process(true)
 	_hud(true)
 	visible = false
 	inside = false

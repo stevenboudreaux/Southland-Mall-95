@@ -367,5 +367,50 @@
 		"sigh",
 		"head_no",
 		"rally"
-	]
+	],
+	"salon": {
+		"store": "REGIS HAIRSTYLISTS",
+		"no_browse": [
+			"REGIS HAIRSTYLISTS"
+		],
+		"chairs": [
+			[
+				-56.85,
+				62.45
+			],
+			[
+				-56.85,
+				63.95
+			],
+			[
+				-56.85,
+				65.45
+			],
+			[
+				-56.85,
+				66.95
+			]
+		],
+		"face": [
+			1,
+			0
+		],
+		"stand_m": 0.55,
+		"seat_y": 0.0,
+		"stay_s": [
+			150,
+			330
+		],
+		"gap_s": [
+			20,
+			60
+		],
+		"clips": [
+			"sit_f",
+			"sit_f2",
+			"sit_idle_2",
+			"sit_idle_3",
+			"sit_idle_4"
+		]
+	}
 }

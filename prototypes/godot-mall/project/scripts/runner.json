@@ -1,0 +1,15 @@
+{
+ "_": "The Runner's knobs (scripts/runner_ai.gd). Metres and seconds; speed is a multiple of the player's sprint (8.8 m/s).",
+ "skin": "Ch36",
+ "pose": ["idle", 0.4],
+ "speed_x_sprint": 1.15,
+ "mgr_trigger_m": 5.0,
+ "saadi_trigger_m": 3.0,
+ "startle_s": 0.9,
+ "see_m": 70.0,
+ "see_cone_deg": 40.0,
+ "weave_m": 4.0,
+ "weave_lateral_m": 0.9,
+ "clip_speed_max": 2.0,
+ "inside_mps": 6.0
+}

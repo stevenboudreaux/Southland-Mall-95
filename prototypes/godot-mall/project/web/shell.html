@@ -3,6 +3,9 @@
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@1,900&family=Tinos:wght@400;700&display=swap" rel="stylesheet">
 		<title>$GODOT_PROJECT_NAME</title>
 		<style>
 html, body, #canvas {
@@ -69,17 +72,202 @@ body {
 #status-progress, #status-notice {
 	display: none;
 }
-#status { background: #efe6d3 radial-gradient(circle at 50% 35%, #fbf6ea 0%, #efe6d3 55%, #e2d4b8 100%); color: #3a2a1f; font-family: Georgia, 'Times New Roman', serif; }
-#load-card { position: absolute; left: 16px; right: 16px; top: 50%; transform: translateY(-58%); text-align: center; }
-#load-title { font-size: clamp(30px, 7vw, 54px); letter-spacing: 0.02em; margin: 0; color: #5b2a3a; }
-#load-sub { font: 16px/1.4 -apple-system, system-ui, sans-serif; color: #6d5a48; margin: 10px 0 26px; }
-#load-track { width: min(420px, 80vw); height: 10px; margin: 0 auto; border-radius: 6px; background: #d8c9ac; overflow: hidden; }
-#load-bar { height: 100%; width: 0%; background: linear-gradient(90deg, #a98a62, #5b2a3a); border-radius: 6px; transition: width 0.25s; }
-#load-mb { font: 14px/1.4 -apple-system, system-ui, sans-serif; color: #6d5a48; margin-top: 10px; min-height: 20px; }
-#load-tip { font: 14px/1.5 -apple-system, system-ui, sans-serif; color: #8a7560; margin-top: 28px; }
-#load-fact { max-width: min(520px, 86vw); margin: 22px auto 0; font: 15px/1.5 Georgia, 'Times New Roman', serif; color: #4d3a2c; min-height: 46px; transition: opacity 0.4s; }
-#load-fact b { display: block; font: 11px/1.4 -apple-system, system-ui, sans-serif; letter-spacing: 0.14em; text-transform: uppercase; color: #a98a62; margin-bottom: 4px; }
+/* Load screen: the 2D game's arch-and-sunburst title logo, redrawn for "Houma Mall Rewind" in a
+   1990s radio-banner palette (black, raspberry, gold). The logo is the decorative #load-logo
+   (inline SVG) because the wing-crossing code overwrites #load-title with "Wing 1"/"Wing 2". */
+:root {
+	--lr-black: #000000;
+	--lr-mag: #B42D53;
+	--lr-gold: #ECC144;
+	--lr-speck: #1F1906;
+	--lr-white: #ffffff;
+	--lr-dim: #9b9488;
+	--lr-logo: 'Kanit', 'Arial Black', 'Futura', Impact, sans-serif;
+	--lr-logo-style: italic;
+	--lr-logo-weight: 900;
+	--lr-logo-skew: -4deg;
+	--lr-logo-track: -0.02em;
+	--lr-serif: 'Tinos', 'Times New Roman', Times, serif;
+}
+#status { background: var(--lr-black); color: var(--lr-white); font-family: var(--lr-serif); }
+#load-card {
+	position: absolute; inset: 0; box-sizing: border-box;
+	display: flex; flex-direction: column; align-items: center; text-align: center;
+	padding: max(18px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(14px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+	container-type: size;
+}
+/* column, top to bottom: bubble area, logo, a smaller spacer, tip + bar.
+   The bubble area never shrinks below one bubble, so the logo doesn't jump when facts change. */
+#load-head { flex: none; width: 100%; display: flex; flex-direction: column; align-items: center; }
+#load-gap { flex: 0.6 1 0; min-height: 6px; }
+#load-sub { display: none; }
+#load-title { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; margin: -1px; }
 
+/* the logo: as wide as the card allows, but leave room above it for a bubble (1.227 = SVG width / height) */
+#load-logo {
+	position: relative; flex: none; user-select: none; pointer-events: none;
+	width: min(100%, 760px, calc((100vh - 350px) * 1.227));
+	width: min(100%, 760px, calc((100cqh - 318px) * 1.227));
+	animation: lr-shake 0.3s 1.42s linear both;
+}
+#load-logo svg { display: block; width: 100%; height: auto; overflow: visible; }
+.lr-g { stroke: url(#lr-goldpaint); fill: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; }
+/* arch strokes draw on, from the bottom centre round to the top */
+.lr-arch { stroke-dasharray: 1; stroke-dashoffset: 1; animation: lr-draw 0.75s 0.05s cubic-bezier(.5, 0, .3, 1) both; }
+/* one seamless copy takes over when the two halves meet (no hairline at the joins) */
+.lr-arch-full { animation: lr-on 0.01s 0.8s step-end both; }
+@keyframes lr-on { from { opacity: 0; } to { opacity: 1; } }
+/* fan rays shoot out one after another, left to right, from the fan's point */
+.lr-ray { fill: var(--lr-mag); transform-box: view-box; transform-origin: 270px 236px; animation: lr-ray 0.34s cubic-bezier(.2, .9, .3, 1.35) both; }
+.lr-ray:nth-child(1) { animation-delay: 0.50s; } .lr-ray:nth-child(2) { animation-delay: 0.57s; }
+.lr-ray:nth-child(3) { animation-delay: 0.64s; } .lr-ray:nth-child(4) { animation-delay: 0.71s; }
+.lr-ray:nth-child(5) { animation-delay: 0.78s; } .lr-ray:nth-child(6) { animation-delay: 0.85s; }
+.lr-ray:nth-child(7) { animation-delay: 0.92s; }
+/* big H and A slam in, OUM pops, the rules draw out, then M-A-L-L drop in */
+.lr-big, .lr-oum, .lr-rule, .lr-mall { transform-box: fill-box; transform-origin: 50% 50%; }
+.lr-big { animation: lr-slam 0.32s 1.18s cubic-bezier(.5, 0, .7, 1.2) both; }
+.lr-big.lr-a2 { animation-delay: 1.26s; }
+.lr-oum { animation: lr-popin 0.3s 1.34s cubic-bezier(.2, .9, .3, 1.4) both; }
+.lr-rule { animation: lr-rule 0.26s 1.42s ease-out both; }
+.lr-mall { animation: lr-drop 0.32s cubic-bezier(.3, 1.5, .5, 1) both; }
+.lr-mall.m1 { animation-delay: 1.52s; } .lr-mall.m2 { animation-delay: 1.60s; }
+.lr-mall.m3 { animation-delay: 1.68s; } .lr-mall.m4 { animation-delay: 1.76s; }
+/* the Rewind badge: an HTML box over the SVG (left/top/width are viewBox 352,18 and 164 wide out of 540x440) */
+.lr-stamp { position: absolute; left: 65.19%; top: 4.09%; width: 30.37%; animation: lr-stamp 0.5s 1.72s cubic-bezier(.2, .8, .3, 1.2) both; }
+.lr-stamp-g { position: relative; animation: lr-glitch 0.36s 2.12s both; }
+.lr-stamp-g::after { content: ''; position: absolute; inset: 0; opacity: 0; pointer-events: none;
+	background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.55) 0 2px, transparent 2px 5px);
+	animation: lr-scan 0.36s 2.12s steps(1) both; }
+/* a VHS tracking band rolls down the whole logo while the badge glitches */
+.lr-band { position: absolute; left: -2%; right: -2%; top: 0; height: 9%; opacity: 0; pointer-events: none;
+	background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.22) 45%, rgba(236, 193, 68, 0.3) 55%, transparent);
+	animation: lr-band 0.42s 2.06s linear both; }
+@keyframes lr-draw { to { stroke-dashoffset: 0; } }
+@keyframes lr-ray { 0% { transform: scale(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes lr-slam { 0% { transform: scale(2.8); opacity: 0; } 60% { opacity: 1; } 75% { transform: scale(0.92); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes lr-popin { 0% { transform: scale(0.4); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes lr-rule { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+@keyframes lr-drop { 0% { transform: translateY(-60px); opacity: 0; } 40% { opacity: 1; } 100% { transform: translateY(0); opacity: 1; } }
+@keyframes lr-shake { 0%, 100% { transform: none; } 20% { transform: translate(-4px, 3px); } 40% { transform: translate(4px, -2px); } 60% { transform: translate(-2px, 1px); } 80% { transform: translate(1px, 0); } }
+@keyframes lr-stamp { 0% { transform: rotate(-420deg) scale(0); opacity: 0; } 55% { opacity: 1; } 70% { transform: rotate(12deg) scale(1.18); } 85% { transform: rotate(-3deg) scale(0.96); } 100% { transform: rotate(0) scale(1); opacity: 1; } }
+@keyframes lr-glitch {
+	0% { transform: none; filter: none; animation-timing-function: steps(1); }
+	12% { transform: translate(-7px, 0) skewX(-10deg); filter: drop-shadow(-5px 0 0 #00e5ff) drop-shadow(5px 0 0 #ff2a6d); animation-timing-function: steps(1); }
+	28% { transform: translate(6px, 2px); filter: drop-shadow(4px 0 0 #00e5ff) drop-shadow(-4px 0 0 #ff2a6d); animation-timing-function: steps(1); }
+	44% { transform: translate(-3px, -1px) skewX(6deg); filter: drop-shadow(-3px 0 0 #00e5ff) drop-shadow(3px 0 0 #ff2a6d); animation-timing-function: steps(1); }
+	62% { transform: translate(2px, 0); filter: drop-shadow(2px 0 0 #00e5ff) drop-shadow(-2px 0 0 #ff2a6d); animation-timing-function: steps(1); }
+	80%, 100% { transform: none; filter: none; }
+}
+@keyframes lr-scan { 0% { opacity: 0.9; } 50% { opacity: 0.5; } 80%, 100% { opacity: 0; } }
+@keyframes lr-band { 0% { top: -10%; opacity: 0; } 8% { opacity: 1; } 90% { opacity: 1; } 100% { top: 100%; opacity: 0; } }
+
+/* fact stage: every bubble sits in the same grid cell so old and new overlap while swapping */
+#load-fact {
+	flex: 1 1 0; min-height: 252px; width: 100%; max-width: 620px;
+	display: grid; place-items: end center; padding: 4px 0 2px; box-sizing: border-box;
+	--jx: min(1.6vw, 36px); --jy: 8px;
+}
+.lr-pop {
+	grid-area: 1 / 1; position: relative; box-sizing: border-box;
+	width: min(100% - 28px, 580px); margin-bottom: 34px;
+	transform: translate(calc(var(--dx, 0) * var(--jx)), calc(var(--dy, 0) * var(--jy))) rotate(var(--rot, 0deg));
+	transform-origin: var(--ox, 22%) 115%;
+	filter: drop-shadow(5px 6px 0 var(--lr-mag));
+	animation: lr-pop-in 0.42s cubic-bezier(.2, .9, .3, 1.25) both;
+	will-change: transform, opacity;
+}
+.lr-pop.out { animation: lr-pop-out 0.24s ease-in both; }
+.lr-body {
+	position: relative; background: #fff; color: #111; text-align: left;
+	border-radius: 30px / 26px; padding: 16px 20px 16px 22px;
+}
+.lr-badge {
+	position: absolute; left: -8px; top: -14px; width: 42px; height: 42px; border-radius: 50%;
+	background: var(--lr-gold); box-shadow: 0 0 0 3px #000; display: grid; place-items: center;
+	animation: lr-badge 0.5s 0.12s cubic-bezier(.2, .9, .3, 1.4) both;
+}
+.lr-badge svg { width: 24px; height: 24px; fill: #000; }
+.lr-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; padding-left: 26px; margin-bottom: 6px; }
+.lr-kick { font: 700 11px/1.2 var(--lr-serif); letter-spacing: 0.16em; text-transform: uppercase; color: #6a6258; }
+.lr-store { font-family: var(--lr-logo); font-style: var(--lr-logo-style); font-weight: var(--lr-logo-weight); font-size: clamp(17px, 0.8vw + 13px, 22px); line-height: 1.05; color: var(--lr-mag); letter-spacing: var(--lr-logo-track); }
+.lr-row { display: flex; flex-wrap: wrap; align-items: center; gap: 2px 14px; }
+.lr-stat {
+	flex: none; font-family: var(--lr-logo); font-style: var(--lr-logo-style); font-weight: var(--lr-logo-weight);
+	font-size: clamp(34px, 2.6vw + 22px, 56px); line-height: 1; color: var(--lr-mag); letter-spacing: -0.02em;
+	transform: skewX(var(--lr-logo-skew)); padding-right: 0.06em;
+}
+.lr-text { flex: 1 1 200px; margin: 0; font: 700 clamp(16.5px, 0.3vw + 15px, 19.5px)/1.34 var(--lr-serif); color: #111; }
+/* thought-bubble tail: two white dots trailing off a lower corner */
+.lr-tail { position: absolute; background: #fff; border-radius: 50%; animation: lr-dot 0.3s cubic-bezier(.2, .9, .3, 1.5) both; }
+.lr-tail.t1 { width: 22px; height: 18px; bottom: -22px; left: var(--tx1, 16%); animation-delay: 0.1s; }
+.lr-tail.t2 { width: 12px; height: 10px; bottom: -36px; left: var(--tx2, 11%); animation-delay: 0.18s; }
+/* the "bloop": a gold ring that bursts out of the tail as the bubble lands */
+.lr-pop::after {
+	content: ''; position: absolute; left: var(--tx2, 11%); bottom: -40px; width: 14px; height: 14px; margin: -2px 0 0 -2px;
+	border: 3px solid var(--lr-gold); border-radius: 50%; opacity: 0; pointer-events: none;
+	animation: lr-bloop 0.55s 0.16s ease-out both;
+}
+.lr-pop.out::after { animation: none; }
+@keyframes lr-pop-in {
+	0% { opacity: 0; transform: translate(calc(var(--dx, 0) * var(--jx)), calc(var(--dy, 0) * var(--jy))) rotate(calc(var(--rot, 0deg) - 7deg)) scale(0.25); }
+	55% { opacity: 1; transform: translate(calc(var(--dx, 0) * var(--jx)), calc(var(--dy, 0) * var(--jy))) rotate(calc(var(--rot, 0deg) + 1.5deg)) scale(1.07); }
+	78% { transform: translate(calc(var(--dx, 0) * var(--jx)), calc(var(--dy, 0) * var(--jy))) rotate(var(--rot, 0deg)) scale(0.97); }
+	100% { opacity: 1; transform: translate(calc(var(--dx, 0) * var(--jx)), calc(var(--dy, 0) * var(--jy))) rotate(var(--rot, 0deg)) scale(1); }
+}
+@keyframes lr-pop-out {
+	0% { opacity: 1; transform: translate(calc(var(--dx, 0) * var(--jx)), calc(var(--dy, 0) * var(--jy))) rotate(var(--rot, 0deg)) scale(1); }
+	35% { opacity: 1; transform: translate(calc(var(--dx, 0) * var(--jx)), calc(var(--dy, 0) * var(--jy))) rotate(var(--rot, 0deg)) scale(1.06); }
+	100% { opacity: 0; transform: translate(calc(var(--dx, 0) * var(--jx)), calc(var(--dy, 0) * var(--jy))) rotate(calc(var(--rot, 0deg) + 4deg)) scale(0.2); }
+}
+@keyframes lr-badge { 0% { transform: scale(0) rotate(-40deg); } 100% { transform: scale(1) rotate(0); } }
+@keyframes lr-dot { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+@keyframes lr-bloop { 0% { opacity: 1; transform: scale(0.4); } 100% { opacity: 0; transform: scale(3.4); } }
+
+/* bottom strip: controls tip, then a small recessed bar, then #load-mb (errors only) */
+#load-foot { flex: none; width: 100%; display: flex; flex-direction: column; align-items: center; gap: 9px; }
+#load-tip { font: 400 12px/1.45 var(--lr-serif); color: var(--lr-dim); max-width: 34em; }
+#load-tip b { color: #cfc8bb; }
+#load-tip .tip-touch, #load-tip .tip-keys { display: block; }
+@media (hover: hover) and (pointer: fine) { #load-tip .tip-touch { display: none; } }
+@media (pointer: coarse) { #load-tip .tip-keys { display: none; } }
+#load-track {
+	width: min(300px, 58vw); height: 5px; border-radius: 3px; overflow: hidden;
+	background: #111; box-shadow: inset 0 1px 2px #000, inset 0 0 0 1px #1c1c1c, 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+#load-bar { height: 100%; width: 0%; border-radius: 3px; background: linear-gradient(90deg, var(--lr-mag), var(--lr-gold)); transition: width 0.25s; }
+#load-mb { font: 700 12px/1.35 var(--lr-serif); color: var(--lr-gold); max-width: min(34em, 92vw); }
+#load-mb:empty { display: none; }
+
+/* crossing between the wings: same look, tighter */
+body.xfer #load-tip { display: none; }
+/* smaller logo, one quick 0.6 s entrance instead of the full sequence */
+body.xfer #load-logo { width: min(66%, 300px, calc((100vh - 420px) * 1.227)); width: min(66%, 300px, calc((100cqh - 400px) * 1.227)); animation: lr-quick 0.6s cubic-bezier(.2, .9, .3, 1.2) both; }
+body.xfer #load-logo *, body.xfer #load-logo *::after { animation: none !important; }
+body.xfer .lr-band { display: none; }
+body.xfer .lr-arch { stroke-dashoffset: 0; }
+body.xfer #load-title {
+	position: static; width: auto; height: auto; overflow: visible; clip: auto; margin: 0.45em 0 0; white-space: normal;
+	font: 700 clamp(26px, 2vw + 18px, 40px)/1.05 var(--lr-serif); color: var(--lr-white);
+}
+@keyframes lr-quick { 0% { transform: scale(0.82); opacity: 0; filter: drop-shadow(-6px 0 0 #00e5ff) drop-shadow(6px 0 0 #ff2a6d); } 60% { opacity: 1; filter: drop-shadow(-2px 0 0 #00e5ff) drop-shadow(2px 0 0 #ff2a6d); } 100% { transform: none; opacity: 1; filter: none; } }
+body.xfer #load-fact { max-width: 540px; }
+body.xfer .lr-pop { width: min(100% - 28px, 500px); }
+body.xfer .lr-stat { font-size: clamp(30px, 2vw + 20px, 46px); }
+body.xfer .lr-text { font-size: clamp(15.5px, 0.25vw + 14px, 18px); }
+
+@media (min-width: 900px) { #load-fact { --jx: 36px; } }
+@media (prefers-reduced-motion: reduce) {
+	.lr-pop { animation: lr-fade-in 0.35s ease both; }
+	.lr-pop.out { animation: lr-fade-out 0.3s ease both; }
+	.lr-badge, .lr-tail { animation: none; }
+	.lr-pop::after { display: none; }
+	#load-bar { transition: none; }
+	#load-logo, #load-logo *, #load-logo *::after, body.xfer #load-logo { animation: none !important; }
+	.lr-arch { stroke-dashoffset: 0; }
+	.lr-band { display: none; }
+}
+@keyframes lr-fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes lr-fade-out { from { opacity: 1; } to { opacity: 0; } }
 #status-progress { display: none !important; }
 /* VR headsets (scripts/vr.gd, design/godot-vr.md): shown only where the browser can do immersive VR */
 #vr-enter { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 900; display: none;
@@ -88,16 +276,6 @@ body {
 #vr-enter.big { bottom: 50%; transform: translate(-50%, 50%); font-size: 30px; padding: 26px 48px; }
 #vr-note { position: fixed; left: 0; right: 0; bottom: 96px; z-index: 900; display: none; text-align: center;
 	font: 15px/1.4 -apple-system, system-ui, sans-serif; color: #fbf6ea; text-shadow: 0 1px 3px #000; pointer-events: none; }
-/* crossing between the wings: a dark screen instead of the cream card (scripts/player.gd) */
-body.xfer #status { background: #000; color: #e9dfcb; }
-body.xfer #load-title { font-size: clamp(22px, 4.5vw, 34px); color: #efe6d3; }
-body.xfer #load-sub { color: #b8a88f; margin-bottom: 18px; }
-body.xfer #load-track { background: #2a2420; height: 4px; width: min(260px, 60vw); }
-body.xfer #load-bar { background: #e9dfcb; }
-body.xfer #load-mb, body.xfer #load-tip { color: #8c7d68; }
-body.xfer #load-tip { display: none; }
-body.xfer #load-fact { color: #cfc3ad; }
-body.xfer #load-fact b { color: #8c7d68; }
 
 #status-notice {
 	background-color: #5b3943;
@@ -130,14 +308,100 @@ body.xfer #load-fact b { color: #8c7d68; }
 		<div id="status">
 			<img id="status-splash" class="$GODOT_SPLASH_CLASSES" src="$GODOT_SPLASH" alt="" style="display:none">
 			<progress id="status-progress"></progress>
-			<div id="load-card">
-				<h1 id="load-title">Houma Mall Rewind</h1>
-				<div id="load-sub">Opening the doors… the 1995 mall, built in 3D</div>
-				<div id="load-track"><div id="load-bar"></div></div>
-				<div id="load-mb">Starting…</div>
-				<div id="load-tip">Left thumb walks · right thumb looks<br>On a computer: WASD or arrow keys, drag to look</div>
-			<div id="load-fact"></div>
+	<div id="load-card">
+		<div id="load-fact" aria-live="polite"></div>
+		<div id="load-head">
+			<div id="load-logo" aria-hidden="true">
+				<svg id="lr-logo-svg" viewBox="0 0 540 440" focusable="false">
+					<defs>
+						<!-- gold paint with a pale band that sweeps across every few seconds (idle shimmer) -->
+						<linearGradient id="lr-goldpaint" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="540" y2="160" gradientTransform="translate(-700 0)">
+							<stop offset="0" stop-color="#ECC144"/><stop offset="0.44" stop-color="#ECC144"/>
+							<stop offset="0.5" stop-color="#FFF3C2"/><stop offset="0.56" stop-color="#ECC144"/><stop offset="1" stop-color="#ECC144"/>
+							<animateTransform attributeName="gradientTransform" type="translate" values="-700 0; 700 0; 700 0" keyTimes="0; 0.35; 1" dur="7s" begin="2.6s" repeatCount="indefinite"/>
+						</linearGradient>
+						<!-- dark specks on the big letters, sized for the logo's scale -->
+						<filter id="lr-speck" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+							<feTurbulence type="fractalNoise" baseFrequency="0.42" numOctaves="2" seed="11" result="n1"/>
+							<feColorMatrix in="n1" type="matrix" values="0 0 0 0 0.122  0 0 0 0 0.098  0 0 0 0 0.024  16 0 0 0 -10.6" result="s1"/>
+							<feTurbulence type="fractalNoise" baseFrequency="0.07" numOctaves="3" seed="4" result="n2"/>
+							<feColorMatrix in="n2" type="matrix" values="0 0 0 0 0.122  0 0 0 0 0.098  0 0 0 0 0.024  22 0 0 0 -15.6" result="s2"/>
+							<feMerge result="s"><feMergeNode in="s1"/><feMergeNode in="s2"/></feMerge>
+							<feComposite in="s" in2="SourceGraphic" operator="in" result="sin"/>
+							<feMerge><feMergeNode in="SourceGraphic"/><feMergeNode in="sin"/></feMerge>
+						</filter>
+						<clipPath id="lr-cap-big"><rect x="0" y="313" width="540" height="120"/></clipPath>
+						<clipPath id="lr-cap-oum"><rect x="0" y="321" width="540" height="58"/></clipPath>
+						<clipPath id="lr-cap-mall"><rect x="0" y="394" width="540" height="31"/></clipPath>
+					</defs>
+					<!-- sunburst fan -->
+					<g>
+						<polygon class="lr-ray" points="270,236 180.1,192.2 191.2,174.4"/>
+						<polygon class="lr-ray" points="270,236 191.3,145.4 208.2,133.1"/>
+						<polygon class="lr-ray" points="270,236 217.6,106.2 240.9,99.1"/>
+						<polygon class="lr-ray" points="270,236 255.6,86.7 284.4,86.7"/>
+						<polygon class="lr-ray" points="270,236 299.1,99.1 322.4,106.2"/>
+						<polygon class="lr-ray" points="270,236 331.8,133.1 348.7,145.4"/>
+						<polygon class="lr-ray" points="270,236 348.8,174.4 359.9,192.2"/>
+					</g>
+					<!-- half-dome arch, two halves drawn from the bottom centre -->
+					<path class="lr-g lr-arch" stroke-width="8" pathLength="1" d="M270,287 H84 V233 A186,186 0 0 1 270,47"/>
+					<path class="lr-g lr-arch" stroke-width="8" pathLength="1" d="M270,287 H456 V233 A186,186 0 0 0 270,47"/>
+					<path class="lr-g lr-arch-full" stroke-width="8" d="M84,287 V233 A186,186 0 0 1 456,233 V287 Z"/>
+					<!-- big H -->
+					<g class="lr-big"><g clip-path="url(#lr-cap-big)" filter="url(#lr-speck)">
+						<path class="lr-g" stroke-width="14" d="M70,306 V440 M142,306 V440 M70,373 H142"/>
+					</g></g>
+					<!-- OUM -->
+					<g class="lr-oum"><g clip-path="url(#lr-cap-oum)">
+						<ellipse class="lr-g" stroke-width="7" cx="194" cy="350" rx="27.5" ry="25.5"/>
+						<path class="lr-g" stroke-width="7" d="M241.5,317 V354 A21.5,21.5 0 0 0 284.5,354 V317"/>
+						<path class="lr-g" stroke-width="7" d="M304.5,383 V317 L332,370 L359.5,317 V383"/>
+					</g></g>
+					<!-- rules and M A L L -->
+					<path class="lr-g lr-rule" stroke-width="3" d="M163,387.5 H363"/>
+					<path class="lr-g lr-rule" stroke-width="3" d="M163,431.5 H363"/>
+					<g clip-path="url(#lr-cap-mall)">
+						<path class="lr-g lr-mall m1" stroke-width="4.5" d="M174.25,429 V390 L188,419 L201.75,390 V429"/>
+						<path class="lr-g lr-mall m2" stroke-width="4.5" d="M225.5,429 L238,389 L250.5,429 M229.6,416 H246.4"/>
+						<path class="lr-g lr-mall m3" stroke-width="4.5" d="M282.25,390 V422.75 H298"/>
+						<path class="lr-g lr-mall m4" stroke-width="4.5" d="M332.25,390 V422.75 H348"/>
+					</g>
+					<!-- big A -->
+					<g class="lr-big lr-a2"><g clip-path="url(#lr-cap-big)" filter="url(#lr-speck)">
+						<path class="lr-g" stroke-width="14" d="M385,441 L427,305 L469,441"/>
+						<path class="lr-g" stroke-width="13" d="M399.2,395 H454.8"/>
+					</g></g>
+				</svg>
+				<div class="lr-stamp"><div class="lr-stamp-g">
+					<svg viewBox="0 0 164 166" focusable="false">
+						<defs><clipPath id="lr-tri"><polygon points="8,22 150,4 92,150"/></clipPath></defs>
+						<polygon points="20,34 162,16 104,162" fill="#ECC144"/>
+						<polygon points="8,22 150,4 92,150" fill="#B42D53"/>
+						<g clip-path="url(#lr-tri)" stroke="#D9577C" stroke-width="1" opacity="0.55">
+							<path d="M0,16H164M0,30H164M0,44H164M0,58H164M0,72H164M0,86H164M0,100H164M0,114H164M0,128H164M0,142H164"/>
+							<path d="M14,0V166M28,0V166M42,0V166M56,0V166M70,0V166M84,0V166M98,0V166M112,0V166M126,0V166M140,0V166"/>
+						</g>
+						<polygon points="8,22 150,4 92,150" fill="none" stroke="#000" stroke-width="3" stroke-linejoin="round"/>
+						<g transform="rotate(-7.2 80 60)">
+							<text x="79" y="58" text-anchor="middle" font-family="Kanit, 'Arial Black', Impact, sans-serif" font-style="italic" font-weight="900" font-size="31" fill="#fff" stroke="#000" stroke-width="5" stroke-linejoin="round" paint-order="stroke">Rewind</text>
+							<rect x="42" y="66" width="74" height="7" fill="#ECC144" stroke="#000" stroke-width="2"/>
+							<path d="M57,96 L79,84 V108 Z M79,96 L101,84 V108 Z" fill="#ECC144" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+						</g>
+					</svg>
+				</div></div>
+				<div class="lr-band"></div>
 			</div>
+			<h1 id="load-title">Houma Mall Rewind</h1>
+			<div id="load-sub"></div>
+		</div>
+		<div id="load-gap"></div>
+		<div id="load-foot">
+			<div id="load-tip"><span class="tip-touch">Left thumb walks · right thumb looks</span><span class="tip-keys">WASD or arrow keys walk · drag to look</span></div>
+			<div id="load-track"><div id="load-bar"></div></div>
+			<div id="load-mb"></div>
+		</div>
+	</div>
 			<div id="status-notice"></div>
 		</div>
 
@@ -619,23 +883,86 @@ const MALL_FACTS = [
 {"s": "Glamour Shots", "t": "Only about 5% of Glamour Shots customers were men."}
 ];
 // MALL_FACTS end
+// Fun-fact bubbles, after VH1's Pop-Up Video: every 7 s a new bubble pops in at a slightly
+// different spot and angle and the old one pops out. Data shape unchanged: {s: store, t: text}.
 (function () {
+	var rm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
+	var logo = document.getElementById('lr-logo-svg');
+	if (rm && logo && logo.pauseAnimations) { logo.pauseAnimations(); }
 	var el = document.getElementById('load-fact');
 	if (!el || !MALL_FACTS.length) { return; }
-	var order = MALL_FACTS.slice(), i = 0;
+	var order = MALL_FACTS.slice(), i = 0, last = 0;
 	for (var k = order.length - 1; k > 0; k--) { var j = Math.floor(Math.random() * (k + 1)); var t = order[k]; order[k] = order[j]; order[j] = t; }
+	var NS = 'http://www.w3.org/2000/svg';
+	var GLYPH = {
+		bag: 'M7 8V7a5 5 0 0 1 10 0v1h3l-1 13H5L4 8h3zm2 0h6V7a3 3 0 0 0-6 0v1z',
+		food: 'M6 7h12l-1.6 14H7.6L6 7zm4-5h2l-1 4h-2l1-4zM5 5h14v1.5H5V5z',
+		film: 'M4 4h16v16H4V4zm2 2v2h2V6H6zm10 0v2h2V6h-2zM6 10v4h2v-4H6zm10 0v4h2v-4h-2zM6 16v2h2v-2H6zm10 0v2h2v-2h-2zm-6-6v4l4-2-4-2z',
+		play: 'M12 1.5a4 4 0 1 1 0 8a4 4 0 0 1 0-8zM10.8 9h2.4v6h-2.4zM4 15h16v6H4zm11 1.6a1.4 1.4 0 1 0 0 2.8a1.4 1.4 0 0 0 0-2.8z',
+		star: 'M12 2l2.9 6.6 7.1.6-5.4 4.7 1.6 7.1L12 17.3 5.8 21l1.6-7.1L2 9.2l7.1-.6L12 2z'
+	};
+	function glyphFor(s) {
+		if (/cinema/i.test(s)) { return 'film'; }
+		if (/pocket change|arcade/i.test(s)) { return 'play'; }
+		if (/corn dog|chick|karmel|julius|cookie|cucos/i.test(s)) { return 'food'; }
+		if (/southland mall/i.test(s)) { return 'star'; }
+		return 'bag';
+	}
+	// the one number worth shouting: money, then a percent, then a big count, then a year
+	function statFor(t) {
+		var m = t.match(/\$\d[\d,.]*(\s(million|billion))?/);
+		if (m) { return m[0].replace(/\s?million/, 'M').replace(/\s?billion/, 'B'); }
+		m = t.match(/\d+(\.\d+)?%/); if (m) { return m[0]; }
+		m = t.match(/\b\d{1,3}(,\d{3})+\b/); if (m) { return m[0]; }
+		m = t.match(/\b(1[89]|20)\d\d\b/); if (m) { return m[0]; }
+		return '';
+	}
+	function add(parent, tag, cls, text) {
+		var n = document.createElement(tag); if (cls) { n.className = cls; }
+		if (text) { n.textContent = text; } parent.appendChild(n); return n;
+	}
 	function show() {
 		var f = order[i++ % order.length];
-		el.style.opacity = '0';
-		setTimeout(function () {
-			while (el.lastChild) { el.removeChild(el.lastChild); }
-			var b = document.createElement('b'); b.textContent = 'Did you know · ' + f.s;
-			el.appendChild(b); el.appendChild(document.createTextNode(f.t));
-			el.style.opacity = '1';
-		}, el.textContent ? 400 : 0);
+		var old = el.querySelectorAll('.lr-pop:not(.out)');
+		for (var o = 0; o < old.length; o++) {
+			(function (b) {
+				b.classList.add('out');
+				var gone = function () { if (b.parentNode) { b.parentNode.removeChild(b); } };
+				b.addEventListener('animationend', function (e) { if (e.target === b) { gone(); } });
+				setTimeout(gone, 450);
+			}(old[o]));
+		}
+		var pop = add(el, 'div', 'lr-pop');
+		var side = Math.random() < 0.5 ? -1 : 1;
+		if (side === last) { side = Math.random() < 0.7 ? -side : side; } last = side;
+		pop.style.setProperty('--dx', (side * (0.35 + Math.random() * 0.65)).toFixed(2));
+		pop.style.setProperty('--dy', (Math.random() * 2 - 1).toFixed(2));
+		pop.style.setProperty('--rot', (side * (0.8 + Math.random() * 2)).toFixed(2) + 'deg');
+		// tail trails off the lower corner opposite the lean
+		var right = side < 0;
+		pop.style.setProperty('--tx1', right ? '78%' : '16%');
+		pop.style.setProperty('--tx2', right ? '85%' : '10%');
+		pop.style.setProperty('--ox', right ? '84%' : '14%');
+		var body = add(pop, 'div', 'lr-body');
+		var badge = add(body, 'span', 'lr-badge');
+		var svg = document.createElementNS(NS, 'svg'); svg.setAttribute('viewBox', '0 0 24 24'); svg.setAttribute('aria-hidden', 'true');
+		var p = document.createElementNS(NS, 'path'); p.setAttribute('d', GLYPH[glyphFor(f.s)]); svg.appendChild(p); badge.appendChild(svg);
+		var head = add(body, 'div', 'lr-head');
+		add(head, 'span', 'lr-kick', 'Did you know');
+		add(head, 'span', 'lr-store', f.s);
+		var row = add(body, 'div', 'lr-row');
+		var st = statFor(f.t);
+		if (st) { add(row, 'span', 'lr-stat', st).setAttribute('aria-hidden', 'true'); }
+		add(row, 'p', 'lr-text', f.t);
+		add(pop, 'span', 'lr-tail t1'); add(pop, 'span', 'lr-tail t2');
 	}
-	show();
-	var timer = setInterval(function () { if (!document.body.contains(el)) { clearInterval(timer); return; } show(); }, 7000);
+	// the first bubble waits for the logo's entrance (2.5 s; 0.65 s on a wing crossing; none with reduced motion)
+	var wait = rm ? 0 : (document.body.classList.contains('xfer') ? 650 : 2500), timer = 0;
+	setTimeout(function () {
+		if (!document.body.contains(el)) { return; }
+		show();
+		timer = setInterval(function () { if (!document.body.contains(el)) { clearInterval(timer); return; } show(); }, 7000);
+	}, wait);
 }());
 const engine = new Engine(GODOT_CONFIG);
 
@@ -745,7 +1072,7 @@ const engine = new Engine(GODOT_CONFIG);
 					statusProgress.value = current;
 					statusProgress.max = total;
 					lbar.style.width = (100 * current / total).toFixed(1) + '%';
-					lmb.textContent = (current / 1048576).toFixed(0) + ' of ' + (total / 1048576).toFixed(0) + ' MB' + (current >= total ? ' · setting up the lights…' : '');
+					lmb.textContent = '';
 					if (current >= total && !startedAt) { startedAt = Date.now(); }
 				} else {
 					statusProgress.removeAttribute('value');

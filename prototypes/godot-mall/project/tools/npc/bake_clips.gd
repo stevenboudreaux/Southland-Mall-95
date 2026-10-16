@@ -67,6 +67,17 @@ const CLIPS := {
 	# the drunk
 	"drunk_idle": ["drunk_idle", "loop", []], "drunk_idle_2": ["drunk_idle_variation", "loop", []],
 	"drunk_idle_3": ["drunk_idle_variation_2", "loop", []], "drunk_turn": ["drunk_turn", "once", []],
+	# the Runner (scripts/runner_ai.gd; Steven's Oct 16 downloads): runs are de-travelled like walks
+	"run": ["running", "walk", []], "sprint": ["sprint", "walk", []], "jog": ["jog_forward", "walk", []],
+	"run_look_back": ["look_behind_run", "walk", []], "run_jump": ["running_jump", "walk", []],
+	"surprised": ["surprised", "once", []], "forward_jump": ["forward_jump", "once", []],
+	"turn_to_run": ["turn_to_running", "once", []], "run_to_turn": ["running_to_turn", "once", []],
+	"run_turn_r": ["running_right_turn", "once", []], "run_to_stop": ["run_to_stop", "once", []],
+	"stumble_back": ["stumble_backwards", "once", []],
+	# confused shoppers, and the Regis customer in a styling chair
+	"search_pockets": ["searching_pockets", "loop", []],
+	"sit_f": ["female_sitting_pose", "loop", []], "sit_f2": ["female_sitting_pose_2", "loop", []],
+	"sit_m": ["male_sitting_pose", "loop", []], "sit_disbelief": ["sitting_disbelief", "loop", []],
 }
 
 var stats := false

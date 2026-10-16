@@ -140,12 +140,13 @@ func _ready() -> void:
 	_light_start.call_deferred()
 	_build_wing_ui()
 	_build_jump_ui()
-	# the Rougarou, the mall's first NPC (scripts/rougarou_ai.gd; Steven, Oct 14 2026)
-	var rg = load("res://scripts/rougarou_ai.gd").new()
-	rg.name = "RougarouAI"; rg.player = self
+	# the Runner, a window mannequin come to life (scripts/runner_ai.gd; Steven, Oct 16 2026). He
+	# replaced the Rougarou (scripts/rougarou_ai.gd, kept but no longer made).
+	var rn = load("res://scripts/runner_ai.gd").new()
+	rn.name = "RunnerAI"; rn.player = self
 	if OS.has_feature("web"):
-		rg.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('rougarou') || ''"))
-	get_parent().add_child.call_deferred(rg)
+		rn.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('runner') || ''"))
+	get_parent().add_child.call_deferred(rn)
 	# the shoppers, the mall's crowd (scripts/npcs.gd; Steven, Oct 15 2026)
 	var np = load("res://scripts/npcs.gd").new()
 	np.name = "Shoppers"; np.player = self
@@ -319,6 +320,7 @@ func _input(e: InputEvent) -> void:
 		input_kind = "kb"
 	elif e is InputEventScreenTouch:
 		input_kind = "touch"
+	_secret_input(e)
 	if frozen:
 		return
 	if _jump_input(e):
@@ -377,6 +379,64 @@ func _input(e: InputEvent) -> void:
 		rmb_run = e.pressed
 	elif e is InputEventMouseMotion and dragging and not DisplayServer.is_touchscreen_available():
 		_look(e.relative * 0.004)
+
+# ---- the owner's secret way in (Steven, Oct 16 2026)
+## Stand at the dead end of the restroom hall (past MEN and WOMEN) and enter
+## up up down down left right left right B A, on the keyboard (arrow keys, then the B and A
+## keys) or a controller (d-pad, then B and A). It sets localStorage "southland-editor" (the
+## same key the main game's code and ?owner=1 set) and reloads at the same spot, so every owner
+## tool comes up: Edit signs / Publish signs, Shirt words, the prize words, the lighting panel.
+## Any browser, any device with a keyboard or controller; the browser remembers from then on.
+const SECRET := "UUDDLRLRBA"
+const SECRET_CORNER := Rect2(-50.6, 85.0, 3.2, 11.6)   # x, z: H7's last 11 m (layout_mall.json)
+var _secret_buf := ""
+
+func _secret_tok(e: InputEvent) -> String:
+	if e is InputEventKey and e.pressed and not e.echo:
+		return {KEY_UP: "U", KEY_DOWN: "D", KEY_LEFT: "L", KEY_RIGHT: "R", KEY_B: "B", KEY_A: "A"}.get(e.physical_keycode, "")
+	if e is InputEventJoypadButton and e.pressed:
+		return {JOY_BUTTON_DPAD_UP: "U", JOY_BUTTON_DPAD_DOWN: "D", JOY_BUTTON_DPAD_LEFT: "L", JOY_BUTTON_DPAD_RIGHT: "R",
+			JOY_BUTTON_B: "B", JOY_BUTTON_A: "A"}.get(e.button_index, "")
+	return ""
+
+func _secret_input(e: InputEvent) -> void:
+	var tk := _secret_tok(e)
+	if tk == "": return
+	_secret_buf = (_secret_buf + tk).right(SECRET.length())
+	if _secret_buf != SECRET: return
+	_secret_buf = ""
+	if not SECRET_CORNER.has_point(Vector2(position.x, position.z)):
+		return
+	print("owner: secret code at ", position)
+	if not OS.has_feature("web"):
+		return
+	if _light_owner:
+		_say("Editor is already on in this browser")
+		return
+	var cam_s := "%.2f,%.2f,%.1f,%.1f" % [position.x, position.z, rad_to_deg(yaw), rad_to_deg(pitch)]
+	_say("Editor unlocked")
+	var js := "(function(){try{localStorage.setItem('southland-editor','1')}catch(e){}var u=new URL(location.href);var p=u.searchParams;"
+	js += "p.set('cam','%s');%s" % [cam_s, ("p.set('wing','%d');" % wing) if wing != 0 else ""]
+	js += "setTimeout(function(){if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}},900)})()"
+	JavaScriptBridge.eval(js, true)
+
+## A short line at the bottom of the screen for a couple of seconds.
+func _say(t: String) -> void:
+	var l := Label.new()
+	l.text = t
+	l.add_theme_font_size_override("font_size", 26)
+	l.add_theme_color_override("font_color", Color(1, 0.95, 0.75))
+	l.add_theme_color_override("font_outline_color", Color(0, 0, 0, 0.85))
+	l.add_theme_constant_override("outline_size", 6)
+	l.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	l.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
+	l.position = Vector2(get_viewport().get_visible_rect().size.x * 0.5 - 200, get_viewport().get_visible_rect().size.y - 90)
+	l.size = Vector2(400, 40)
+	hud.get_parent().add_child(l)
+	var tw := create_tween()
+	tw.tween_interval(1.6)
+	tw.tween_property(l, "modulate:a", 0.0, 0.5)
+	tw.tween_callback(l.queue_free)
 
 func _look(d: Vector2) -> void:
 	yaw -= d.x

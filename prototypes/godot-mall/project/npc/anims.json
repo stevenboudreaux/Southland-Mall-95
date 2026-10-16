@@ -285,6 +285,21 @@
 			"loop": false,
 			"src": "excited"
 		},
+		"forward_jump": {
+			"drift_m": 1.28,
+			"hips0": [
+				-0.002,
+				0.011
+			],
+			"hips_y": [
+				0.97,
+				0.97
+			],
+			"kind": "once",
+			"len": 2.433,
+			"loop": false,
+			"src": "forward_jump"
+		},
 		"happy_hands": {
 			"drift_m": 0.0,
 			"hips0": [
@@ -378,15 +393,15 @@
 		"idle": {
 			"drift_m": 0.0,
 			"hips0": [
-				0.0,
+				0.002,
 				0.002
 			],
 			"hips_y": [
-				0.98,
-				0.98
+				0.99,
+				0.99
 			],
 			"kind": "loop",
-			"len": 10.0,
+			"len": 8.333,
 			"loop": true,
 			"src": "idle"
 		},
@@ -419,6 +434,27 @@
 			"len": 8.333,
 			"loop": true,
 			"src": "mloco_idle"
+		},
+		"jog": {
+			"dir": [
+				1.0,
+				0.04
+			],
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				0.003
+			],
+			"hips_y": [
+				0.96,
+				0.96
+			],
+			"in_place": true,
+			"kind": "walk",
+			"len": 0.833,
+			"loop": true,
+			"mps": 2.512,
+			"src": "jog_forward"
 		},
 		"look": {
 			"drift_m": 0.0,
@@ -645,6 +681,128 @@
 			"loop": false,
 			"src": "rallying"
 		},
+		"run": {
+			"dir": [
+				0.0,
+				0.0
+			],
+			"drift_m": 0.0,
+			"hips0": [
+				0.001,
+				0.01
+			],
+			"hips_y": [
+				0.92,
+				0.92
+			],
+			"in_place": true,
+			"kind": "walk",
+			"len": 0.7,
+			"loop": true,
+			"mps": 4.555,
+			"src": "running"
+		},
+		"run_jump": {
+			"dir": [
+				0.0,
+				1.0
+			],
+			"drift_m": 4.31,
+			"hips0": [
+				-0.004,
+				0.005
+			],
+			"hips_y": [
+				0.86,
+				0.86
+			],
+			"kind": "walk",
+			"len": 0.9,
+			"loop": true,
+			"mps": 4.79,
+			"src": "running_jump"
+		},
+		"run_look_back": {
+			"dir": [
+				0.91,
+				-0.43
+			],
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				-0.002
+			],
+			"hips_y": [
+				0.88,
+				0.88
+			],
+			"in_place": true,
+			"kind": "walk",
+			"len": 0.767,
+			"loop": true,
+			"mps": 3.053,
+			"src": "look_behind_run"
+		},
+		"run_to_stop": {
+			"drift_m": 2.59,
+			"hips0": [
+				0.001,
+				0.019
+			],
+			"hips_y": [
+				0.89,
+				1.03
+			],
+			"kind": "once",
+			"len": 1.8,
+			"loop": false,
+			"src": "run_to_stop"
+		},
+		"run_to_turn": {
+			"drift_m": 3.92,
+			"hips0": [
+				-0.003,
+				0.021
+			],
+			"hips_y": [
+				0.86,
+				0.94
+			],
+			"kind": "once",
+			"len": 2.267,
+			"loop": false,
+			"src": "running_to_turn"
+		},
+		"run_turn_r": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				0.003
+			],
+			"hips_y": [
+				0.84,
+				0.84
+			],
+			"kind": "once",
+			"len": 0.767,
+			"loop": false,
+			"src": "running_right_turn"
+		},
+		"search_pockets": {
+			"drift_m": 0.0,
+			"hips0": [
+				0.0,
+				0.003
+			],
+			"hips_y": [
+				0.99,
+				0.99
+			],
+			"kind": "loop",
+			"len": 5.0,
+			"loop": true,
+			"src": "searching_pockets"
+		},
 		"secret": {
 			"drift_m": 0.0,
 			"hips0": [
@@ -678,15 +836,15 @@
 		"sit": {
 			"drift_m": 0.0,
 			"hips0": [
-				-0.002,
-				0.013
+				0.003,
+				0.0
 			],
 			"hips_y": [
-				0.55,
-				0.55
+				0.58,
+				0.58
 			],
 			"kind": "loop",
-			"len": 7.0,
+			"len": 9.567,
 			"loop": true,
 			"src": "sitting"
 		},
@@ -704,6 +862,51 @@
 			"len": 2.1,
 			"loop": true,
 			"src": "sitting_2"
+		},
+		"sit_disbelief": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				0.016
+			],
+			"hips_y": [
+				0.6,
+				0.6
+			],
+			"kind": "loop",
+			"len": 4.633,
+			"loop": true,
+			"src": "sitting_disbelief"
+		},
+		"sit_f": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.009,
+				-0.009
+			],
+			"hips_y": [
+				0.57,
+				0.57
+			],
+			"kind": "loop",
+			"len": 0.033,
+			"loop": true,
+			"src": "female_sitting_pose"
+		},
+		"sit_f2": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.001,
+				0.0
+			],
+			"hips_y": [
+				0.53,
+				0.53
+			],
+			"kind": "loop",
+			"len": 0.033,
+			"loop": true,
+			"src": "female_sitting_pose_2"
 		},
 		"sit_idle_2": {
 			"drift_m": 0.0,
@@ -749,6 +952,21 @@
 			"len": 6.4,
 			"loop": true,
 			"src": "sitting_idle_4"
+		},
+		"sit_m": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.002,
+				-0.001
+			],
+			"hips_y": [
+				0.6,
+				0.6
+			],
+			"kind": "loop",
+			"len": 0.033,
+			"loop": true,
+			"src": "male_sitting_pose"
 		},
 		"sit_rub_arm": {
 			"drift_m": 0.0,
@@ -825,6 +1043,26 @@
 			"loop": false,
 			"src": "sit_to_stand"
 		},
+		"sprint": {
+			"dir": [
+				0.0,
+				1.0
+			],
+			"drift_m": 3.19,
+			"hips0": [
+				0.026,
+				0.008
+			],
+			"hips_y": [
+				0.89,
+				0.89
+			],
+			"kind": "walk",
+			"len": 0.533,
+			"loop": true,
+			"mps": 5.973,
+			"src": "sprint"
+		},
 		"stand_to_sit": {
 			"drift_m": 0.48,
 			"hips0": [
@@ -854,6 +1092,36 @@
 			"len": 1.3,
 			"loop": false,
 			"src": "holding_turn_right"
+		},
+		"stumble_back": {
+			"drift_m": 1.84,
+			"hips0": [
+				-0.003,
+				-0.001
+			],
+			"hips_y": [
+				0.94,
+				0.12
+			],
+			"kind": "once",
+			"len": 3.333,
+			"loop": false,
+			"src": "stumble_backwards"
+		},
+		"surprised": {
+			"drift_m": 0.0,
+			"hips0": [
+				-0.027,
+				0.037
+			],
+			"hips_y": [
+				0.93,
+				0.93
+			],
+			"kind": "once",
+			"len": 4.0,
+			"loop": false,
+			"src": "surprised"
 		},
 		"talk": {
 			"drift_m": 0.0,
@@ -959,6 +1227,21 @@
 			"len": 4.233,
 			"loop": true,
 			"src": "thinking"
+		},
+		"turn_to_run": {
+			"drift_m": 3.08,
+			"hips0": [
+				-0.003,
+				-0.007
+			],
+			"hips_y": [
+				0.93,
+				0.85
+			],
+			"kind": "once",
+			"len": 1.7,
+			"loop": false,
+			"src": "turn_to_running"
 		},
 		"walk_bag": {
 			"dir": [
