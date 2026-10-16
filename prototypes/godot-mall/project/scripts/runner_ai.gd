@@ -37,10 +37,10 @@ const MGR_PATH := [
 	[Vector3(-4.0, 0, 72.0), ""], [Vector3(-4.0, 0, 79.4), "end"]]
 # Beat 2: Saadi's second window → its door (past you) → the court → the Concourse → Wicks 'N'
 # Sticks' door bay → between its tiered tables and the counter → the back door.
-const SAADI_SPOT := Vector3(2.8, 0.0, 72.7)
+const SAADI_SPOT := Vector3(2.8, 0.0, 72.05)   # 0.65 m in from the platform: the court pillar hid him
 const SAADI_FACE := Vector3(-1, 0, 0)
 const SAADI_PATH := [
-	[Vector3(3.9, 0, 72.5), "in"], [Vector3(3.9, 0, 70.0), "in"], [Vector3(0.6, 0, 70.0), "in"],
+	[Vector3(3.9, 0, 72.0), "in"], [Vector3(3.9, 0, 70.0), "in"], [Vector3(0.6, 0, 70.0), "in"],
 	[Vector3(-6.0, 0, 64.0), ""], [Vector3(-18.0, 0, 56.5), ""], [Vector3(-29.0, 0, 53.5), ""],
 	[Vector3(-32.2, 0, 49.8), ""], [Vector3(-32.3, 0, 46.8), "in"], [Vector3(-32.6, 0, 40.4), "in"],
 	[Vector3(-36.0, 0, 39.9), "in"], [Vector3(-36.0, 0, 36.7), "end"]]
