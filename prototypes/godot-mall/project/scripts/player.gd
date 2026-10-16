@@ -146,6 +146,12 @@ func _ready() -> void:
 	if OS.has_feature("web"):
 		rg.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('rougarou') || ''"))
 	get_parent().add_child.call_deferred(rg)
+	# the shoppers, the mall's crowd (scripts/npcs.gd; Steven, Oct 15 2026)
+	var np = load("res://scripts/npcs.gd").new()
+	np.name = "Shoppers"; np.player = self
+	if OS.has_feature("web"):
+		np.force = str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('npcs') || ''"))
+	get_parent().add_child.call_deferred(np)
 	# the Stockrooms, behind Woolworth's back corner (scripts/stockrooms.gd; Steven, Oct 15 2026)
 	if wing == 1 or wing == 0:
 		var sr = load("res://scripts/stockrooms.gd").new()

@@ -31,6 +31,8 @@ var zones = {}             # id -> zone dict
 var obstacles = []
 var fx_obstacles = []     # fixtures (benches, planters, trash cans): only block when shown
 var signs = []             # owner-editable signs (scripts/signs.gd), written to gen/signs.json
+var mannequins = []        # window spots for the NPC mannequins (scripts/npcs.gd), gen/mannequins.json
+var machines = []          # Pocket Change's machines: stand spot and facing (scripts/npcs.gd), gen/machines.json
 var fx = false            # while true, geometry goes to the switchable "fixtures" mesh
 var cur_color = Color.WHITE
 var atlas_index = {}       # store id -> atlas cell
@@ -2346,6 +2348,12 @@ func build():
 	var sf = FileAccess.open(GEN + "signs.json", FileAccess.WRITE)
 	sf.store_string(JSON.stringify({"signs": signs}))
 	sf.close()
+	var mf = FileAccess.open(GEN + "mannequins.json", FileAccess.WRITE)
+	mf.store_string(JSON.stringify({"mannequins": mannequins}))
+	mf.close()
+	var mc = FileAccess.open(GEN + "machines.json", FileAccess.WRITE)
+	mc.store_string(JSON.stringify({"machines": machines}))
+	mc.close()
 	var cf = FileAccess.open(GEN + "collide.json", FileAccess.WRITE)
 	cf.store_string(JSON.stringify({"static": obstacles, "fixtures": fx_obstacles}))
 	cf.close()

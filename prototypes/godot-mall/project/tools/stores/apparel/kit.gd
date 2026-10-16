@@ -216,7 +216,18 @@ static func fitting_rooms(b, a, t, n, u0, u1, d_back, deep, count, door_mat = "a
 ## group: the dynamic mesh group (default "ap_small", all the mall's forms in one mesh); the
 ## Rougarou's stand-in form at Merry-Go-Round has its own so the game can hide it.
 static func mannequin(b, c, facing, top_col, bot_col, s = 1.0, group = "ap_small"):
+	# Since Demo 36 the window forms are people: a frozen NPC skin (scripts/npcs.gd) stands on
+	# the recorded spot instead of this cylinder figure (Steven, Oct 15 2026 17:29). The
+	# Rougarou's "rg_mannequin" stand-in keeps its form (scripts/rougarou_ai.gd hides it).
 	var S = group
+	if group == "ap_small" and "mannequins" in b:
+		b.mannequins.append({"pos": [snappedf(c.x, 0.001), snappedf(c.y, 0.001), snappedf(c.z, 0.001)],
+			"face": [snappedf(facing.x, 0.001), snappedf(facing.z, 0.001)], "s": s, "top": top_col, "bot": bot_col})
+		b.cur_color = Color("#3a3a3e")
+		b.cyl(S, "ap_mq", c, 0.18, 0.18, 0.02, 12, true, false, true)
+		b.cur_color = Color.WHITE
+		ob(b, c - Vector3(0.25, 0, 0.25), c + Vector3(0.25, 0, 0.25), 0.05)
+		return
 	var r = facing.cross(UP)
 	b.cur_color = Color("#3a3a3e")
 	b.cyl(S, "ap_mq", c, 0.18, 0.18, 0.02, 12, true, false, true)

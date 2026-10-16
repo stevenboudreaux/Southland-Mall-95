@@ -274,6 +274,11 @@ static func unbake_small(b):
 static func put(b, a, t, n, mod, u, d, dir, opts = {}, pad = 0.25):
 	var f = {"+d": -n, "-d": n, "+u": t, "-u": -t}[dir]
 	var M = load("res://tools/stores/pocket_change/%s.gd" % mod)
+	if "machines" in b:
+		# where a player stands and faces at this machine, for the NPC players (scripts/npcs.gd)
+		var sp = P(a, t, n, u, 0, d)
+		b.machines.append({"mod": mod, "pos": [snappedf(sp.x, 0.001), snappedf(sp.y, 0.001), snappedf(sp.z, 0.001)],
+			"face": [snappedf(f.x, 0.001), snappedf(f.z, 0.001)], "opts": opts})
 	var k0 = b.obstacles.size()
 	# one mesh per 10 m of the room, so the ones out of view are culled
 	M.build(b, "pc%d_mach" % int(clamp(d / 10.0, 0, 3)), P(a, t, n, u, 0, d), f, opts)
