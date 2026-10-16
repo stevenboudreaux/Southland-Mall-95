@@ -41,7 +41,9 @@ var cfg := {
 		"shopper": {"w": 0.4, "speed_mps": [0.95, 1.35], "goals": {"store": 0.5, "window": 0.25, "hall": 0.25}, "shop_s": [20.0, 50.0]},
 		"heavy": {"w": 0.2, "speed_mps": [0.85, 1.2], "goals": {"store": 0.75, "window": 0.15, "hall": 0.1}, "shop_s": [35.0, 80.0]}},
 	"arcade_fill": 0.5, "arcade_mods": ["video", "driver", "crane"], "arcade_hands_m": [0.42, 0.97, 0.16], "arcade_yield_m": 0.9,
+	"unique": false, "arcade_max": 999,
 }
+var in_use := {}              # unique mode: skin id -> true while a shopper or player wears it
 var players := []             # arcade: {body, pos, face, left, right, t}
 var mannequins := []          # frozen bodies in the windows (gen/w*/mannequins.json)
 var light_mode := ""
@@ -96,6 +98,8 @@ func _ready() -> void:
 		disabled = true; return
 	if force.is_valid_int():
 		cfg.count = int(force)
+	var dt: Array = cfg.get("day_tint", [1, 1, 1])
+	NpcBody.tint = Color(float(dt[0]), float(dt[1]), float(dt[2]))
 	rows = player.walk_rows
 	map_scale = player.map_scale
 	map_origin = player.map_origin
@@ -206,6 +210,15 @@ func _load_skins() -> void:
 		skins.append(e); total += w; weights.append(total)
 
 func _pick_skin() -> Dictionary:
+	if bool(cfg.get("unique", false)):
+		# one of each character (Steven, Oct 16 2026: "just 1 of each character for now")
+		var free := []
+		for e in skins:
+			if not in_use.has(str(e.id)): free.append(e)
+		if free.is_empty(): return {}
+		var e: Dictionary = free[rng.randi() % free.size()]
+		in_use[str(e.id)] = true
+		return e
 	var r: float = rng.randf() * float(weights[weights.size() - 1])
 	for i in range(weights.size()):
 		if r <= weights[i]: return skins[i]
@@ -265,6 +278,7 @@ func _light_check() -> void:
 ## Window mannequins: the spots the builder recorded (gen/w*/mannequins.json), each with a
 ## frozen body from `mannequin_skins`, facing out of the window the way the form did.
 func _place_mannequins() -> void:
+	if not bool(cfg.get("mannequins", true)): return   # off since Oct 16 2026 (Steven: "delete all the mannequin NPCs")
 	var gen := str(get_tree().current_scene.get_meta("gen", "res://gen/"))
 	var path := gen + "mannequins.json"
 	if not FileAccess.file_exists(path): return
@@ -304,12 +318,15 @@ func _place_players() -> void:
 		list.append(m)
 	list.shuffle()
 	var n := int(round(list.size() * float(cfg.arcade_fill)))
+	n = mini(n, int(cfg.get("arcade_max", 999)))
+	if bool(cfg.get("unique", false)): n = mini(n, skins.size())
 	var hm: Array = cfg.arcade_hands_m
 	var deck := skins.duplicate(); deck.shuffle()    # dealt round, so neighbours differ
 	for i in range(mini(n, list.size())):
 		var m: Dictionary = list[i]
 		var b := NpcBody.new()
 		b.set_skin(deck[i % deck.size()])
+		in_use[str(deck[i % deck.size()].id)] = true
 		add_child(b)
 		var pa: Array = m.pos; var fa: Array = m.face
 		var pos := Vector3(float(pa[0]), 0, float(pa[2]))
@@ -357,6 +374,7 @@ func _balance() -> void:
 	var dens := _density(h)
 	want = int(round(float(cfg.count) * dens))
 	if force.is_valid_int() and int(force) > 0: want = int(force)
+	if bool(cfg.get("unique", false)): want = mini(want, skins.size() - players.size())
 	var tries := 0
 	while shoppers.size() < want and tries < (200 if spawn_all_now else 20):
 		tries += 1
@@ -401,9 +419,11 @@ func _spawn() -> Shopper:
 		if not spawn_all_now and _seen(p): continue
 		ok = true; break
 	if not ok: return null
+	var e := _pick_skin()
+	if e.is_empty(): return null
 	var s := Shopper.new()
 	s.body = NpcBody.new()
-	s.body.set_skin(_pick_skin())
+	s.body.set_skin(e)
 	add_child(s.body)
 	s.body.set_self_light(float(cfg.self_light_night if light_mode == "night" else cfg.self_light_day))
 	s.pos = p
@@ -430,6 +450,7 @@ func _pick_type() -> Dictionary:
 
 func _remove(s: Shopper) -> void:
 	shoppers.erase(s)
+	in_use.erase(s.body.id)
 	s.body.queue_free()
 
 ## The next goal: a store to go into, a window to look in, or a far point of the hall.

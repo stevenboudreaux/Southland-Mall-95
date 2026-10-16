@@ -107,7 +107,7 @@ func _ready() -> void:
 		if str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('refl') || ''")) == "0":
 			buttons[0].button_pressed = false
 		var tq := str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('time') || ''"))
-		if tq == "day":
+		if tq == "day" or _day_only():
 			buttons[2].button_pressed = false
 		elif tq == "night":
 			buttons[2].button_pressed = true
@@ -193,7 +193,7 @@ func _build_hud() -> void:
 	if FileAccess.file_exists("res://scripts/lighting.json"):
 		var lj = JSON.parse_string(FileAccess.get_file_as_string("res://scripts/lighting.json"))
 		if lj is Dictionary:
-			night0 = str(lj.get("default", "night")) != "day"
+			night0 = str(lj.get("default", "night")) != "day" and not bool(lj.get("day_only", false))
 	_add_button("Lighting", night0, 88, func(night: bool):
 		var rt = get_tree().current_scene.get_node_or_null("Runtime")
 		if rt:
@@ -208,6 +208,8 @@ func _build_hud() -> void:
 		scn = get_parent()
 	if scn and not ResourceLoader.exists(load("res://scripts/time_of_day.gd").lightmap_path(scn, "day")):
 		buttons[2].visible = false
+	if _day_only():
+		buttons[2].visible = false     # day lighting only for now: no switch (scripts/lighting.json day_only)
 	_cl = cl
 	hint = Label.new()
 	hint.text = "Drag left side to walk · drag right side to look"
@@ -231,6 +233,12 @@ func _build_hud() -> void:
 	cl.add_child(stick)
 
 var _cl: CanvasLayer
+
+## scripts/lighting.json "day_only": the mall stays in its day lighting (Steven, Oct 16 2026).
+func _day_only() -> bool:
+	if not FileAccess.file_exists("res://scripts/lighting.json"): return false
+	var lj = JSON.parse_string(FileAccess.get_file_as_string("res://scripts/lighting.json"))
+	return lj is Dictionary and bool(lj.get("day_only", false))
 
 # ---- the owner's lighting panel (web/shell.html mallLight; scripts/lighting.json)
 var _light_owner := false

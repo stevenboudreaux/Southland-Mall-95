@@ -267,12 +267,16 @@ func set_preset(night: bool) -> void:
 ## Which bake an hour uses.
 func mode_at(h: float) -> String:
 	var L := lighting()
+	if bool(L.get("day_only", false)): return "day"
 	return "day" if h >= float(L.get("day_from", 6.5)) and h < float(L.get("day_to", 18.75)) else "night"
 
 ## Light the mall for hour h (5-24, 12 = noon) at brightness b (1 = as baked).
 func set_clock(h: float, b: float) -> void:
-	hour = h; bright = b
 	var L := lighting()
+	if bool(L.get("day_only", false)):
+		# day lighting only for now (Steven, Oct 16 2026): the clock stays inside the day bake's hours
+		h = clampf(h, float(L.get("day_from", 6.5)), float(L.get("day_to", 18.75)) - 0.01)
+	hour = h; bright = b
 	var m := mode_at(h)
 	if m != mode or _env_base == null:
 		set_time(m)

@@ -45,3 +45,5 @@ prototypes/godot-mall/project/tex/standin/*.stamp
 # === Godot NPC sources (the bought character FBX pack; see production/npc-sources.md) ===
 prototypes/godot-mall/project/npc_src/chars/
 prototypes/godot-mall/project/npc_src/mixamo/
+prototypes/godot-mall/project/npc_src/mixamo_clips/
+prototypes/godot-mall/project/npc_src/ref/

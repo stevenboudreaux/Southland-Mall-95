@@ -12,6 +12,10 @@ extends Node3D
 static var _libs := {}          # ratio (rounded) -> AnimationLibrary
 static var _base_lib: AnimationLibrary
 static var _manifest := {}
+## The day light's colour on a white surface in the bake (Sears' white interior reads 214/206/193
+## where an untinted white NPC shirt read 220/221/221): skins are multiplied by it so people take
+## the mall's warm day colour on top of the lightmap probes (scripts/npcs.json day_tint).
+static var tint := Color(1, 1, 1)
 
 var id := ""
 var entry := {}
@@ -40,6 +44,11 @@ func set_skin(e: Dictionary) -> void:
 		push_warning("npc_body: no skin " + str(e.scn)); return
 	skin = ps.instantiate()
 	add_child(skin)
+	if tint != Color(1, 1, 1):
+		for mi in skin.find_children("*", "MeshInstance3D", true, false):
+			for i in range(mi.mesh.get_surface_count()):
+				var mat = mi.mesh.surface_get_material(i)
+				if mat is StandardMaterial3D: mat.albedo_color = tint
 	var m := manifest()
 	walk_mps = float(m.get("walk_mps", 1.765))
 	var ratio := float(e.hips) / float(m.get("anim_hips", 1.013))
@@ -53,7 +62,8 @@ func set_skin(e: Dictionary) -> void:
 
 ## A little light of their own, so people in dark windows and at night are not black: NPCs are
 ## dynamic and get only the lightmap probes (the Demo 11 mannequin lesson). The albedo is used
-## as the emission texture, scaled by `k` (scripts/npcs.json self_light_day / _night).
+## as the emission texture, scaled by `k` (scripts/npcs.json self_light_day / _night). Off by day
+## since Oct 16 2026: the flat glow ignored the mall's shading and warm light (Steven's video).
 func set_self_light(k: float) -> void:
 	if skin == null: return
 	for mi in skin.find_children("*", "MeshInstance3D", true, false):

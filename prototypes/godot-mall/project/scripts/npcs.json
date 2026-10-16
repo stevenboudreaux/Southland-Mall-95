@@ -1,5 +1,5 @@
 {
-	"count": 24,
+	"count": 17,
 	"hours": {
 		"6": 0.1,
 		"8": 0.3,
@@ -64,7 +64,7 @@
 		"Ch36",
 		"Ch17"
 	],
-	"self_light_day": 0.18,
+	"self_light_day": 0.0,
 	"self_light_night": 0.3,
 	"mannequin_skins": [
 		"Ch36"
@@ -135,5 +135,13 @@
 		0.16
 	],
 	"arcade_yield_m": 0.9,
-	"arcade_hands": true
+	"arcade_hands": true,
+	"unique": true,
+	"arcade_max": 5,
+	"day_tint": [
+		1.0,
+		0.96,
+		0.9
+	],
+	"mannequins": false
 }
