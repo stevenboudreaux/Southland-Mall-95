@@ -39,3 +39,6 @@ Steven: "a corner shop like the first image so neon goes on both sides", built w
 
 ## Files
 `tools/stores/small/store2.gd` (`karmelkorn`, `kk_sign`). The sign: `tools/stores/signs/kk_trace.py`, `make_kk.py`, `kk_sign.gd`, `kk_only.gd`; preview `tools/qa/kk_preview.gd`. `kk_letters.json` (from `make_signs.py`) is no longer used.
+
+## Customers (Oct 20, 2026)
+Steven: "don't have any NPCs congregate inside KaramelKorn either." Karmelkorn is no longer a store or window goal for the crowd (`npcs.json` "no_browse").

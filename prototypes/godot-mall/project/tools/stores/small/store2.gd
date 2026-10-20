@@ -83,10 +83,8 @@ static func radio_shack(b, a, t, n, W, D, rng):
 		K.lbox(b, G, "md_black", P(a, t, n, 2.1, 0, 0.15 + k * 0.35), t, -n, 0.0, 0.0, 0.0, W - 2.3, 0.5 + k * 0.35, 0.35)
 		K.stock_row(b, G, P(a, t, n, W - 0.2, 0, 0.15 + k * 0.35), -t, n, 0.02, W - 2.3, 0.5 + k * 0.35, 0.3, -0.05, "boxes", rng)
 	K.ob(b, P(a, t, n, 2.0, 0, 0.1), P(a, t, n, W, 0, 0.9), 0.05)
-	M2.shell2(b, "s6r_shell", a, t, n, W, D, 3.0, 0.0, "a2_carpet_grey", 1.0, "md_wall", "kb_ceiling", [2.0, W - 2.6], W - 1.2)
-	S1.side_bays(b, G, a, t, n, W, 1.2, D - 2.5, ["acc"], ["boxes", "acc"], rng, "kb_pegboard")
-	K.gondola(b, G, G, P(a, t, n, W * 0.62, 0, 6.0), -t, n, 1.22, 2, [0.45, 0.85, 1.25], ["acc", "boxes"], rng, 0.3)
-	K.counter(b, G, "s6r_small", P(a, t, n, W - 1.0, 0, D - 2.2), -t, n, W - 2.4, "md_bb_counter", rng)
+	# the inside, from the 1999 store video Steven sent (Oct 20, 2026): tools/stores/small/radio_shack.gd
+	load("res://tools/stores/small/radio_shack.gd").inside(b, a, t, n, W, D, rng)
 
 # ------------------------------------------------------------------ B. Dalton
 ## A deep oxblood fascia box with the flowing white script, recessed downlights under it, cream
@@ -273,6 +271,30 @@ static func fill_mat(m, key, b):
 			K.emit_tex(m, 0.3)
 		"mauve":
 			m.albedo_color = Color("#8a5a78"); m.roughness = 0.4; m.metallic_specular = 0.5
+		"rs_ceiling":
+			# the dark charcoal lay-in ceiling (video 1:00, 6:12)
+			m.albedo_texture = b.tex("kb/ceiling.png"); m.roughness = 0.9
+			m.albedo_color = Color(0.3, 0.3, 0.32)
+		"rs_red":
+			m.albedo_color = Color("#c41c22"); m.roughness = 0.45
+		"rs_shelf":
+			m.albedo_color = Color("#b8b8b6"); m.roughness = 0.4; m.metallic_specular = 0.5
+		"rs_black":
+			m.albedo_color = Color("#18181a"); m.roughness = 0.4
+		"rs_navy":
+			m.albedo_color = Color("#1e2c62"); m.roughness = 0.7
+		"rs_box":
+			m.albedo_color = Color("#2a3a9a"); m.roughness = 0.6
+		"rs_valance":
+			m.albedo_texture = b.tex("sm/rs_valance.png"); m.roughness = 0.6
+		"rs_signs":
+			m.albedo_texture = b.tex("sm/rs_signs.png"); m.roughness = 0.5
+			K.emit_tex(m, 0.5)
+		"rs_cards":
+			m.albedo_texture = b.tex("sm/rs_cards.png"); m.roughness = 0.6
+		"rs_screen":
+			m.albedo_texture = b.tex("sm/rs_screen.png"); m.roughness = 0.2
+			K.emit_tex(m, 0.9)
 		"silver":
 			m.albedo_color = Color("#b4b8c0"); m.metallic = 0.35; m.roughness = 0.35
 			# probe-lit (the letters are dynamic): metal reads near black at night without its own glow

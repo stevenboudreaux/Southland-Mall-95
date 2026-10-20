@@ -27,7 +27,7 @@ All packaging, food photos and menu lines are invented. The only real name shown
 - **Fascia.** Dark maroon-brown across the whole 36 m, 3.0–4.4 m high, standing 0.25 m out. White wall above.
 - **Letters.** WOOLWORTH in lit orange-red channel letters straight on the fascia over the middle of the store's opening: 0.78 m capitals, 8.1 m across, the photo's letter widths and spacing with Coustard Black glyphs (OFL; the photo is too soft to trace), dark returns 12 cm deep, a trim cap, and a halo on the fascia. Built by `tools/stores/signs/` (wl_logo.json, channel.gd).
 - **Superseded (Oct 7):** the red panel fascia and the white light-box with Roboto Slab letters.
-- **The restaurant's front (u 0–9).** A white bulkhead, glass in aluminium frames, a 1.6 m door opening with both leaves held open, and a "Restaurant" plate (red letters on cream) on the fascia.
+- **The restaurant's front (u 0–9).** A white bulkhead, glass in aluminium frames, and a 1.75 m door opening with both leaves held open at the left end (u 7.0–8.75, next to the store's pier; Steven, Oct 20: "the new opening that i drew"). Before Oct 20 the door was in the middle (u 3.7–5.3). Red "Restaurant" channel letters on the fascia.
 - **Cream piers** between the restaurant and the store (u 9–9.6) and at the store's far end (u 35.55–36).
 - **The store's front (u 9.6–36).** Wide open, with a white soffit, downlights, a clock and an exit sign just inside (video 5:34).
 
@@ -48,10 +48,17 @@ All packaging, food photos and menu lines are invented. The only real name shown
   - Left back: housewares, small appliances and linens.
   - Behind the restaurant: greeting cards and party goods.
 - **The restaurant (u 0–9, d 0–14).**
-  - **Walls and light.** A warm, dimmer room. Beige walls over a wood-slat wainscot. Lattice wallpaper panels in wood frames, with brass sconces and globe shades. Framed food photos.
-  - **Seating.** Five orange-red vinyl booths along the right wall, and white pedestal tables with orange-red chairs.
-  - **Counter.** A counter across the back with food-photo panels on its front, a pie case and a register. Behind it, a stainless back bar with a soda fountain, a backlit black menu board and two monitors (video 5:40–6:25).
+  - **Walls and light.** A warm, dimmer room. Beige walls over a wood-slat wainscot, brass sconces with globe shades, and framed food photos.
+  - **Layout (Steven, Oct 20, from his marked-up screenshot and three reference photos).**
+    - **The lunch counter.** It runs down the right side from d 12.8 to d 3.6. Its front is wood-grain panels between black pilasters, under a black top with a steel edge and above a chrome foot rail. At the front it curves round a quarter circle toward the window and ends at the right wall (his curved-end photo).
+    - **The stools.** Eighteen chrome stools line the run and follow the curve. Each has an octagonal black foot, a coral or teal vinyl seat and a three-bar chrome back.
+    - **The back bar.** It stands against the right wall: stainless cabinets on cream tile with two brown stripes, under a strip of menu cards with 1995 prices (invented) and a stainless canopy. On it are a pie case, a five-tap soda fountain, a soft-serve machine, three green malt mixers, two coffee urns and stacked glasses.
+    - **Window booths.** Three booths run along the front glass, right of the door (u 1.75–6.9). Their benches are square to the glass with high channel-tufted backs, around a table on a pedestal (his window-booth photo).
+    - **Left wall.** Three booths sit between the door and the opening into the store (d 2.2–8.3). Steven said "right behind where the opening to the woolworth store is", but only 2.7 m of wall lies behind the opening; **to confirm**.
+    - **Middle.** Two pedestal tables with chairs.
+  - **Superseded Oct 20:** the five booths on the right wall, the lattice panels, the counter across the back with its menu board and monitors, and four of the six tables.
   - **Ways in.** From the store through a wood-framed opening with red "Restaurant" letters over it (video 7:37–7:49). From the mall through its own door.
+- **The Stockrooms door.** An outline of blue painter's tape on the back wall marks it, in the left back corner (u 34.97–35.8, 2.06 m tall). Steven, Oct 20, from his picture: two uprights, and a top strip laid across them that runs past both. The tape is probe-lit.
 - **Not built.** Shoppers and staff, the hanging sale cards, the soda cooler and film display (branded in the video), and a garden center (Steven: none).
 
 ## Files

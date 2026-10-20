@@ -17,6 +17,8 @@ const ROWS = {"games": [8, 0.305], "pc": [8, 0.305], "books": [8, 0.305], "acc":
 	"boxes": [8, 0.305], "hba": [8, 0.305], "linens": [8, 0.305], "candy": [8, 0.305], "gcards": [8, 0.305], "party": [8, 0.305],
 	# the Wave 5 small shops' sheets (tools/stores/small/paint.py)
 	"gifts": [8, 0.305], "candles": [8, 0.305],
+	# Radio Shack's sheets (tools/stores/small/paint_rs.py)
+	"rsphones": [8, 0.305], "rsboxes": [8, 0.305], "rsparts": [8, 0.305], "rsbatt": [8, 0.305],
 	# Kay-Bee's toy sheets (kb_merch_<cat>.png: 7 rows of 146 px for 0.35 m, kay_bee/paint_store.py)
 	"kb_dolls": [7, 0.35, 0.142578], "kb_action": [7, 0.35, 0.142578], "kb_vehicles": [7, 0.35, 0.142578], "kb_games": [7, 0.35, 0.142578],
 	"kb_preschool": [7, 0.35, 0.142578], "kb_sports": [7, 0.35, 0.142578]}

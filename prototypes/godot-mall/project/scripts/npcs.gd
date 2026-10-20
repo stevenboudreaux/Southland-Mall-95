@@ -26,7 +26,11 @@
 ## time and make her sit in one of those chairs ... don't put a stylist with them"): Regis is no
 ## longer a store or window goal for the crowd; instead one woman at a time walks in, sits in a
 ## random styling chair for a few minutes (stand-to-sit, a sitting loop, sit-to-stand) and walks
-## back out into the crowd; a while later another comes ("salon" in npcs.json).
+## back out into the crowd; a while later another comes ("salons" in npcs.json).
+## MasterCuts (Oct 20 2026, Steven: "make the logic of regis apply to mastercuts. only 1-2 women in
+## chair at a time, no other congregating here"; "don't have any NPCs congregate inside KaramelKorn
+## either"): the same salon logic with two slots, and "no_browse" keeps the crowd out of Regis,
+## MasterCuts and Karmelkorn (no store or window goals there).
 ## URL: ?npcs=0 turns them off, ?npcs=40 sets the count (tests, screenshots).
 extends Node
 
@@ -72,7 +76,7 @@ var stores := []              # {door, n, spots, name}
 var windows := []             # {door, n, spot, name}
 var benches := []             # {pos, face, shown}
 var hall_cells := []          # open cells 2+ m from walls (Vector2i)
-var salon := {}               # the Regis customer: {on, door, s (Shopper), chair, timer, sitting, clip}
+var salons := []             # salon slots: {on, c (its cfg), door, s (Shopper), chair, timer, sitting, clip}
 var shoppers := []
 var rt = null
 var want := 0
@@ -98,6 +102,7 @@ class Shopper:
 	var type_name := ""
 	var sex := "m"
 	var role := ""          # "", "drunk", "pair", "salon"
+	var sal = null          # the salon slot Dictionary
 	var pair = null         # the pair Dictionary
 	var slot := 0           # 0 / 1 in the pair
 	var gest_t := 5.0       # seconds to the next gesture while dwelling
@@ -290,10 +295,11 @@ func _load_places() -> void:
 		if not _open(door + n * 1.2): continue              # not in this wing (or walled)
 		var sid := str(e.get("store", ""))
 		var name := str(names.get(sid, {}).get("name", sid))
-		var sal: Dictionary = cfg.get("salon", {})
-		if name == str(sal.get("store", "")):
-			salon = {"on": true, "door": door, "s": null, "chair": -1, "timer": rng.randf_range(4.0, 12.0), "sitting": false, "clip": ""}
-		if name in sal.get("no_browse", []): continue
+		for sc in cfg.get("salons", []):
+			if name == str(sc.get("store", "")) and not _has_salon(name):
+				for k in int(sc.get("slots", 1)):
+					salons.append({"on": true, "c": sc, "door": door, "s": null, "chair": -1, "timer": rng.randf_range(4.0, 12.0) + k * rng.randf_range(20.0, 60.0), "sitting": false, "clip": ""})
+		if name in cfg.get("no_browse", []): continue
 		var spots := []
 		var depth := float(e.get("depth", 6.0))
 		for d in [2.5, 4.5, 7.0, 9.5]:
@@ -342,7 +348,8 @@ func _process(dt: float) -> void:
 		_balance()
 		_light_check()
 		_pairs_tick()
-		_salon_tick()
+		for sl in salons:
+			_salon_tick(sl)
 	for s in shoppers:
 		_step(s, dt)
 	for p in players:
@@ -616,50 +623,76 @@ func _on_gesture_done(s: Shopper, n: String) -> void:
 		s.pos = sp.stand; s.body.position = sp.stand
 		_pair_release(s)
 
-# ------------------------------------------------------------------ the Regis customer
-func _salon_face() -> Vector3:
-	var f: Array = cfg.salon.get("face", [1, 0])
+# ------------------------------------------------------------------ the salon customers
+## Regis has one slot, MasterCuts two (npcs.json "salons"); each slot sends one woman at a time
+## to a chair no other slot is using.
+func _has_salon(store: String) -> bool:
+	for sl in salons:
+		if str(sl.c.get("store", "")) == store: return true
+	return false
+
+func _salon_face(sl: Dictionary) -> Vector3:
+	var f: Array = sl.c.get("face", [1, 0])
 	return Vector3(float(f[0]), 0, float(f[1])).normalized()
 
-func _salon_seat() -> Vector3:
-	var c: Array = cfg.salon.chairs[int(salon.chair)]
+func _salon_seat(sl: Dictionary) -> Vector3:
+	var c: Array = sl.c.chairs[int(sl.chair)]
 	return Vector3(float(c[0]), 0, float(c[1]))
 
-func _salon_stand() -> Vector3:
-	return _salon_seat() + _salon_face() * float(cfg.salon.get("stand_m", 0.55))
+func _salon_stand(sl: Dictionary) -> Vector3:
+	return _salon_seat(sl) + _salon_face(sl) * float(sl.c.get("stand_m", 0.55))
 
-## Once a second: when the chairs are empty and the gap is over, a woman from the crowd (one the
-## player can't see, else a new one out of sight) is sent to a random chair.
-func _salon_tick() -> void:
-	if not salon.get("on", false) or salon.s != null: return
-	salon.timer -= 1.0
-	if salon.timer > 0.0: return
+## Once a second per slot: when the slot is empty and its gap is over, a woman from the crowd (one
+## the player can't see, else a new one out of sight) is sent to a random free chair.
+func _salon_tick(sl: Dictionary) -> void:
+	if not sl.get("on", false) or sl.s != null: return
+	sl.timer -= 1.0
+	if sl.timer > 0.0: return
+	var chairs: Array = sl.c.get("chairs", [])
+	var free_ch := []
+	for i in chairs.size():
+		var used := false
+		for o in salons:
+			if o != sl and o.s != null and o.c == sl.c and int(o.chair) == i: used = true
+		if not used: free_ch.append(i)
+	if free_ch.is_empty(): sl.timer = 10.0; return
 	var cand: Shopper = null
 	for s in shoppers:
 		if s.role == "" and s.sex == "f" and s.state in ["walk", "dwell"] and not s.body.busy():
-			if cand == null or (s.unseen > 1.0 and cand.unseen <= 1.0) or s.pos.distance_to(salon.door) < cand.pos.distance_to(salon.door):
+			if cand == null or (s.unseen > 1.0 and cand.unseen <= 1.0) or s.pos.distance_to(sl.door) < cand.pos.distance_to(sl.door):
 				cand = s
 	if cand == null:
 		var free := []
 		for e in skins:
 			if not in_use.has(str(e.id)) and _sex(str(e.id)) == "f": free.append(e)
-		if free.is_empty(): salon.timer = 10.0; return
+		if free.is_empty(): sl.timer = 10.0; return
 		cand = _new_shopper(free[rng.randi() % free.size()], _free_hall_point())
-		if cand == null: salon.timer = 5.0; return
+		if cand == null: sl.timer = 5.0; return
 		_pick_type(cand)
-	var chairs: Array = cfg.salon.get("chairs", [])
-	salon.chair = rng.randi() % chairs.size()
+	sl.chair = free_ch[rng.randi() % free_ch.size()]
 	cand.role = "salon"
-	salon.s = cand
+	cand.sal = sl
+	sl.s = cand
 	if not _salon_route(cand):
-		_salon_release(cand); salon.timer = 10.0
+		print("npcs: no route to ", sl.c.get("store", ""), " chair ", sl.chair)
+		_salon_release(cand); sl.timer = 10.0
 		return
-	print("npcs: salon customer ", cand.body.id, " to chair ", salon.chair)
+	print("npcs: salon customer ", cand.body.id, " to ", sl.c.get("store", ""), " chair ", sl.chair)
 
 ## A route to the spot in front of the chair: the walk grid to the nearest open cell, then the
 ## last step straight in (the chair itself is an obstacle on the grid).
 func _salon_route(s: Shopper) -> bool:
-	var stand := _salon_stand()
+	var stand := _salon_stand(s.sal)
+	# a narrow salon (MasterCuts) is cut off on the coarse grid by its own desk and chairs: walk to
+	# its "via" point inside the door, then straight along the free aisle to the chair
+	var via: Array = s.sal.c.get("via", [])
+	if not via.is_empty():
+		var v0 := Vector3(float(via[0]), 0, float(via[1]))
+		if not _route(s, v0): return false
+		s.path.append(Vector3(stand.x, 0, float(via[1])) if absf(stand.z - float(via[1])) > 0.05 else stand)
+		s.path.append(stand)
+		s.goal = {"type": "salon"}
+		return true
 	var best := Vector3.INF
 	for r in [0.0, 0.5, 1.0, 1.5]:
 		for a in range(8):
@@ -672,29 +705,33 @@ func _salon_route(s: Shopper) -> bool:
 	return true
 
 func _salon_gesture_done(s: Shopper, n: String) -> void:
+	var sl: Dictionary = s.sal
 	if n == "stand_to_sit":
-		var clip := _pick(cfg.salon.get("clips", ["sit_idle_2"]), "sit_idle_2")
-		salon.clip = clip
-		s.pos = _salon_seat()
+		var clip := _pick(sl.c.get("clips", ["sit_idle_2"]), "sit_idle_2")
+		sl.clip = clip
+		s.pos = _salon_seat(sl)
 		s.body.play(clip, 0.15)
-		s.body.place_at(_salon_seat(), clip)
-		s.body.position.y = float(cfg.salon.get("seat_y", 0.0))
-		var st: Array = cfg.salon.get("stay_s", [150, 330])
-		salon.timer = rng.randf_range(float(st[0]), float(st[1]))
-		salon.sitting = true
+		s.body.place_at(_salon_seat(sl), clip)
+		s.body.position.y = float(sl.c.get("seat_y", 0.0))
+		var st: Array = sl.c.get("stay_s", [150, 330])
+		sl.timer = rng.randf_range(float(st[0]), float(st[1]))
+		sl.sitting = true
 	elif n == "sit_to_stand":
-		s.body.position = _salon_stand(); s.body.position.y = 0.0
-		s.pos = _salon_stand()
+		s.body.position = _salon_stand(sl); s.body.position.y = 0.0
+		s.pos = _salon_stand(sl)
 		_salon_release(s)
 
-## Back into the crowd as an ordinary shopper; the chairs stay empty for a while.
+## Back into the crowd as an ordinary shopper; the slot stays empty for a while.
 func _salon_release(s: Shopper) -> void:
+	var sl: Dictionary = s.sal
 	s.role = ""
+	s.sal = null
 	s.state = "dwell"; s.timer = rng.randf_range(0.5, 2.0); s.goal = {"type": "start"}
 	s.body.play(_pick(cfg.idles.get(s.sex, ["idle"])))
-	salon.s = null; salon.sitting = false
-	var gp: Array = cfg.salon.get("gap_s", [20, 60])
-	salon.timer = rng.randf_range(float(gp[0]), float(gp[1]))
+	if sl == null: return
+	sl.s = null; sl.sitting = false
+	var gp: Array = sl.c.get("gap_s", [20, 60])
+	sl.timer = rng.randf_range(float(gp[0]), float(gp[1]))
 
 # ------------------------------------------------------------------ the general crowd
 ## How many people the hour wants, and spawn or retire unseen ones to get there.
@@ -803,6 +840,8 @@ func _pick_type(s: Shopper) -> void:
 		s.type_name = cfg.types.keys()[0]; s.type = cfg.types[s.type_name]
 
 func _remove(s: Shopper) -> void:
+	if s.sal != null:
+		s.sal.s = null; s.sal.sitting = false; s.sal.timer = 20.0
 	shoppers.erase(s)
 	in_use.erase(s.body.id)
 	s.body.queue_free()
@@ -867,8 +906,8 @@ func _arrive(s: Shopper) -> void:
 	match str(g.get("type", "")):
 		"salon":
 			s.state = "salon"
-			s.body.face(_salon_face())
-			s.pos = _salon_stand(); s.body.position = s.pos
+			s.body.face(_salon_face(s.sal))
+			s.pos = _salon_stand(s.sal); s.body.position = s.pos
 			s.body.gesture("stand_to_sit")
 		"pair":
 			s.state = "pairwait"
@@ -927,10 +966,10 @@ func _step(s: Shopper, dt: float) -> void:
 			if s.timer <= 0.0 and not s.body.busy():
 				_dwell_done(s)
 		"salon":
-			if salon.get("sitting", false) and not s.body.busy():
-				salon.timer -= dt
-				if salon.timer <= 0.0:
-					salon.sitting = false
+			if s.sal != null and s.sal.get("sitting", false) and not s.body.busy():
+				s.sal.timer -= dt
+				if s.sal.timer <= 0.0:
+					s.sal.sitting = false
 					s.body.gesture("sit_to_stand")
 		"pair":
 			if s.pair and str(s.pair.cur) == "chat":

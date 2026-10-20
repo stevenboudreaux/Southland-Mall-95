@@ -368,49 +368,97 @@
 		"head_no",
 		"rally"
 	],
-	"salon": {
-		"store": "REGIS HAIRSTYLISTS",
-		"no_browse": [
-			"REGIS HAIRSTYLISTS"
-		],
-		"chairs": [
-			[
-				-56.85,
-				62.45
+	"no_browse": [
+		"REGIS HAIRSTYLISTS",
+		"MASTERCUTS",
+		"KARMELKORN"
+	],
+	"salons": [
+		{
+			"store": "REGIS HAIRSTYLISTS",
+			"chairs": [
+				[
+					-56.85,
+					62.45
+				],
+				[
+					-56.85,
+					63.95
+				],
+				[
+					-56.85,
+					65.45
+				],
+				[
+					-56.85,
+					66.95
+				]
 			],
-			[
-				-56.85,
-				63.95
+			"face": [
+				1,
+				0
 			],
-			[
-				-56.85,
-				65.45
+			"stand_m": 0.55,
+			"seat_y": 0.04,
+			"stay_s": [
+				150,
+				330
 			],
-			[
-				-56.85,
-				66.95
+			"gap_s": [
+				20,
+				60
+			],
+			"clips": [
+				"sit_f",
+				"sit_f2",
+				"sit_idle_2",
+				"sit_idle_3",
+				"sit_idle_4"
+			],
+			"slots": 1
+		},
+		{
+			"store": "MASTERCUTS",
+			"slots": 2,
+			"chairs": [
+				[
+					6.7,
+					-45.22
+				],
+				[
+					8.3,
+					-45.22
+				],
+				[
+					9.9,
+					-45.22
+				]
+			],
+			"face": [
+				0,
+				-1
+			],
+			"stand_m": 0.55,
+			"seat_y": 0.04,
+			"stay_s": [
+				150,
+				330
+			],
+			"gap_s": [
+				20,
+				60
+			],
+			"clips": [
+				"sit_f",
+				"sit_f2",
+				"sit_idle_2",
+				"sit_idle_3",
+				"sit_idle_4"
+			],
+			"via": [
+				4.6,
+				-45.95
 			]
-		],
-		"face": [
-			1,
-			0
-		],
-		"stand_m": 0.55,
-		"seat_y": 0.04,
-		"stay_s": [
-			150,
-			330
-		],
-		"gap_s": [
-			20,
-			60
-		],
-		"clips": [
-			"sit_f",
-			"sit_f2",
-			"sit_idle_2",
-			"sit_idle_3",
-			"sit_idle_4"
-		]
-	}
+		}
+	]
 }

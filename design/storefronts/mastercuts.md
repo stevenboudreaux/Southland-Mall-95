@@ -20,5 +20,11 @@
 - At the back: a shampoo bay with two basins.
 - A style poster (an invented profile) and a CUTS $8 card.
 
+## Customers (Oct 20, 2026)
+- **Steven:** "make the logic of regis apply to mastercuts. only 1-2 woman in chair at a time, no other congregating here."
+- MasterCuts is no longer a store or window goal for the crowd (`npcs.json` "no_browse").
+- Up to two women at a time: each of two salon slots (`npcs.json` "salons") sends one woman from the crowd to a free styling chair. The chairs are at x 6.7 / 8.3 / 9.9, z −45.22, facing −z as built (backs to the mirrors). She sits for 150–330 s, then rejoins the crowd, and the slot waits 20–60 s before the next.
+- No stylist.
+
 ## Files
 `tools/stores/small/store.gd`, `paint.py`, `make_signs.py` → `mc_letters.json`.

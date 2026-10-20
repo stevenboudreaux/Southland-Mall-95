@@ -15,6 +15,11 @@ const LANE_H = 4.6         # flat ceiling over the store lanes
 const VAULT_SPRING = 4.9   # hall vault springing
 const COURT_SPRING = 6.6
 const RIB_STEP = 1.8
+## Halls with a low lay-in ceiling instead of the barrel vault (Steven, Oct 20: "on the side hallway
+## running from cucos to the movie theater it wasnt the high ceiling it was a lower drop ceiling with
+## standard white/cream ceiling tiles"): the two Sears halls. Their vault notches in the court walls
+## are closed.
+const DROP_HALLS = ["H1a", "H1b"]
 const OPEN_H = 3.2         # storefront opening height
 const ANCHOR_FRONT = 24.0  # width of an anchor store's mall entrance (JCPenney's)
 ## Store looks that differ from the map data (from Steven's photos and memory).
@@ -121,6 +126,9 @@ func mat(name):
 		"plaster_white":
 			m.albedo_texture = tex("plaster.png"); m.roughness = 0.9
 			m.albedo_color = Color(1.25, 1.27, 1.32)
+		"drop_tile":
+			m.albedo_texture = tex("kb/ceiling.png"); m.roughness = 0.95
+			m.albedo_color = Color(1.0, 0.975, 0.92)
 		"pink_stripe":
 			m.albedo_color = Color("#e48aa0"); m.roughness = 0.6
 		"crystal":
@@ -545,6 +553,9 @@ func build_hall(z):
 	var hw = sp[2]
 	var vh = float(z.vault_half)
 	var ax = (hall_P(z, 0, 0, 1) - hall_P(z, 0, 0, 0))
+	if is_drop(z):
+		drop_hall(z, lo, hi, hw)
+		return
 	if vh <= 0.0:
 		# narrow corridor: flat ceiling, a line of downlights
 		quad(g, "lane_ceiling", [hall_P(z, -hw, LANE_H, lo), hall_P(z, hw, LANE_H, lo), hall_P(z, hw, LANE_H, hi), hall_P(z, -hw, LANE_H, hi)], Vector3.DOWN)
@@ -608,6 +619,37 @@ func build_hall(z):
 	for he in L.hall_ends:
 		if he.zone == z.id and he.closed:
 			hall_end(z, lo if he.end == "lo" else hi, 1.0 if he.end == "lo" else -1.0, vh, rise)
+
+## A drop ceiling across the whole hall at the lane-ceiling height: cream 2 x 4 ft lay-in tiles
+## (kb/ceiling.png, its grid running along the hall), two rows of 2 x 4 troffers a third of the way
+## in from each side, a baked downlight under every other one.
+func drop_hall(z, lo, hi, hw):
+	var g = z.id
+	var y = LANE_H
+	var pts = [hall_P(z, -hw, y, lo), hall_P(z, hw, y, lo), hall_P(z, hw, y, hi), hall_P(z, -hw, y, hi)]
+	var uvs = [Vector2(-hw / 0.61, lo / 1.22), Vector2(hw / 0.61, lo / 1.22), Vector2(hw / 0.61, hi / 1.22), Vector2(-hw / 0.61, hi / 1.22)]
+	quad(g, "drop_tile", pts, Vector3.DOWN, uvs)
+	var rows = [-hw * 0.42, hw * 0.42]
+	var k = 0
+	var s0 = lo + 1.83
+	while s0 + 1.22 < hi - 0.6:
+		for u in rows:
+			var u0 = snapped(u, 0.61) - 0.305
+			var q = [hall_P(z, u0, y - 0.006, s0), hall_P(z, u0 + 0.61, y - 0.006, s0), hall_P(z, u0 + 0.61, y - 0.006, s0 + 1.22), hall_P(z, u0, y - 0.006, s0 + 1.22)]
+			quad(g, "md_troffer", q, Vector3.DOWN, [Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), Vector2(0, 1)])
+			if k % 2 == 0:
+				add_downlight(hall_P(z, u0 + 0.305, y - 0.02, s0 + 0.61))
+		s0 += 3.66
+		k += 1
+
+## The vault half-width a court wall notches for: none for the drop-ceiling halls.
+func notch_half(hz):
+	return 0.0 if is_drop(hz) else float(hz.vault_half)
+
+## Wing 2 keeps the vaulted Sears halls in its far-off stand-in geometry (never seen from there),
+## so its meshes and bake stay as they were.
+func is_drop(z):
+	return z.id in DROP_HALLS and WING != 2
 
 ## A skylight in the hall vault crown between two ribs: a short light well
 ## with a muntin frame; the opening is real, so the bake gets daylight.
@@ -777,7 +819,7 @@ func build_court(z):
 			var hz = zones[hid]
 			var hr = hz.rect
 			var hc = ((hr[0] + hr[2]) * 0.5 - cx) if horiz else ((hr[1] + hr[3]) * 0.5 - cz)
-			notches.append([hc, float(hz.vault_half)])
+			notches.append([hc, notch_half(hz)])
 		notches.sort_custom(func(p, q): return p[0] > q[0])
 		var clerestory = along_vault and halls.is_empty()
 		var bottom = LANE_H
@@ -947,7 +989,7 @@ func build_court_flat(z):
 		for hid in sides.get(side, []):
 			var hz = zones[hid]
 			var hr = hz.rect
-			notches.append([((hr[0] + hr[2]) * 0.5 - cx) if horiz else ((hr[1] + hr[3]) * 0.5 - cz), float(hz.vault_half)])
+			notches.append([((hr[0] + hr[2]) * 0.5 - cx) if horiz else ((hr[1] + hr[3]) * 0.5 - cz), notch_half(hz)])
 		notches.sort_custom(func(p, q): return p[0] > q[0])
 		for nt in notches:
 			if nt[1] <= 0.0:
@@ -1608,10 +1650,13 @@ func interior(g, e, a, n, t, Ln, sd, p0, p1, width, deep):
 		for ci in cols:
 			var pc = p0 + t * (width * (ci + 0.5) / cols) - n * (deep * (ri + 0.5) / rows) + Vector3(0, OPEN_H - 0.01, 0)
 			quad(g, "int_panel", [pc - t * 0.5 - n * 0.3, pc + t * 0.5 - n * 0.3, pc + t * 0.5 + n * 0.3, pc - t * 0.5 + n * 0.3], Vector3.DOWN)
-	var mc = sd.merch
+	if sd.name in ["FOOTQUARTERS", "FELGER'S FOOTWEAR"]:
+		# shoe walls, benches and a table seen through the glass (Steven, Oct 20; tools/stores/small/shoes.gd)
+		load("res://tools/stores/small/shoes.gd").inside(self, g, p0, t, -n, width, deep, sd.name)
+	var mc = sd.merch if not sd.name in ["FOOTQUARTERS", "FELGER'S FOOTWEAR"] else []
 	var k2 = 0
 	var pos = 1.4
-	while pos < width - 0.8:
+	while pos < width - 0.8 and not mc.is_empty():
 		cur_color = Color(mc[k2 % mc.size()])
 		box(g, "vcolor", p0 + t * pos - n * (deep * 0.45) + Vector3(0, 0.45, 0), abs_size(t, 1.2, 0.9, 0.8, n))
 		pos += 2.8

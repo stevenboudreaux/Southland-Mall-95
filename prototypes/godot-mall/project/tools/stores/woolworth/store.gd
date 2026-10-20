@@ -27,6 +27,8 @@ const R_U = 9.0           # the restaurant's width (u 0..9) and depth (d 0..14)
 const R_D = 14.0
 const R_CEIL = 3.0
 const WALL_T = 0.6        # the wall between the restaurant and the store (u 9.0..9.6)
+const R_DOOR0 = 7.0       # the restaurant's mall door (u 7.0..8.75), at its left end
+const R_DOOR1 = 8.75
 const BAY = 1.22
 const UP = Vector3.UP
 const BOARDS = [0.35, 0.72, 1.09, 1.46, 1.83]
@@ -69,21 +71,24 @@ static func front(b, G, a, t, n):
 	var lc = (R_U + WALL_T + UNIT) * 0.5
 	CH.build(b, "wlf_sign", "res://tools/stores/signs/wl_logo.json", P(a, t, n, lc, 3.31, -PROUD), n,
 		"sg_wl_face", "sg_wl_return", "sg_wl_trim", 0.02, 0.12, 0.012, "sg_wl_glow")
-	# the restaurant's own front (u 0..9): a bulkhead, glass, an open door with an aluminium frame
+	# the restaurant's own front (u 0..9): a bulkhead, glass, an open door with an aluminium frame.
+	# The door is at the left end, by the store (Steven, Oct 20: "the new opening that i drew"),
+	# the window booths along the glass to its right.
 	var al = "wl_alum"
-	K.lbox(b, G, "md_fascia_white", o, t, n, 0.0, 0.0, -0.12, R_U, 0.45, 0.12)
-	for s in [[0.25, 3.7], [5.3, R_U - 0.25]]:
+	K.lbox(b, G, "md_fascia_white", o, t, n, 0.0, 0.0, -0.12, R_DOOR0, 0.45, 0.12)
+	for s in [[0.25, R_DOOR0]]:
 		b.quad("glass", "glass", [P(a, t, n, s[0], 0.45, 0.05), P(a, t, n, s[1], 0.45, 0.05), P(a, t, n, s[1], HEAD, 0.05), P(a, t, n, s[0], HEAD, 0.05)], n,
 			[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
 		K.ob_local(b, o, t, -n, s[0], -0.1, s[1], 0.15, 0.1)
-	for u in [0.25, 2.0, 3.7, 5.3, 7.0, R_U - 0.25]:
+	for u in [0.25, 2.0, 3.7, 5.3, R_DOOR0, R_DOOR1]:
 		K.lbox(b, G, al, o, t, n, u - 0.03, 0.0, -0.08, 0.06, HEAD, 0.1)
 	K.lbox(b, G, al, o, t, n, 0.0, HEAD - 0.08, -0.08, R_U, 0.08, 0.1)
-	K.lbox(b, G, al, o, t, n, 3.7, 2.2, -0.08, 1.6, 0.06, 0.1)
-	b.quad("glass", "glass", [P(a, t, n, 3.7, 2.26, 0.05), P(a, t, n, 5.3, 2.26, 0.05), P(a, t, n, 5.3, HEAD - 0.08, 0.05), P(a, t, n, 3.7, HEAD - 0.08, 0.05)], n,
+	K.lbox(b, G, al, o, t, n, R_DOOR0, 2.2, -0.08, R_DOOR1 - R_DOOR0, 0.06, 0.1)
+	b.quad("glass", "glass", [P(a, t, n, R_DOOR0, 2.26, 0.05), P(a, t, n, R_DOOR1, 2.26, 0.05), P(a, t, n, R_DOOR1, HEAD - 0.08, 0.05), P(a, t, n, R_DOOR0, HEAD - 0.08, 0.05)], n,
 		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
-	# the door leaves stand open against the glass, inside
-	for s in [[3.7, 1.0], [5.3, -1.0]]:
+	# the door leaves stand open, inside: the right one back against the end of the first booth,
+	# the left one against the pier's return
+	for s in [[R_DOOR0, 1.0], [R_DOOR1, -1.0]]:
 		var hinge = P(a, t, n, s[0], 0, 0.12)
 		K.lbox(b, G, al, hinge, -n, t * s[1], 0.0, 0.0, 0.0, 0.8, 2.2, 0.05)
 	# "Restaurant" over its door: red lit channel letters straight on the fascia, no plate behind
@@ -172,6 +177,32 @@ static func room(b, a, t, n, rng):
 		b.box(G, "vcolor", P(a, t, n, du, 1.05, dB - 0.02), b.abs_size(t, 1.2, 2.1, 0.04, n))
 		b.cur_color = Color.WHITE
 	b.box(G, "exit_sign", P(a, t, n, 22.5, 2.35, dB - 0.05), b.abs_size(t, 0.36, 0.16, 0.06, n))
+	tape_frame(b, a, t, n, 34.97, 35.8, 2.06, dB - 0.003)
+
+## Blue painter's tape marking the way into the Stockrooms (Steven, Oct 20: "an outline of blue
+## painters tape around the opening to the stockrooms in the back of WOOLWORTH", from his picture):
+## two uprights from the floor and a top strip laid across them that runs past both, the uprights
+## poking a little above it; each strip a little off true, as if put up by hand. Probe-lit (dyn), so
+## it needs no rebake. The opening is scripts/stockrooms.gd's door, z 21.0..21.9 on the back wall.
+static func tape_frame(b, a, t, n, u0, u1, top, d):
+	var w = 0.048
+	var strips = [
+		# [u at the floor, u at the top end, y0, y1] for the uprights
+		[u0, u0 + 0.012, 0.03, top + 0.07],
+		[u1, u1 - 0.01, 0.0, top + 0.05],
+	]
+	for s in strips:
+		var c0 = P(a, t, n, s[0], s[2], d)
+		var c1 = P(a, t, n, s[1], s[3], d)
+		var side = t * (w * 0.5)
+		b.quad("wl_tape", "wl_tape", [c0 - side, c0 + side, c1 + side, c1 - side], n, [], true)
+	# the top strip, laid over the uprights, a touch proud of them
+	var y0 = top - 0.012
+	var y1 = top + 0.018
+	var l0 = P(a, t, n, u0 - 0.07, y0, d - 0.0015)
+	var l1 = P(a, t, n, u1 + 0.06, y1, d - 0.0015)
+	var up = Vector3.UP * (w * 0.5)
+	b.quad("wl_tape", "wl_tape", [l0 - up, l1 - up, l1 + up, l0 + up], n, [], true)
 
 # ------------------------------------------------------------------ the restaurant
 static func restaurant(b, a, t, n, rng):
@@ -206,62 +237,227 @@ static func restaurant(b, a, t, n, rng):
 		b.cur_color = Color("#6a4424")
 		b.box(G, "vcolor", (pa + pb) * 0.5 + UP * 0.92 + w[4] * 0.02, b.abs_size((pb - pa).normalized(), Lw, 0.05, 0.04, w[4]))
 		b.cur_color = Color.WHITE
-	# the right wall: lattice panels and sconces between them, booths below
-	var k = 0
-	for d in [1.2, 3.4, 5.6, 7.8, 10.0]:
-		K.fq(b, G, "wl_lattice", P2.call(u0, 0, d), n, t, 0.0, 0.8, 1.15, 2.45, 0.01)
-		if k < 4:
-			var sc = P2.call(u0 + 0.12, 1.85, d + 1.5)
-			b.cur_color = Color("#b88d3e")
-			b.box(S, "vcolor", sc - t * 0.06, Vector3(0.05, 0.16, 0.05).abs())
-			b.cur_color = Color.WHITE
-			K.column(b, S, "wl_globe", sc + UP * 0.02, 0.07, 0.14, 10)
-		k += 1
-	# framed food photos in a loose grid on the left and back walls
-	for p in [[1.2, 1.6, 0], [2.0, 2.2, 1], [3.6, 1.7, 2], [4.4, 2.3, 3], [6.0, 1.6, 1], [6.8, 2.25, 0], [8.2, 1.7, 3], [12.4, 1.9, 2]]:
-		K.fq(b, G, "wl_food_photos", P2.call(u1, 0, p[0]), -n, -t, 0.0, 0.55, p[1], p[1] + 0.55, 0.01, p[2] * 0.25, 0.0, p[2] * 0.25 + 0.25, 1.0)
-	# booths along the right wall: orange-red vinyl benches, a white table between (video 6:16)
-	for d in [1.6, 3.8, 6.0, 8.2, 10.4]:
-		booth(b, G, P2.call(u0, 0, d), -n, t, rng)
-	# free-standing tables with chairs (video 6:25)
-	for c in [[4.6, 3.0], [4.6, 6.2], [6.9, 3.0], [6.9, 6.2]]:
+	# Steven (Oct 20): "3 booths lined the front of the restaurant directly to the left of the new
+	# opening ... like the image of the booths at the window": benches square to the glass, high
+	# channel-tufted backs shared back to back, a table off the window on a pedestal
+	for i in 3:
+		window_booth(b, G, P2.call(R_DOOR0 - 0.1 - i * 1.75, 0, 0.14), -t, -n)
+	# "There were also 3 booths lining the left wall right behind where the opening to the woolworth
+	# store is": along the left wall, between the door and the opening into the store
+	for d in [3.15, 5.25, 7.35]:
+		booth(b, G, P2.call(u1, 0, d), -n, -t, rng)
+	# two free-standing tables with chairs in the middle
+	for c in [[5.1, 4.4], [5.1, 7.6]]:
 		table(b, G, P2.call(c[0], 0, c[1]))
-		for s in [-1.0, 1.0]:
-			chair(b, S, P2.call(c[0], 0, c[1]) - n * 0.0 + t * 0.62 * s, -t * s)
-	# the counter across the back: food-photo panels on its front, a pie case, the menu board
-	# with two monitors above, a soda fountain on the back bar (video 5:43, 6:01)
-	var co = P2.call(u1 - 1.1, 0, dB - 2.2)
-	K.lbox(b, G, "wl_laminate", co, -t, n, 0.0, 0.0, 0.0, 6.8, 1.0, 0.6, ["-y"])
-	K.fq(b, G, "wl_rest_counter", co, -t, n, 0.0, 6.8, 0.0, 1.0, 0.602, 0.0, 0.0, 1.7, 1.0)
-	b.cur_color = Color("#5a3a22")
-	K.lbox(b, G, "vcolor", co, -t, n, -0.02, 1.0, -0.02, 6.84, 0.04, 0.66, ["-y"])
-	b.cur_color = Color.WHITE
-	var pie = K.L(co, -t, n, 1.0, 1.04, 0.1)
-	K.lbox(b, S, "wl_steel", pie, -t, n, 0.0, 0.0, 0.0, 1.0, 0.06, 0.45)
-	b.cur_color = Color("#e8d8b0")
-	for j in 3:
-		b.cyl(S, "vcolor", K.L(co, -t, n, 1.2 + j * 0.3, 1.12, 0.3), 0.12, 0.12, 0.05, 12, true, false)
-	b.cur_color = Color.WHITE
-	b.quad("glass", "glass", [K.L(co, -t, n, 1.0, 1.1, 0.45), K.L(co, -t, n, 2.0, 1.1, 0.45), K.L(co, -t, n, 2.0, 1.45, 0.45), K.L(co, -t, n, 1.0, 1.45, 0.45)], n,
-		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
-	K.lbox(b, S, "wl_steel", pie, -t, n, 0.0, 0.41, 0.0, 1.0, 0.04, 0.45)
-	K.register(b, S, K.L(co, -t, n, 5.6, 1.04, 0.1), -t, n)
-	K.ob_local(b, co, -t, n, 0.0, -2.1, 6.8, 0.6)
-	# the back bar
-	var bo = P2.call(u1, 0, dB)
-	K.lbox(b, G, "wl_steel", bo, -t, n, 0.3, 0.0, 0.0, 7.4, 0.9, 0.55)
-	b.cur_color = Color("#c8c8cc")
-	K.lbox(b, S, "vcolor", bo, -t, n, 3.0, 0.9, 0.05, 0.8, 0.5, 0.4)
-	b.cur_color = Color("#c81e28")
-	K.lbox(b, S, "vcolor", bo, -t, n, 3.05, 1.3, 0.38, 0.7, 0.08, 0.03)
-	b.cur_color = Color.WHITE
-	# the backlit menu board and two monitors
-	K.fq(b, G, "wl_menu", bo, -t, n, 1.0, 6.4, 1.75, 2.6, 0.03, 0.0, 0.0, 1.0, 1.0)
-	for x in [0.3, 6.6]:
-		b.cur_color = Color("#1c1c1e")
-		K.lbox(b, S, "vcolor", bo, -t, n, x, 2.05, 0.0, 0.5, 0.4, 0.4)
+		for sg in [-1.0, 1.0]:
+			chair(b, S, P2.call(c[0], 0, c[1]) + t * 0.62 * sg, -t * sg)
+	# "the bar/counter was on the right hand side and wrapped around toward the front. there are
+	# barstools lining the bar ... behind the bar all of the typical old drug store lunch counter
+	# things": the back bar against the right wall, the counter in front of it, its front end
+	# curving round toward the window and back to the wall
+	lunch_counter(b, G, S, a, t, n, rng)
+## A window booth (Steven's photo of booths at a window): along r from o (o on the glass line),
+## f into the room: a bench, a table square to the glass on a pedestal, a bench facing it; the
+## benches' high backs carry vertical channels. 1.65 m along r.
+static func window_booth(b, G, o, r, f):
+	var bl = 1.2          # bench length, out from the glass
+	for s in [[0.0, 1.0], [1.65, -1.0]]:
+		var bo = o + r * s[0]
+		var face = r * s[1]           # the way the sitter faces
+		b.box(G, "wl_booth", bo + face * 0.25 + f * (bl * 0.5) + UP * 0.22, b.abs_size(f, bl, 0.44, 0.48, face))
+		b.box(G, "wl_booth", bo + face * 0.06 + f * (bl * 0.5) + UP * 0.78, b.abs_size(f, bl, 0.68, 0.12, face))
+		for k in 5:
+			b.cur_color = Color("#8a3a22")
+			b.box(G, "vcolor", bo + face * 0.121 + f * (0.12 + k * 0.24) + UP * 0.8, b.abs_size(f, 0.012, 0.56, 0.004, face))
 		b.cur_color = Color.WHITE
-		K.fq(b, S, "md_screens", bo, -t, n, x + 0.05, x + 0.45, 2.1, 2.4, 0.402, 0.0, 0.0, 0.5, 1.0)
+	var tc = o + r * 0.825 + f * 0.5
+	b.cur_color = Color("#2a2a2c")
+	b.cyl(G, "vcolor", tc + f * 0.15, 0.2, 0.2, 0.03, 12, true, false)
+	b.cyl(G, "vcolor", tc + f * 0.15, 0.04, 0.04, 0.72, 8, false, false)
+	b.cur_color = Color.WHITE
+	b.box(G, "wl_laminate", tc + UP * 0.74, b.abs_size(r, 0.7, 0.035, 0.95, f))
+	K.ob(b, o - f * 0.05, o + r * 1.65 + f * (bl + 0.05), 0.05)
+
+## The lunch counter and back bar on the right side (u 0.12): a stainless back bar against a cream
+## striped tile wall under a strip of menu cards, a stainless canopy over it; on it a pie case, the
+## soda fountain, a soft-serve machine, malt mixers, coffee urns and stacked glasses. The counter
+## (wood-grain front between black pilasters, a black top with a steel edge, a chrome foot rail)
+## runs from the back to d 3.6, curves round toward the window and ends at the wall (Steven's
+## curved-end photo); chrome stools with coral and teal seats line it and follow the curve.
+const LC_U = 2.45         # the counter's customer face
+const LC_DP = 0.68        # its depth
+const LC_H = 1.0
+const LC_D0 = 3.6         # where the straight run ends and the curve begins
+const LC_D1 = 12.8        # its back end
+static func lunch_counter(b, G, S, a, t, n, rng):
+	var P2 = func(u, y, d): return P(a, t, n, u, y, d)
+	var u0 = SIDE
+	# --- the back wall of the bar: striped tile, the menu strip, the canopy
+	var tw0 = 2.2
+	var tw1 = R_D - 0.12
+	b.quad(G, "wl_tile_stripe", [P2.call(u0 + 0.01, 0.9, tw0), P2.call(u0 + 0.01, 0.9, tw1), P2.call(u0 + 0.01, 2.0, tw1), P2.call(u0 + 0.01, 2.0, tw0)], t,
+		[Vector2(tw0, 1.1), Vector2(tw1, 1.1), Vector2(tw1, 0.0), Vector2(tw0, 0.0)])
+	K.fq(b, G, "wl_price_strip", P2.call(u0, 0, tw0 + 0.3), -n, t, 0.0, 4.6, 2.32, 2.66, 0.02, 0.0, 0.0, 1.0, 1.0)
+	K.fq(b, G, "wl_price_strip", P2.call(u0, 0, tw0 + 5.0), -n, t, 0.0, 4.6, 2.32, 2.66, 0.02, 0.0, 0.0, 1.0, 1.0)
+	K.lbox(b, G, "wl_steel", P2.call(u0, 0, tw0), -n, t, 0.0, 2.05, 0.0, tw1 - tw0, 0.08, 0.5, [])
+	K.lbox(b, G, "wl_steel", P2.call(u0, 0, tw0), -n, t, 0.0, 2.13, 0.0, tw1 - tw0, 0.16, 0.12, [])
+	for d in [3.2, 5.6, 8.0, 10.4]:
+		b.cyl(G, "wl_warm_disc", P2.call(u0 + 0.3, 2.045, d), 0.06, 0.06, 0.004, 10, false, true)
+	# --- the back bar: stainless cabinets and its top
+	K.lbox(b, G, "wl_steel", P2.call(u0, 0, tw0), -n, t, 0.0, 0.0, 0.0, tw1 - tw0, 0.9, 0.6, ["-y"])
+	b.cur_color = Color("#1c1c1e")
+	K.lbox(b, G, "vcolor", P2.call(u0, 0, tw0), -n, t, 0.0, 0.9, 0.0, tw1 - tw0, 0.03, 0.62, ["-y"])
+	b.cur_color = Color.WHITE
+	var bb = func(d, x): return P2.call(u0 + x, 0.93, d)
+	# the pie case: a steel base, glass sides, pies on two shelves
+	var pc = bb.call(3.0, 0.3)
+	b.box(S, "wl_steel", pc + UP * 0.03, Vector3(0.45, 0.06, 0.8))
+	b.box(S, "wl_steel", pc + UP * 0.5, Vector3(0.45, 0.03, 0.8))
+	b.cur_color = Color("#e8d0a0")
+	for j in 2:
+		for q in 2:
+			b.cyl(S, "vcolor", pc + UP * (0.07 + j * 0.2) - n * (-0.2 + q * 0.4), 0.13, 0.13, 0.05, 12, true, false)
+	b.cur_color = Color.WHITE
+	b.quad("glass", "glass", [pc + t * 0.225 + n * 0.4 + UP * 0.06, pc + t * 0.225 - n * 0.4 + UP * 0.06, pc + t * 0.225 - n * 0.4 + UP * 0.49, pc + t * 0.225 + n * 0.4 + UP * 0.49], t,
+		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
+	# the soda fountain: a chrome tower with a row of taps and a drip tray
+	var sf = bb.call(5.4, 0.3)
+	K.column(b, S, "wl_steel", sf, 0.09, 0.42, 12)
+	b.box(S, "wl_steel", sf + UP * 0.47, b.abs_size(-n, 0.7, 0.12, 0.2, t))
+	for j in 5:
+		b.box(S, "wl_steel", sf + UP * 0.38 + n * (-0.28 + j * 0.14) + t * 0.11, Vector3(0.03, 0.12, 0.03))
+		b.cur_color = [Color("#c81e28"), Color("#f2f0ea"), Color("#3a2416"), Color("#e8c23a"), Color("#2a7a3a")][j]
+		b.box(S, "vcolor", sf + UP * 0.56 + n * (-0.28 + j * 0.14) + t * 0.11, Vector3(0.04, 0.07, 0.04))
+		b.cur_color = Color.WHITE
+	b.box(S, "wl_steel", sf + UP * 0.01 + t * 0.12, b.abs_size(-n, 0.75, 0.02, 0.18, t))
+	# the soft-serve machine: a steel cabinet, two spouts with a black handle each, a hopper lid
+	var ic = bb.call(7.4, 0.3)
+	b.box(S, "wl_steel", ic + UP * 0.38, b.abs_size(-n, 0.6, 0.76, 0.5, t))
+	b.cur_color = Color("#1c1c1e")
+	for j in 2:
+		b.box(S, "vcolor", ic + UP * 0.45 + n * (-0.12 + j * 0.24) + t * 0.27, Vector3(0.06, 0.08, 0.06))
+		b.box(S, "vcolor", ic + UP * 0.58 + n * (-0.12 + j * 0.24) + t * 0.29, Vector3(0.025, 0.12, 0.025))
+	b.cur_color = Color("#f4ecd8")
+	b.cyl(S, "vcolor", ic + UP * 0.32 + t * 0.26, 0.05, 0.03, 0.08, 10, true, false)
+	b.cur_color = Color.WHITE
+	K.fq(b, S, "wl_red", ic + t * 0.252, -n, t, -0.28, 0.28, 0.66, 0.72, 0.0)
+	# three green malt mixers on a stand, metal cups under them
+	var mm = bb.call(9.0, 0.25)
+	for j in 3:
+		var mc = mm + n * (-0.25 + j * 0.25)
+		b.cur_color = Color("#5aa080")
+		b.box(S, "vcolor", mc + UP * 0.03, Vector3(0.14, 0.06, 0.18))
+		b.box(S, "vcolor", mc + UP * 0.25 - t * 0.05, Vector3(0.1, 0.42, 0.08))
+		b.box(S, "vcolor", mc + UP * 0.48 + t * 0.02, Vector3(0.12, 0.1, 0.2))
+		b.cur_color = Color.WHITE
+		b.cyl(S, "wl_steel", mc + UP * 0.06 + t * 0.05, 0.045, 0.04, 0.18, 10, true, false)
+	# two coffee urns and a stack of glasses
+	for j in 2:
+		var uc = bb.call(10.6 + j * 0.55, 0.3)
+		K.column(b, S, "wl_steel", uc, 0.17, 0.62, 14)
+		b.cyl(S, "wl_steel", uc + UP * 0.62, 0.17, 0.08, 0.08, 14, true, false)
+		b.cur_color = Color("#1c1c1e")
+		b.box(S, "vcolor", uc + UP * 0.12 + t * 0.18, Vector3(0.05, 0.05, 0.05))
+		b.cur_color = Color.WHITE
+	b.cur_color = Color("#e8eef0")
+	for j in 6:
+		b.cyl(S, "vcolor", bb.call(12.0 + (j % 3) * 0.12, 0.25 + (j / 3) * 0.12), 0.04, 0.035, 0.12, 8, true, false)
+	b.cur_color = Color.WHITE
+	# --- the counter: a straight run, then the curve round to the wall
+	var path = counter_path()
+	var cu = LC_U
+	for i in path.size() - 1:
+		var A = path[i]
+		var B = path[i + 1]
+		counter_seg(b, G, P2.call(A.x, 0, A.y), P2.call(B.x, 0, B.y), A.z, B.z, a, t, n)
+	# the top: a black slab with a steel edge, from the curve's segments
+	K.ob(b, P2.call(u0, 0, LC_D0), P2.call(cu + 0.05, 0, LC_D1 + 0.05), 0.04)
+	for i in path.size() - 1:
+		var A2 = path[i]
+		var B2 = path[i + 1]
+		var mid = (Vector2(A2.x, A2.y) + Vector2(B2.x, B2.y)) * 0.5
+		K.ob(b, P2.call(mid.x - 0.4, 0, mid.y - 0.4), P2.call(mid.x + 0.4, 0, mid.y + 0.4), 0.0)
+	# the stools: along the run every 0.62 m, then round the curve
+	var k = 0
+	var d = LC_D1 - 0.45
+	while d > LC_D0 + 0.2:
+		stool(b, S, P2.call(LC_U + 0.42, 0, d), -t, k)
+		d -= 0.62
+		k += 1
+	for ang in [20.0, 45.0, 70.0]:
+		var th = deg_to_rad(ang)
+		var rr = (LC_U - u0) + 0.42
+		var su = u0 + rr * cos(th)
+		var sd = LC_D0 - rr * sin(th)
+		var face = (P2.call(u0, 0, LC_D0) - P2.call(su, 0, sd)).normalized()
+		stool(b, S, P2.call(su, 0, sd), face, k)
+		k += 1
+
+## The counter's plan: points (u, d, angle) along its customer face, from the back end down the
+## run to the curve and round a quarter circle centred on the right wall at LC_D0, to the wall.
+static func counter_path():
+	var pts = [Vector3(LC_U, LC_D1, 0.0), Vector3(LC_U, LC_D0, 0.0)]
+	var R = LC_U - SIDE
+	for i in range(1, 9):
+		var th = PI * 0.5 * i / 8.0
+		pts.append(Vector3(SIDE + R * cos(th), LC_D0 - R * sin(th), th))
+	return pts
+
+## One piece of the counter between two points of its customer face (pa, pb on the floor): the
+## wood-grain front, the black top with its steel edge, the foot rail; it runs LC_DP back from the
+## face toward the curve's centre (the wall at LC_D0) or toward the wall on the straight run.
+static func counter_seg(b, G, pa, pb, tha, thb, a, t, n):
+	var c0 = P(a, t, n, SIDE, 0, LC_D0)
+	var ia = pa - t * LC_DP if tha == 0.0 else pa + (c0 - pa).normalized() * LC_DP
+	var ib = pb - t * LC_DP if thb == 0.0 else pb + (c0 - pb).normalized() * LC_DP
+	var out = t
+	if tha != 0.0 or thb != 0.0:
+		out = (pa + pb) * 0.5 - c0
+		out.y = 0.0
+		out = out.normalized()
+	var ln = pa.distance_to(pb)
+	b.quad(G, "wl_lunch_front", [pa, pb, pb + UP * (LC_H - 0.04), pa + UP * (LC_H - 0.04)], out,
+		[Vector2(0, 1), Vector2(ln / 1.2, 1), Vector2(ln / 1.2, 0.04), Vector2(0, 0.04)])
+	var e = out * 0.03
+	var top = UP * LC_H
+	b.cur_color = Color("#141416")
+	b.quad(G, "vcolor", [pa + e + top, pb + e + top, ib + top, ia + top], UP)
+	b.cur_color = Color.WHITE
+	b.quad(G, "wl_steel", [pa + e + top - UP * 0.04, pb + e + top - UP * 0.04, pb + e + top, pa + e + top], out)
+	# the clerks' side of the counter, under the top
+	b.cur_color = Color("#d8d6d0")
+	b.quad(G, "vcolor", [ib, ia, ia + UP * (LC_H - 0.02), ib + UP * (LC_H - 0.02)], -out)
+	b.cur_color = Color.WHITE
+	# the chrome foot rail 0.2 m up, on short posts
+	var r0 = pa + out * 0.12 + UP * 0.2
+	var r1 = pb + out * 0.12 + UP * 0.2
+	_rail(b, G, r0, r1)
+
+static func _rail(b, G, r0, r1):
+	var along = (r1 - r0).normalized()
+	var side = along.cross(UP).normalized()
+	b.box(G, "wl_steel", Vector3.ZERO, Vector3(0.035, 0.035, r0.distance_to(r1) + 0.02), Transform3D(Basis(side, UP, along), (r0 + r1) * 0.5))
+
+## A lunch-counter stool at c facing f (Steven's photo): an octagonal black foot, a black pedestal,
+## a round seat in coral or teal vinyl with a chrome rim, a chrome back of three bars.
+static func stool(b, S, c, f, k):
+	var r = f.cross(UP).normalized()
+	b.cur_color = Color("#141416")
+	b.cyl(S, "vcolor", c, 0.2, 0.2, 0.03, 8, true, false)
+	b.cyl(S, "vcolor", c + UP * 0.03, 0.06, 0.045, 0.6, 10, false, false)
+	b.cur_color = Color.WHITE
+	b.cyl(S, "wl_steel", c + UP * 0.63, 0.205, 0.205, 0.045, 16, false, false)
+	b.cur_color = Color("#e07a62") if k % 2 == 0 else Color("#6fb3a8")
+	b.cyl(S, "vcolor", c + UP * 0.66, 0.19, 0.19, 0.04, 16, true, false)
+	b.cur_color = Color.WHITE
+	var bc = c - f * 0.17
+	for x in [-0.14, 0.14]:
+		b.box(S, "wl_steel", bc + r * x + UP * 0.86, Vector3(0.02, 0.36, 0.02))
+	b.box(S, "wl_steel", bc + UP * 1.04, b.abs_size(r, 0.32, 0.03, 0.03, f))
+	b.box(S, "wl_steel", bc + UP * 0.86, b.abs_size(r, 0.02, 0.32, 0.02, f))
+	for x in [-0.07, 0.07]:
+		b.box(S, "wl_steel", bc + r * x + UP * 0.9, Vector3(0.015, 0.26, 0.015))
+	K.ob(b, c - Vector3(0.2, 0, 0.2), c + Vector3(0.2, 0, 0.2), 0.02)
 
 ## A booth: two orange-red vinyl benches facing each other across a white table, against
 ## the wall at `o` (`r` along the wall, `f` out into the room).
@@ -304,13 +500,13 @@ static func floor_fixtures(b, a, t, n, rng):
 	var left = [["linens"], ["boxes"], ["boxes", "hba"], ["linens"], ["boxes"]]
 	var d = 1.6
 	var k = 0
-	while d + BAY <= dB - 0.5:
+	while d + BAY <= dB - 1.3:   # the back corner stays bare: the taped Stockrooms opening (Oct 20)
 		var sh = [["linens"]] if d < 12.0 else ([["boxes"]] if d < 24.0 else [["linens", "boxes"]])
 		K.bay_run(b, grp("fix", 30.0, d), grp("merch", 30.0, d), P(a, t, n, u1, 0, d), -n, -t, BAY, 1, BOARDS, sh, [-1], "", 0.0, rng, 0.4)
 		d += BAY
 		k += 1
 	# back wall, left corner to the right: housewares, toys, the stockroom doors, party goods, cards
-	var u = u1 - 0.45
+	var u = u1 - 0.45 - BAY     # the corner bay gave way to the taped Stockrooms opening (Oct 20)
 	while u - BAY >= SIDE + 0.45:
 		if u > 20.4 and u - BAY < 24.9:
 			u -= BAY
@@ -486,6 +682,15 @@ static func fill_mat(m, key, b):
 			K.emit_tex(m, 1.3)
 		"rest_counter":
 			m.albedo_texture = b.tex("wl/rest_counter.png"); m.roughness = 0.4
+		"tape":
+			m.albedo_color = Color("#1f6672"); m.roughness = 0.75
+		"lunch_front":
+			m.albedo_texture = b.tex("wl/lunch_front.png"); m.roughness = 0.4; m.metallic_specular = 0.45
+		"tile_stripe":
+			m.albedo_texture = b.tex("wl/tile_stripe.png"); m.roughness = 0.25; m.metallic_specular = 0.6
+		"price_strip":
+			m.albedo_texture = b.tex("wl/price_strip.png"); m.roughness = 0.5
+			K.emit_tex(m, 0.5)
 		"booth":
 			m.albedo_texture = b.tex("wl/vinyl_booth.png"); m.roughness = 0.35; m.metallic_specular = 0.5
 		"steel":
