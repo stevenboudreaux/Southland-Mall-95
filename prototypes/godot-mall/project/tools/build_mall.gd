@@ -1775,7 +1775,14 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		box(g, "stone", c0 + Vector3(0, 0.45, 0) + n * 0.06, abs_size(t, pil, 0.9, 0.12, n))
 		box(g, "cream", c0 + Vector3(0, (OPEN_H + 0.9) * 0.5, 0) + n * 0.03, abs_size(t, pil, OPEN_H - 0.9, 0.06, n))
 	var mid = a + t * Ln * 0.5
-	box(g, "bulkhead", mid + Vector3(0, (OPEN_H + LANE_H) * 0.5, 0) + n * 0.08, abs_size(t, Ln, LANE_H - OPEN_H, 0.16, n))
+	var s26 = load("res://tools/stores/signs/sign_2026.gd").for_store(sd.name) if YEAR == 2026 else null
+	if s26 != null and s26.has("fascia_color"):
+		# Demo 43: the bulkhead itself painted as filmed (one box, so the bake is as before)
+		cur_color = Color(s26.fascia_color)
+		box(g, "vcolor_matte", mid + Vector3(0, (OPEN_H + LANE_H) * 0.5, 0) + n * 0.08, abs_size(t, Ln, LANE_H - OPEN_H, 0.16, n))
+		cur_color = Color.WHITE
+	else:
+		box(g, "bulkhead", mid + Vector3(0, (OPEN_H + LANE_H) * 0.5, 0) + n * 0.08, abs_size(t, Ln, LANE_H - OPEN_H, 0.16, n))
 	# sign
 	var text = sd.sign
 	if sd.vacant:
@@ -1865,13 +1872,7 @@ func sign_2026(g, name, mid, n, t, Ln):
 	if s == null:
 		return false
 	var band = LANE_H - OPEN_H
-	if s.has("fascia_color"):
-		# the band the sign is on, painted as filmed
-		cur_color = Color(s.fascia_color)
-		# static, so it takes the bake's warm bounce like the bulkhead it covers (as a dynamic
-		# mesh, lit only by the probes, a cream band read blue-grey)
-		box(g, "vcolor_matte", mid + Vector3(0, OPEN_H + band * 0.5, 0) + n * 0.165, abs_size(t, Ln - 0.02, band, 0.01, n))
-		cur_color = Color.WHITE
+	# (the spec's "fascia_color" paints the bulkhead itself: storefront())
 	if s.get("mount", "fascia") == "glass":
 		# lettering on the storefront glass (Wax Utopia, SOLA): just proud of the glass, about
 		# head height, within the glazing
