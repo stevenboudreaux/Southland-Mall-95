@@ -116,7 +116,11 @@ def build(sign):
         lid = "y26/%s_%s" % (sid, pid)
         glow = part.get("glow")
         lit = float(part.get("lit", 1.0))
-        ML.write(lid, part.get("text", pid), L, w, hexrgb(glow) if glow else (0, 0, 0), float(part.get("glow_pad", 0.25)),
+        # no glow: a tiny pad (that texture is thrown away; a big pad on a small part takes minutes)
+        pad = float(part.get("glow_pad", 0.25)) if glow else 0.01
+        if glow:
+            pad = min(pad, max(0.03, 0.6 * min(w, h)))
+        ML.write(lid, part.get("text", pid), L, w, hexrgb(glow) if glow else (0, 0, 0), pad,
                  "2026: %s (%s)" % (sign["store"], sign.get("ref", "")), top=h, tex=True)
         if not glow:
             try:
@@ -151,9 +155,12 @@ def main(only=()):
     for sign in spec["signs"]:
         if only and sign["id"] not in only:
             continue
-        for pid, w, h in build(sign):
-            print("  %s/%s: %.2f x %.2f m" % (sign["id"], pid, w, h))
-        n += 1
+        try:
+            for pid, w, h in build(sign):
+                print("  %s/%s: %.2f x %.2f m" % (sign["id"], pid, w, h))
+            n += 1
+        except (SystemExit, Exception) as ex:
+            print("FAILED %s: %s" % (sign["id"], ex))
     print("%d signs" % n)
 
 

@@ -1,0 +1,24 @@
+{
+ "id": "djs",
+ "store": "DJS JEWELERS",
+ "ref": "IMG_4438 sheet tile f014 (the clearest square-ish view; enlarged 4x and squared up on the gold band, aspect 5.3:1), tiles f012-f013 and signs/djs_IMG_4438_f014.jpg (palm in front) for layout",
+ "ref_img": "djs_ref.png",
+ "w": 4.2, "h": 1.0,
+ "type": "flat",
+ "depth": 0.03,
+ "standoff": 0.01,
+ "fascia_color": "#18181a",
+ "backer": {"shape": "box", "w": 4.2, "h": 0.75, "depth": 0.03, "dx": 0.0, "dy": 0.0,
+   "color": "#cdbf82", "side": "#a8995e", "lit": 0.0, "rough": 0.45, "metal": 0.35},
+ "parts": [
+  {"name": "mono", "text": "DJS", "trace": "djs_mono_mask.png", "width": 1.07, "smooth": 1.5,
+   "dx": -0.48, "dy": -0.558, "type": "flat", "depth": 0.03,
+   "face": "#e4e8ec", "ret": "#b8bcc2", "lit": 0.0, "rough": 0.2, "metal": 0.85,
+   "ref_box": [321, 181, 637, 459]},
+  {"name": "jewelers", "text": "JEWELERS", "font": "sourcesans", "cap_h": 0.109, "track": 0.1624,
+   "dx": -0.429, "dy": -0.058, "type": "flat", "depth": 0.015,
+   "face": "#1c1a16", "ret": "#1c1a16", "lit": 0.0, "rough": 0.4,
+   "ref_box": [215, 280, 775, 312]}
+ ],
+ "notes": "Gold/champagne (metallic-leaf look) band about 0.75 m tall running along the storefront between glossy black fascia above and below. Big interlocking 'DJS' monogram in polished silver/chrome flat-cut letters (thin serif strokes, the J's tail loops below the band onto the black), over small widely spaced black caps 'J E W E L E R S' (font, sourcesans) on the band. Unlit letters, lit by the soffit downlights. Monogram traced from a contact-sheet tile (the only clear view; the full-res frame has a palm in front), so its strokes are soft: thin hairlines may be over-thick (low-med confidence on the exact shape). Scouts said gold letters on black: the frames show silver letters on a gold band. Band length visible ~4.2 m (it continues left out of frame). Small white 'DJS' plaque on the H4 pier (IMG_4477) not built."
+}

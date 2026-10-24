@@ -1,0 +1,19 @@
+{
+ "id": "dillards",
+ "store": "DILLARD'S",
+ "ref": "IMG_4438 f003 (full-res frame, square-on from the court, letters ~55 px; crop enlarged 3x); f001-f004, IMG_4466 (upside-down photo, oblique) for colour; exterior signs in IMG_4489/4490 are a different (dark, unlit) set and not used",
+ "ref_img": "dillards_ref.png",
+ "w": 4.0, "h": 0.78,
+ "type": "channel",
+ "depth": 0.12,
+ "standoff": 0.02,
+ "fascia_color": "#86704c",
+ "parts": [
+  {"name": "name", "text": "Dillard’s", "trace": "dillards_name_mask.png", "width": 4.0, "smooth": 1.5,
+   "dx": 0.0, "dy": -0.39, "type": "channel", "depth": 0.12,
+   "face": "#f2f6fa", "emit": "#f4f8ff", "ret": "#3a3836", "trim": "#c8ccd0", "trim_w": 0.012,
+   "lit": 1.0, "rough": 0.3,
+   "ref_box": [198, 124, 1048, 290]}
+ ],
+ "notes": "Mall-side anchor entrance: 'Dillard's' house serif wordmark (mixed case, curly apostrophe), white lit channel faces (read pale blue-white), dark returns casting a shadow on the wall, on a light-oak wood-grain panel band above the wide open entrance. Traced from the court frame; a palm leaf crosses the D's stem, which was redrawn as a straight stem with a bottom serif (the rest of the letters are as traced; the a/r/d interiors are a little soft). Size estimated from the ~12 m entrance: word ~4.0 m, D ~0.78 m tall (+-15%). The exterior wall signs (dark charcoal flat letters on peach EIFS) are separate signs and not built here."
+}

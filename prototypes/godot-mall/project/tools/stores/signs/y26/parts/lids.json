@@ -1,0 +1,19 @@
+{
+ "id": "lids",
+ "store": "LIDS",
+ "ref": "IMG_4439 f005 (full res frame, oblique ~50 deg from the left, letters ~140 px; rectified with the vanishing point of the letters' base and top lines, width:height of the rectified window chosen 1.5:1 by eye); f001-f006 sheet tiles (whole fascia), IMG_4438 f011-f012",
+ "ref_img": "lids_ref.png",
+ "w": 1.25, "h": 0.95,
+ "type": "channel",
+ "depth": 0.15,
+ "standoff": 0.02,
+ "fascia_color": "#2c3f78",
+ "parts": [
+  {"name": "name", "text": "Liids", "trace": "lids_name_mask.png", "width": 1.25, "smooth": 1.5,
+   "dx": 0.0, "dy": 0.0, "type": "channel", "depth": 0.15,
+   "face": "#eef4fb", "emit": "#f4f8ff", "ret": "#14182a", "trim": "#9aa2ae", "trim_w": 0.012,
+   "lit": 1.0, "rough": 0.35, "ret_rough": 0.5,
+   "ref_box": [184, 188, 548, 464]}
+ ],
+ "notes": "'Lids' in heavy italic mixed case (L, i with separate dot, d, s), white lit acrylic faces with a grey trim cap and deep (~15 cm) near-black returns, on a painted navy-blue fascia over the entry; a small round (R) mark at the top right of the s, not built. Behind the letters a slightly lighter square ghost panel from an older sign (not built). Traced from the only full-res frame, which is strongly oblique: the letter proportions depend on the rectification aspect (+-15% in width). Size from the 3 m entry: letters ~0.95 m tall, word ~1.25 m wide (+-15%). The scouts' 'flag mark' is not in the frame."
+}

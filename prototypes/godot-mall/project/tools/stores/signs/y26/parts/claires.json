@@ -1,0 +1,40 @@
+{
+ "id": "claires",
+ "store": "CLAIRE'S",
+ "ref": "IMG_4484 f009 (near square-on, sharp; squared up on the fascia panel seams) for 'laire's'; the 'c' (off that frame's edge) from the IMG_4433 photo squared up the same way and scaled to the a's x-height; IMG_4492 f017 (whole sign, small)",
+ "ref_img": "claires_ref.png",
+ "w": 2.781,
+ "h": 0.865,
+ "type": "channel",
+ "depth": 0.1,
+ "standoff": 0.0,
+ "fascia_color": "#ecebe8",
+ "parts": [
+  {
+   "name": "name",
+   "text": "claire's",
+   "type": "channel",
+   "face": "#4a3796",
+   "emit": "#5a46c8",
+   "ret": "#e6e4e8",
+   "trim": "#3a2a7a",
+   "lit": 0.5,
+   "rough": 0.3,
+   "ret_rough": 0.35,
+   "ret_metal": 0.2,
+   "glow_pad": 0.05,
+   "ref_box": [
+    18,
+    105,
+    1277,
+    495
+   ],
+   "dx": 0.0,
+   "dy": -0.4323,
+   "trace": "claires_name_mask.png",
+   "width": 2.7676,
+   "smooth": 1.5
+  }
+ ],
+ "notes": "Claire's purple lowercase wordmark as channel letters: deep violet faces (lit softly; the faces glow a little even by day in f009/4492 f017), white/silver returns ~10 cm deep, thin violet trim; on the glossy white fascia panels above a crinkled-aluminium band and a white-framed glass front that wraps the corner (the second face on H3 is the same sign, not modelled here). Traced: 'laire's' from 4484 f009, the 'c' (off f009's edge) redrawn as a clean elliptical c sized and placed from the IMG_4433 photo (squared up the same way, scaled to the a's x-height; its exact terminals are a best guess). Size from the ~1.2 m fascia panel: ~2.8 m wide, l ~0.86 m tall (+-15%)."
+}

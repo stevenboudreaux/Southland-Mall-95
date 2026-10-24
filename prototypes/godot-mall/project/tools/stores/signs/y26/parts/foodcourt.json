@@ -1,0 +1,226 @@
+{
+ "id": "foodcourt",
+ "store": "FOOD COURT",
+ "ref": "IMG_4484 f040 (oblique, squared up on the blue wall's corners; aspect 2.15:1 set so the flush door reads 36 x 84 in); f041 (logo row), IMG_4461 f020",
+ "ref_img": "foodcourt_ref.png",
+ "w": 5.2,
+ "h": 1.75,
+ "type": "vinyl",
+ "depth": 0.003,
+ "standoff": 0.0,
+ "fascia_color": "#1d7fc4",
+ "backer": {
+  "shape": "box",
+  "w": 5.2,
+  "h": 1.75,
+  "depth": 0.01,
+  "dx": 0.0,
+  "dy": 0.0,
+  "color": "#1d7fc4",
+  "side": "#1d7fc4",
+  "rough": 0.7
+ },
+ "parts": [
+  {
+   "name": "feelin",
+   "text": "Feelin'",
+   "trace": "foodcourt_feelin_mask.png",
+   "width": 1.7671,
+   "smooth": 0.8,
+   "dx": -1.3661,
+   "dy": 0.3335,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#e8962a",
+   "rough": 0.55,
+   "ref_box": [
+    476,
+    242,
+    974,
+    336
+   ]
+  },
+  {
+   "name": "hungry",
+   "text": "Hungry?",
+   "trace": "foodcourt_hungry_mask.png",
+   "width": 2.5513,
+   "smooth": 0.8,
+   "dx": 0.9953,
+   "dy": 0.2874,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    1031,
+    238,
+    1750,
+    349
+   ]
+  },
+  {
+   "name": "cakelicious",
+   "text": "Cakelicious",
+   "trace": "foodcourt_cakelicious_mask.png",
+   "width": 0.9048,
+   "smooth": 0.8,
+   "dx": -1.8256,
+   "dy": -0.0958,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    468,
+    414,
+    723,
+    457
+   ]
+  },
+  {
+   "name": "gac",
+   "text": "GREATAMERICANcookies",
+   "trace": "foodcourt_gac_mask.png",
+   "width": 0.6813,
+   "smooth": 0.8,
+   "dx": -0.6884,
+   "dy": -0.1987,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    820,
+    386,
+    1012,
+    486
+   ]
+  },
+  {
+   "name": "auntieannes",
+   "text": "AuntieAnne's",
+   "trace": "foodcourt_auntieannes_mask.png",
+   "width": 0.8906,
+   "smooth": 0.8,
+   "dx": 0.4524,
+   "dy": -0.0568,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    1112,
+    427,
+    1363,
+    446
+   ]
+  },
+  {
+   "name": "redseal",
+   "text": "THEREDRSEALPIZZERIA&BAR",
+   "trace": "foodcourt_redseal_mask.png",
+   "width": 0.9723,
+   "smooth": 0.8,
+   "dx": 1.6819,
+   "dy": -0.1384,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    1447,
+    411,
+    1721,
+    469
+   ]
+  },
+  {
+   "name": "corndog",
+   "text": "CornDog7",
+   "trace": "foodcourt_corndog_mask.png",
+   "width": 0.5997,
+   "smooth": 0.8,
+   "dx": -1.8718,
+   "dy": -0.699,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    498,
+    509,
+    667,
+    627
+   ]
+  },
+  {
+   "name": "prepz",
+   "text": "PREPZ",
+   "trace": "foodcourt_prepz_mask.png",
+   "width": 0.8906,
+   "smooth": 0.8,
+   "dx": -0.7398,
+   "dy": -0.589,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    776,
+    550,
+    1027,
+    596
+   ]
+  },
+  {
+   "name": "cinnamonster",
+   "text": "cinnamonster",
+   "trace": "foodcourt_cinnamonster_mask.png",
+   "width": 0.9368,
+   "smooth": 0.8,
+   "dx": 0.4187,
+   "dy": -0.5748,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    1096,
+    552,
+    1360,
+    592
+   ]
+  },
+  {
+   "name": "wingz",
+   "text": "WICKEDWINGZ",
+   "trace": "foodcourt_wingz_mask.png",
+   "width": 0.9439,
+   "smooth": 0.8,
+   "dx": 1.6606,
+   "dy": -0.66,
+   "type": "vinyl",
+   "lit": 0.0,
+   "glow_pad": 0.01,
+   "face": "#f4f4f2",
+   "rough": 0.55,
+   "ref_box": [
+    1445,
+    548,
+    1711,
+    616
+   ]
+  }
+ ],
+ "notes": "Traced, all ten parts. Not a store sign: the food-court leasing wall, a flat medium-blue painted wall (~3 m tall, with a flush blue door and white fluted half-columns under a cream cornice) printed with 'Feelin'' in orange and 'Hungry?' in white (geometric sans), then two rows of white one-colour tenant logos: Cakelicious, Great American Cookies, Auntie Anne's, The Red Seal Pizzeria & Bar, Corn Dog 7, PREPZ, cinnamonster, Wicked Wingz. Unlit, matte vinyl/print (3 mm). The blue backer stands in for the painted wall behind the graphics (5.2 x 1.75 m). The tiny 'PIZZERIA & BAR' line is at the limit of the trace. Scale from the door (~3.55 mm/px)."
+}

@@ -1,0 +1,15 @@
+{
+ "id": "lola", "store": "LOLA LABELLE BRIDAL",
+ "ref": "IMG_4461 f011 (far, oblique, letters ~15 px); sheet IMG_4461 f010-f012, IMG_4459 f002-f003 (storefront)",
+ "ref_img": "lola_ref.png",
+ "w": 2.4, "h": 0.5,
+ "type": "flat", "depth": 0.01, "standoff": 0.0,
+ "fascia_color": "#0e0e10",
+ "parts": [
+  {"name": "name", "text": "Lola LaBelle Bridal", "font": "GreatVibes-Regular.ttf", "cap_h": 0.22, "track": 0.0, "stretch": 1.0, "shear": 0.0,
+   "dx": 0.0, "dy": -0.15, "type": "flat", "depth": 0.01,
+   "face": "#f4f2ee", "ret": "#dcdad6", "lit": 0.0, "rough": 0.4,
+   "ref_box": [220, 75, 850, 195]}
+ ],
+ "notes": "Small white formal script 'Lola LaBelle Bridal' (capital L, L, B, B; a long rising swash off the final l) on the glossy black box-frame band over a corner-wrapping full-glass front with gowns; unlit, thin (vinyl or 1 cm cut acrylic). Only seen far and oblique (~15 px letters), so it is Great Vibes, not traced; the end swash isn't in the font. Spelling 'LaBelle' read from the frame. Cap ~0.22 m guessed from the band."
+}

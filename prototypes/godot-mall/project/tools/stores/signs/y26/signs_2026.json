@@ -2,30 +2,6 @@
  "note": "2026 store signs from Steven's Oct 23 2026 footage; built by tools/stores/signs/sign_2026.gd. Edit y26/parts/<id>.json and run make_signs_2026.py.",
  "signs": [
   {
-   "id": "_test",
-   "store": "GNC",
-   "type": "channel",
-   "depth": 0.1,
-   "parts": [
-    {
-     "name": "name",
-     "text": "Test Sign",
-     "font": "inter_bold",
-     "cap_h": 0.45,
-     "face": "#d0102e",
-     "ret": "#2a0a0a",
-     "trim": "#7a1018",
-     "glow": "#ff2030"
-    }
-   ],
-   "backer": {
-    "w": 3.4,
-    "h": 0.9,
-    "depth": 0.05,
-    "color": "#141414"
-   }
-  },
-  {
    "id": "aero",
    "store": "AÉROPOSTALE",
    "ref": "IMG_4482 photo (full res, oblique ~35 deg; squared up on the letters' top and base lines); IMG_4483, IMG_4481 (whole word, smaller), IMG_4492 f009 (close oblique, returns)",
@@ -128,9 +104,79 @@
    "notes": "The current AT&T mark: blue striped globe (the stripes read as dark gaps cut into its left side; traced, three visible) then 'AT&T' in white heavy geometric sans, both lit faces, on the black metal fascia band over a wide open storefront with grey slate-tile pilasters. Returns look black (they vanish into the band). Letters set in Inter Bold at 0.9 width to match the square-on f008 tile (AT&T is 3.3x its cap height there). The squared reference leans slightly (letters rise to the right); the 'T' is off its right edge. Cap height ~0.5 m from the ~1.2 m band; globe ~0.75 m."
   },
   {
+   "id": "auntie",
+   "store": "AUNTIE ANNE'S",
+   "ref": "IMG_4439 sheet tiles f025 ('Anne's' + right half of the pretzel, ~19 px caps) and f024 ('Au' at the wall's left edge); the full-res f025 frame shows Cell Xpert instead",
+   "ref_img": "auntie_ref.png",
+   "w": 4.6,
+   "h": 0.96,
+   "type": "channel",
+   "depth": 0.08,
+   "standoff": 0.0,
+   "fascia_color": "#24316b",
+   "parts": [
+    {
+     "name": "auntie",
+     "text": "Auntie",
+     "font": "fredoka",
+     "cap_h": 0.37,
+     "stretch": 1.05,
+     "dx": -1.42,
+     "dy": 0.0,
+     "lit": 1.0,
+     "glow_pad": 0.1,
+     "glow": "#2a4bff",
+     "glow_e": 0.25,
+     "face": "#1f3fff",
+     "emit": "#2a4bff",
+     "ret": "#16245a",
+     "trim": "#1a35d8"
+    },
+    {
+     "name": "pretzel",
+     "text": "pretzel",
+     "trace": "auntie_pretzel_mask.png",
+     "width": 0.97,
+     "smooth": 1.0,
+     "dx": 0.0,
+     "dy": -0.16,
+     "lit": 0.8,
+     "glow_pad": 0.05,
+     "face": "#f4b80a",
+     "emit": "#ffc21a",
+     "ret": "#16245a",
+     "trim": "#d99f00"
+    },
+    {
+     "name": "annes",
+     "text": "Anne's",
+     "font": "fredoka",
+     "cap_h": 0.37,
+     "stretch": 1.05,
+     "dx": 1.41,
+     "dy": 0.0,
+     "lit": 1.0,
+     "glow_pad": 0.1,
+     "glow": "#2a4bff",
+     "glow_e": 0.25,
+     "face": "#1f3fff",
+     "emit": "#2a4bff",
+     "ret": "#16245a",
+     "trim": "#1a35d8",
+     "ref_box": [
+      290,
+      370,
+      990,
+      560
+     ]
+    }
+   ],
+   "notes": "Low-res reading (only seen at contact-sheet size, at the edge of two frames). Bright-blue lit channel letters (Auntie Anne's current lettering, set in Fredoka Bold as the closest rounded bold) with a yellow pretzel outline mark, straight on a big navy wall above the counter; order read as 'Auntie' [pretzel] 'Anne's' because f024 shows 'Au' right at the wall's left edge and f025 shows the pretzel right before 'Anne's'. The pretzel is drawn as a simple symmetric knot from its visible right half (left half mirrored). Sizes from the neighbouring Cell Xpert letters, +-25%. A better frame of this store would fix order, font and pretzel."
+  },
+  {
    "id": "avant",
    "store": "AVANT-GARDE",
-   "ref": "IMG_4442 f009 (oblique from the left, letters ~50 px), IMG_4440 f031 (far)",
+   "ref": "IMG_4442 f009 (oblique from the left, letters ~50 px; squared up on the panel); also clear in the IMG_4442 f008 full-res frame (signs/att_IMG_4442_f008.jpg), IMG_4440 f031 far",
    "ref_img": "avant_ref.png",
    "w": 2.7,
    "h": 0.9,
@@ -323,6 +369,61 @@
    "notes": "Traced. Boost's current logo as lit push-through faces on one black contour-cut backer (the 'contour' part, ~9 cm deep, standing off the panel): the orange bolt/arrow mark with its black slit, white lowercase 'boost', smaller white 'mobile' (the tiny TM is dropped). Letters lit (white faces read bluish, orange glows) with no light on the wall. Mounted on the light warm-grey fascia panel. Size from the opening and panel (~2.8 mm/px), +-15%."
   },
   {
+   "id": "cake",
+   "store": "CAKELICIOUS",
+   "ref": "IMG_4459 contact-sheet f005 (square-on, 'C' cut off at the left), f011 (whole word, oblique); IMG_4461 f007 (partial)",
+   "ref_img": "cake_ref.png",
+   "w": 2.5,
+   "h": 0.6,
+   "type": "flat",
+   "depth": 0.05,
+   "standoff": 0.0,
+   "fascia_color": "#e98a8c",
+   "parts": [
+    {
+     "name": "shadow",
+     "text": "Cakelicious",
+     "font": "Pacifico-Regular.ttf",
+     "cap_h": 0.39,
+     "track": 0.0,
+     "stretch": 1.12,
+     "shear": 0.0,
+     "dx": 0.025,
+     "dy": -0.22,
+     "type": "flat",
+     "depth": 0.03,
+     "face": "#c41e2c",
+     "ret": "#a8161f",
+     "lit": 0.0,
+     "rough": 0.4
+    },
+    {
+     "name": "name",
+     "text": "Cakelicious",
+     "font": "Pacifico-Regular.ttf",
+     "cap_h": 0.39,
+     "track": 0.0,
+     "stretch": 1.12,
+     "shear": 0.0,
+     "dx": 0.0,
+     "dy": -0.2,
+     "type": "flat",
+     "depth": 0.05,
+     "face": "#eee6ac",
+     "ret": "#c41e2c",
+     "lit": 0.0,
+     "rough": 0.4,
+     "ref_box": [
+      -206,
+      105,
+      905,
+      311
+     ]
+    }
+   ],
+   "notes": "Bold retro brush script 'Cakelicious' with cream-yellow faces and red returns, plus a red offset 'shadow' layer behind (down and right), flat-cut and unlit, on a salmon-pink fascia band under a white crown cornice; white Tuscan columns frame the glass front, pink interior. Too soft to trace (letters ~30 px in the sheet tiles), so set in Pacifico at 1.12 width, which matches the looped k/l, the round o/u and the upswept final s; the 'C' is out of frame in the square-on view and is Pacifico's. x-height ~0.21 m from the ~1 m pink band."
+  },
+  {
    "id": "cellxpert",
    "store": "CELL XPERT",
    "ref": "IMG_4439 f026 (oblique from below-right, squared up on the fascia panel, aspect 3.1:1); f025",
@@ -444,6 +545,290 @@
    "notes": "Lit channel letters with black returns on the cream fascia panel: a red rounded-blob icon holding a white phone (the phone's thin dark outline is not modelled), red 'Cell' (traced), then white 'Xpert' with an oversized X that drops below the baseline. 'Xpert' is set in Poppins Bold (condensed and tightened to the frame) because a palm in front of the store hides the bottoms of 'ert'; X and 'pert' are separate parts so the big X keeps its size. Aspect of the squared-up panel and the 1.2 m panel height are estimates (+-12%)."
   },
   {
+   "id": "cinnamonster",
+   "store": "CINNAMONSTER",
+   "ref": "IMG_4467 photo (full res, oblique; affine-rectified so the round plaque is a circle); IMG_4465/4468 (square-on, smaller), IMG_4464/4466",
+   "ref_img": "cinnamonster_ref.png",
+   "w": 1.51,
+   "h": 0.83,
+   "type": "flat",
+   "depth": 0.1,
+   "standoff": 0.02,
+   "fascia_color": "#d6b98a",
+   "parts": [
+    {
+     "name": "banner",
+     "text": "-",
+     "trace": "cinnamonster_banner_mask.png",
+     "width": 1.5112,
+     "smooth": 1.0,
+     "dx": 0.001,
+     "dy": -0.1597,
+     "type": "flat",
+     "standoff": 0.0,
+     "depth": 0.1,
+     "face": "#7c2a38",
+     "ret": "#1e1814",
+     "rough": 0.45,
+     "lit": 0.0,
+     "ref_box": [
+      305,
+      149,
+      1076,
+      443
+     ]
+    },
+    {
+     "name": "name",
+     "text": "cinnamonster",
+     "trace": "cinnamonster_name_mask.png",
+     "width": 1.274,
+     "smooth": 0.6,
+     "dx": 0.0235,
+     "dy": -0.0676,
+     "type": "vinyl",
+     "dz": 0.12,
+     "face": "#f2ece2",
+     "rough": 0.4,
+     "lit": 0.0,
+     "ref_box": [
+      377,
+      152,
+      1027,
+      396
+     ]
+    },
+    {
+     "name": "disc",
+     "text": "O",
+     "trace": "cinnamonster_disc_mask.png",
+     "width": 0.6017,
+     "smooth": 1.0,
+     "dx": 0.0206,
+     "dy": -0.4165,
+     "type": "flat",
+     "dz": 0.12,
+     "standoff": 0.0,
+     "depth": 0.12,
+     "face": "#1f1d1b",
+     "ret": "#141210",
+     "rough": 0.35,
+     "lit": 0.0,
+     "ref_box": [
+      547,
+      267,
+      854,
+      574
+     ]
+    },
+    {
+     "name": "field",
+     "text": "o",
+     "trace": "cinnamonster_field_mask.png",
+     "width": 0.4645,
+     "smooth": 1.0,
+     "dx": 0.0206,
+     "dy": -0.3479,
+     "type": "vinyl",
+     "dz": 0.26,
+     "face": "#b89a86",
+     "rough": 0.5,
+     "lit": 0.0,
+     "ref_box": [
+      582,
+      302,
+      819,
+      539
+     ]
+    },
+    {
+     "name": "art",
+     "text": "MONSTERCINNAMONROLLSGOURMET",
+     "trace": "cinnamonster_art_mask.png",
+     "width": 0.5606,
+     "smooth": 0.6,
+     "dx": 0.0157,
+     "dy": -0.4028,
+     "type": "vinyl",
+     "dz": 0.264,
+     "face": "#f1eee6",
+     "rough": 0.45,
+     "lit": 0.0,
+     "ref_box": [
+      555,
+      275,
+      841,
+      567
+     ]
+    }
+   ],
+   "notes": "Dimensional logo plaque (two or three identical ones round the kiosk, on the gold/tan bulkhead above a burgundy-and-cream checker band): an arched burgundy banner box (~10 cm deep, black sides) with 'cinnamonster(R)' in cream serif lowercase, and a deep round black disc in front of its lower middle (~12 cm can) with a tan field, a cream ring line, cream ring text 'MONSTER CINNAMON ROLLS' / 'GOURMET' and the cream cartoon monster holding a cinnamon roll (printed: vinyl layers). Unlit. All traced from the full-res photo; the banner outline is a spline through its visible edges (its bottom is hidden behind the disc). Size guessed: disc ~0.6 m across, banner ~1.5 m. Not built: the Community Coffee wood panel inside, the hanging banner, and the second/third copies of the plaque (format has one sign per store)."
+  },
+  {
+   "id": "claires",
+   "store": "CLAIRE'S",
+   "ref": "IMG_4484 f009 (near square-on, sharp; squared up on the fascia panel seams) for 'laire's'; the 'c' (off that frame's edge) from the IMG_4433 photo squared up the same way and scaled to the a's x-height; IMG_4492 f017 (whole sign, small)",
+   "ref_img": "claires_ref.png",
+   "w": 2.781,
+   "h": 0.865,
+   "type": "channel",
+   "depth": 0.1,
+   "standoff": 0.0,
+   "fascia_color": "#ecebe8",
+   "parts": [
+    {
+     "name": "name",
+     "text": "claire's",
+     "type": "channel",
+     "face": "#4a3796",
+     "emit": "#5a46c8",
+     "ret": "#e6e4e8",
+     "trim": "#3a2a7a",
+     "lit": 0.5,
+     "rough": 0.3,
+     "ret_rough": 0.35,
+     "ret_metal": 0.2,
+     "glow_pad": 0.05,
+     "ref_box": [
+      18,
+      105,
+      1277,
+      495
+     ],
+     "dx": 0.0,
+     "dy": -0.4323,
+     "trace": "claires_name_mask.png",
+     "width": 2.7676,
+     "smooth": 1.5
+    }
+   ],
+   "notes": "Claire's purple lowercase wordmark as channel letters: deep violet faces (lit softly; the faces glow a little even by day in f009/4492 f017), white/silver returns ~10 cm deep, thin violet trim; on the glossy white fascia panels above a crinkled-aluminium band and a white-framed glass front that wraps the corner (the second face on H3 is the same sign, not modelled here). Traced: 'laire's' from 4484 f009, the 'c' (off f009's edge) redrawn as a clean elliptical c sized and placed from the IMG_4433 photo (squared up the same way, scaled to the a's x-height; its exact terminals are a best guess). Size from the ~1.2 m fascia panel: ~2.8 m wide, l ~0.86 m tall (+-15%)."
+  },
+  {
+   "id": "dillards",
+   "store": "DILLARD'S",
+   "ref": "IMG_4438 f003 (full-res frame, square-on from the court, letters ~55 px; crop enlarged 3x); f001-f004, IMG_4466 (upside-down photo, oblique) for colour; exterior signs in IMG_4489/4490 are a different (dark, unlit) set and not used",
+   "ref_img": "dillards_ref.png",
+   "w": 4.0,
+   "h": 0.78,
+   "type": "channel",
+   "depth": 0.12,
+   "standoff": 0.02,
+   "fascia_color": "#86704c",
+   "parts": [
+    {
+     "name": "name",
+     "text": "Dillard’s",
+     "trace": "dillards_name_mask.png",
+     "width": 4.0,
+     "smooth": 1.5,
+     "dx": 0.0,
+     "dy": -0.39,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#f2f6fa",
+     "emit": "#f4f8ff",
+     "ret": "#3a3836",
+     "trim": "#c8ccd0",
+     "trim_w": 0.012,
+     "lit": 1.0,
+     "rough": 0.3,
+     "ref_box": [
+      198,
+      124,
+      1048,
+      290
+     ]
+    }
+   ],
+   "notes": "Mall-side anchor entrance: 'Dillard's' house serif wordmark (mixed case, curly apostrophe), white lit channel faces (read pale blue-white), dark returns casting a shadow on the wall, on a light-oak wood-grain panel band above the wide open entrance. Traced from the court frame; a palm leaf crosses the D's stem, which was redrawn as a straight stem with a bottom serif (the rest of the letters are as traced; the a/r/d interiors are a little soft). Size estimated from the ~12 m entrance: word ~4.0 m, D ~0.78 m tall (+-15%). The exterior wall signs (dark charcoal flat letters on peach EIFS) are separate signs and not built here."
+  },
+  {
+   "id": "djs",
+   "store": "DJS JEWELERS",
+   "ref": "IMG_4438 sheet tile f014 (the clearest square-ish view; enlarged 4x and squared up on the gold band, aspect 5.3:1), tiles f012-f013 and signs/djs_IMG_4438_f014.jpg (palm in front) for layout",
+   "ref_img": "djs_ref.png",
+   "w": 4.2,
+   "h": 1.0,
+   "type": "flat",
+   "depth": 0.03,
+   "standoff": 0.01,
+   "fascia_color": "#18181a",
+   "backer": {
+    "shape": "box",
+    "w": 4.2,
+    "h": 0.75,
+    "depth": 0.03,
+    "dx": 0.0,
+    "dy": 0.0,
+    "color": "#cdbf82",
+    "side": "#a8995e",
+    "lit": 0.0,
+    "rough": 0.45,
+    "metal": 0.35
+   },
+   "parts": [
+    {
+     "name": "mono",
+     "text": "DJS",
+     "trace": "djs_mono_mask.png",
+     "width": 1.07,
+     "smooth": 1.5,
+     "dx": -0.48,
+     "dy": -0.558,
+     "type": "flat",
+     "depth": 0.03,
+     "face": "#e4e8ec",
+     "ret": "#b8bcc2",
+     "lit": 0.0,
+     "rough": 0.2,
+     "metal": 0.85,
+     "ref_box": [
+      321,
+      181,
+      637,
+      459
+     ]
+    },
+    {
+     "name": "jewelers",
+     "text": "JEWELERS",
+     "font": "sourcesans",
+     "cap_h": 0.109,
+     "track": 0.1624,
+     "dx": -0.429,
+     "dy": -0.058,
+     "type": "flat",
+     "depth": 0.015,
+     "face": "#1c1a16",
+     "ret": "#1c1a16",
+     "lit": 0.0,
+     "rough": 0.4,
+     "ref_box": [
+      215,
+      280,
+      775,
+      312
+     ]
+    }
+   ],
+   "notes": "Gold/champagne (metallic-leaf look) band about 0.75 m tall running along the storefront between glossy black fascia above and below. Big interlocking 'DJS' monogram in polished silver/chrome flat-cut letters (thin serif strokes, the J's tail loops below the band onto the black), over small widely spaced black caps 'J E W E L E R S' (font, sourcesans) on the band. Unlit letters, lit by the soffit downlights. Monogram traced from a contact-sheet tile (the only clear view; the full-res frame has a palm in front), so its strokes are soft: thin hairlines may be over-thick (low-med confidence on the exact shape). Scouts said gold letters on black: the frames show silver letters on a gold band. Band length visible ~4.2 m (it continues left out of frame). Small white 'DJS' plaque on the H4 pier (IMG_4477) not built."
+  },
+  {
+   "id": "fadez",
+   "store": "HOUSE OF FADEZ BARBERSHOP",
+   "unseen": true,
+   "ref": "none readable. Possibly IMG_4442 sheet f001-f004 (the unit just before the skylight court and AT&T in the same clip)",
+   "w": 3.0,
+   "h": 0.6,
+   "type": "flat",
+   "depth": 0.03,
+   "standoff": 0.0,
+   "fascia_color": "#8fbfc4",
+   "parts": [],
+   "notes": "No House of Fadez sign appears anywhere in the footage (the scouts found no sighting). The layout puts the barbershop next to AT&T; in clip IMG_4442 the unit filmed just before AT&T (sheet f001-f004) is a closed store with its security grille down, a pale aqua glass-tile front with glass-block pilasters, and a fascia of aqua tiles showing only two rows of empty letter-mounting holes: its sign has been taken down. If that is the Fadez unit, the 2026 truth is no sign, which is what this spec builds (aqua fascia, no letters). If a name sign is wanted anyway, the most likely look is white flat-cut sans caps 'HOUSE OF FADEZ' (with 'BARBERSHOP' smaller beneath), but nothing in the footage confirms the lettering, colours or that it is still open."
+  },
+  {
    "id": "firehaus",
    "store": "FIRE HAUS 3.0",
    "ref": "IMG_4439 f033 (near square-on, letters ~115 px; squared up on the black band's corners, aspect 6.3:1); f031-f032",
@@ -491,6 +876,232 @@
    "notes": "Traced. Thin flat gold (brushed brass-look) cut letters in a condensed roman serif, 'FIRE HAUS 3.0', unlit, set LEFT of centre on a full-width black band (the backer) between cream travertine strips, with a black crown moulding above (not modelled). Serifs are softened by the ~110 px trace. Size from the 3.0 m opening (~2.8 mm/px): band ~4.6 x 0.73 m, caps ~0.33 m."
   },
   {
+   "id": "foodcourt",
+   "store": "FOOD COURT",
+   "ref": "IMG_4484 f040 (oblique, squared up on the blue wall's corners; aspect 2.15:1 set so the flush door reads 36 x 84 in); f041 (logo row), IMG_4461 f020",
+   "ref_img": "foodcourt_ref.png",
+   "w": 5.2,
+   "h": 1.75,
+   "type": "vinyl",
+   "depth": 0.003,
+   "standoff": 0.0,
+   "fascia_color": "#1d7fc4",
+   "backer": {
+    "shape": "box",
+    "w": 5.2,
+    "h": 1.75,
+    "depth": 0.01,
+    "dx": 0.0,
+    "dy": 0.0,
+    "color": "#1d7fc4",
+    "side": "#1d7fc4",
+    "rough": 0.7
+   },
+   "parts": [
+    {
+     "name": "feelin",
+     "text": "Feelin'",
+     "trace": "foodcourt_feelin_mask.png",
+     "width": 1.7671,
+     "smooth": 0.8,
+     "dx": -1.3661,
+     "dy": 0.3335,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#e8962a",
+     "rough": 0.55,
+     "ref_box": [
+      476,
+      242,
+      974,
+      336
+     ]
+    },
+    {
+     "name": "hungry",
+     "text": "Hungry?",
+     "trace": "foodcourt_hungry_mask.png",
+     "width": 2.5513,
+     "smooth": 0.8,
+     "dx": 0.9953,
+     "dy": 0.2874,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      1031,
+      238,
+      1750,
+      349
+     ]
+    },
+    {
+     "name": "cakelicious",
+     "text": "Cakelicious",
+     "trace": "foodcourt_cakelicious_mask.png",
+     "width": 0.9048,
+     "smooth": 0.8,
+     "dx": -1.8256,
+     "dy": -0.0958,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      468,
+      414,
+      723,
+      457
+     ]
+    },
+    {
+     "name": "gac",
+     "text": "GREATAMERICANcookies",
+     "trace": "foodcourt_gac_mask.png",
+     "width": 0.6813,
+     "smooth": 0.8,
+     "dx": -0.6884,
+     "dy": -0.1987,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      820,
+      386,
+      1012,
+      486
+     ]
+    },
+    {
+     "name": "auntieannes",
+     "text": "AuntieAnne's",
+     "trace": "foodcourt_auntieannes_mask.png",
+     "width": 0.8906,
+     "smooth": 0.8,
+     "dx": 0.4524,
+     "dy": -0.0568,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      1112,
+      427,
+      1363,
+      446
+     ]
+    },
+    {
+     "name": "redseal",
+     "text": "THEREDRSEALPIZZERIA&BAR",
+     "trace": "foodcourt_redseal_mask.png",
+     "width": 0.9723,
+     "smooth": 0.8,
+     "dx": 1.6819,
+     "dy": -0.1384,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      1447,
+      411,
+      1721,
+      469
+     ]
+    },
+    {
+     "name": "corndog",
+     "text": "CornDog7",
+     "trace": "foodcourt_corndog_mask.png",
+     "width": 0.5997,
+     "smooth": 0.8,
+     "dx": -1.8718,
+     "dy": -0.699,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      498,
+      509,
+      667,
+      627
+     ]
+    },
+    {
+     "name": "prepz",
+     "text": "PREPZ",
+     "trace": "foodcourt_prepz_mask.png",
+     "width": 0.8906,
+     "smooth": 0.8,
+     "dx": -0.7398,
+     "dy": -0.589,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      776,
+      550,
+      1027,
+      596
+     ]
+    },
+    {
+     "name": "cinnamonster",
+     "text": "cinnamonster",
+     "trace": "foodcourt_cinnamonster_mask.png",
+     "width": 0.9368,
+     "smooth": 0.8,
+     "dx": 0.4187,
+     "dy": -0.5748,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      1096,
+      552,
+      1360,
+      592
+     ]
+    },
+    {
+     "name": "wingz",
+     "text": "WICKEDWINGZ",
+     "trace": "foodcourt_wingz_mask.png",
+     "width": 0.9439,
+     "smooth": 0.8,
+     "dx": 1.6606,
+     "dy": -0.66,
+     "type": "vinyl",
+     "lit": 0.0,
+     "glow_pad": 0.01,
+     "face": "#f4f4f2",
+     "rough": 0.55,
+     "ref_box": [
+      1445,
+      548,
+      1711,
+      616
+     ]
+    }
+   ],
+   "notes": "Traced, all ten parts. Not a store sign: the food-court leasing wall, a flat medium-blue painted wall (~3 m tall, with a flush blue door and white fluted half-columns under a cream cornice) printed with 'Feelin'' in orange and 'Hungry?' in white (geometric sans), then two rows of white one-colour tenant logos: Cakelicious, Great American Cookies, Auntie Anne's, The Red Seal Pizzeria & Bar, Corn Dog 7, PREPZ, cinnamonster, Wicked Wingz. Unlit, matte vinyl/print (3 mm). The blue backer stands in for the painted wall behind the graphics (5.2 x 1.75 m). The tiny 'PIZZERIA & BAR' line is at the limit of the trace. Scale from the door (~3.55 mm/px)."
+  },
+  {
    "id": "footlocker",
    "store": "FOOT LOCKER",
    "ref": "IMG_4440 contact-sheet f007 (only view: oblique from below, 'Foot Lock' in frame, the 'er' cut off), f006",
@@ -530,6 +1141,200 @@
     }
    ],
    "notes": "Seen only in the contact-sheet tile IMG_4440 f007 (the signs/ full-res file named f007 shows the corridor, not the sign), oblique from below with 'Foot Lock' in frame. Red-face lit channel letters, light grey/silver returns about 12 cm deep, on a brushed stainless/grey metal fascia band over a full-glass front. Mixed case, very heavy, slightly italic, large x-height: set in Inter Black sheared 0.12. The view is foreshortened ~2x horizontally, so the letters' true width can't be read off the frame: the width is the font's natural width, and the check box is stretched to the partial view (letter shapes and weights compare, not the overall width). No stripe/referee logo seen (it may be off frame to the right). Cap height 0.55 m is a guess from the fascia band."
+  },
+  {
+   "id": "gac",
+   "store": "GREAT AMERICAN COOKIES",
+   "ref": "IMG_4439 f013 (contact-sheet tile only: blurred, oblique, top cut off; used enlarged as the reference), f012 tile (bottom of COOKIES over the red bulkhead), signs/gac_IMG_4439_f013.jpg (full res, only the bottoms of C-O-O-K: colours and white returns)",
+   "ref_img": "gac_ref.png",
+   "w": 3.1,
+   "h": 0.76,
+   "type": "channel",
+   "depth": 0.12,
+   "standoff": 0.02,
+   "fascia_color": "#efe9e0",
+   "parts": [
+    {
+     "name": "great",
+     "text": "GREAT AMERICAN",
+     "font": "TitanOne-Regular.ttf",
+     "cap_h": 0.22,
+     "track": 0.015,
+     "dx": 0.0,
+     "dy": 0.53,
+     "type": "channel",
+     "depth": 0.08,
+     "face": "#e3192a",
+     "emit": "#ff2a36",
+     "ret": "#f4f2ee",
+     "trim": "#ffffff",
+     "trim_w": 0.02,
+     "lit": 1.0,
+     "rough": 0.35
+    },
+    {
+     "name": "c",
+     "text": "C",
+     "font": "TitanOne-Regular.ttf",
+     "cap_h": 0.45,
+     "dx": -1.3097,
+     "dy": -0.0056,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#1e6ef0",
+     "emit": "#2a7aff",
+     "ret": "#eef0f2",
+     "trim": "#f8f8f8",
+     "trim_w": 0.015,
+     "lit": 1.0,
+     "rough": 0.35,
+     "ref_box": [
+      190,
+      308,
+      342,
+      530
+     ]
+    },
+    {
+     "name": "o1",
+     "text": "O",
+     "font": "TitanOne-Regular.ttf",
+     "cap_h": 0.45,
+     "dx": -0.832,
+     "dy": -0.0056,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#ffe21a",
+     "emit": "#fff04a",
+     "ret": "#eef0f2",
+     "trim": "#f8f8f8",
+     "trim_w": 0.015,
+     "lit": 1.0,
+     "rough": 0.35,
+     "ref_box": [
+      349,
+      278,
+      537,
+      476
+     ]
+    },
+    {
+     "name": "o2",
+     "text": "O",
+     "font": "TitanOne-Regular.ttf",
+     "cap_h": 0.45,
+     "dx": -0.3228,
+     "dy": -0.0056,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#e8141e",
+     "emit": "#ff2a2a",
+     "ret": "#eef0f2",
+     "trim": "#f8f8f8",
+     "trim_w": 0.015,
+     "lit": 1.0,
+     "rough": 0.35,
+     "ref_box": [
+      545,
+      278,
+      745,
+      441
+     ]
+    },
+    {
+     "name": "k",
+     "text": "K",
+     "font": "TitanOne-Regular.ttf",
+     "cap_h": 0.45,
+     "dx": 0.1789,
+     "dy": -0.0047,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#14b04a",
+     "emit": "#20d060",
+     "ret": "#eef0f2",
+     "trim": "#f8f8f8",
+     "trim_w": 0.015,
+     "lit": 1.0,
+     "rough": 0.35,
+     "ref_box": [
+      750,
+      259,
+      961,
+      449
+     ]
+    },
+    {
+     "name": "i",
+     "text": "I",
+     "font": "TitanOne-Regular.ttf",
+     "cap_h": 0.45,
+     "dx": 0.5395,
+     "dy": 0.0001,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#ffe21a",
+     "emit": "#fff04a",
+     "ret": "#eef0f2",
+     "trim": "#f8f8f8",
+     "trim_w": 0.015,
+     "lit": 1.0,
+     "rough": 0.35,
+     "ref_box": [
+      996,
+      250,
+      1125,
+      424
+     ]
+    },
+    {
+     "name": "e",
+     "text": "E",
+     "font": "TitanOne-Regular.ttf",
+     "cap_h": 0.45,
+     "dx": 0.8796,
+     "dy": 0.0,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#1e6ef0",
+     "emit": "#2a7aff",
+     "ret": "#eef0f2",
+     "trim": "#f8f8f8",
+     "trim_w": 0.015,
+     "lit": 1.0,
+     "rough": 0.35,
+     "ref_box": [
+      1138,
+      250,
+      1305,
+      425
+     ]
+    },
+    {
+     "name": "s",
+     "text": "S",
+     "font": "TitanOne-Regular.ttf",
+     "cap_h": 0.45,
+     "dx": 1.3071,
+     "dy": -0.0056,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#e8141e",
+     "emit": "#ff2a2a",
+     "ret": "#eef0f2",
+     "trim": "#f8f8f8",
+     "trim_w": 0.015,
+     "lit": 1.0,
+     "rough": 0.35,
+     "ref_box": [
+      1337,
+      250,
+      1504,
+      401
+     ]
+    }
+   ],
+   "notes": "Counter-unit kiosk sign above the red bulkhead (dark-red band with downlights; a colour-changing LED box on the left corner). 'COOKIES' in fat rounded caps, one colour per letter: C blue, O yellow, O red, K green, I yellow, E blue, S red; lit faces with deep WHITE returns (the full-res frame shows the white sides clearly). 'GREAT AMERICAN' above in red lit caps with a heavy white outline/returns; its top is cut off in every frame, so its exact face, size and spacing are a guess (font Titan One like COOKIES; the real wordmark may be a different heavy face). COOKIES letters are fonted (Titan One, OFL) because no sharp square-on view exists; letter widths match the blurred tile within ~10%. The real letters bounce slightly (not level); built level. Size from the bulkhead downlights: COOKIES ~2.9 m, caps ~0.45 m. Low confidence on GREAT AMERICAN."
   },
   {
    "id": "games",
@@ -843,6 +1648,51 @@
    "notes": "Mall-side sign: polished chrome/silver flat-cut letters (mirror faces: they show the ceiling lights' streaks; the small 'RACE TRACK' reads dark only because it mirrors the dark windows opposite) on the matte red painted band (~1.5 m tall) that runs the whole front, unlit. 'HYPERVELOCITY' traced from f022 squared up on the band's top and bottom edges (the horizontal scale of that squaring is judged from the letter shapes, +-10%); the last Y is off the frame edge in every close frame, so it is a copy of the Y in HYPER placed at the same letter spacing (f019/f020 confirm the word ends in Y). 'RACE TRACK' set in Krona One (wide geometric sans, condensed to fit), centred. Size from the 1.5 m band: word ~4.26 m wide, caps ~0.39 m. The exterior signs (cream channel letters, red RACE TRACK) are a different sign, not this spec."
   },
   {
+   "id": "jcp",
+   "store": "JCPENNEY",
+   "ref": "IMG_4457 f003 (mall entrance, near square-on; squared up on the marble band between its top and the door heads), f002; IMG_4458 f001",
+   "ref_img": "jcp_ref.png",
+   "w": 4.6,
+   "h": 1.2,
+   "type": "channel",
+   "depth": 0.12,
+   "standoff": 0.0,
+   "fascia_color": "#6b4433",
+   "parts": [
+    {
+     "name": "name",
+     "text": "JCPenney",
+     "font": "heros_bold",
+     "cap_h": 0.81,
+     "track": 0.0,
+     "stretch": 0.85,
+     "shear": 0.0,
+     "dx": 0.0,
+     "dy": -0.35,
+     "type": "channel",
+     "depth": 0.12,
+     "face": "#e0142c",
+     "ret": "#2a0a0c",
+     "trim": "#b80f22",
+     "lit": 1.0,
+     "emit": "#ff1a30",
+     "glow": "#ff2030",
+     "glow_pad": 0.12,
+     "glow_e": 0.25,
+     "rough": 0.3,
+     "ret_rough": 0.5,
+     "ret_metal": 0.2,
+     "ref_box": [
+      461,
+      123,
+      1258,
+      311
+     ]
+    }
+   ],
+   "notes": "Mall-side entrance: the post-2012 'JCPenney' wordmark (caps J C P, lowercase 'enney' with a tall x-height) as lit red-face channel letters with dark returns, mounted on the rosso (red-brown veined) marble cladding of the entrance bay, black-framed glass doors below; cream mall wall with a terracotta wainscot either side. A potted palm hides most of the 'e'-'n' in every view. Set in TeX Gyre Heros Bold at 0.85 width (matches the word's width and the x-height); a faint red glow on the marble. Cap height ~0.8 m from the ~1.8 m marble band above the 2.4 m doors. The exterior wordmarks (magenta faces, black returns, on brick) are separate signs outside the mall and aren't built here."
+  },
+  {
    "id": "journeys",
    "store": "JOURNEYS",
    "ref": "IMG_4440 f020 (near square-on, close; used unwarped), f016-f019 oblique",
@@ -921,7 +1771,8 @@
       369,
       673,
       650
-     ]
+     ],
+     "glow_pad": 0.01
     },
     {
      "name": "yellow",
@@ -941,7 +1792,8 @@
       336,
       335,
       737
-     ]
+     ],
+     "glow_pad": 0.01
     },
     {
      "name": "globe",
@@ -961,10 +1813,89 @@
       470,
       316,
       584
+     ],
+     "glow_pad": 0.01
+    }
+   ],
+   "notes": "Journeys' 2020s compass logo: a big pale-grey oval panel (deckled edge, faint dashed 'route' lines printed on it, black 15 cm return) mounted TILTED about 25-30 deg (rising to the right) over the entry, on a purple fascia with a lime-green paint-splash mural. The oval's tilt is real (the letters stand upright in a near-frontal frame), and the backer can't be rotated, so the oval is a traced flat part (an ellipse fitted to its edge). 'Journeys' is hand-drawn faux-neon: pale cyan-white lit tubes (channel, lit, small cyan glow), traced from the bright cores; the overlapping strokes of O-U-R-N merge into one shape (they cross on the real sign too). Compass marks traced as their own parts: two orange chevrons (left of J, after the N), two yellow arrows (above and below the J), a green globe in the O. Dashed route lines not modelled (printed, too faint). Size: oval about 2.4 x 1.2 m (guess, from the 3 m door opening); it hangs below the fascia band (mount_y -0.2). Builder note: unlit narrow parts get glow_pad 0.01, because make_logos.textures() sizes its glow border from glow_pad even with no glow, and a tall 15 cm-wide part at the default 0.25 m pad makes a multi-gigabyte blur (the build hangs)."
+  },
+  {
+   "id": "lids",
+   "store": "LIDS",
+   "ref": "IMG_4439 f005 (full res frame, oblique ~50 deg from the left, letters ~140 px; rectified with the vanishing point of the letters' base and top lines, width:height of the rectified window chosen 1.5:1 by eye); f001-f006 sheet tiles (whole fascia), IMG_4438 f011-f012",
+   "ref_img": "lids_ref.png",
+   "w": 1.25,
+   "h": 0.95,
+   "type": "channel",
+   "depth": 0.15,
+   "standoff": 0.02,
+   "fascia_color": "#2c3f78",
+   "parts": [
+    {
+     "name": "name",
+     "text": "Liids",
+     "trace": "lids_name_mask.png",
+     "width": 1.25,
+     "smooth": 1.5,
+     "dx": 0.0,
+     "dy": 0.0,
+     "type": "channel",
+     "depth": 0.15,
+     "face": "#eef4fb",
+     "emit": "#f4f8ff",
+     "ret": "#14182a",
+     "trim": "#9aa2ae",
+     "trim_w": 0.012,
+     "lit": 1.0,
+     "rough": 0.35,
+     "ret_rough": 0.5,
+     "ref_box": [
+      184,
+      188,
+      548,
+      464
      ]
     }
    ],
-   "notes": "Journeys' 2020s compass logo: a big pale-grey oval panel (deckled edge, faint dashed 'route' lines printed on it, black 15 cm return) mounted TILTED about 25-30 deg (rising to the right) over the entry, on a purple fascia with a lime-green paint-splash mural. The oval's tilt is real (the letters stand upright in a near-frontal frame), and the backer can't be rotated, so the oval is a traced flat part (an ellipse fitted to its edge). 'Journeys' is hand-drawn faux-neon: pale cyan-white lit tubes (channel, lit, small cyan glow), traced from the bright cores; the overlapping strokes of O-U-R-N merge into one shape (they cross on the real sign too). Compass marks traced as their own parts: two orange chevrons (left of J, after the N), two yellow arrows (above and below the J), a green globe in the O. Dashed route lines not modelled (printed, too faint). Size: oval about 2.4 x 1.2 m (guess, from the 3 m door opening); it hangs below the fascia band (mount_y -0.2)."
+   "notes": "'Lids' in heavy italic mixed case (L, i with separate dot, d, s), white lit acrylic faces with a grey trim cap and deep (~15 cm) near-black returns, on a painted navy-blue fascia over the entry; a small round (R) mark at the top right of the s, not built. Behind the letters a slightly lighter square ghost panel from an older sign (not built). Traced from the only full-res frame, which is strongly oblique: the letter proportions depend on the rectification aspect (+-15% in width). Size from the 3 m entry: letters ~0.95 m tall, word ~1.25 m wide (+-15%). The scouts' 'flag mark' is not in the frame."
+  },
+  {
+   "id": "lola",
+   "store": "LOLA LABELLE BRIDAL",
+   "ref": "IMG_4461 f011 (far, oblique, letters ~15 px); sheet IMG_4461 f010-f012, IMG_4459 f002-f003 (storefront)",
+   "ref_img": "lola_ref.png",
+   "w": 2.4,
+   "h": 0.5,
+   "type": "flat",
+   "depth": 0.01,
+   "standoff": 0.0,
+   "fascia_color": "#0e0e10",
+   "parts": [
+    {
+     "name": "name",
+     "text": "Lola LaBelle Bridal",
+     "font": "GreatVibes-Regular.ttf",
+     "cap_h": 0.22,
+     "track": 0.0,
+     "stretch": 1.0,
+     "shear": 0.0,
+     "dx": 0.0,
+     "dy": -0.15,
+     "type": "flat",
+     "depth": 0.01,
+     "face": "#f4f2ee",
+     "ret": "#dcdad6",
+     "lit": 0.0,
+     "rough": 0.4,
+     "ref_box": [
+      220,
+      75,
+      850,
+      195
+     ]
+    }
+   ],
+   "notes": "Small white formal script 'Lola LaBelle Bridal' (capital L, L, B, B; a long rising swash off the final l) on the glossy black box-frame band over a corner-wrapping full-glass front with gowns; unlit, thin (vinyl or 1 cm cut acrylic). Only seen far and oblique (~15 px letters), so it is Great Vibes, not traced; the end swash isn't in the font. Spelling 'LaBelle' read from the frame. Cap ~0.22 m guessed from the band."
   },
   {
    "id": "lynns",
@@ -1044,6 +1975,43 @@
     }
    ],
    "notes": "Black flat-cut letters (~5 cm deep, glossy black faces) on the white tiled portal wall of the old Sears mall entrance, unlit; flanked by lantern sconces (not part of the sign). 'Lynn's' script traced from f037 (palm fronds cross the far left of the L's swash, so its very left tip is a best guess). 'INTERIORS' is a bold Roman serif set in Liberation Serif Bold condensed to fit (the real O is a little rounder); the thin rule above it is a separate flat bar. Size from the 3.0 m opening: ~2.7 m wide, script ~1.2 m tall, caps ~0.29 m."
+  },
+  {
+   "id": "maurices",
+   "store": "MAURICES",
+   "ref": "IMG_4439 f037 (full-res frame, oblique ~60 deg; squared up on the letters' base and x-height lines, aspect 6:1 chosen by eye so the o/c/e read round); f036 tile",
+   "ref_img": "maurices_ref.png",
+   "w": 2.5,
+   "h": 0.43,
+   "type": "flat",
+   "depth": 0.05,
+   "standoff": 0.03,
+   "fascia_color": "#ece4e2",
+   "parts": [
+    {
+     "name": "name",
+     "text": "maurıces",
+     "font": "inter_medium",
+     "cap_h": 0.55,
+     "track": -0.022,
+     "stretch": 0.82,
+     "dx": 0.0,
+     "dy": -0.215,
+     "type": "flat",
+     "depth": 0.05,
+     "face": "#5f9ca2",
+     "ret": "#3e7479",
+     "lit": 0.0,
+     "rough": 0.45,
+     "ref_box": [
+      58,
+      88,
+      1080,
+      262
+     ]
+    }
+   ],
+   "notes": "Lowercase 'maurices' (the i has no dot, as on the real sign), teal flat-cut dimensional letters (~5 cm, pin-mounted with a visible gap: shadows on the wall), unlit, on the pale blush-white wall above the entry; teal scalloped fabric awnings with white leaf prints over the windows either side (storefront, not the sign). Font: Inter Medium condensed to 82% (the real face is a humanist sans with a double-storey a; Inter is close in weight and width, letters touch as on the sign). Only an oblique view exists, so width +-12%. Size from the entry opening: x-height ~0.43 m, word ~2.5 m."
   },
   {
    "id": "neek",
@@ -1246,7 +2214,7 @@
      "name": "vs",
      "text": "VICTORIA’S SECRET",
      "font": "Cinzel-Bold.ttf",
-     "cap_h": 0.039,
+     "cap_h": 0.0385,
      "track": 0.0,
      "stretch": 0.9,
      "dx": 0.035,
@@ -1325,6 +2293,157 @@
     }
    ],
    "notes": "White mixed-case grotesque 'Impressive Prints' (Helvetica-like, semibold, large x-height) as thin flat-cut letters, unlit, on the dark taupe-brown storefront fascia band that runs over two wide glass bays; the same sign appears on both bays (left one behind the palm in f014). Set in Inter SemiBold as two words (the real word space is wide, ~0.75 cap), which matches the word width (7.2x cap for 'Impressive'). 'Prints' is cut off in the sharp frame, read from sheet f013. The game has one sign per store, so only one copy is built. Cap height ~0.3 m (letters ~1/3 of the band)."
+  },
+  {
+   "id": "proimage",
+   "store": "PROIMAGE SPORTS",
+   "ref": "IMG_4469 photo (full res, near square-on from across the court; crop at 2x); IMG_4471/IMG_4472 (close, from below: letter depth and colours)",
+   "ref_img": "proimage_ref.png",
+   "w": 2.4,
+   "h": 0.79,
+   "type": "flat",
+   "depth": 0.02,
+   "standoff": 0.0,
+   "fascia_color": "#e9dcc4",
+   "parts": [
+    {
+     "name": "blue",
+     "text": "-",
+     "trace": "proimage_blue_mask.png",
+     "width": 2.399,
+     "smooth": 0.0,
+     "dx": 0.0,
+     "dy": -0.262,
+     "type": "flat",
+     "depth": 0.02,
+     "standoff": 0.0,
+     "face": "#1f3f86",
+     "ret": "#14285a",
+     "lit": 0.0,
+     "rough": 0.35,
+     "ref_box": [
+      60,
+      193,
+      1371,
+      413
+     ]
+    },
+    {
+     "name": "black",
+     "text": "--",
+     "trace": "proimage_black_mask.png",
+     "width": 2.28,
+     "smooth": 1.0,
+     "dx": 0.016,
+     "dy": -0.393,
+     "dz": 0.02,
+     "type": "flat",
+     "depth": 0.02,
+     "standoff": 0.0,
+     "face": "#141416",
+     "ret": "#141416",
+     "lit": 0.0,
+     "rough": 0.3,
+     "ref_box": [
+      101,
+      55,
+      1347,
+      485
+     ]
+    },
+    {
+     "name": "white",
+     "text": "PROIMAGE",
+     "trace": "proimage_white_mask.png",
+     "width": 2.229,
+     "smooth": 1.0,
+     "dx": 0.016,
+     "dy": -0.073,
+     "dz": 0.04,
+     "type": "flat",
+     "depth": 0.01,
+     "standoff": 0.0,
+     "face": "#e6eaee",
+     "ret": "#c8ccd0",
+     "lit": 0.0,
+     "rough": 0.3,
+     "metal": 0.3,
+     "ref_box": [
+      115,
+      69,
+      1333,
+      310
+     ]
+    },
+    {
+     "name": "name",
+     "text": "PROIMAGE",
+     "trace": "proimage_name_mask.png",
+     "width": 2.2,
+     "smooth": 0.5,
+     "dx": 0.025,
+     "dy": -0.04,
+     "dz": 0.05,
+     "type": "flat",
+     "depth": 0.1,
+     "standoff": 0.0,
+     "face": "#111113",
+     "ret": "#0c0c0e",
+     "lit": 0.0,
+     "rough": 0.22,
+     "ret_rough": 0.3,
+     "ref_box": [
+      128,
+      72,
+      1330,
+      292
+     ]
+    },
+    {
+     "name": "sports",
+     "text": "SPORTS",
+     "trace": "proimage_sports_mask.png",
+     "width": 0.968,
+     "smooth": 1.0,
+     "dx": 0.017,
+     "dy": -0.342,
+     "dz": 0.04,
+     "type": "flat",
+     "depth": 0.02,
+     "standoff": 0.0,
+     "face": "#ddd0b4",
+     "ret": "#b8ab90",
+     "lit": 0.0,
+     "rough": 0.45,
+     "ref_box": [
+      460,
+      359,
+      989,
+      457
+     ]
+    },
+    {
+     "name": "est",
+     "text": "EST. 1985",
+     "font": "poppins_bold",
+     "cap_h": 0.049,
+     "track": 0.0216,
+     "dx": 0.871,
+     "dy": -0.187,
+     "dz": 0.02,
+     "type": "vinyl",
+     "face": "#ddd0b4",
+     "lit": 0.0,
+     "rough": 0.5,
+     "ref_box": [
+      1068,
+      345,
+      1315,
+      372
+     ]
+    }
+   ],
+   "notes": "Dimensional layered logo panel on the cream fascia band (unlit): a royal/navy rounded plate, a black plate hugging PROIMAGE with a black tab under it for SPORTS, a white/silver offset outline (drop-shadow down-left) behind PROIMAGE, deep glossy-black collegiate block letters PROIMAGE (~10 cm cans), cream block SPORTS, cream 'EST. 1985'. PROIMAGE's letter shapes are the Graduate font (OFL) emboldened and fitted to the letter box, rendered to a mask and traced (the black letters can't be separated from the black plate by colour); the white outline and the black plate are built from that mask (shifted/dilated) and checked by eye against the photo; SPORTS is traced; the blue plate is a fitted rounded rectangle. Size guessed ~2.4 m wide (letters ~0.4 m), +-15%. Real blue plate shades from navy (left) to royal blue (right): one colour here."
   },
   {
    "id": "rainbow",
@@ -1468,6 +2587,68 @@
    "notes": "Mall-side sign (the exterior parapet sign is a separate, later job). Flat-cut red PVC/acrylic letters (~2.5 cm, matte, unlit) 'THE RED' + 'SEAL' in a condensed rounded-corner display sans, the red scalloped wax-seal disc between them with its white 'R' and swirl rings as a thin raised layer on the disc (monogram, dz), and 'PIZZERIA & BAR' in small black spaced caps below; stud-mounted straight onto the white knock-down stucco above the black folding-glass opening. All traced from f003 squared up on the opening (seal checked round). The real seal's white is pale pink-white. Size from a ~4.5 m opening: ~2.58 m wide, cap height ~0.39 m, seal ~0.6 m."
   },
   {
+   "id": "restrooms",
+   "store": "MEN",
+   "aliases": [
+    "WOMEN"
+   ],
+   "ref": "IMG_4439 f033 (left edge, squared up with the Fire Haus band's plane; fan ~150 px, letters ~25 px in the frame); f029-f030 (oblique, small)",
+   "ref_img": "restrooms_ref.png",
+   "w": 0.42,
+   "h": 0.55,
+   "type": "flat",
+   "depth": 0.02,
+   "standoff": 0.0,
+   "fascia_color": "#ece6d4",
+   "parts": [
+    {
+     "name": "fan",
+     "text": "fan",
+     "trace": "restrooms_fan_mask.png",
+     "width": 0.2465,
+     "smooth": 1.5,
+     "dx": 0.0043,
+     "dy": -0.1614,
+     "depth": 0.03,
+     "glow_pad": 0.01,
+     "face": "#a89878",
+     "ret": "#8a7c60",
+     "rough": 0.3,
+     "metal": 0.7,
+     "ret_rough": 0.35,
+     "ret_metal": 0.6,
+     "ref_box": [
+      152,
+      67,
+      495,
+      672
+     ]
+    },
+    {
+     "name": "text",
+     "text": "RESTROOMS",
+     "font": "Oswald-Bold.ttf",
+     "cap_h": 0.0734,
+     "track": 0.012,
+     "stretch": 0.719,
+     "dx": 0.0,
+     "dy": -0.2749,
+     "depth": 0.006,
+     "glow_pad": 0.01,
+     "face": "#1c1c1c",
+     "ret": "#1c1c1c",
+     "rough": 0.5,
+     "ref_box": [
+      47,
+      725,
+      588,
+      830
+     ]
+    }
+   ],
+   "notes": "The mall's own wayfinding over the restroom corridor door (H7, left of Fire Haus): an Art-Deco fan of five faceted champagne/pewter metal blades on a small ball (traced as one silhouette; the blade facets are not separate), over widely spaced black condensed deco caps 'RESTROOMS' (set in Oswald Bold, condensed; the real letters are a narrow deco face and sit on a gentle arc, set straight here). Unlit, flat, on the cream wall. Small: ~0.25 m fan, ~7.5 cm letters, sized against the Fire Haus band on the same wall. A grey ADA restroom plaque with an arrow hangs on the pier to the right (not modelled)."
+  },
+  {
    "id": "rhea",
    "store": "RHEA LANA'S",
    "unseen": true,
@@ -1564,6 +2745,222 @@
    "notes": "Fascia over the entry (on the white panel front): one line 'SHOE DEPT. ENCORE', black-faced reverse-lit letters with a cool blue-white halo on the wall (IMG_4479, IMG_4477; both blurred/oblique/small, so the fascia letters were set from the wordmark on the projecting blade sign in IMG_4476, which is sharp: heavy condensed caps 'SHOE DEPT.' = Anton, thin condensed 'ENCORE' = Oswald Light, ENCORE ~6% taller). The check image shows the blade's stacked layout; the fascia is inline. Whether the fascia has a thin rule or a separator between DEPT. and ENCORE can't be read. Size guessed from the 3 m entry: caps ~0.38 m, ~3.3 m long. Not built (format has one sign per store): the black 0.75 m square blade box projecting from the wall west of the windows, white-lit 'SHOE DEPT.' / rule / 'ENCORE'."
   },
   {
+   "id": "sola",
+   "store": "SOLA CENTER FOR THE ARTS",
+   "ref": "IMG_4484 contact-sheet f055 (whole logo, squared up on the 'SOUTH LOUISIANA' line; soft), signs/sola_IMG_4484_f055 full-res (O-L-A and text sharp, S off the frame edge), f054",
+   "ref_img": "sola_ref.png",
+   "w": 1.55,
+   "h": 1.361,
+   "mount_y": -1.6,
+   "type": "vinyl",
+   "depth": 0.003,
+   "standoff": 0.0,
+   "fascia_color": "#2a2a2c",
+   "parts": [
+    {
+     "name": "back",
+     "text": "SOLA",
+     "type": "vinyl",
+     "face": "#f2f2ee",
+     "ret": "#f2f2ee",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.0,
+     "ref_box": [
+      52,
+      84,
+      1235,
+      810
+     ],
+     "trace": "sola_back_mask.png",
+     "width": 1.5366,
+     "smooth": 1.0,
+     "dx": 0.0058,
+     "dy": -0.2632
+    },
+    {
+     "name": "s",
+     "text": "S",
+     "type": "vinyl",
+     "face": "#d4e01a",
+     "ret": "#d4e01a",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.002,
+     "ref_box": [
+      116,
+      158,
+      426,
+      689
+     ],
+     "trace": "sola_s_mask.png",
+     "width": 0.4017,
+     "smooth": 1.0,
+     "dx": -0.4784,
+     "dy": -0.1059
+    },
+    {
+     "name": "o",
+     "text": "O",
+     "type": "vinyl",
+     "face": "#e0156e",
+     "ret": "#e0156e",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.002,
+     "ref_box": [
+      424,
+      213,
+      739,
+      712
+     ],
+     "trace": "sola_o_mask.png",
+     "width": 0.4082,
+     "smooth": 1.0,
+     "dx": -0.0747,
+     "dy": -0.1358
+    },
+    {
+     "name": "l",
+     "text": "L",
+     "type": "vinyl",
+     "face": "#2f9ee6",
+     "ret": "#2f9ee6",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.002,
+     "ref_box": [
+      739,
+      163,
+      911,
+      650
+     ],
+     "trace": "sola_l_mask.png",
+     "width": 0.2223,
+     "smooth": 1.0,
+     "dx": 0.2418,
+     "dy": -0.0553
+    },
+    {
+     "name": "a",
+     "text": "A",
+     "type": "vinyl",
+     "face": "#ee5a1c",
+     "ret": "#ee5a1c",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.002,
+     "ref_box": [
+      896,
+      255,
+      1163,
+      734
+     ],
+     "trace": "sola_a_mask.png",
+     "width": 0.3458,
+     "smooth": 1.0,
+     "dx": 0.5076,
+     "dy": -0.1644
+    },
+    {
+     "name": "masks",
+     "text": "masks",
+     "type": "vinyl",
+     "face": "#f2f0ee",
+     "ret": "#f2f0ee",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.004,
+     "ref_box": [
+      479,
+      333,
+      709,
+      611
+     ],
+     "trace": "sola_masks_mask.png",
+     "width": 0.2977,
+     "smooth": 1.0,
+     "dx": -0.0585,
+     "dy": -0.0046
+    },
+    {
+     "name": "clef",
+     "text": "clef",
+     "type": "vinyl",
+     "face": "#f2e8e4",
+     "ret": "#f2e8e4",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.004,
+     "ref_box": [
+      997,
+      317,
+      1046,
+      553
+     ],
+     "trace": "sola_clef_mask.png",
+     "width": 0.0624,
+     "smooth": 1.0,
+     "dx": 0.4972,
+     "dy": 0.0708
+    },
+    {
+     "name": "south",
+     "text": "SOUTH LOUISIANA",
+     "type": "vinyl",
+     "face": "#f2f2ee",
+     "ret": "#f2f2ee",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.0,
+     "ref_box": [
+      43,
+      838,
+      1186,
+      988
+     ],
+     "font": "LilitaOne-Regular.ttf",
+     "cap_h": 0.1901,
+     "track": 0.0,
+     "stretch": 0.6643,
+     "dx": -0.0318,
+     "dy": -0.4946
+    },
+    {
+     "name": "center",
+     "text": "CENTER FOR THE ARTS",
+     "type": "vinyl",
+     "face": "#f2f2ee",
+     "ret": "#f2f2ee",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "dz": 0.0,
+     "ref_box": [
+      121,
+      1009,
+      1115,
+      1131
+     ],
+     "font": "LilitaOne-Regular.ttf",
+     "cap_h": 0.1546,
+     "track": 0.0,
+     "stretch": 0.6192,
+     "dx": -0.0273,
+     "dy": -0.6805
+    }
+   ],
+   "notes": "SOLA (South Louisiana Center for the Arts) has NO fascia lettering: the curved black textured-stucco band above (the old Sound Shop front) is blank. Its sign is a multicolour vinyl decal on the black glass vestibule panel: a white contour backing with 'S' lime, 'O' a magenta disc with white comedy/tragedy masks, 'L' blue, 'A' orange with a white treble clef, then 'SOUTH LOUISIANA' and 'CENTER FOR THE ARTS' in white heavy sans (Lilita One, condensed). Traced from the contact-sheet tile (the only frame with the whole logo; soft, so edges are smoothed and the mask faces are blobs); the right edge of the white backing is clipped by the squared-up frame by a few cm. The builder can't put it on the glass: mount_y -1.6 drops it from the fascia toward window height; better placed on the storefront glass by hand. Size a guess (~1.6 m wide) from the ~2.5 m glass panel. An older projecting black panel sign (round orange/yellow logo) is glimpsed far away in IMG_4419 only; not modelled."
+  },
+  {
    "id": "spencers",
    "store": "SPENCER'S",
    "ref": "IMG_4440 f001 (closest, oblique from left; squared up on the roll-shutter panel), IMG_4439 f035",
@@ -1633,6 +3030,90 @@
     }
    ],
    "notes": "Not a channel-letter sign: Spencer's 2026 front is a faux red-brick storefront with a rusty steel-angle frame; the 'sign' is a spray-painted graffiti 'Spencer's' on the half-raised black roll-down security shutter over the entry, lit only by the mall lights. Backer = the visible shutter (about 2.3 x 1.0 m, guessed from the brick courses). The shutter's background is a red/pink/blue/purple spray-paint wash with horizontal slat lines: the builder takes one backer colour, so it is the median purple (#8c5f96); a printed backer texture would be truer (the format can't take one). Letters: two traced vinyl layers, the black outline/drop-shadow silhouette (also covers the thin white rim) and the orange fill on top (deeper by 3 mm so it sits in front). Orange corrected from the warm frame. The band above is the plain cream mall wall; the piers either side are faux brick."
+  },
+  {
+   "id": "tmobile",
+   "store": "T-MOBILE",
+   "ref": "IMG_4431 photo (full res, mall side; squared up on the letters' cap and base lines), IMG_4492 f037/f046 (same panel, far), IMG_4428 (mirror reflection, proportions only)",
+   "ref_img": "tmobile_ref.png",
+   "w": 3.036,
+   "h": 0.586,
+   "type": "channel",
+   "depth": 0.1,
+   "standoff": 0.0,
+   "fascia_color": "#f2f0ee",
+   "parts": [
+    {
+     "name": "t",
+     "text": "T",
+     "trace": "tmobile_t_mask.png",
+     "width": 0.558,
+     "smooth": 0.5,
+     "face": "#c4135e",
+     "emit": "#e20074",
+     "ret": "#1a1214",
+     "trim": "#a8104e",
+     "lit": 0.4,
+     "rough": 0.3,
+     "ret_rough": 0.4,
+     "glow_pad": 0.03,
+     "ref_box": [
+      120,
+      92,
+      400,
+      385
+     ],
+     "dx": -1.238,
+     "dy": -0.293
+    },
+    {
+     "name": "dots",
+     "text": "--",
+     "trace": "tmobile_dots_mask.png",
+     "width": 0.528,
+     "smooth": 0.0,
+     "face": "#c4135e",
+     "emit": "#e20074",
+     "ret": "#1a1214",
+     "trim": "#a8104e",
+     "lit": 0.4,
+     "rough": 0.3,
+     "glow_pad": 0.03,
+     "ref_box": [
+      122,
+      226,
+      387,
+      285
+     ],
+     "dx": -1.249,
+     "dy": -0.093
+    },
+    {
+     "name": "mobile",
+     "text": "Mobile",
+     "font": "oldstandard",
+     "cap_h": 0.5669,
+     "track": 0.0,
+     "stretch": 0.9987,
+     "face": "#c4135e",
+     "emit": "#e20074",
+     "ret": "#1a1214",
+     "trim": "#a8104e",
+     "lit": 0.4,
+     "rough": 0.3,
+     "ret_rough": 0.4,
+     "glow_pad": 0.03,
+     "ref_box": [
+      485,
+      92,
+      1638,
+      385
+     ],
+     "dx": 0.365,
+     "dy": -0.293
+    }
+   ],
+   "notes": "Magenta (T-Mobile #e20074; reads deeper crimson-magenta by day) face-lit channel letters with black returns ~10 cm deep and a thin magenta trim, pin-mounted on the glossy white wall panel at the main-entrance corner (H3 south; the glossy wall mirrors the glass so the letters' lower halves read pale in the photo). The serif 'T' with flanking square dots drawn over the squared-up IMG_4431 photo (simple shapes; the foot's flared corners simplified); 'Mobile' set in Old Standard Bold condensed to fit (the real face is T-Mobile's serif-ish logotype; letter widths match within a few %). Lit 0.4: unlit-looking in daylight, probably on at night. Size from the 3 m openings beside it: ~3.3 m wide, M ~0.6 m tall. The exterior parapet sign (unit 1029) is a different sign."
   },
   {
    "id": "treasure",
@@ -1831,6 +3312,107 @@
    "notes": "Polished nickel/champagne serif caps, widely spaced, initial V and S about 1.2x the rest (the VS wordmark; built as four parts because the font's small caps are composite glyphs the builder can't read), reverse-lit: warm white halo on the wall below/behind. On the blush-pink glossy panel fascia above a brushed-nickel picture-frame portal. Font Cinzel Bold (OFL), the nearest free Trajan-like face; the real VS face has slightly wider S/C and finer serifs. Size from the portal opening taken as 3.0 m tall: big caps ~0.275 m, word ~4.3 m (+-10%). A second, smaller unlit 'VICTORIA'S / SECRET' on the return wall (IMG_4475) is not built."
   },
   {
+   "id": "wax",
+   "store": "WAX UTOPIA",
+   "ref": "IMG_4433 photo (full res; squared up on the left display-window glass panel), IMG_4492 f033 (square-on, soft: confirms layout and colours)",
+   "ref_img": "wax_ref.png",
+   "w": 1.506,
+   "h": 0.72,
+   "mount_y": -1.9,
+   "type": "vinyl",
+   "depth": 0.003,
+   "standoff": 0.0,
+   "fascia_color": "#e9e3d3",
+   "parts": [
+    {
+     "name": "wa",
+     "text": "Wa",
+     "trace": "wax_wa_mask.png",
+     "width": 0.6931,
+     "smooth": 1.0,
+     "type": "vinyl",
+     "face": "#41709e",
+     "ret": "#41709e",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "ref_box": [
+      270,
+      35,
+      756,
+      268
+     ],
+     "dx": -0.1558,
+     "dy": 0.0157
+    },
+    {
+     "name": "x",
+     "text": "x",
+     "trace": "wax_x_mask.png",
+     "width": 0.2572,
+     "smooth": 1.0,
+     "type": "vinyl",
+     "face": "#3fb6cc",
+     "ret": "#3fb6cc",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "ref_box": [
+      774,
+      27,
+      955,
+      250
+     ],
+     "dx": 0.3465,
+     "dy": 0.0414
+    },
+    {
+     "name": "utopia",
+     "text": "Utopia",
+     "trace": "wax_utopia_mask.png",
+     "width": 1.5047,
+     "smooth": 1.0,
+     "type": "vinyl",
+     "face": "#d2bf86",
+     "ret": "#d2bf86",
+     "lit": 0.0,
+     "rough": 0.35,
+     "metal": 0.3,
+     "glow_pad": 0.02,
+     "ref_box": [
+      95,
+      237,
+      1149,
+      531
+     ],
+     "dx": 0.0,
+     "dy": -0.3601
+    },
+    {
+     "name": "accent",
+     "text": "~",
+     "trace": "wax_accent_mask.png",
+     "width": 0.0757,
+     "smooth": 1.0,
+     "type": "vinyl",
+     "face": "#3fb6cc",
+     "ret": "#3fb6cc",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "ref_box": [
+      1025,
+      271,
+      1079,
+      325
+     ],
+     "dx": 0.6145,
+     "dy": -0.0657
+    }
+   ],
+   "notes": "Wax Utopia has NO fascia sign (the cream stucco band above is blank). Its sign is printed vinyl on the inside of the smoked black glass of the angled display window, about 1.5 m wide, centred roughly 2 m above the floor: 'Wax' in a high-contrast display serif (W and a dusky blue, x bright teal), 'Utopia' below in pale gold with swash U and looped p, a teal swoosh by the i. A round gold-ring 'W/U' monogram (~0.45 m) is on the entry door glass to the right (not modelled). Traced from the IMG_4433 photo squared up on the glass panel; reflections of people and a ceiling-light streak cross the letters, so the hairlines (W thins, a's loop, o and p bowls, U's tail) are hand-drawn over the frame and approximate. The builder can't put it on the recessed, angled glass: mount_y -1.9 drops it to window height on the fascia plane; better to place it on the storefront glass by hand (or render nothing on the fascia). Width guessed from the ~2.6 m glass panel (+-15%)."
+  },
+  {
    "id": "wingz",
    "store": "WICKED WINGZ",
    "ref": "IMG_4441 f006 (near square-on from below, letters ~170 px); IMG_4441 f004-f005",
@@ -1893,6 +3475,47 @@
     }
    ],
    "notes": "Traced. A flat matte-black panel (about 8 x 4.5 ft, a few cm thick) hung on the cream soffit over the food-court counter, with glossy yellow cut letters (unlit: no light on the panel) in the brand's spiky italic display face, two lines. Panel aspect from perspective (1.75:1, +-8%); size estimated against the counter and ceiling grid."
+  },
+  {
+   "id": "zales",
+   "store": "ZALES",
+   "ref": "IMG_4435 photo (full res, the long west-facing bay's sign nearly square-on; squared up on the letters' top and bottom lines), IMG_4424 (halo glow), IMG_4437 f002 / IMG_4492 f027",
+   "ref_img": "zales_ref.png",
+   "w": 2.271,
+   "h": 0.501,
+   "type": "halo",
+   "depth": 0.05,
+   "standoff": 0.04,
+   "fascia_color": "#ece6da",
+   "parts": [
+    {
+     "name": "name",
+     "text": "ZALES",
+     "trace": "zales_name_mask.png",
+     "width": 2.2687,
+     "smooth": 1.2,
+     "type": "halo",
+     "face": "#26282b",
+     "ret": "#26282b",
+     "lit": 0.0,
+     "rough": 0.45,
+     "metal": 0.2,
+     "ret_rough": 0.5,
+     "ret_metal": 0.2,
+     "glow": "#f2f6ff",
+     "glow_pad": 0.12,
+     "glow_e": 0.8,
+     "ref_box": [
+      64,
+      83,
+      1288,
+      353
+     ],
+     "dx": 0.0,
+     "dy": -0.2504
+    }
+   ],
+   "notes": "Zales' current logotype: geometric caps with the crossbar-less A whose counter is a separate inverted-triangle 'diamond' (traced as its own shape), dark charcoal flat-faced letters about 5 cm deep standing off the wall, halo-lit (cool white light on the wall round every letter, clearly on in IMG_4435 and IMG_4424). Mounted straight on the cream stack-bond tile fascia; brown tile wainscot and half-drum sconces below are not part of the sign. One spec for both signs on the corner (north-facing narrow bay and west-facing long bay; they are identical in the frames). Traced from IMG_4435 (sharp). Size: letters ~0.5 m, word ~2.27 m (from the fascia and ~3 m opening, +-15%)."
   }
  ]
 }

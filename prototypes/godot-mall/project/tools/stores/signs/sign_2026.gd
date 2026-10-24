@@ -60,6 +60,9 @@ static func frame(s):
 		x1 = max(x1, dx + w * 0.5)
 		y0 = min(y0, dy)
 		y1 = max(y1, dy + h)
+	if s.parts.is_empty():
+		# no letters (a sign that isn't there in 2026, or only its panel): the frame is the panel's
+		x0 = 0.0; x1 = 0.0; y0 = 0.0; y1 = 0.0
 	if s.has("backer"):
 		var bk = s.backer
 		var bw = float(bk.get("w", x1 - x0 + 0.3))

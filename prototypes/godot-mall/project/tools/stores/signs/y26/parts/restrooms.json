@@ -1,0 +1,21 @@
+{
+ "id": "restrooms",
+ "store": "MEN",
+ "aliases": ["WOMEN"],
+ "ref": "IMG_4439 f033 (left edge, squared up with the Fire Haus band's plane; fan ~150 px, letters ~25 px in the frame); f029-f030 (oblique, small)",
+ "ref_img": "restrooms_ref.png",
+ "w": 0.42, "h": 0.55,
+ "type": "flat", "depth": 0.02, "standoff": 0.0,
+ "fascia_color": "#ece6d4",
+ "parts": [
+  {"name": "fan", "text": "fan", "trace": "restrooms_fan_mask.png", "width": 0.2465, "smooth": 1.5,
+   "dx": 0.0043, "dy": -0.1614, "depth": 0.03, "glow_pad": 0.01,
+   "face": "#a89878", "ret": "#8a7c60", "rough": 0.3, "metal": 0.7, "ret_rough": 0.35, "ret_metal": 0.6,
+   "ref_box": [152, 67, 495, 672]},
+  {"name": "text", "text": "RESTROOMS", "font": "Oswald-Bold.ttf", "cap_h": 0.0734, "track": 0.012, "stretch": 0.719,
+   "dx": 0.0, "dy": -0.2749, "depth": 0.006, "glow_pad": 0.01,
+   "face": "#1c1c1c", "ret": "#1c1c1c", "rough": 0.5,
+   "ref_box": [47, 725, 588, 830]}
+ ],
+ "notes": "The mall's own wayfinding over the restroom corridor door (H7, left of Fire Haus): an Art-Deco fan of five faceted champagne/pewter metal blades on a small ball (traced as one silhouette; the blade facets are not separate), over widely spaced black condensed deco caps 'RESTROOMS' (set in Oswald Bold, condensed; the real letters are a narrow deco face and sit on a gentle arc, set straight here). Unlit, flat, on the cream wall. Small: ~0.25 m fan, ~7.5 cm letters, sized against the Fire Haus band on the same wall. A grey ADA restroom plaque with an arrow hangs on the pier to the right (not modelled)."
+}

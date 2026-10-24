@@ -30,7 +30,7 @@
    "dx": 1.248, "dy": -0.103, "type": "vinyl",
    "face": "#efe8e6", "lit": 0.0, "rough": 0.5,
    "ref_box": [1128, 130, 1430, 227]},
-  {"name": "vs", "text": "VICTORIA’S SECRET", "font": "Cinzel-Bold.ttf", "cap_h": 0.039, "track": 0.0, "stretch": 0.9,
+  {"name": "vs", "text": "VICTORIA’S SECRET", "font": "Cinzel-Bold.ttf", "cap_h": 0.0385, "track": 0.0, "stretch": 0.9,
    "dx": 0.035, "dy": -0.256, "type": "vinyl",
    "face": "#efe8e6", "lit": 0.0, "rough": 0.5,
    "ref_box": [672, 268, 888, 290]}

@@ -1,0 +1,17 @@
+{
+ "id": "jcp", "store": "JCPENNEY",
+ "ref": "IMG_4457 f003 (mall entrance, near square-on; squared up on the marble band between its top and the door heads), f002; IMG_4458 f001",
+ "ref_img": "jcp_ref.png",
+ "w": 4.6, "h": 1.2,
+ "type": "channel", "depth": 0.12, "standoff": 0.0,
+ "fascia_color": "#6b4433",
+ "parts": [
+  {"name": "name", "text": "JCPenney", "font": "heros_bold", "cap_h": 0.81, "track": 0.0, "stretch": 0.85, "shear": 0.0,
+   "dx": 0.0, "dy": -0.35, "type": "channel", "depth": 0.12,
+   "face": "#e0142c", "ret": "#2a0a0c", "trim": "#b80f22", "lit": 1.0, "emit": "#ff1a30",
+   "glow": "#ff2030", "glow_pad": 0.12, "glow_e": 0.25,
+   "rough": 0.3, "ret_rough": 0.5, "ret_metal": 0.2,
+   "ref_box": [461, 123, 1258, 311]}
+ ],
+ "notes": "Mall-side entrance: the post-2012 'JCPenney' wordmark (caps J C P, lowercase 'enney' with a tall x-height) as lit red-face channel letters with dark returns, mounted on the rosso (red-brown veined) marble cladding of the entrance bay, black-framed glass doors below; cream mall wall with a terracotta wainscot either side. A potted palm hides most of the 'e'-'n' in every view. Set in TeX Gyre Heros Bold at 0.85 width (matches the word's width and the x-height); a faint red glow on the marble. Cap height ~0.8 m from the ~1.8 m marble band above the 2.4 m doors. The exterior wordmarks (magenta faces, black returns, on brick) are separate signs outside the mall and aren't built here."
+}

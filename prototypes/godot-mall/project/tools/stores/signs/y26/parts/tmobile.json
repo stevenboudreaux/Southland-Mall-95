@@ -1,0 +1,84 @@
+{
+ "id": "tmobile",
+ "store": "T-MOBILE",
+ "ref": "IMG_4431 photo (full res, mall side; squared up on the letters' cap and base lines), IMG_4492 f037/f046 (same panel, far), IMG_4428 (mirror reflection, proportions only)",
+ "ref_img": "tmobile_ref.png",
+ "w": 3.036,
+ "h": 0.586,
+ "type": "channel",
+ "depth": 0.1,
+ "standoff": 0.0,
+ "fascia_color": "#f2f0ee",
+ "parts": [
+  {
+   "name": "t",
+   "text": "T",
+   "trace": "tmobile_t_mask.png",
+   "width": 0.558,
+   "smooth": 0.5,
+   "face": "#c4135e",
+   "emit": "#e20074",
+   "ret": "#1a1214",
+   "trim": "#a8104e",
+   "lit": 0.4,
+   "rough": 0.3,
+   "ret_rough": 0.4,
+   "glow_pad": 0.03,
+   "ref_box": [
+    120,
+    92,
+    400,
+    385
+   ],
+   "dx": -1.238,
+   "dy": -0.293
+  },
+  {
+   "name": "dots",
+   "text": "--",
+   "trace": "tmobile_dots_mask.png",
+   "width": 0.528,
+   "smooth": 0.0,
+   "face": "#c4135e",
+   "emit": "#e20074",
+   "ret": "#1a1214",
+   "trim": "#a8104e",
+   "lit": 0.4,
+   "rough": 0.3,
+   "glow_pad": 0.03,
+   "ref_box": [
+    122,
+    226,
+    387,
+    285
+   ],
+   "dx": -1.249,
+   "dy": -0.093
+  },
+  {
+   "name": "mobile",
+   "text": "Mobile",
+   "font": "oldstandard",
+   "cap_h": 0.5669,
+   "track": 0.0,
+   "stretch": 0.9987,
+   "face": "#c4135e",
+   "emit": "#e20074",
+   "ret": "#1a1214",
+   "trim": "#a8104e",
+   "lit": 0.4,
+   "rough": 0.3,
+   "ret_rough": 0.4,
+   "glow_pad": 0.03,
+   "ref_box": [
+    485,
+    92,
+    1638,
+    385
+   ],
+   "dx": 0.365,
+   "dy": -0.293
+  }
+ ],
+ "notes": "Magenta (T-Mobile #e20074; reads deeper crimson-magenta by day) face-lit channel letters with black returns ~10 cm deep and a thin magenta trim, pin-mounted on the glossy white wall panel at the main-entrance corner (H3 south; the glossy wall mirrors the glass so the letters' lower halves read pale in the photo). The serif 'T' with flanking square dots drawn over the squared-up IMG_4431 photo (simple shapes; the foot's flared corners simplified); 'Mobile' set in Old Standard Bold condensed to fit (the real face is T-Mobile's serif-ish logotype; letter widths match within a few %). Lit 0.4: unlit-looking in daylight, probably on at night. Size from the 3 m openings beside it: ~3.3 m wide, M ~0.6 m tall. The exterior parapet sign (unit 1029) is a different sign."
+}
