@@ -1733,8 +1733,8 @@
      "track": 0.08,
      "stretch": 0.7033,
      "depth": 0.015,
-     "face": "#d4d4d8",
-     "ret": "#a8a8ae",
+     "face": "#4a0e12",
+     "ret": "#2a0608",
      "lit": 0.0,
      "rough": 0.12,
      "metal": 0.9,
@@ -1749,7 +1749,7 @@
      "dy": -0.3265
     }
    ],
-   "notes": "Mall-side sign: polished chrome/silver flat-cut letters (mirror faces: they show the ceiling lights' streaks; the small 'RACE TRACK' reads dark only because it mirrors the dark windows opposite) on the matte red painted band (~1.5 m tall) that runs the whole front, unlit. 'HYPERVELOCITY' traced from f022 squared up on the band's top and bottom edges (the horizontal scale of that squaring is judged from the letter shapes, +-10%); the last Y is off the frame edge in every close frame, so it is a copy of the Y in HYPER placed at the same letter spacing (f019/f020 confirm the word ends in Y). 'RACE TRACK' set in Krona One (wide geometric sans, condensed to fit), centred. Size from the 1.5 m band: word ~4.26 m wide, caps ~0.39 m. The exterior signs (cream channel letters, red RACE TRACK) are a different sign, not this spec."
+   "notes": "Mall-side sign: polished chrome/silver flat-cut letters (mirror faces: they show the ceiling lights' streaks; the small 'RACE TRACK' reads dark only because it mirrors the dark windows opposite) on the matte red painted band (~1.5 m tall) that runs the whole front, unlit. 'HYPERVELOCITY' traced from f022 squared up on the band's top and bottom edges (the horizontal scale of that squaring is judged from the letter shapes, +-10%); the last Y is off the frame edge in every close frame, so it is a copy of the Y in HYPER placed at the same letter spacing (f019/f020 confirm the word ends in Y). 'RACE TRACK' set in Krona One (wide geometric sans, condensed to fit), centred. Size from the 1.5 m band: word ~4.26 m wide, caps ~0.39 m. The exterior signs (cream channel letters, red RACE TRACK) are a different sign, not this spec. RACE TRACK set dark maroon as in IMG_4484 f022 (was chrome)."
   },
   {
    "id": "i2d",
@@ -2938,7 +2938,6 @@
    "ref_img": "sola_ref.png",
    "w": 1.55,
    "h": 1.361,
-   "mount_y": -1.6,
    "type": "vinyl",
    "depth": 0.003,
    "standoff": 0.0,
@@ -3145,7 +3144,9 @@
      "dy": -0.6805
     }
    ],
-   "notes": "SOLA (South Louisiana Center for the Arts) has NO fascia lettering: the curved black textured-stucco band above (the old Sound Shop front) is blank. Its sign is a multicolour vinyl decal on the black glass vestibule panel: a white contour backing with 'S' lime, 'O' a magenta disc with white comedy/tragedy masks, 'L' blue, 'A' orange with a white treble clef, then 'SOUTH LOUISIANA' and 'CENTER FOR THE ARTS' in white heavy sans (Lilita One, condensed). Traced from the contact-sheet tile (the only frame with the whole logo; soft, so edges are smoothed and the mask faces are blobs); the right edge of the white backing is clipped by the squared-up frame by a few cm. The builder can't put it on the glass: mount_y -1.6 drops it from the fascia toward window height; better placed on the storefront glass by hand. Size a guess (~1.6 m wide) from the ~2.5 m glass panel. An older projecting black panel sign (round orange/yellow logo) is glimpsed far away in IMG_4419 only; not modelled."
+   "notes": "SOLA (South Louisiana Center for the Arts) has NO fascia lettering: the curved black textured-stucco band above (the old Sound Shop front) is blank. Its sign is a multicolour vinyl decal on the black glass vestibule panel: a white contour backing with 'S' lime, 'O' a magenta disc with white comedy/tragedy masks, 'L' blue, 'A' orange with a white treble clef, then 'SOUTH LOUISIANA' and 'CENTER FOR THE ARTS' in white heavy sans (Lilita One, condensed). Traced from the contact-sheet tile (the only frame with the whole logo; soft, so edges are smoothed and the mask faces are blobs); the right edge of the white backing is clipped by the squared-up frame by a few cm. The builder can't put it on the glass: mount_y -1.6 drops it from the fascia toward window height; better placed on the storefront glass by hand. Size a guess (~1.6 m wide) from the ~2.5 m glass panel. An older projecting black panel sign (round orange/yellow logo) is glimpsed far away in IMG_4419 only; not modelled.",
+   "mount": "glass",
+   "glass_y": 0.2
   },
   {
    "id": "spencers",
@@ -3505,7 +3506,6 @@
    "ref_img": "wax_ref.png",
    "w": 1.506,
    "h": 0.72,
-   "mount_y": -1.9,
    "type": "vinyl",
    "depth": 0.003,
    "standoff": 0.0,
@@ -3597,7 +3597,9 @@
      "dy": -0.0657
     }
    ],
-   "notes": "Wax Utopia has NO fascia sign (the cream stucco band above is blank). Its sign is printed vinyl on the inside of the smoked black glass of the angled display window, about 1.5 m wide, centred roughly 2 m above the floor: 'Wax' in a high-contrast display serif (W and a dusky blue, x bright teal), 'Utopia' below in pale gold with swash U and looped p, a teal swoosh by the i. A round gold-ring 'W/U' monogram (~0.45 m) is on the entry door glass to the right (not modelled). Traced from the IMG_4433 photo squared up on the glass panel; reflections of people and a ceiling-light streak cross the letters, so the hairlines (W thins, a's loop, o and p bowls, U's tail) are hand-drawn over the frame and approximate. The builder can't put it on the recessed, angled glass: mount_y -1.9 drops it to window height on the fascia plane; better to place it on the storefront glass by hand (or render nothing on the fascia). Width guessed from the ~2.6 m glass panel (+-15%)."
+   "notes": "Wax Utopia has NO fascia sign (the cream stucco band above is blank). Its sign is printed vinyl on the inside of the smoked black glass of the angled display window, about 1.5 m wide, centred roughly 2 m above the floor: 'Wax' in a high-contrast display serif (W and a dusky blue, x bright teal), 'Utopia' below in pale gold with swash U and looped p, a teal swoosh by the i. A round gold-ring 'W/U' monogram (~0.45 m) is on the entry door glass to the right (not modelled). Traced from the IMG_4433 photo squared up on the glass panel; reflections of people and a ceiling-light streak cross the letters, so the hairlines (W thins, a's loop, o and p bowls, U's tail) are hand-drawn over the frame and approximate. The builder can't put it on the recessed, angled glass: mount_y -1.9 drops it to window height on the fascia plane; better to place it on the storefront glass by hand (or render nothing on the fascia). Width guessed from the ~2.6 m glass panel (+-15%).",
+   "mount": "glass",
+   "glass_y": 0.0
   },
   {
    "id": "wingz",
