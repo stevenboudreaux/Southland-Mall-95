@@ -31,6 +31,12 @@ func _initialize() -> void:
 	root.add_child(scn)
 	current_scene = scn
 	load("res://scripts/time_of_day.gd").apply(scn, mode)
+	# diagnosis switches: --nolm (no lightmap), --noprobes (no reflection probes)
+	for a in OS.get_cmdline_user_args():
+		if a == "--nolm":
+			for n in scn.find_children("*", "LightmapGI", true, false): n.get_parent().remove_child(n); n.free()
+		elif a == "--noprobes":
+			for n in scn.find_children("*", "ReflectionProbe", true, false): n.get_parent().remove_child(n); n.free()
 	vp = SubViewport.new(); vp.size = Vector2i(1280, 720); vp.render_target_update_mode = SubViewport.UPDATE_ALWAYS
 	cam = Camera3D.new(); cam.fov = 70.0
 	vp.add_child(cam); root.add_child(vp); cam.current = true
