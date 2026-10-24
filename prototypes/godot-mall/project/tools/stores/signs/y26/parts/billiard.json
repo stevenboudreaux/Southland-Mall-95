@@ -1,0 +1,104 @@
+{
+ "id": "billiard",
+ "store": "THE BILLIARD ROOM",
+ "ref": "IMG_4492 f020 (square-on, sharp; squared up on the sign panel's corners), IMG_4434 photo and IMG_4484 f015 (confirm)",
+ "ref_img": "billiard_ref.png",
+ "w": 2.499,
+ "h": 1.02,
+ "type": "flat",
+ "depth": 0.008,
+ "standoff": 0.0,
+ "fascia_color": "#121214",
+ "backer": {
+  "shape": "box",
+  "w": 2.499,
+  "h": 1.02,
+  "depth": 0.08,
+  "dx": 0.0,
+  "dy": 0.0,
+  "color": "#1f1d1c",
+  "side": "#161515",
+  "rough": 0.75,
+  "ref_box": [
+   30,
+   30,
+   1500,
+   630
+  ]
+ },
+ "parts": [
+  {
+   "name": "the",
+   "text": "-THE-",
+   "trace": "billiard_the_mask.png",
+   "width": 1.054,
+   "smooth": 1.0,
+   "type": "flat",
+   "depth": 0.008,
+   "face": "#c9a45e",
+   "ret": "#a8843f",
+   "lit": 0.0,
+   "rough": 0.35,
+   "metal": 0.55,
+   "ret_metal": 0.5,
+   "glow_pad": 0.02,
+   "ref_box": [
+    473,
+    113,
+    1094,
+    179
+   ],
+   "dx": 0.0314,
+   "dy": 0.2567
+  },
+  {
+   "name": "name",
+   "text": "BILLIARD",
+   "trace": "billiard_name_mask.png",
+   "width": 2.1131,
+   "smooth": 1.0,
+   "type": "flat",
+   "depth": 0.008,
+   "face": "#c9a45e",
+   "ret": "#a8843f",
+   "lit": 0.0,
+   "rough": 0.35,
+   "metal": 0.55,
+   "ret_metal": 0.5,
+   "glow_pad": 0.02,
+   "ref_box": [
+    154,
+    197,
+    1398,
+    453
+   ],
+   "dx": 0.0187,
+   "dy": -0.2091
+  },
+  {
+   "name": "room",
+   "text": "-ROOM-",
+   "trace": "billiard_room_mask.png",
+   "width": 1.4807,
+   "smooth": 1.0,
+   "type": "flat",
+   "depth": 0.008,
+   "face": "#c9a45e",
+   "ret": "#a8843f",
+   "lit": 0.0,
+   "rough": 0.35,
+   "metal": 0.55,
+   "ret_metal": 0.5,
+   "glow_pad": 0.02,
+   "ref_box": [
+    367,
+    476,
+    1239,
+    562
+   ],
+   "dx": 0.0646,
+   "dy": -0.3944
+  }
+ ],
+ "notes": "Matte black rectangular sign box (~8 cm deep) on the glossy black fascia band of the ex-Woolworth unit, with thin flat-cut gold/brass lettering (unlit, a little metallic): small 'THE' between two tapered rules, big condensed flared-serif 'BILLIARD', and letter-spaced 'ROOM' between two tapered rules. All traced from 4492 f020 squared up on the panel corners (panel aspect ~2.45:1 from the IMG_4434 photo). Size: panel ~2.5 x 1.0 m (guess from the ~4 m open front below), BILLIARD caps ~0.42 m."
+}

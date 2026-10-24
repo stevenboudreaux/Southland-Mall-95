@@ -1618,6 +1618,11 @@ func build_edge(e):
 			cur_color = Color("#2b4a8a")
 			box(g, "vcolor", dp + Vector3(0, 2.55, 0) + n * 0.03, abs_size(t, 1.3, 0.34, 0.04, n))
 			cur_color = Color.WHITE
+			if YEAR == 2026 and sd.name == "MEN":
+				# Demo 43: the deco fan and RESTROOMS lettering over the restroom hall (IMG_4439 f030)
+				var S26 = load("res://tools/stores/signs/sign_2026.gd")
+				if S26.for_store("MEN") != null:
+					S26.build(self, g + "_sg26", "MEN", a + t * (Ln * 0.5) + Vector3(0, 2.8, 0) + n * 0.03, n, min(Ln - 0.4, 2.6), 1.0)
 
 ## A storefront along one frontage: pilasters with a stone base, bulkhead with
 ## the sign, bronze-framed glass (or an open front), the lit interior behind.
@@ -1770,7 +1775,14 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		box(g, "stone", c0 + Vector3(0, 0.45, 0) + n * 0.06, abs_size(t, pil, 0.9, 0.12, n))
 		box(g, "cream", c0 + Vector3(0, (OPEN_H + 0.9) * 0.5, 0) + n * 0.03, abs_size(t, pil, OPEN_H - 0.9, 0.06, n))
 	var mid = a + t * Ln * 0.5
-	box(g, "bulkhead", mid + Vector3(0, (OPEN_H + LANE_H) * 0.5, 0) + n * 0.08, abs_size(t, Ln, LANE_H - OPEN_H, 0.16, n))
+	var s26 = load("res://tools/stores/signs/sign_2026.gd").for_store(sd.name) if YEAR == 2026 else null
+	if s26 != null and s26.has("fascia_color"):
+		# Demo 43: the bulkhead itself painted as filmed (one box, so the bake is as before)
+		cur_color = Color(s26.fascia_color)
+		box(g, "vcolor_matte", mid + Vector3(0, (OPEN_H + LANE_H) * 0.5, 0) + n * 0.08, abs_size(t, Ln, LANE_H - OPEN_H, 0.16, n))
+		cur_color = Color.WHITE
+	else:
+		box(g, "bulkhead", mid + Vector3(0, (OPEN_H + LANE_H) * 0.5, 0) + n * 0.08, abs_size(t, Ln, LANE_H - OPEN_H, 0.16, n))
 	# sign
 	var text = sd.sign
 	if sd.vacant:
@@ -1787,6 +1799,14 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		quad(g, ph[0], [c2 - rv2 * (sw2 * 0.5) - Vector3.UP * (sh2 * 0.5), c2 + rv2 * (sw2 * 0.5) - Vector3.UP * (sh2 * 0.5), c2 + rv2 * (sw2 * 0.5) + Vector3.UP * (sh2 * 0.5), c2 - rv2 * (sw2 * 0.5) + Vector3.UP * (sh2 * 0.5)], n,
 			[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)])
 		text = ""
+	if YEAR == 2026 and not sd.noSign and Ln >= 1.5:
+		# Demo 43: the store's own sign as filmed on Oct 23 2026, in 3D (tools/stores/signs/sign_2026.gd,
+		# y26/parts/<id>.json). Vacant units have no fascia sign in the footage, only the leasing card
+		# in the window (for_lease_card); a tenant with no sign in the spec keeps the old panel.
+		if sd.vacant:
+			text = ""
+		elif sign_2026(g, sd.name, mid, n, t, Ln):
+			text = ""
 	if text != "" and not sd.noSign and Ln >= 1.5:
 		var sw = min(Ln - 0.8, max(1.6, min(Ln * 0.72, 9.0 if anchor else 6.5)))
 		var sh = 0.95 if anchor else 0.78
@@ -1807,6 +1827,8 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		while k < OPEN_H:
 			box(g, "metal_dark", (p0 + p1) * 0.5 + Vector3(0, k, 0) + n * 0.02, abs_size(t, width, 0.03, 0.03, n))
 			k += 0.18
+		if YEAR == 2026 and Ln >= 3.0:
+			for_lease_card(g, a, n, t, Ln)
 		return
 	var ov = OVERRIDES.get(sd.name, {})
 	if sd.awning and (sd.awningColor != null or ov.has("awningColor")):
@@ -1841,6 +1863,33 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 	interior(g, e, a, n, t, Ln, sd, p0, p1, width, deep)
 	if sd.name.contains("CINEMA"):
 		cinema_front(g, a, n, t, Ln)
+
+## Demo 43: the 2026 sign of store `name` on the generic front's bulkhead (front face at n * 0.16),
+## centred on the band between the opening and the ceiling. False when the spec has no sign for it.
+func sign_2026(g, name, mid, n, t, Ln):
+	var S = load("res://tools/stores/signs/sign_2026.gd")
+	var s = S.for_store(name)
+	if s == null:
+		return false
+	var band = LANE_H - OPEN_H
+	# (the spec's "fascia_color" paints the bulkhead itself: storefront())
+	if s.get("mount", "fascia") == "glass":
+		# lettering on the storefront glass (Wax Utopia, SOLA): just proud of the glass, about
+		# head height, within the glazing
+		var cg = mid + Vector3(0, 1.9 + float(s.get("glass_y", 0.0)), 0) + n * 0.012
+		return S.build(self, g + "_sg26", name, cg, n, max(1.0, Ln - 1.4), OPEN_H - 1.0, s)
+	var c = mid + Vector3(0, OPEN_H + band * 0.5 + float(s.get("mount_y", 0.0)), 0) + n * 0.17
+	return S.build(self, g + "_sg26", name, c, n, max(1.0, Ln - 0.9), band - 0.12, s)
+
+## Demo 43: the leasing card in a 2026 vacant unit's window (IMG_4440 f013: white, the green
+## FOR LEASE, the agent's blue lines; the agent's name and number are left off), behind the grille.
+func for_lease_card(g, a, n, t, Ln):
+	var c = a + t * (Ln * 0.5 + min(1.2, Ln * 0.25)) + Vector3(0, 1.45, 0) - n * 0.08
+	var rv = (-n).cross(Vector3.UP)
+	var w = 0.56
+	var h = 1.0
+	quad(g + "_lease", "sg_y26_lease_card", [c - rv * (w * 0.5) - Vector3.UP * (h * 0.5), c + rv * (w * 0.5) - Vector3.UP * (h * 0.5), c + rv * (w * 0.5) + Vector3.UP * (h * 0.5), c - rv * (w * 0.5) + Vector3.UP * (h * 0.5)], n,
+		[Vector2(0, 1), Vector2(1, 1), Vector2(1, 0), Vector2(0, 0)], true)
 
 ## How deep a store's generic interior may run before it would enter a store built in full 3D.
 func clip_deep(a, b, n, deep):
@@ -2230,10 +2279,17 @@ func anchor_front(g, e, a, b, n, t, Ln, sd, lk):
 			k += 6.0
 	# letters
 	var sc = mid + Vector3(0, (mouth_h + top) * 0.5, 0) + n * 0.31
-	if lk.halo:
+	var S26 = load("res://tools/stores/signs/sign_2026.gd")
+	if YEAR == 2026 and S26.for_store(sd.name) != null:
+		# Demo 43: the anchor's sign as filmed, in 3D (tools/stores/signs/sign_2026.gd)
+		var s26 = S26.for_store(sd.name)
+		S26.build(self, g + "_sg26", sd.name, sc + Vector3(0, float(s26.get("mount_y", 0.0)), 0), n, min(Ln * 0.7, 14.0), top - mouth_h - 0.1, s26)
+	elif lk.halo:
 		box(g, "halo", sc - n * 0.005, abs_size(t, min(Ln * 0.42, 9.0), 1.15, 0.01, n))
-	var lab = label(lk.text, lk.font, lk.fg, sc + n * 0.02, n, min(Ln * 0.38, 8.0), 1.2)
-	if lk.get("lit", false):
+	var lab = null
+	if not (YEAR == 2026 and S26.for_store(sd.name) != null):
+		lab = label(lk.text, lk.font, lk.fg, sc + n * 0.02, n, min(Ln * 0.38, 8.0), 1.2)
+	if lab != null and lk.get("lit", false):
 		var lc = Color(lk.fg)
 		lab.modulate = Color(lc.r * 1.3, lc.g * 1.3, lc.b * 1.3)
 	# the sales floor behind the open mouth

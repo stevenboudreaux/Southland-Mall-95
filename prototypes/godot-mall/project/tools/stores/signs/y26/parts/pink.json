@@ -1,0 +1,39 @@
+{
+ "id": "pink",
+ "store": "PINK",
+ "ref": "IMG_4469 photo (full res, square-on; read upright as stored; squared up on the pink panel's corners, aspect 5.74:1); IMG_4438 f018-f019 (square-on, medium)",
+ "ref_img": "pink_ref.png",
+ "w": 3.4, "h": 0.6,
+ "type": "channel",
+ "depth": 0.04,
+ "standoff": 0.0,
+ "fascia_color": "#ece6d8",
+ "backer": {
+  "shape": "box", "w": 3.4, "h": 0.593, "depth": 0.04, "dx": 0.0, "dy": 0.0,
+  "color": "#b8345a", "side": "#b8345a", "lit": 0.0, "rough": 0.55, "metal": 0.0
+ },
+ "parts": [
+  {"name": "outline", "text": "PINK", "trace": "pink_outline_mask.png", "width": 1.402, "smooth": 1.0,
+   "dx": 0.017, "dy": -0.183, "type": "flat", "depth": 0.03, "standoff": 0.0,
+   "face": "#b59a5c", "ret": "#8e7744", "lit": 0.0, "rough": 0.3, "metal": 0.8,
+   "ref_box": [484, 86, 1061, 260]},
+  {"name": "face", "text": "PINK", "trace": "pink_face_mask.png", "width": 1.344, "smooth": 1.0,
+   "dx": 0.017, "dy": -0.154, "dz": 0.03, "type": "channel", "depth": 0.03, "standoff": 0.0,
+   "face": "#ff3c8c", "emit": "#ff4a96", "ret": "#c82a64", "trim": "#fff2f6", "trim_w": 0.008,
+   "lit": 1.0, "glow": "#ff5aa0", "glow_pad": 0.06, "glow_e": 0.35, "rough": 0.35,
+   "ref_box": [496, 98, 1049, 248]},
+  {"name": "lifeis", "text": "lifeis", "trace": "pink_lifeis_mask.png", "width": 0.758, "smooth": 0.6,
+   "dx": -1.209, "dy": -0.096, "type": "vinyl",
+   "face": "#efe8e6", "lit": 0.0, "rough": 0.5,
+   "ref_box": [112, 126, 424, 224]},
+  {"name": "islife", "text": "islife", "trace": "pink_islife_mask.png", "width": 0.734, "smooth": 0.6,
+   "dx": 1.248, "dy": -0.103, "type": "vinyl",
+   "face": "#efe8e6", "lit": 0.0, "rough": 0.5,
+   "ref_box": [1128, 130, 1430, 227]},
+  {"name": "vs", "text": "VICTORIA’S SECRET", "font": "Cinzel-Bold.ttf", "cap_h": 0.0385, "track": 0.0, "stretch": 0.9,
+   "dx": 0.035, "dy": -0.256, "type": "vinyl",
+   "face": "#efe8e6", "lit": 0.0, "rough": 0.5,
+   "ref_box": [672, 268, 888, 290]}
+ ],
+ "notes": "Raspberry-pink rectangular panel over the entry (in the cream classical panelled facade, which is the storefront, not the sign). Collegiate slab 'PINK': lit hot-pink faces with a thin white edge (trim) sitting on a gold mirror-finish outline layer (flat part under the faces, dz); a faint pink glow round the letters. 'life is' / 'is life' in a white single-line script (vinyl), tiny 'VICTORIA'S SECRET' (vinyl, Cinzel) under PINK. PINK, outline and script traced from the full-res photo; tagline is a font. Size from the shutter opening below (~2.7 m tall): panel ~3.4 x 0.59 m, +-12%. Not built: a second smaller pink panel with the white PINK dog to the right (over the poster box)."
+}

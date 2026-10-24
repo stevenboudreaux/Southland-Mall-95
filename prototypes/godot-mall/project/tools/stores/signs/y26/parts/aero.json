@@ -1,0 +1,23 @@
+{
+ "id": "aero",
+ "store": "AÉROPOSTALE",
+ "ref": "IMG_4482 photo (full res, oblique ~35 deg; squared up on the letters' top and base lines); IMG_4483, IMG_4481 (whole word, smaller), IMG_4492 f009 (close oblique, returns)",
+ "ref_img": "aero_ref.png",
+ "w": 3.2, "h": 0.56,
+ "type": "channel",
+ "depth": 0.09,
+ "standoff": 0.02,
+ "fascia_color": "#16181d",
+ "parts": [
+  {
+   "name": "name", "text": "AÉROPOSTALE",
+   "font": "Oswald-Bold.ttf", "cap_h": 0.42, "track": 0.042, "stretch": 0.94, "shear": 0.0,
+   "dx": 0.0, "dy": 0.0,
+   "type": "channel", "depth": 0.09,
+   "face": "#f2244a", "emit": "#ff2a50", "ret": "#5e0f1c", "trim": "#c81a3a",
+   "lit": 1.1, "rough": 0.35, "ret_rough": 0.5,
+   "ref_box": [82, 87, 888, 230]
+  }
+ ],
+ "notes": "Red-pink lit channel letters 'AÉROPOSTALE' (bold condensed caps, acute on the E), dark maroon returns. In the footage the letters hang just INSIDE the glass, in the top of the centre opening of a matte-black riveted steel portal (the black header behind them); here they are put on the black fascia, which reads the same from the hall. Font Oswald Bold (OFL) tracked open, matches widths within ~3%. The squaring aspect is inferred from the font fit (only oblique views exist), so letter width +-8%. Size from a person in IMG_4481: caps ~0.42 m, word ~3.2 m. The palm in front hides the bottom of STALE in every view."
+}

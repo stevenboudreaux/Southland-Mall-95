@@ -1,0 +1,17 @@
+{
+ "id": "bbw",
+ "store": "BATH & BODY WORKS",
+ "ref": "IMG_4440 f009 (near square-on, letters ~125 px; squared up on the gingham surround, whose checks are square: aspect 5:1); f008-f010",
+ "ref_img": "bbw_ref.png",
+ "w": 3.7, "h": 0.45,
+ "type": "channel", "depth": 0.06, "standoff": 0.0,
+ "fascia_color": "#6a7fb4",
+ "parts": [
+  {"name": "name", "text": "Bath&BodyWorks", "trace": "bbw_name_mask.png", "width": 3.666, "smooth": 0.8,
+   "dx": 0.0, "dy": -0.2106, "type": "channel", "lit": 1.0,
+   "face": "#ffffff", "emit": "#f4f6ff", "ret": "#e6e6e6", "trim": "#f2f2f2", "rough": 0.3, "ret_metal": 0.2,
+   "glow": "#e8eeff", "glow_pad": 0.12, "glow_e": 0.3,
+   "ref_box": [233, 209, 1643, 371]}
+ ],
+ "notes": "Traced from the lit faces (they threshold cleanly). White internally lit channel letters, the brand's current sans wordmark 'Bath & Body Works', mounted straight on the store's blue/white gingham-check tile surround (navy, mid blue, pale grey-blue and white 6-7 in checks round the whole opening). The builder has no patterned fascia, so the fascia is the gingham's average blue; a gingham texture would be needed to match. Size from the checks (~2.6 mm/px): cap height ~0.32 m, 3.67 m long. A small duplicate 'Bath & Body Works' sign sits on the return wall (f012) and a blade sign down the hall; not modelled here."
+}

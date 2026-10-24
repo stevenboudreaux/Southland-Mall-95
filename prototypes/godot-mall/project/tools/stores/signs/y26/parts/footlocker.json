@@ -1,0 +1,41 @@
+{
+ "id": "footlocker",
+ "store": "FOOT LOCKER",
+ "ref": "IMG_4440 contact-sheet f007 (only view: oblique from below, 'Foot Lock' in frame, the 'er' cut off), f006",
+ "ref_img": "footlocker_ref.png",
+ "w": 4.6,
+ "h": 0.8,
+ "type": "channel",
+ "depth": 0.12,
+ "standoff": 0.0,
+ "fascia_color": "#8c8884",
+ "parts": [
+  {
+   "name": "name",
+   "text": "Foot Locker",
+   "font": "inter_black",
+   "cap_h": 0.55,
+   "track": 0.0,
+   "stretch": 1.0,
+   "shear": 0.12,
+   "dx": 0.0,
+   "dy": -0.3,
+   "type": "channel",
+   "face": "#e8102e",
+   "ret": "#c8c8c6",
+   "trim": "#d01028",
+   "lit": 1.0,
+   "emit": "#ff1838",
+   "rough": 0.3,
+   "ret_rough": 0.35,
+   "ret_metal": 0.5,
+   "ref_box": [
+    105,
+    104,
+    1725,
+    410
+   ]
+  }
+ ],
+ "notes": "Seen only in the contact-sheet tile IMG_4440 f007 (the signs/ full-res file named f007 shows the corridor, not the sign), oblique from below with 'Foot Lock' in frame. Red-face lit channel letters, light grey/silver returns about 12 cm deep, on a brushed stainless/grey metal fascia band over a full-glass front. Mixed case, very heavy, slightly italic, large x-height: set in Inter Black sheared 0.12. The view is foreshortened ~2x horizontally, so the letters' true width can't be read off the frame: the width is the font's natural width, and the check box is stretched to the partial view (letter shapes and weights compare, not the overall width). No stripe/referee logo seen (it may be off frame to the right). Cap height 0.55 m is a guess from the fascia band."
+}

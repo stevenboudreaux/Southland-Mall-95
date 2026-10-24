@@ -1,0 +1,60 @@
+{
+ "id": "hyper",
+ "store": "HYPERVELOCITY RACE TRACK",
+ "ref": "IMG_4484 f022 (mall side, oblique, squared up on the red band's edges; the final Y is off the frame edge), f019/f020 (whole word, far), f026 (HYPE close)",
+ "ref_img": "hyper_ref.png",
+ "w": 4.262,
+ "h": 0.653,
+ "type": "flat",
+ "depth": 0.025,
+ "standoff": 0.01,
+ "fascia_color": "#c42026",
+ "parts": [
+  {
+   "name": "name",
+   "text": "HYPERVELOCITY",
+   "trace": "hyper_name_mask.png",
+   "width": 4.2586,
+   "smooth": 1.0,
+   "face": "#d4d4d8",
+   "ret": "#a8a8ae",
+   "lit": 0.0,
+   "rough": 0.12,
+   "metal": 0.9,
+   "ret_rough": 0.2,
+   "ret_metal": 0.9,
+   "ref_box": [
+    84,
+    146,
+    1533,
+    283
+   ],
+   "dx": 0.0,
+   "dy": -0.0765
+  },
+  {
+   "name": "sub",
+   "text": "RACE TRACK",
+   "font": "krona",
+   "cap_h": 0.1235,
+   "track": 0.08,
+   "stretch": 0.7033,
+   "depth": 0.015,
+   "face": "#4a0e12",
+   "ret": "#2a0608",
+   "lit": 0.0,
+   "rough": 0.12,
+   "metal": 0.9,
+   "ret_metal": 0.9,
+   "ref_box": [
+    544,
+    325,
+    1035,
+    368
+   ],
+   "dx": 0.0,
+   "dy": -0.3265
+  }
+ ],
+ "notes": "Mall-side sign: polished chrome/silver flat-cut letters (mirror faces: they show the ceiling lights' streaks; the small 'RACE TRACK' reads dark only because it mirrors the dark windows opposite) on the matte red painted band (~1.5 m tall) that runs the whole front, unlit. 'HYPERVELOCITY' traced from f022 squared up on the band's top and bottom edges (the horizontal scale of that squaring is judged from the letter shapes, +-10%); the last Y is off the frame edge in every close frame, so it is a copy of the Y in HYPER placed at the same letter spacing (f019/f020 confirm the word ends in Y). 'RACE TRACK' set in Krona One (wide geometric sans, condensed to fit), centred. Size from the 1.5 m band: word ~4.26 m wide, caps ~0.39 m. The exterior signs (cream channel letters, red RACE TRACK) are a different sign, not this spec. RACE TRACK set dark maroon as in IMG_4484 f022 (was chrome)."
+}

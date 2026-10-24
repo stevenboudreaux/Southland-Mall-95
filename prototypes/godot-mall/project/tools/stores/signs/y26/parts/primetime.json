@@ -1,0 +1,57 @@
+{
+ "id": "primetime",
+ "store": "PRIME TIME FITNESS",
+ "ref": "IMG_4484 f046 (near square-on; squared up on the black band's edge and the 4-in tile grid)",
+ "ref_img": "primetime_ref.png",
+ "w": 2.901,
+ "h": 0.668,
+ "type": "vinyl",
+ "depth": 0.003,
+ "standoff": 0.0,
+ "fascia_color": "#eeece6",
+ "parts": [
+  {
+   "name": "name",
+   "text": "PrimeTimeFitness",
+   "trace": "primetime_name_mask.png",
+   "width": 2.8974,
+   "smooth": 1.2,
+   "type": "vinyl",
+   "face": "#161616",
+   "ret": "#161616",
+   "lit": 0.0,
+   "rough": 0.4,
+   "glow_pad": 0.02,
+   "ref_box": [
+    147,
+    80,
+    1905,
+    305
+   ],
+   "dx": 0.0,
+   "dy": -0.0371
+  },
+  {
+   "name": "stars",
+   "text": "****",
+   "trace": "primetime_stars_mask.png",
+   "width": 1.0098,
+   "smooth": 0.0,
+   "type": "vinyl",
+   "face": "#161616",
+   "ret": "#161616",
+   "lit": 0.0,
+   "rough": 0.4,
+   "glow_pad": 0.02,
+   "ref_box": [
+    658,
+    337,
+    1271,
+    485
+   ],
+   "dx": -0.1015,
+   "dy": -0.3341
+  }
+ ],
+ "notes": "Black brush-script 'Prime Time Fitness' with four black five-point stars centred below, flat vinyl (or painted) on the glossy white 4-in square-tile sign band whose lower edge is cut in an S-wave over the grille; a black fascia band above. Unlit. Script traced from f046 (squared up on the band edge and tile grid); the stars redrawn as regular stars at the traced centres (the first one has a reflection across it). The wavy tile band itself is storefront architecture, not part of this spec. Size from the tile grid: script ~2.9 m wide, caps ~0.4 m."
+}

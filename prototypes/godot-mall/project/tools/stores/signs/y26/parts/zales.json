@@ -1,0 +1,41 @@
+{
+ "id": "zales",
+ "store": "ZALES",
+ "ref": "IMG_4435 photo (full res, the long west-facing bay's sign nearly square-on; squared up on the letters' top and bottom lines), IMG_4424 (halo glow), IMG_4437 f002 / IMG_4492 f027",
+ "ref_img": "zales_ref.png",
+ "w": 2.271,
+ "h": 0.501,
+ "type": "halo",
+ "depth": 0.05,
+ "standoff": 0.04,
+ "fascia_color": "#ece6da",
+ "parts": [
+  {
+   "name": "name",
+   "text": "ZALES",
+   "trace": "zales_name_mask.png",
+   "width": 2.2687,
+   "smooth": 1.2,
+   "type": "halo",
+   "face": "#26282b",
+   "ret": "#26282b",
+   "lit": 0.0,
+   "rough": 0.45,
+   "metal": 0.2,
+   "ret_rough": 0.5,
+   "ret_metal": 0.2,
+   "glow": "#f2f6ff",
+   "glow_pad": 0.12,
+   "glow_e": 0.8,
+   "ref_box": [
+    64,
+    83,
+    1288,
+    353
+   ],
+   "dx": 0.0,
+   "dy": -0.2504
+  }
+ ],
+ "notes": "Zales' current logotype: geometric caps with the crossbar-less A whose counter is a separate inverted-triangle 'diamond' (traced as its own shape), dark charcoal flat-faced letters about 5 cm deep standing off the wall, halo-lit (cool white light on the wall round every letter, clearly on in IMG_4435 and IMG_4424). Mounted straight on the cream stack-bond tile fascia; brown tile wainscot and half-drum sconces below are not part of the sign. One spec for both signs on the corner (north-facing narrow bay and west-facing long bay; they are identical in the frames). Traced from IMG_4435 (sharp). Size: letters ~0.5 m, word ~2.27 m (from the fascia and ~3 m opening, +-15%)."
+}

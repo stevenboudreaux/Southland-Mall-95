@@ -1,0 +1,119 @@
+{
+ "id": "cinnamonster",
+ "store": "CINNAMONSTER",
+ "ref": "IMG_4467 photo (full res, oblique; affine-rectified so the round plaque is a circle); IMG_4465/4468 (square-on, smaller), IMG_4464/4466",
+ "ref_img": "cinnamonster_ref.png",
+ "w": 1.51,
+ "h": 0.83,
+ "type": "flat",
+ "depth": 0.1,
+ "standoff": 0.02,
+ "fascia_color": "#d6b98a",
+ "parts": [
+  {
+   "name": "banner",
+   "text": "-",
+   "trace": "cinnamonster_banner_mask.png",
+   "width": 1.5112,
+   "smooth": 1.0,
+   "dx": 0.001,
+   "dy": -0.1597,
+   "type": "flat",
+   "standoff": 0.0,
+   "depth": 0.1,
+   "face": "#7c2a38",
+   "ret": "#1e1814",
+   "rough": 0.45,
+   "lit": 0.0,
+   "ref_box": [
+    305,
+    149,
+    1076,
+    443
+   ]
+  },
+  {
+   "name": "name",
+   "text": "cinnamonster",
+   "trace": "cinnamonster_name_mask.png",
+   "width": 1.274,
+   "smooth": 0.6,
+   "dx": 0.0235,
+   "dy": -0.0676,
+   "type": "vinyl",
+   "dz": 0.1,
+   "face": "#f2ece2",
+   "rough": 0.4,
+   "lit": 0.0,
+   "ref_box": [
+    377,
+    152,
+    1027,
+    396
+   ]
+  },
+  {
+   "name": "disc",
+   "text": "O",
+   "trace": "cinnamonster_disc_mask.png",
+   "width": 0.6017,
+   "smooth": 1.0,
+   "dx": 0.0206,
+   "dy": -0.4165,
+   "type": "flat",
+   "standoff": 0.0,
+   "depth": 0.24,
+   "face": "#1f1d1b",
+   "ret": "#141210",
+   "rough": 0.35,
+   "lit": 0.0,
+   "ref_box": [
+    547,
+    267,
+    854,
+    574
+   ]
+  },
+  {
+   "name": "field",
+   "text": "o",
+   "trace": "cinnamonster_field_mask.png",
+   "width": 0.4645,
+   "smooth": 1.0,
+   "dx": 0.0206,
+   "dy": -0.3479,
+   "type": "vinyl",
+   "dz": 0.24,
+   "face": "#b89a86",
+   "rough": 0.5,
+   "lit": 0.0,
+   "ref_box": [
+    582,
+    302,
+    819,
+    539
+   ]
+  },
+  {
+   "name": "art",
+   "text": "MONSTERCINNAMONROLLSGOURMET",
+   "trace": "cinnamonster_art_mask.png",
+   "width": 0.5606,
+   "smooth": 0.6,
+   "dx": 0.0157,
+   "dy": -0.4028,
+   "type": "vinyl",
+   "dz": 0.243,
+   "face": "#f1eee6",
+   "rough": 0.45,
+   "lit": 0.0,
+   "ref_box": [
+    555,
+    275,
+    841,
+    567
+   ]
+  }
+ ],
+ "notes": "Dimensional logo plaque (two or three identical ones round the kiosk, on the gold/tan bulkhead above a burgundy-and-cream checker band): an arched burgundy banner box (~10 cm deep, black sides) with 'cinnamonster(R)' in cream serif lowercase, and a deep round black disc in front of its lower middle (~24 cm can, wall-mounted, deeper than the banner) with a tan field, a cream ring line, cream ring text 'MONSTER CINNAMON ROLLS' / 'GOURMET' and the cream cartoon monster holding a cinnamon roll (printed: vinyl layers). Unlit. All traced from the full-res photo; the banner outline is a spline through its visible edges (its bottom is hidden behind the disc). Size guessed: disc ~0.6 m across, banner ~1.5 m. Not built: the Community Coffee wood panel inside, the hanging banner, and the second/third copies of the plaque (format has one sign per store)."
+}

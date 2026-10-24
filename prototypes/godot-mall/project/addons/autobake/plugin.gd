@@ -50,7 +50,17 @@ func _bake(scene_name, mode):
 		EditorInterface.save_scene()
 		await get_tree().create_timer(2.0).timeout
 		return "warm"
+	# the import scan above can leave the project's main scene (wing1.tscn) as the edited one
+	# (Oct 24: a wing1_2026 job baked wing1 into wing1_day.lmbake): open the job's scene again
+	# and refuse to bake anything else
+	var want = "res://%s.tscn" % scene_name
+	if EditorInterface.get_edited_scene_root() == null or EditorInterface.get_edited_scene_root().scene_file_path != want:
+		EditorInterface.open_scene_from_path(want)
+		await get_tree().create_timer(10.0).timeout
 	var root = EditorInterface.get_edited_scene_root()
+	if root == null or root.scene_file_path != want:
+		print("WRONG SCENE ", root.scene_file_path if root else "none", " (wanted ", want, ")")
+		return "wrong scene"
 	var lm = root.find_child("LightmapGI", true, false)
 	var fast = mode.begins_with("fast")
 	if fast:

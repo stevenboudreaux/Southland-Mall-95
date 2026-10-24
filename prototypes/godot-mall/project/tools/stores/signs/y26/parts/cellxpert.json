@@ -1,0 +1,32 @@
+{
+ "id": "cellxpert",
+ "store": "CELL XPERT",
+ "ref": "IMG_4439 f026 (oblique from below-right, squared up on the fascia panel, aspect 3.1:1); f025",
+ "ref_img": "cellxpert_ref.png",
+ "w": 3.1, "h": 0.97,
+ "type": "channel", "depth": 0.09, "standoff": 0.0,
+ "fascia_color": "#ddd5bf",
+ "parts": [
+  {"name": "icon", "text": "icon", "trace": "cellxpert_icon_mask.png", "width": 0.4442, "smooth": 1.5,
+   "dx": -1.3221, "dy": -0.4023, "lit": 1.0, "glow_pad": 0.05,
+   "face": "#e60313", "emit": "#ff1a24", "ret": "#1a1a1a", "trim": "#b00010",
+   "ref_box": [147, 104, 338, 484]},
+  {"name": "screen", "text": "screen", "trace": "cellxpert_screen_mask.png", "width": 0.2395, "smooth": 1.5,
+   "dx": -1.2547, "dy": -0.2581, "dz": 0.09, "type": "vinyl", "lit": 1.0, "glow_pad": 0.03,
+   "face": "#f7f8fa", "emit": "#ffffff",
+   "ref_box": [220, 159, 323, 422]},
+  {"name": "cell", "text": "Cell", "trace": "cellxpert_cell_mask.png", "width": 0.807, "smooth": 1.2,
+   "dx": -0.5709, "dy": -0.2395, "lit": 1.0, "glow_pad": 0.05,
+   "face": "#e60313", "emit": "#ff1a24", "ret": "#1a1a1a", "trim": "#b00010",
+   "ref_box": [392, 141, 739, 414]},
+  {"name": "x", "text": "X", "font": "poppins_bold", "cap_h": 0.6233, "stretch": 0.668,
+   "dx": 0.1605, "dy": -0.4395, "lit": 1.0, "glow_pad": 0.05,
+   "face": "#f7f8fa", "emit": "#ffffff", "ret": "#1a1a1a", "trim": "#dcdcdc",
+   "ref_box": [795, 232, 965, 500]},
+  {"name": "pert", "text": "pert", "font": "poppins_bold", "cap_h": 0.5357, "track": -0.07, "stretch": 0.823,
+   "dx": 0.9686, "dy": -0.4395, "lit": 1.0, "glow_pad": 0.05,
+   "face": "#f7f8fa", "emit": "#ffffff", "ret": "#1a1a1a", "trim": "#dcdcdc",
+   "ref_box": [990, 185, 1465, 500]}
+ ],
+ "notes": "Lit channel letters with black returns on the cream fascia panel: a red rounded-blob icon holding a white phone (the phone's thin dark outline is not modelled), red 'Cell' (traced), then white 'Xpert' with an oversized X that drops below the baseline. 'Xpert' is set in Poppins Bold (condensed and tightened to the frame) because a palm in front of the store hides the bottoms of 'ert'; X and 'pert' are separate parts so the big X keeps its size. Aspect of the squared-up panel and the 1.2 m panel height are estimates (+-12%)."
+}

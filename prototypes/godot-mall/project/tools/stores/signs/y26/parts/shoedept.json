@@ -1,0 +1,34 @@
+{
+ "id": "shoedept",
+ "store": "SHOE DEPT. ENCORE",
+ "ref": "Letterforms: IMG_4476 photo (blade sign, full res, squared up on its square face). Layout/colour of the fascia sign: IMG_4479 (top-right corner, blurred, oblique) and IMG_4477 (far right, small).",
+ "ref_img": "shoedept_ref.png",
+ "w": 3.33, "h": 0.41,
+ "type": "halo",
+ "depth": 0.06,
+ "standoff": 0.04,
+ "fascia_color": "#eceae6",
+ "parts": [
+  {
+   "name": "shoe", "text": "SHOE DEPT.",
+   "font": "Anton-Regular.ttf", "cap_h": 0.38, "track": -0.004, "stretch": 1.0, "shear": 0.0,
+   "dx": -0.788, "dy": -0.2,
+   "type": "halo", "depth": 0.06,
+   "face": "#18191d", "ret": "#18191d",
+   "lit": 0.0, "glow": "#8cc6ff", "glow_pad": 0.12, "glow_e": 0.8,
+   "rough": 0.35, "metal": 0.3,
+   "ref_box": [101, 482, 777, 631]
+  },
+  {
+   "name": "encore", "text": "ENCORE",
+   "font": "Oswald-Light.ttf", "cap_h": 0.4, "track": 0.0, "stretch": 1.0,
+   "dx": 0.986, "dy": -0.2,
+   "type": "halo", "depth": 0.05,
+   "face": "#18191d", "ret": "#18191d",
+   "lit": 0.0, "glow": "#8cc6ff", "glow_pad": 0.1, "glow_e": 0.8,
+   "rough": 0.35, "metal": 0.3,
+   "ref_box": [162, 697, 702, 856]
+  }
+ ],
+ "notes": "Fascia over the entry (on the white panel front): one line 'SHOE DEPT. ENCORE', black-faced reverse-lit letters with a cool blue-white halo on the wall (IMG_4479, IMG_4477; both blurred/oblique/small, so the fascia letters were set from the wordmark on the projecting blade sign in IMG_4476, which is sharp: heavy condensed caps 'SHOE DEPT.' = Anton, thin condensed 'ENCORE' = Oswald Light, ENCORE ~6% taller). The check image shows the blade's stacked layout; the fascia is inline. Whether the fascia has a thin rule or a separator between DEPT. and ENCORE can't be read. Size guessed from the 3 m entry: caps ~0.38 m, ~3.3 m long. Not built (format has one sign per store): the black 0.75 m square blade box projecting from the wall west of the windows, white-lit 'SHOE DEPT.' / rule / 'ENCORE'."
+}

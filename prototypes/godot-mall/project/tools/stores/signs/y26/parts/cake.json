@@ -1,0 +1,18 @@
+{
+ "id": "cake", "store": "CAKELICIOUS",
+ "ref": "IMG_4459 contact-sheet f005 (square-on, 'C' cut off at the left), f011 (whole word, oblique); IMG_4461 f007 (partial)",
+ "ref_img": "cake_ref.png",
+ "w": 2.5, "h": 0.6,
+ "type": "flat", "depth": 0.05, "standoff": 0.0,
+ "fascia_color": "#e98a8c",
+ "parts": [
+  {"name": "shadow", "text": "Cakelicious", "font": "Pacifico-Regular.ttf", "cap_h": 0.39, "track": 0.0, "stretch": 1.12, "shear": 0.0,
+   "dx": 0.025, "dy": -0.22, "type": "flat", "depth": 0.03,
+   "face": "#c41e2c", "ret": "#a8161f", "lit": 0.0, "rough": 0.4},
+  {"name": "name", "text": "Cakelicious", "font": "Pacifico-Regular.ttf", "cap_h": 0.39, "track": 0.0, "stretch": 1.12, "shear": 0.0,
+   "dx": 0.0, "dy": -0.2, "type": "flat", "depth": 0.05,
+   "face": "#eee6ac", "ret": "#c41e2c", "lit": 0.0, "rough": 0.4,
+   "ref_box": [-206, 105, 905, 311]}
+ ],
+ "notes": "Bold retro brush script 'Cakelicious' with cream-yellow faces and red returns, plus a red offset 'shadow' layer behind (down and right), flat-cut and unlit, on a salmon-pink fascia band under a white crown cornice; white Tuscan columns frame the glass front, pink interior. Too soft to trace (letters ~30 px in the sheet tiles), so set in Pacifico at 1.12 width, which matches the looped k/l, the round o/u and the upswept final s; the 'C' is out of frame in the square-on view and is Pacifico's. x-height ~0.21 m from the ~1 m pink band."
+}

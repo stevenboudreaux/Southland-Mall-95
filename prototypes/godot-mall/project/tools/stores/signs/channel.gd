@@ -15,15 +15,15 @@ const UP = Vector3.UP
 ## face/ret/trim: material names; standoff: gap behind the cans; depth: the cans' depth;
 ## trim_w: the trim cap's width; glow: material name for the halo ("" for none).
 ## roll: turns the logo in its own plane (radians, counter-clockwise as seen) about its frame's middle.
-static func build(b, g, path, c, nn, face, ret, trim, standoff = 0.02, depth = 0.11, trim_w = 0.012, glow = "", dyn = true, roll = 0.0):
+static func build(b, g, path, c, nn, face, ret, trim, standoff = 0.02, depth = 0.11, trim_w = 0.012, glow = "", dyn = true, roll = 0.0, sc = 1.0):
 	var J = JSON.parse_string(FileAccess.get_file_as_string(path))
 	var rv0 = (-nn).cross(UP)
 	var rv = rv0 * cos(roll) + UP * sin(roll)
 	var up = -rv0 * sin(roll) + UP * cos(roll)
-	var wv = float(J.width)
-	var hv = float(J.cap_h)
+	var wv = float(J.width) * sc
+	var hv = float(J.cap_h) * sc
 	var C0 = c + UP * (hv * 0.5)
-	var X = func(p, d): return C0 + rv * (float(p.x) - wv * 0.5) + up * (float(p.y) - hv * 0.5) + nn * d
+	var X = func(p, d): return C0 + rv * (float(p.x) * sc - wv * 0.5) + up * (float(p.y) * sc - hv * 0.5) + nn * d
 	var zf = standoff + depth
 	var sf = b.st(g, face, dyn)
 	var sr = b.st(g, ret, dyn)
@@ -120,8 +120,10 @@ static func _can_side(b, sr, stm, pts, X, rv, up, nn, z0, z1, tw):
 		b.tri(stm, X.call(inset[i], z1 + lip), X.call(inset[j], z1 + lip), X.call(inset[j], z1), Vector2(0, 0), Vector2(1, 0), Vector2(1, 1), -W3.call(en[i]))
 		b.tri(stm, X.call(inset[i], z1 + lip), X.call(inset[j], z1), X.call(inset[i], z1), Vector2(0, 0), Vector2(1, 1), Vector2(0, 1), -W3.call(en[i]))
 
-## "sg_<key>" (build_mall.gd's mat() calls this).
+## "sg_<key>" (build_mall.gd's mat() calls this). "y26_..." keys are the 2026 signs' (sign_2026.gd).
 static func fill_mat(m, key, b):
+	if key.begins_with("y26_"):
+		return load("res://tools/stores/signs/sign_2026.gd").fill_mat(m, key, b)
 	match key:
 		# Radio Shack: red acrylic faces lit from inside, dark returns, a darker red trim cap
 		"rs_face":

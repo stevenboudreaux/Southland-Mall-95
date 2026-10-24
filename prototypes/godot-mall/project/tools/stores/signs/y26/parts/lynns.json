@@ -1,0 +1,79 @@
+{
+ "id": "lynns",
+ "store": "LYNN'S INTERIORS",
+ "ref": "IMG_4408 f037 (square-on, squared up), f010 (oblique letter/depth detail)",
+ "ref_img": "lynns_ref.png",
+ "w": 2.708,
+ "h": 1.237,
+ "type": "flat",
+ "depth": 0.05,
+ "standoff": 0.02,
+ "fascia_color": "#ece8df",
+ "parts": [
+  {
+   "name": "script",
+   "text": "Lynn's",
+   "trace": "lynns_script_mask.png",
+   "width": 2.6961,
+   "smooth": 1.5,
+   "type": "flat",
+   "face": "#151515",
+   "ret": "#151515",
+   "lit": 0.0,
+   "rough": 0.35,
+   "ret_rough": 0.5,
+   "ref_box": [
+    338,
+    88,
+    1008,
+    392
+   ],
+   "dx": -0.004,
+   "dy": -0.6065
+  },
+  {
+   "name": "rule",
+   "text": "-",
+   "trace": "lynns_rule_mask.png",
+   "width": 1.8578,
+   "smooth": 0.0,
+   "type": "flat",
+   "depth": 0.03,
+   "face": "#151515",
+   "ret": "#151515",
+   "lit": 0.0,
+   "rough": 0.35,
+   "ref_box": [
+    548,
+    305,
+    1010,
+    317
+   ],
+   "dx": 0.4231,
+   "dy": -0.3043
+  },
+  {
+   "name": "caps",
+   "text": "INTERIORS",
+   "font": "liberation_serif_bold",
+   "cap_h": 0.2867,
+   "track": 0.0,
+   "stretch": 0.7581,
+   "type": "flat",
+   "depth": 0.04,
+   "face": "#151515",
+   "ret": "#151515",
+   "lit": 0.0,
+   "rough": 0.35,
+   "ref_box": [
+    549,
+    322,
+    1005,
+    395
+   ],
+   "dx": 0.4151,
+   "dy": -0.6186
+  }
+ ],
+ "notes": "Black flat-cut letters (~5 cm deep, glossy black faces) on the white tiled portal wall of the old Sears mall entrance, unlit; flanked by lantern sconces (not part of the sign). 'Lynn's' script traced from f037 (palm fronds cross the far left of the L's swash, so its very left tip is a best guess). 'INTERIORS' is a bold Roman serif set in Liberation Serif Bold condensed to fit (the real O is a little rounder); the thin rule above it is a separate flat bar. Size from the 3.0 m opening: ~2.7 m wide, script ~1.2 m tall, caps ~0.29 m."
+}

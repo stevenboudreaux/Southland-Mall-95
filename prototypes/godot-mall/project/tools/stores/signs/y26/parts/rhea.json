@@ -1,0 +1,14 @@
+{
+ "id": "rhea",
+ "store": "RHEA LANA'S",
+ "unseen": true,
+ "ref": "IMG_4439 f034 (oblique; storefront squared up on the blue surround, aspect ~2.6:1 assumed); f033",
+ "ref_img": "rhea_ref.png",
+ "w": 7.6, "h": 0.32,
+ "type": "vinyl", "depth": 0.003, "standoff": 0.0,
+ "fascia_color": "#2b8ad0",
+ "backer": {"shape": "box", "w": 7.6, "h": 0.32, "depth": 0.02, "dx": 0.0, "dy": 0.0,
+            "color": "#2b8ad0", "side": "#2b8ad0", "frame": "#f4f4f2", "frame_w": 0.06, "rough": 0.6},
+ "parts": [],
+ "notes": "No fascia sign in the footage. The whole storefront is a bright-blue painted box surround with a white inner trim round a full-height glass front; the only 'Rhea Lana's' lettering is a white script LED/neon sign INSIDE on the pink back wall (seen through the glass, too small and blurred to trace) and red/pink posters taped in the windows. Modelled as no letters: just the blue band above the glass with its white trim (backer), so the unit reads right. If a name sign is wanted, the likely look is the white Rhea Lana's script (as on the interior neon) as vinyl on this blue band, but that is not what the mall shows."
+}

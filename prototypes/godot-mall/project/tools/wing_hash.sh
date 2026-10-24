@@ -9,4 +9,5 @@ if [ "$2" = "2026" ]; then
   { ls gen/w${W}y26/* wing${W}_2026_day.exr 2>/dev/null; find tex -type f -name "*.png" -not -path "tex/standin/*"; } | sort | xargs md5sum 2>/dev/null | md5sum | cut -c1-32
   exit 0
 fi
-{ ls gen/w$W/* wing${W}_night.exr wing${W}_day.exr 2>/dev/null; find tex -type f -name "*.png" -not -path "tex/standin/*"; } | sort | xargs md5sum 2>/dev/null | md5sum | cut -c1-32
+# (the 2026 signs' textures, tex/sg/y26, are not in any 1995 wing)
+{ ls gen/w$W/* wing${W}_night.exr wing${W}_day.exr 2>/dev/null; find tex -type f -name "*.png" -not -path "tex/standin/*" -not -path "tex/sg/y26/*"; } | sort | xargs md5sum 2>/dev/null | md5sum | cut -c1-32

@@ -1,0 +1,100 @@
+{
+ "id": "redseal",
+ "store": "THE RED SEAL PIZZERIA & BAR",
+ "ref": "IMG_4407 f003 (mall side, square-on, squared up on the garage-door opening); f006",
+ "ref_img": "redseal_ref.png",
+ "w": 2.583,
+ "h": 0.777,
+ "type": "flat",
+ "depth": 0.025,
+ "standoff": 0.01,
+ "fascia_color": "#f0ebdc",
+ "parts": [
+  {
+   "name": "name",
+   "text": "THEREDSEAL",
+   "trace": "redseal_name_mask.png",
+   "width": 2.5807,
+   "smooth": 1.0,
+   "face": "#c62a2e",
+   "ret": "#a82228",
+   "lit": 0.0,
+   "rough": 0.45,
+   "ret_rough": 0.5,
+   "ref_box": [
+    79,
+    230,
+    1422,
+    442
+   ],
+   "dx": 0.0,
+   "dy": -0.1038,
+   "glow_pad": 0.02
+  },
+  {
+   "name": "seal",
+   "text": "O",
+   "trace": "redseal_seal_mask.png",
+   "width": 0.5981,
+   "smooth": 1.5,
+   "face": "#c62a2e",
+   "ret": "#a82228",
+   "lit": 0.0,
+   "rough": 0.45,
+   "ref_box": [
+    710,
+    186,
+    1022,
+    491
+   ],
+   "dx": 0.2221,
+   "dy": -0.1981,
+   "glow_pad": 0.02
+  },
+  {
+   "name": "monogram",
+   "text": "R",
+   "trace": "redseal_mark_mask.png",
+   "width": 0.5077,
+   "smooth": 0.8,
+   "depth": 0.004,
+   "face": "#f3e9e4",
+   "ret": "#f3e9e4",
+   "lit": 0.0,
+   "rough": 0.5,
+   "ref_box": [
+    726,
+    197,
+    991,
+    465
+   ],
+   "dx": 0.2077,
+   "dy": -0.1481,
+   "glow_pad": 0.02,
+   "dz": 0.025,
+   "type": "flat"
+  },
+  {
+   "name": "sub",
+   "text": "PIZZERIA&BAR",
+   "trace": "redseal_sub_mask.png",
+   "width": 1.2999,
+   "smooth": 0.8,
+   "depth": 0.015,
+   "face": "#262626",
+   "ret": "#262626",
+   "lit": 0.0,
+   "rough": 0.5,
+   "ref_box": [
+    399,
+    514,
+    1076,
+    590
+   ],
+   "dx": -0.025,
+   "dy": -0.3884,
+   "glow_pad": 0.02
+  }
+ ],
+ "notes": "Mall-side sign (the exterior parapet sign is a separate, later job). Flat-cut red PVC/acrylic letters (~2.5 cm, matte, unlit) 'THE RED' + 'SEAL' in a condensed rounded-corner display sans, the red scalloped wax-seal disc between them with its white 'R' and swirl rings as a thin raised layer on the disc (monogram, dz), and 'PIZZERIA & BAR' in small black spaced caps below; stud-mounted straight onto the white knock-down stucco above the black folding-glass opening. All traced from f003 squared up on the opening (seal checked round). The real seal's white is pale pink-white. Size from a ~4.5 m opening: ~2.58 m wide, cap height ~0.39 m, seal ~0.6 m."
+}

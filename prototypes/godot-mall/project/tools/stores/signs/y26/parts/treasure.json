@@ -1,0 +1,22 @@
+{
+ "id": "treasure",
+ "store": "TREASURE ISLAND PUTT PUTT GOLF",
+ "ref": "IMG_4461 f045 (steep oblique from below-left, squared up on the blue face's corners, aspect 3.8:1 assumed); sheet f043-f044",
+ "ref_img": "treasure_ref.png",
+ "w": 3.6, "h": 1.0,
+ "type": "channel", "depth": 0.06, "standoff": 0.0,
+ "fascia_color": "#e9e3d6",
+ "backer": {"shape": "box", "w": 3.59, "h": 1.0, "depth": 0.12, "dx": 0.0, "dy": 0.0,
+            "color": "#9fcfe6", "side": "#8cbfd8", "rough": 0.6},
+ "parts": [
+  {"name": "name", "text": "TREASURE ISLAND", "font": "LilitaOne-Regular.ttf", "cap_h": 0.29, "track": 0.0, "stretch": 0.9,
+   "dx": -0.051, "dy": 0.0, "lit": 0.0,
+   "face": "#f4f2ea", "ret": "#e9b72a", "trim": "#1a1a1a", "rough": 0.4, "ret_metal": 0.0,
+   "ref_box": [240, 135, 1505, 258]},
+  {"name": "tag", "text": "PUTT PUTT GOLF", "font": "krona", "cap_h": 0.12, "track": 0.0, "stretch": 1.0,
+   "dx": -0.075, "dy": -0.26, "type": "flat", "depth": 0.01,
+   "face": "#1d2a44", "ret": "#1d2a44", "rough": 0.5,
+   "ref_box": [505, 318, 1220, 368]}
+ ],
+ "notes": "Font (the view is a steep, motion-blurred oblique; too soft to trace). A sky-blue box cabinet under the bulkhead over the entry. 'TREASURE ISLAND' in chunky cartoon caps (Lilita One is close: the I has bar serifs as on the sign): white faces with a thin black outline and deep yellow-gold returns (seen from below); 'PUTT PUTT GOLF' in small dark navy wide caps. Unlit as far as the frame shows. Cabinet aspect (3.8:1) and 1.0 m height are estimates (+-15%)."
+}

@@ -1,0 +1,41 @@
+{
+ "id": "rainbow",
+ "store": "RAINBOW",
+ "ref": "IMG_4483 photo (square-on, full res; squared up on the right beadboard panel, aspect 3.85:1 from camera geometry and groove count); IMG_4482, IMG_4492 f003 (oblique, depth/returns)",
+ "ref_img": "rainbow_ref.png",
+ "w": 2.8,
+ "h": 0.7,
+ "mount_y": 0.04,
+ "type": "channel",
+ "depth": 0.1,
+ "standoff": 0.0,
+ "fascia_color": "#eeebe4",
+ "parts": [
+  {
+   "name": "name",
+   "text": "Rainbow",
+   "trace": "rainbow_name_mask.png",
+   "width": 2.8,
+   "smooth": 1.0,
+   "dx": 0.0,
+   "dy": 0.0,
+   "type": "channel",
+   "depth": 0.1,
+   "face": "#1448e8",
+   "emit": "#2a5cff",
+   "ret": "#262a3e",
+   "trim": "#1d2238",
+   "lit": 1.0,
+   "rough": 0.35,
+   "ret_rough": 0.5,
+   "ret_metal": 0.2,
+   "ref_box": [
+    40,
+    192,
+    1037,
+    441
+   ]
+  }
+ ],
+ "notes": "Connected royal-blue script 'Rainbow' (one can for R-a-i-n-b-o-w plus the i dot), lit blue acrylic faces, dark navy/charcoal returns about 10 cm deep, mounted straight on the white vertical-beadboard fascia (painted panel mouldings; the beadboard and its panel frames are part of the storefront, not the sign). Traced from the full-res photo; shape is certain. Size from the beadboard groove pitch (assumed 10 cm): about 2.8 m x 0.70 m, +-15%. No glow on the wall in daylight-lit mall, so none given."
+}

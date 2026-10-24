@@ -1,0 +1,102 @@
+{
+ "id": "wax",
+ "store": "WAX UTOPIA",
+ "ref": "IMG_4433 photo (full res; squared up on the left display-window glass panel), IMG_4492 f033 (square-on, soft: confirms layout and colours)",
+ "ref_img": "wax_ref.png",
+ "w": 1.506,
+ "h": 0.72,
+ "type": "vinyl",
+ "depth": 0.003,
+ "standoff": 0.0,
+ "fascia_color": "#e9e3d3",
+ "parts": [
+  {
+   "name": "wa",
+   "text": "Wa",
+   "trace": "wax_wa_mask.png",
+   "width": 0.6931,
+   "smooth": 1.0,
+   "type": "vinyl",
+   "face": "#41709e",
+   "ret": "#41709e",
+   "lit": 0.0,
+   "rough": 0.4,
+   "glow_pad": 0.02,
+   "ref_box": [
+    270,
+    35,
+    756,
+    268
+   ],
+   "dx": -0.1558,
+   "dy": 0.0157
+  },
+  {
+   "name": "x",
+   "text": "x",
+   "trace": "wax_x_mask.png",
+   "width": 0.2572,
+   "smooth": 1.0,
+   "type": "vinyl",
+   "face": "#3fb6cc",
+   "ret": "#3fb6cc",
+   "lit": 0.0,
+   "rough": 0.4,
+   "glow_pad": 0.02,
+   "ref_box": [
+    774,
+    27,
+    955,
+    250
+   ],
+   "dx": 0.3465,
+   "dy": 0.0414
+  },
+  {
+   "name": "utopia",
+   "text": "Utopia",
+   "trace": "wax_utopia_mask.png",
+   "width": 1.5047,
+   "smooth": 1.0,
+   "type": "vinyl",
+   "face": "#d2bf86",
+   "ret": "#d2bf86",
+   "lit": 0.0,
+   "rough": 0.35,
+   "metal": 0.3,
+   "glow_pad": 0.02,
+   "ref_box": [
+    95,
+    237,
+    1149,
+    531
+   ],
+   "dx": 0.0,
+   "dy": -0.3601
+  },
+  {
+   "name": "accent",
+   "text": "~",
+   "trace": "wax_accent_mask.png",
+   "width": 0.0757,
+   "smooth": 1.0,
+   "type": "vinyl",
+   "face": "#3fb6cc",
+   "ret": "#3fb6cc",
+   "lit": 0.0,
+   "rough": 0.4,
+   "glow_pad": 0.02,
+   "ref_box": [
+    1025,
+    271,
+    1079,
+    325
+   ],
+   "dx": 0.6145,
+   "dy": -0.0657
+  }
+ ],
+ "notes": "Wax Utopia has NO fascia sign (the cream stucco band above is blank). Its sign is printed vinyl on the inside of the smoked black glass of the angled display window, about 1.5 m wide, centred roughly 2 m above the floor: 'Wax' in a high-contrast display serif (W and a dusky blue, x bright teal), 'Utopia' below in pale gold with swash U and looped p, a teal swoosh by the i. A round gold-ring 'W/U' monogram (~0.45 m) is on the entry door glass to the right (not modelled). Traced from the IMG_4433 photo squared up on the glass panel; reflections of people and a ceiling-light streak cross the letters, so the hairlines (W thins, a's loop, o and p bowls, U's tail) are hand-drawn over the frame and approximate. The builder can't put it on the recessed, angled glass: mount_y -1.9 drops it to window height on the fascia plane; better to place it on the storefront glass by hand (or render nothing on the fascia). Width guessed from the ~2.6 m glass panel (+-15%).",
+ "mount": "glass",
+ "glass_y": 0.0
+}

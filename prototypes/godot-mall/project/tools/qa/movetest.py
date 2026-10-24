@@ -36,7 +36,7 @@ with sync_playwright() as p:
     ctx = b.new_context(viewport={"width": 844, "height": 390}, has_touch=True, is_mobile=True)
     pg = ctx.new_page(); logs = []
     pg.on("console", lambda m: logs.append(m.text))
-    pg.goto(f"http://127.0.0.1:8765/{path}{'&' if '?' in path else '?'}cam=0,14,0,0&debug=1")
+    pg.goto(f"http://127.0.0.1:8765/{path}{'&' if '?' in path else '?'}cam={os.environ.get('WALK_CAM', '0,14,0,0')}&debug=1")
     wait_ready(pg, logs); time.sleep(10)
     cdp = ctx.new_cdp_session(pg)
     def touch(t, x, y):

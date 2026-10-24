@@ -38,9 +38,32 @@ stays, the stores change.
 - `tools/publish_build.sh` checks the 2026 stand-in stamps too and ships the 2026 packs and
   lightmaps.
 
+## Signs (Demo 43, Oct 24 2026)
+Every store sign the Oct 23 footage shows, rebuilt in 3D (the 1995 traced-sign standard: cans
+with returns and trim caps, lit faces, halo glow, backer panels, cabinets, raceways).
+- Source: 69 full-res 1080p frames cut from the videos at each sighting (Steven's
+  `2026 Mall/_derived/signs/`) plus the photos; squared up with `photo_trace.py`.
+- Spec: one file per sign, `tools/stores/signs/y26/parts/<id>.json` (format and rules:
+  `tools/stores/signs/y26/README.md`). Letters traced from masks or fitted with an OFL font
+  (`y26/src/fonts/`). `make_signs_2026.py` writes the letters and textures, `check_sign_2026.py`
+  the overlay checks (`y26/check/`).
+- Build: `tools/stores/signs/sign_2026.gd` (geometry, materials `sg_y26_*`), called from the
+  generic front (`sign_2026()` in build_mall.gd), the 2026 anchor fronts, and the restroom hall.
+  `fascia_color` paints the bulkhead itself; `mount: glass` puts lettering on the storefront
+  glass (Wax Utopia, SOLA). Vacant units have no fascia sign (as filmed), only the leasing card.
+- 47 specs, 46 with letters. No sign in the footage: Rhea Lana's (posters only), Inspired 2
+  Dance (decal only), House of Fadez (mounting holes only). Weakest readings (soft or cut off):
+  Great American Cookies, Auntie Anne's, Foot Locker, hi-5, Lola LaBelle, Avant-Garde.
+- Not built (one sign per store for now): Shoe Dept. Encore's blade, VS's return-wall sign,
+  PINK's dog panel, Cinnamonster's extra plaques, the directory kiosk, exterior signs.
+- Evidence: `production/qa/evidence/d43-signs-*.jpg` (frame | baked game), `d43-web-*`.
+- Bake lesson: `addons/autobake` now bakes only the job's own scene (after the import scan the
+  editor could be left on wing1.tscn, and a wing1_2026 job baked wing1). After copying a bake
+  back, delete `.godot/imported/<scene>_day.exr-*` before `--import`, or the old texture stays.
+
 ## Next
 - Build the 2026 storefronts from the footage, one by one (frame references are in the report's
-  "Reference frames" table and the per-clip notes).
+  "Reference frames" table and the per-clip notes). The signs are done (Demo 43).
 - 2026-only details: linear LED slots in the hall ceilings, the arched soffit bands every 25–30 m,
   the Solarium zig-zag front, Shoe Dept. Encore's and T-Mobile's exterior doors.
 - Low-confidence units (report, Goal 2 table) after Steven's review.

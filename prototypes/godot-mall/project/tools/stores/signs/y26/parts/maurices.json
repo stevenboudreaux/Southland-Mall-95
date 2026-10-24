@@ -1,0 +1,18 @@
+{
+ "id": "maurices",
+ "store": "MAURICES",
+ "ref": "IMG_4439 f037 (full-res frame, oblique ~60 deg; squared up on the letters' base and x-height lines, aspect 6:1 chosen by eye so the o/c/e read round); f036 tile",
+ "ref_img": "maurices_ref.png",
+ "w": 2.5, "h": 0.43,
+ "type": "flat",
+ "depth": 0.05,
+ "standoff": 0.03,
+ "fascia_color": "#ece4e2",
+ "parts": [
+  {"name": "name", "text": "maurıces", "font": "inter_medium", "cap_h": 0.55, "track": -0.022, "stretch": 0.82,
+   "dx": 0.0, "dy": -0.215, "type": "flat", "depth": 0.05,
+   "face": "#5f9ca2", "ret": "#3e7479", "lit": 0.0, "rough": 0.45,
+   "ref_box": [58, 88, 1080, 262]}
+ ],
+ "notes": "Lowercase 'maurices' (the i has no dot, as on the real sign), teal flat-cut dimensional letters (~5 cm, pin-mounted with a visible gap: shadows on the wall), unlit, on the pale blush-white wall above the entry; teal scalloped fabric awnings with white leaf prints over the windows either side (storefront, not the sign). Font: Inter Medium condensed to 82% (the real face is a humanist sans with a double-storey a; Inter is close in weight and width, letters touch as on the sign). Only an oblique view exists, so width +-12%. Size from the entry opening: x-height ~0.43 m, word ~2.5 m."
+}

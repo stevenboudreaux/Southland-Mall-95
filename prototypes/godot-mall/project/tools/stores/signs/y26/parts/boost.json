@@ -1,0 +1,103 @@
+{
+ "id": "boost",
+ "store": "BOOST MOBILE",
+ "ref": "IMG_4439 f029 (oblique from the right, squared up on the fascia panel, aspect 3.4:1); f028, f030",
+ "ref_img": "boost_ref.png",
+ "w": 2.6,
+ "h": 0.87,
+ "type": "channel",
+ "depth": 0.02,
+ "standoff": 0.0,
+ "fascia_color": "#e9e5dc",
+ "parts": [
+  {
+   "name": "contour",
+   "text": "contour",
+   "trace": "boost_contour_mask.png",
+   "width": 2.5536,
+   "smooth": 1.0,
+   "dx": -0.2828,
+   "dy": -0.4508,
+   "type": "flat",
+   "depth": 0.09,
+   "standoff": 0.02,
+   "glow_pad": 0.05,
+   "face": "#141414",
+   "ret": "#141414",
+   "rough": 0.45,
+   "ref_box": [
+    291,
+    122,
+    1203,
+    431
+   ]
+  },
+  {
+   "name": "mark",
+   "text": "mark",
+   "trace": "boost_mark_mask.png",
+   "width": 0.7196,
+   "smooth": 1.0,
+   "dx": -1.113,
+   "dy": -0.3024,
+   "dz": 0.11,
+   "lit": 1.0,
+   "glow_pad": 0.05,
+   "face": "#ff6a10",
+   "emit": "#ff6a10",
+   "ret": "#141414",
+   "trim": "#141414",
+   "ref_box": [
+    322,
+    150,
+    579,
+    378
+   ]
+  },
+  {
+   "name": "boost",
+   "text": "boost",
+   "trace": "boost_boost_mask.png",
+   "width": 1.6576,
+   "smooth": 1.0,
+   "dx": 0.1512,
+   "dy": -0.2044,
+   "dz": 0.11,
+   "lit": 1.0,
+   "glow_pad": 0.05,
+   "face": "#f6f8ff",
+   "emit": "#eef4ff",
+   "ret": "#141414",
+   "trim": "#141414",
+   "ref_box": [
+    606,
+    172,
+    1198,
+    343
+   ]
+  },
+  {
+   "name": "mobile",
+   "text": "mobile",
+   "trace": "boost_mobile_mask.png",
+   "width": 0.8176,
+   "smooth": 0.8,
+   "dx": -0.2408,
+   "dy": -0.4144,
+   "dz": 0.11,
+   "lit": 1.0,
+   "glow_pad": 0.03,
+   "face": "#f6f8ff",
+   "emit": "#eef4ff",
+   "ret": "#141414",
+   "trim": "#141414",
+   "ref_box": [
+    616,
+    344,
+    908,
+    418
+   ]
+  }
+ ],
+ "notes": "Traced. Boost's current logo as lit push-through faces on one black contour-cut backer (the 'contour' part, ~9 cm deep, standing off the panel): the orange bolt/arrow mark with its black slit, white lowercase 'boost', smaller white 'mobile' (the tiny TM is dropped). Letters lit (white faces read bluish, orange glows) with no light on the wall. Mounted on the light warm-grey fascia panel. Size from the opening and panel (~2.8 mm/px), +-15%."
+}
