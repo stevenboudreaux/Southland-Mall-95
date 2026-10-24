@@ -1,70 +1,65 @@
 [gd_scene format=3]
 
-[ext_resource type="FontFile" path="res://fonts/sans.otf" id="1_lkctu"]
-[ext_resource type="FontFile" path="res://fonts/serif.ttf" id="2_1cm2e"]
-[ext_resource type="Environment" path="res://gen/env_night.tres" id="3_gu5k2"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/C1.res" id="4_0qf2f"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H1a.res" id="5_3vhgf"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H1b.res" id="6_npvgb"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H2.res" id="7_qdnwt"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/C2.res" id="8_4j3q3"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/lanterns.res" id="9_kgecs"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H3.res" id="10_2yhee"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H4.res" id="11_fecpl"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/C3.res" id="12_iedy7"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H8.res" id="13_n5taa"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H5.res" id="14_cbfxa"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/C4.res" id="15_lvxno"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H6.res" id="16_hhanj"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/H7.res" id="17_jbouw"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/misc.res" id="18_yyao4"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/outside.res" id="19_nabpd"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_glass_frames.res" id="20_mvmpa"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_glass.res" id="21_6x1o5"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_fixtures.res" id="22_fqpae"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C4.res" id="23_omy12"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C4_sg26.res" id="24_f27oe"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C4_sg26_glow.res" id="25_pkfl0"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H5.res" id="26_klqoe"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H5_sg26.res" id="27_2a01g"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H5_sg26_glow.res" id="28_5d7te"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H5_lease.res" id="29_ygk2p"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C3.res" id="30_0rj10"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C3_sg26.res" id="31_ocgnf"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C3_sg26_glow.res" id="32_my7ob"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C4_lease.res" id="33_ywppg"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H6_lease.res" id="34_c384r"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_cd7_glass.res" id="35_ty2h2"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_cd7_screens.res" id="36_7iplr"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H6.res" id="37_jcw0g"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_foliage.res" id="38_igk2w"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C3_lease.res" id="39_kpyor"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H8_lease.res" id="40_mgnff"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H8.res" id="41_4q2i3"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H8_sg26.res" id="42_yrpd1"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H7_sg26.res" id="43_jrfb6"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_misc.res" id="44_v2ad7"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_misc_sg26.res" id="45_c22gc"]
-[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_standin.res" id="46_y677l"]
-[ext_resource type="Script" path="res://scripts/player.gd" id="47_n7rf8"]
-[ext_resource type="Script" path="res://scripts/mall_runtime.gd" id="48_clrjt"]
-[ext_resource type="Script" path="res://scripts/signs.gd" id="49_4vaqv"]
+[ext_resource type="FontFile" path="res://fonts/sans.otf" id="1_0rtav"]
+[ext_resource type="FontFile" path="res://fonts/serif.ttf" id="2_86j5a"]
+[ext_resource type="Environment" path="res://gen/env_night.tres" id="3_g7qsq"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/C1.res" id="4_mr5bv"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H1a.res" id="5_1lolk"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H1b.res" id="6_lkctu"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H2.res" id="7_1cm2e"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/C2.res" id="8_gu5k2"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/lanterns.res" id="9_0qf2f"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H3.res" id="10_3vhgf"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H4.res" id="11_npvgb"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/C3.res" id="12_qdnwt"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H8.res" id="13_4j3q3"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H5.res" id="14_kgecs"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/C4.res" id="15_2yhee"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H6.res" id="16_fecpl"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/H7.res" id="17_iedy7"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/misc.res" id="18_n5taa"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/outside.res" id="19_cbfxa"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_glass_frames.res" id="20_lvxno"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_glass.res" id="21_hhanj"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_fixtures.res" id="22_jbouw"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C4_sg26.res" id="23_yyao4"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C4_sg26_glow.res" id="24_nabpd"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H5_sg26.res" id="25_mvmpa"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H5_sg26_glow.res" id="26_6x1o5"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H5_lease.res" id="27_fqpae"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C3_sg26.res" id="28_omy12"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C3_sg26_glow.res" id="29_f27oe"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C4_lease.res" id="30_pkfl0"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H6_lease.res" id="31_klqoe"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_cd7_glass.res" id="32_2a01g"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_cd7_screens.res" id="33_5d7te"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H6.res" id="34_ygk2p"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_foliage.res" id="35_0rj10"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_C3_lease.res" id="36_ocgnf"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H8_lease.res" id="37_my7ob"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H8_sg26.res" id="38_ywppg"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_H7_sg26.res" id="39_c384r"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_misc_sg26.res" id="40_ty2h2"]
+[ext_resource type="ArrayMesh" path="res://gen/w2y26/dyn_standin.res" id="41_7iplr"]
+[ext_resource type="Script" path="res://scripts/player.gd" id="42_jcw0g"]
+[ext_resource type="Script" path="res://scripts/mall_runtime.gd" id="43_igk2w"]
+[ext_resource type="Script" path="res://scripts/signs.gd" id="44_kpyor"]
 
-[node name="Mall" type="Node3D" unique_id=934377658]
+[node name="Mall" type="Node3D" unique_id=1836622962]
 metadata/wing = 2
 metadata/year = 2026
 metadata/gen = "res://gen/w2y26/"
 
-[node name="Lights" type="Node3D" parent="." unique_id=1114463093]
+[node name="Lights" type="Node3D" parent="." unique_id=1885776828]
 
-[node name="@OmniLight3D@2" type="OmniLight3D" parent="Lights" unique_id=1126416883]
+[node name="@OmniLight3D@2" type="OmniLight3D" parent="Lights" unique_id=1693928736]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 6.6, -91)
 light_color = Color(1, 0.95, 0.88, 1)
 light_bake_mode = 1
 omni_range = 30.0
 metadata/only = "day"
 
-[node name="@SpotLight3D@3" type="SpotLight3D" parent="Lights" unique_id=1039914881]
+[node name="@SpotLight3D@3" type="SpotLight3D" parent="Lights" unique_id=659210864]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -9.4, 6.4, -94.3)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -74,7 +69,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@4" type="SpotLight3D" parent="Lights" unique_id=1407053702]
+[node name="@SpotLight3D@4" type="SpotLight3D" parent="Lights" unique_id=260629397]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -9.4, 6.4, -91)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -84,7 +79,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@5" type="SpotLight3D" parent="Lights" unique_id=352633299]
+[node name="@SpotLight3D@5" type="SpotLight3D" parent="Lights" unique_id=1319525764]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -9.4, 6.4, -87.7)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -94,7 +89,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@6" type="SpotLight3D" parent="Lights" unique_id=1468235459]
+[node name="@SpotLight3D@6" type="SpotLight3D" parent="Lights" unique_id=680489239]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 1.4, 6.4, -94.3)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -104,7 +99,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@7" type="SpotLight3D" parent="Lights" unique_id=1192963552]
+[node name="@SpotLight3D@7" type="SpotLight3D" parent="Lights" unique_id=435690066]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 1.4, 6.4, -91)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -114,7 +109,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@8" type="SpotLight3D" parent="Lights" unique_id=782759209]
+[node name="@SpotLight3D@8" type="SpotLight3D" parent="Lights" unique_id=1638755621]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 1.4, 6.4, -87.7)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -124,7 +119,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@9" type="SpotLight3D" parent="Lights" unique_id=589938476]
+[node name="@SpotLight3D@9" type="SpotLight3D" parent="Lights" unique_id=2008580257]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -15.85, 6.45, -94)
 light_color = Color(0.8627451, 0.9019608, 1, 1)
 light_energy = 3.0
@@ -134,7 +129,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@10" type="SpotLight3D" parent="Lights" unique_id=1268890238]
+[node name="@SpotLight3D@10" type="SpotLight3D" parent="Lights" unique_id=1701215258]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -15.85, 6.45, -91)
 light_color = Color(0.8627451, 0.9019608, 1, 1)
 light_energy = 3.0
@@ -144,7 +139,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@11" type="SpotLight3D" parent="Lights" unique_id=1410327571]
+[node name="@SpotLight3D@11" type="SpotLight3D" parent="Lights" unique_id=2121430646]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -15.85, 6.45, -88)
 light_color = Color(0.8627451, 0.9019608, 1, 1)
 light_energy = 3.0
@@ -154,7 +149,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@12" type="SpotLight3D" parent="Lights" unique_id=214648343]
+[node name="@SpotLight3D@12" type="SpotLight3D" parent="Lights" unique_id=1873074451]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 7.85, 6.45, -94)
 light_color = Color(0.8627451, 0.9019608, 1, 1)
 light_energy = 3.0
@@ -164,7 +159,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@13" type="SpotLight3D" parent="Lights" unique_id=1089209226]
+[node name="@SpotLight3D@13" type="SpotLight3D" parent="Lights" unique_id=2088172614]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 7.85, 6.45, -91)
 light_color = Color(0.8627451, 0.9019608, 1, 1)
 light_energy = 3.0
@@ -174,7 +169,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@14" type="SpotLight3D" parent="Lights" unique_id=707352682]
+[node name="@SpotLight3D@14" type="SpotLight3D" parent="Lights" unique_id=1519640563]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 7.85, 6.45, -88)
 light_color = Color(0.8627451, 0.9019608, 1, 1)
 light_energy = 3.0
@@ -184,13 +179,13 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@15" type="OmniLight3D" parent="Lights" unique_id=1151043774]
+[node name="@OmniLight3D@15" type="OmniLight3D" parent="Lights" unique_id=1090918218]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 5.5, -91)
 light_color = Color(1, 0.95, 0.85, 1)
 light_bake_mode = 1
 omni_range = 7.0
 
-[node name="@SpotLight3D@16" type="SpotLight3D" parent="Lights" unique_id=640810054]
+[node name="@SpotLight3D@16" type="SpotLight3D" parent="Lights" unique_id=675620658]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -73.56, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -201,7 +196,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@17" type="SpotLight3D" parent="Lights" unique_id=241574768]
+[node name="@SpotLight3D@17" type="SpotLight3D" parent="Lights" unique_id=1794926035]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -73.56, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -212,7 +207,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@18" type="SpotLight3D" parent="Lights" unique_id=177323670]
+[node name="@SpotLight3D@18" type="SpotLight3D" parent="Lights" unique_id=129061270]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -66.24, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -223,7 +218,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@19" type="SpotLight3D" parent="Lights" unique_id=908839263]
+[node name="@SpotLight3D@19" type="SpotLight3D" parent="Lights" unique_id=2050634531]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -66.24, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -234,7 +229,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@20" type="SpotLight3D" parent="Lights" unique_id=123700519]
+[node name="@SpotLight3D@20" type="SpotLight3D" parent="Lights" unique_id=1757820156]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -58.92, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -245,7 +240,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@21" type="SpotLight3D" parent="Lights" unique_id=845763424]
+[node name="@SpotLight3D@21" type="SpotLight3D" parent="Lights" unique_id=1426307485]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -58.92, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -256,7 +251,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@22" type="SpotLight3D" parent="Lights" unique_id=30808682]
+[node name="@SpotLight3D@22" type="SpotLight3D" parent="Lights" unique_id=858950595]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -51.6, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -267,7 +262,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@23" type="SpotLight3D" parent="Lights" unique_id=577228122]
+[node name="@SpotLight3D@23" type="SpotLight3D" parent="Lights" unique_id=52696182]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -51.6, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -278,7 +273,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@24" type="SpotLight3D" parent="Lights" unique_id=2090490050]
+[node name="@SpotLight3D@24" type="SpotLight3D" parent="Lights" unique_id=2135297569]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -44.28, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -289,7 +284,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@25" type="SpotLight3D" parent="Lights" unique_id=1016345111]
+[node name="@SpotLight3D@25" type="SpotLight3D" parent="Lights" unique_id=356410090]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -44.28, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -300,7 +295,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@26" type="SpotLight3D" parent="Lights" unique_id=145573429]
+[node name="@SpotLight3D@26" type="SpotLight3D" parent="Lights" unique_id=1099859250]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -36.96, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -311,7 +306,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@27" type="SpotLight3D" parent="Lights" unique_id=719627232]
+[node name="@SpotLight3D@27" type="SpotLight3D" parent="Lights" unique_id=1597667637]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -36.96, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -322,7 +317,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@28" type="SpotLight3D" parent="Lights" unique_id=1724811478]
+[node name="@SpotLight3D@28" type="SpotLight3D" parent="Lights" unique_id=10753357]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -29.64, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -333,7 +328,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@29" type="SpotLight3D" parent="Lights" unique_id=552833966]
+[node name="@SpotLight3D@29" type="SpotLight3D" parent="Lights" unique_id=1092844593]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -29.64, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -344,7 +339,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@30" type="SpotLight3D" parent="Lights" unique_id=1937526040]
+[node name="@SpotLight3D@30" type="SpotLight3D" parent="Lights" unique_id=871889141]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 10.44, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -355,7 +350,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@31" type="SpotLight3D" parent="Lights" unique_id=2066599640]
+[node name="@SpotLight3D@31" type="SpotLight3D" parent="Lights" unique_id=2106426230]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 10.44, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -366,7 +361,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@32" type="SpotLight3D" parent="Lights" unique_id=1401813612]
+[node name="@SpotLight3D@32" type="SpotLight3D" parent="Lights" unique_id=1697789951]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 32.4, 4.5299997, -92.83)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -377,7 +372,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@33" type="SpotLight3D" parent="Lights" unique_id=761797788]
+[node name="@SpotLight3D@33" type="SpotLight3D" parent="Lights" unique_id=1954496598]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 32.4, 4.5299997, -89.17)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -388,7 +383,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@34" type="SpotLight3D" parent="Lights" unique_id=24673051]
+[node name="@SpotLight3D@34" type="SpotLight3D" parent="Lights" unique_id=1479529786]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, -83.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -399,7 +394,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@35" type="SpotLight3D" parent="Lights" unique_id=409108066]
+[node name="@SpotLight3D@35" type="SpotLight3D" parent="Lights" unique_id=1111165437]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, -83.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -410,7 +405,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@36" type="SpotLight3D" parent="Lights" unique_id=927443236]
+[node name="@SpotLight3D@36" type="SpotLight3D" parent="Lights" unique_id=1767160959]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, -68.92)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -421,7 +416,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@37" type="SpotLight3D" parent="Lights" unique_id=1900917094]
+[node name="@SpotLight3D@37" type="SpotLight3D" parent="Lights" unique_id=352921719]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, -68.92)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -432,7 +427,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@38" type="SpotLight3D" parent="Lights" unique_id=260701437]
+[node name="@SpotLight3D@38" type="SpotLight3D" parent="Lights" unique_id=278527156]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, -54.28)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -443,7 +438,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@39" type="SpotLight3D" parent="Lights" unique_id=1978743974]
+[node name="@SpotLight3D@39" type="SpotLight3D" parent="Lights" unique_id=2075650337]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, -54.28)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -454,7 +449,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@40" type="SpotLight3D" parent="Lights" unique_id=650762626]
+[node name="@SpotLight3D@40" type="SpotLight3D" parent="Lights" unique_id=655870743]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, -46.96)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -465,7 +460,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@41" type="SpotLight3D" parent="Lights" unique_id=473074220]
+[node name="@SpotLight3D@41" type="SpotLight3D" parent="Lights" unique_id=1568044510]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, -46.96)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -476,7 +471,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@42" type="SpotLight3D" parent="Lights" unique_id=23272151]
+[node name="@SpotLight3D@42" type="SpotLight3D" parent="Lights" unique_id=803849493]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, -32.32)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -487,7 +482,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@43" type="SpotLight3D" parent="Lights" unique_id=837121345]
+[node name="@SpotLight3D@43" type="SpotLight3D" parent="Lights" unique_id=1115157116]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, -32.32)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -498,7 +493,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@44" type="SpotLight3D" parent="Lights" unique_id=1962609044]
+[node name="@SpotLight3D@44" type="SpotLight3D" parent="Lights" unique_id=1769949993]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, -17.68)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -509,7 +504,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@45" type="SpotLight3D" parent="Lights" unique_id=1763511019]
+[node name="@SpotLight3D@45" type="SpotLight3D" parent="Lights" unique_id=710780371]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, -17.68)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -520,14 +515,14 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@46" type="OmniLight3D" parent="Lights" unique_id=1980207650]
+[node name="@OmniLight3D@46" type="OmniLight3D" parent="Lights" unique_id=1401800047]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 6.6, -2)
 light_color = Color(1, 0.95, 0.88, 1)
 light_bake_mode = 1
 omni_range = 27.5
 metadata/only = "day"
 
-[node name="@SpotLight3D@47" type="SpotLight3D" parent="Lights" unique_id=588935712]
+[node name="@SpotLight3D@47" type="SpotLight3D" parent="Lights" unique_id=69261620]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -3.95, 6.4, -7.28)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -537,7 +532,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@48" type="SpotLight3D" parent="Lights" unique_id=568100121]
+[node name="@SpotLight3D@48" type="SpotLight3D" parent="Lights" unique_id=387310992]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -3.95, 6.4, -2)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -547,7 +542,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@49" type="SpotLight3D" parent="Lights" unique_id=33196573]
+[node name="@SpotLight3D@49" type="SpotLight3D" parent="Lights" unique_id=808916127]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -3.95, 6.4, 3.28)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -557,7 +552,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@50" type="SpotLight3D" parent="Lights" unique_id=393310887]
+[node name="@SpotLight3D@50" type="SpotLight3D" parent="Lights" unique_id=168110132]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.95, 6.4, -7.28)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -567,7 +562,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@51" type="SpotLight3D" parent="Lights" unique_id=1714197251]
+[node name="@SpotLight3D@51" type="SpotLight3D" parent="Lights" unique_id=1895607996]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.95, 6.4, -2)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -577,7 +572,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@52" type="SpotLight3D" parent="Lights" unique_id=1459366925]
+[node name="@SpotLight3D@52" type="SpotLight3D" parent="Lights" unique_id=68025663]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 5.95, 6.4, 3.28)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -587,7 +582,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@53" type="SpotLight3D" parent="Lights" unique_id=943967948]
+[node name="@SpotLight3D@53" type="SpotLight3D" parent="Lights" unique_id=476773446]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -9.85, 6.45, -6.8)
 light_color = Color(1, 0.7882353, 0.5411765, 1)
 light_energy = 3.0
@@ -597,7 +592,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@54" type="SpotLight3D" parent="Lights" unique_id=736959365]
+[node name="@SpotLight3D@54" type="SpotLight3D" parent="Lights" unique_id=1621272513]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -9.85, 6.45, -2)
 light_color = Color(1, 0.7882353, 0.5411765, 1)
 light_energy = 3.0
@@ -607,7 +602,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@55" type="SpotLight3D" parent="Lights" unique_id=1033034493]
+[node name="@SpotLight3D@55" type="SpotLight3D" parent="Lights" unique_id=1499863763]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -9.85, 6.45, 2.8000002)
 light_color = Color(1, 0.7882353, 0.5411765, 1)
 light_energy = 3.0
@@ -617,7 +612,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@56" type="SpotLight3D" parent="Lights" unique_id=2027485955]
+[node name="@SpotLight3D@56" type="SpotLight3D" parent="Lights" unique_id=1421992264]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 11.85, 6.45, -6.8)
 light_color = Color(1, 0.7882353, 0.5411765, 1)
 light_energy = 3.0
@@ -627,7 +622,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@57" type="SpotLight3D" parent="Lights" unique_id=785633473]
+[node name="@SpotLight3D@57" type="SpotLight3D" parent="Lights" unique_id=607341483]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 11.85, 6.45, -2)
 light_color = Color(1, 0.7882353, 0.5411765, 1)
 light_energy = 3.0
@@ -637,7 +632,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@58" type="SpotLight3D" parent="Lights" unique_id=1387081237]
+[node name="@SpotLight3D@58" type="SpotLight3D" parent="Lights" unique_id=1604493144]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 11.85, 6.45, 2.8000002)
 light_color = Color(1, 0.7882353, 0.5411765, 1)
 light_energy = 3.0
@@ -647,31 +642,31 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@59" type="OmniLight3D" parent="Lights" unique_id=1883903175]
+[node name="@OmniLight3D@59" type="OmniLight3D" parent="Lights" unique_id=773177739]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 4.25, -6.2)
 light_color = Color(1, 0.85, 0.63, 1)
 light_bake_mode = 1
 omni_range = 4.0
 
-[node name="@OmniLight3D@60" type="OmniLight3D" parent="Lights" unique_id=323914008]
+[node name="@OmniLight3D@60" type="OmniLight3D" parent="Lights" unique_id=1246532303]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8, 4.25, -6.2)
 light_color = Color(1, 0.85, 0.63, 1)
 light_bake_mode = 1
 omni_range = 4.0
 
-[node name="@OmniLight3D@61" type="OmniLight3D" parent="Lights" unique_id=1097892444]
+[node name="@OmniLight3D@61" type="OmniLight3D" parent="Lights" unique_id=1805619777]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8, 4.25, 2.1999998)
 light_color = Color(1, 0.85, 0.63, 1)
 light_bake_mode = 1
 omni_range = 4.0
 
-[node name="@OmniLight3D@62" type="OmniLight3D" parent="Lights" unique_id=2108440005]
+[node name="@OmniLight3D@62" type="OmniLight3D" parent="Lights" unique_id=318723637]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8, 4.25, 2.1999998)
 light_color = Color(1, 0.85, 0.63, 1)
 light_bake_mode = 1
 omni_range = 4.0
 
-[node name="@SpotLight3D@63" type="SpotLight3D" parent="Lights" unique_id=1476673602]
+[node name="@SpotLight3D@63" type="SpotLight3D" parent="Lights" unique_id=734554212]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 14.44, 4.5299997, -2.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -682,7 +677,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@64" type="SpotLight3D" parent="Lights" unique_id=1848829080]
+[node name="@SpotLight3D@64" type="SpotLight3D" parent="Lights" unique_id=1405280089]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 14.44, 4.5299997, 2.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -693,7 +688,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@65" type="SpotLight3D" parent="Lights" unique_id=669191153]
+[node name="@SpotLight3D@65" type="SpotLight3D" parent="Lights" unique_id=1682870028]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 21.76, 4.5299997, -2.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -704,7 +699,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@66" type="SpotLight3D" parent="Lights" unique_id=477406545]
+[node name="@SpotLight3D@66" type="SpotLight3D" parent="Lights" unique_id=284405863]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 21.76, 4.5299997, 2.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -715,7 +710,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@67" type="SpotLight3D" parent="Lights" unique_id=480877428]
+[node name="@SpotLight3D@67" type="SpotLight3D" parent="Lights" unique_id=713030383]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 29.08, 4.5299997, -2.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -726,7 +721,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@68" type="SpotLight3D" parent="Lights" unique_id=595892474]
+[node name="@SpotLight3D@68" type="SpotLight3D" parent="Lights" unique_id=761245407]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 29.08, 4.5299997, 2.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -737,7 +732,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@69" type="SpotLight3D" parent="Lights" unique_id=1677069500]
+[node name="@SpotLight3D@69" type="SpotLight3D" parent="Lights" unique_id=1367984958]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, 8.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -748,7 +743,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@70" type="SpotLight3D" parent="Lights" unique_id=195874266]
+[node name="@SpotLight3D@70" type="SpotLight3D" parent="Lights" unique_id=1738455390]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, 8.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -759,7 +754,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@71" type="SpotLight3D" parent="Lights" unique_id=2112518848]
+[node name="@SpotLight3D@71" type="SpotLight3D" parent="Lights" unique_id=608790999]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, 15.76)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -770,7 +765,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@72" type="SpotLight3D" parent="Lights" unique_id=1451305851]
+[node name="@SpotLight3D@72" type="SpotLight3D" parent="Lights" unique_id=1994748135]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, 15.76)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -781,7 +776,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@73" type="SpotLight3D" parent="Lights" unique_id=1243560938]
+[node name="@SpotLight3D@73" type="SpotLight3D" parent="Lights" unique_id=1723201922]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, 30.4)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -792,7 +787,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@74" type="SpotLight3D" parent="Lights" unique_id=29056103]
+[node name="@SpotLight3D@74" type="SpotLight3D" parent="Lights" unique_id=510011012]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, 30.4)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -803,7 +798,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@75" type="SpotLight3D" parent="Lights" unique_id=1985509978]
+[node name="@SpotLight3D@75" type="SpotLight3D" parent="Lights" unique_id=1687630838]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, 37.72)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -814,7 +809,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@76" type="SpotLight3D" parent="Lights" unique_id=1387895558]
+[node name="@SpotLight3D@76" type="SpotLight3D" parent="Lights" unique_id=942432636]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, 37.72)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -825,14 +820,14 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@77" type="OmniLight3D" parent="Lights" unique_id=1941852135]
+[node name="@OmniLight3D@77" type="OmniLight3D" parent="Lights" unique_id=1462651716]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 6.6, 61)
 light_color = Color(1, 0.95, 0.88, 1)
 light_bake_mode = 1
 omni_range = 27.5
 metadata/only = "day"
 
-[node name="@SpotLight3D@78" type="SpotLight3D" parent="Lights" unique_id=14487909]
+[node name="@SpotLight3D@78" type="SpotLight3D" parent="Lights" unique_id=1498323547]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -13.95, 6.4, 52.42)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -842,7 +837,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@79" type="SpotLight3D" parent="Lights" unique_id=2094138520]
+[node name="@SpotLight3D@79" type="SpotLight3D" parent="Lights" unique_id=834618729]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -13.95, 6.4, 61)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -852,7 +847,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@80" type="SpotLight3D" parent="Lights" unique_id=131833422]
+[node name="@SpotLight3D@80" type="SpotLight3D" parent="Lights" unique_id=469738624]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -13.95, 6.4, 69.58)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -862,7 +857,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@81" type="SpotLight3D" parent="Lights" unique_id=1583389076]
+[node name="@SpotLight3D@81" type="SpotLight3D" parent="Lights" unique_id=129548434]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -4.05, 6.4, 52.42)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -872,7 +867,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@82" type="SpotLight3D" parent="Lights" unique_id=1433677462]
+[node name="@SpotLight3D@82" type="SpotLight3D" parent="Lights" unique_id=1930685448]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -4.05, 6.4, 61)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -882,7 +877,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@83" type="SpotLight3D" parent="Lights" unique_id=1918168108]
+[node name="@SpotLight3D@83" type="SpotLight3D" parent="Lights" unique_id=1704403768]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -4.05, 6.4, 69.58)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -892,7 +887,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@84" type="SpotLight3D" parent="Lights" unique_id=695406046]
+[node name="@SpotLight3D@84" type="SpotLight3D" parent="Lights" unique_id=328175522]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -19.85, 6.45, 53.2)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -902,7 +897,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@85" type="SpotLight3D" parent="Lights" unique_id=1273099107]
+[node name="@SpotLight3D@85" type="SpotLight3D" parent="Lights" unique_id=285169794]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -19.85, 6.45, 61)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -912,7 +907,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@86" type="SpotLight3D" parent="Lights" unique_id=1472579627]
+[node name="@SpotLight3D@86" type="SpotLight3D" parent="Lights" unique_id=340332616]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -19.85, 6.45, 68.8)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -922,7 +917,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@87" type="SpotLight3D" parent="Lights" unique_id=390678883]
+[node name="@SpotLight3D@87" type="SpotLight3D" parent="Lights" unique_id=1158641545]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 1.85, 6.45, 53.2)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -932,7 +927,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@88" type="SpotLight3D" parent="Lights" unique_id=2085255167]
+[node name="@SpotLight3D@88" type="SpotLight3D" parent="Lights" unique_id=380799329]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 1.85, 6.45, 61)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -942,7 +937,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@89" type="SpotLight3D" parent="Lights" unique_id=1538636992]
+[node name="@SpotLight3D@89" type="SpotLight3D" parent="Lights" unique_id=1334532718]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, 1.85, 6.45, 68.8)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -952,13 +947,13 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@90" type="OmniLight3D" parent="Lights" unique_id=276282127]
+[node name="@OmniLight3D@90" type="OmniLight3D" parent="Lights" unique_id=375545287]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 5.5, 61)
 light_color = Color(1, 0.95, 0.85, 1)
 light_bake_mode = 1
 omni_range = 7.0
 
-[node name="@SpotLight3D@91" type="SpotLight3D" parent="Lights" unique_id=864558561]
+[node name="@SpotLight3D@91" type="SpotLight3D" parent="Lights" unique_id=1450586301]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -6.44, 4.5299997, 76.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -969,7 +964,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@92" type="SpotLight3D" parent="Lights" unique_id=702475063]
+[node name="@SpotLight3D@92" type="SpotLight3D" parent="Lights" unique_id=684728711]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -1.56, 4.5299997, 76.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -980,7 +975,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@93" type="SpotLight3D" parent="Lights" unique_id=572119948]
+[node name="@SpotLight3D@93" type="SpotLight3D" parent="Lights" unique_id=1655850860]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -133.56, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -991,7 +986,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@94" type="SpotLight3D" parent="Lights" unique_id=395234809]
+[node name="@SpotLight3D@94" type="SpotLight3D" parent="Lights" unique_id=715287452]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -133.56, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1002,7 +997,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@95" type="SpotLight3D" parent="Lights" unique_id=1500655572]
+[node name="@SpotLight3D@95" type="SpotLight3D" parent="Lights" unique_id=2140168819]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -126.24, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1013,7 +1008,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@96" type="SpotLight3D" parent="Lights" unique_id=1388675232]
+[node name="@SpotLight3D@96" type="SpotLight3D" parent="Lights" unique_id=1042952410]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -126.24, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1024,7 +1019,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@97" type="SpotLight3D" parent="Lights" unique_id=1419631708]
+[node name="@SpotLight3D@97" type="SpotLight3D" parent="Lights" unique_id=108900584]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -118.92, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1035,7 +1030,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@98" type="SpotLight3D" parent="Lights" unique_id=845090272]
+[node name="@SpotLight3D@98" type="SpotLight3D" parent="Lights" unique_id=208048]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -118.92, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1046,7 +1041,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@99" type="SpotLight3D" parent="Lights" unique_id=1867590002]
+[node name="@SpotLight3D@99" type="SpotLight3D" parent="Lights" unique_id=671889703]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -111.6, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1057,7 +1052,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@100" type="SpotLight3D" parent="Lights" unique_id=736315686]
+[node name="@SpotLight3D@100" type="SpotLight3D" parent="Lights" unique_id=757682675]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -111.6, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1068,7 +1063,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@101" type="SpotLight3D" parent="Lights" unique_id=673170389]
+[node name="@SpotLight3D@101" type="SpotLight3D" parent="Lights" unique_id=2056935774]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -104.28, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1079,7 +1074,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@102" type="SpotLight3D" parent="Lights" unique_id=507229237]
+[node name="@SpotLight3D@102" type="SpotLight3D" parent="Lights" unique_id=509139323]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -104.28, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1090,7 +1085,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@103" type="SpotLight3D" parent="Lights" unique_id=196864414]
+[node name="@SpotLight3D@103" type="SpotLight3D" parent="Lights" unique_id=130012881]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -96.96, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1101,7 +1096,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@104" type="SpotLight3D" parent="Lights" unique_id=593093803]
+[node name="@SpotLight3D@104" type="SpotLight3D" parent="Lights" unique_id=2058467426]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -96.96, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1112,7 +1107,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@105" type="SpotLight3D" parent="Lights" unique_id=1620279059]
+[node name="@SpotLight3D@105" type="SpotLight3D" parent="Lights" unique_id=747961922]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -89.64, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1123,7 +1118,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@106" type="SpotLight3D" parent="Lights" unique_id=1788418279]
+[node name="@SpotLight3D@106" type="SpotLight3D" parent="Lights" unique_id=1793764444]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -89.64, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1134,7 +1129,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@107" type="SpotLight3D" parent="Lights" unique_id=742617266]
+[node name="@SpotLight3D@107" type="SpotLight3D" parent="Lights" unique_id=407884034]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -82.32, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1145,7 +1140,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@108" type="SpotLight3D" parent="Lights" unique_id=300202586]
+[node name="@SpotLight3D@108" type="SpotLight3D" parent="Lights" unique_id=1539493849]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -82.32, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1156,7 +1151,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@109" type="SpotLight3D" parent="Lights" unique_id=544843084]
+[node name="@SpotLight3D@109" type="SpotLight3D" parent="Lights" unique_id=184981303]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -67.68, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1167,7 +1162,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@110" type="SpotLight3D" parent="Lights" unique_id=1199470827]
+[node name="@SpotLight3D@110" type="SpotLight3D" parent="Lights" unique_id=1324271678]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -67.68, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1178,7 +1173,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@111" type="SpotLight3D" parent="Lights" unique_id=1053550591]
+[node name="@SpotLight3D@111" type="SpotLight3D" parent="Lights" unique_id=2123909057]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -53.04, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1189,7 +1184,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@112" type="SpotLight3D" parent="Lights" unique_id=1143204728]
+[node name="@SpotLight3D@112" type="SpotLight3D" parent="Lights" unique_id=406579046]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -53.04, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1200,7 +1195,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@113" type="SpotLight3D" parent="Lights" unique_id=434285461]
+[node name="@SpotLight3D@113" type="SpotLight3D" parent="Lights" unique_id=533382003]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -38.4, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1211,7 +1206,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@114" type="SpotLight3D" parent="Lights" unique_id=389534509]
+[node name="@SpotLight3D@114" type="SpotLight3D" parent="Lights" unique_id=1637118180]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -38.4, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1222,7 +1217,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@115" type="SpotLight3D" parent="Lights" unique_id=1729412768]
+[node name="@SpotLight3D@115" type="SpotLight3D" parent="Lights" unique_id=403437438]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -23.76, 4.5299997, 51.56)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1233,7 +1228,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@116" type="SpotLight3D" parent="Lights" unique_id=1594045288]
+[node name="@SpotLight3D@116" type="SpotLight3D" parent="Lights" unique_id=1669746197]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -23.76, 4.5299997, 56.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1244,14 +1239,14 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@117" type="OmniLight3D" parent="Lights" unique_id=1438981316]
+[node name="@OmniLight3D@117" type="OmniLight3D" parent="Lights" unique_id=938015663]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -145, 6.6, 56)
 light_color = Color(1, 0.95, 0.88, 1)
 light_bake_mode = 1
 omni_range = 22.5
 metadata/only = "day"
 
-[node name="@SpotLight3D@118" type="SpotLight3D" parent="Lights" unique_id=1486112220]
+[node name="@SpotLight3D@118" type="SpotLight3D" parent="Lights" unique_id=803275899]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -149.05, 6.4, 48.08)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -1261,7 +1256,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@119" type="SpotLight3D" parent="Lights" unique_id=1676057009]
+[node name="@SpotLight3D@119" type="SpotLight3D" parent="Lights" unique_id=1006478058]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -149.05, 6.4, 56)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -1271,7 +1266,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@120" type="SpotLight3D" parent="Lights" unique_id=332896683]
+[node name="@SpotLight3D@120" type="SpotLight3D" parent="Lights" unique_id=1975441683]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -149.05, 6.4, 63.92)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -1281,7 +1276,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@121" type="SpotLight3D" parent="Lights" unique_id=1499437940]
+[node name="@SpotLight3D@121" type="SpotLight3D" parent="Lights" unique_id=764536111]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -140.95, 6.4, 48.08)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -1291,7 +1286,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@122" type="SpotLight3D" parent="Lights" unique_id=991017770]
+[node name="@SpotLight3D@122" type="SpotLight3D" parent="Lights" unique_id=1889988169]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -140.95, 6.4, 56)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -1301,7 +1296,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@123" type="SpotLight3D" parent="Lights" unique_id=1758182115]
+[node name="@SpotLight3D@123" type="SpotLight3D" parent="Lights" unique_id=1703428679]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -140.95, 6.4, 63.92)
 light_color = Color(1, 0.9137255, 0.78431374, 1)
 light_energy = 3.2
@@ -1311,7 +1306,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@124" type="SpotLight3D" parent="Lights" unique_id=1593158594]
+[node name="@SpotLight3D@124" type="SpotLight3D" parent="Lights" unique_id=135540649]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -153.85, 6.45, 48.8)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -1321,7 +1316,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@125" type="SpotLight3D" parent="Lights" unique_id=1564779074]
+[node name="@SpotLight3D@125" type="SpotLight3D" parent="Lights" unique_id=1816842294]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -153.85, 6.45, 56)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -1331,7 +1326,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@126" type="SpotLight3D" parent="Lights" unique_id=1889360585]
+[node name="@SpotLight3D@126" type="SpotLight3D" parent="Lights" unique_id=1665315392]
 transform = Transform3D(0, -0.87621593, -0.48191878, 0, 0.48191878, -0.87621593, 1, 0, 0, -153.85, 6.45, 63.2)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -1341,7 +1336,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@127" type="SpotLight3D" parent="Lights" unique_id=1124200276]
+[node name="@SpotLight3D@127" type="SpotLight3D" parent="Lights" unique_id=723179323]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, -136.15, 6.45, 48.8)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -1351,7 +1346,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@128" type="SpotLight3D" parent="Lights" unique_id=812564442]
+[node name="@SpotLight3D@128" type="SpotLight3D" parent="Lights" unique_id=2043236367]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, -136.15, 6.45, 56)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -1361,7 +1356,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@129" type="SpotLight3D" parent="Lights" unique_id=1005680273]
+[node name="@SpotLight3D@129" type="SpotLight3D" parent="Lights" unique_id=562149939]
 transform = Transform3D(0, 0.87621593, 0.48191878, 0, 0.48191878, -0.87621593, -1, 0, 0, -136.15, 6.45, 63.2)
 light_color = Color(1, 0.8509804, 0.65882355, 1)
 light_energy = 3.0
@@ -1371,7 +1366,7 @@ spot_attenuation = 0.9
 spot_angle = 70.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@130" type="SpotLight3D" parent="Lights" unique_id=188191603]
+[node name="@SpotLight3D@130" type="SpotLight3D" parent="Lights" unique_id=887791168]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -143.83, 4.5299997, 70.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1382,7 +1377,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@131" type="SpotLight3D" parent="Lights" unique_id=2093522457]
+[node name="@SpotLight3D@131" type="SpotLight3D" parent="Lights" unique_id=525275497]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -140.17, 4.5299997, 70.44)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1393,7 +1388,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@132" type="SpotLight3D" parent="Lights" unique_id=599756114]
+[node name="@SpotLight3D@132" type="SpotLight3D" parent="Lights" unique_id=391954307]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -143.83, 4.5299997, 77.76)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1404,7 +1399,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@133" type="SpotLight3D" parent="Lights" unique_id=2094027476]
+[node name="@SpotLight3D@133" type="SpotLight3D" parent="Lights" unique_id=618900422]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -140.17, 4.5299997, 77.76)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1415,7 +1410,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@134" type="SpotLight3D" parent="Lights" unique_id=846311946]
+[node name="@SpotLight3D@134" type="SpotLight3D" parent="Lights" unique_id=1351831149]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -143.83, 4.5299997, 85.08)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1426,7 +1421,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@135" type="SpotLight3D" parent="Lights" unique_id=1281616791]
+[node name="@SpotLight3D@135" type="SpotLight3D" parent="Lights" unique_id=451877777]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -140.17, 4.5299997, 85.08)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1437,7 +1432,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@136" type="SpotLight3D" parent="Lights" unique_id=1558231853]
+[node name="@SpotLight3D@136" type="SpotLight3D" parent="Lights" unique_id=645500080]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 62)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1448,7 +1443,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@137" type="SpotLight3D" parent="Lights" unique_id=1328534410]
+[node name="@SpotLight3D@137" type="SpotLight3D" parent="Lights" unique_id=2018127934]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 66)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1459,7 +1454,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@138" type="SpotLight3D" parent="Lights" unique_id=1811230094]
+[node name="@SpotLight3D@138" type="SpotLight3D" parent="Lights" unique_id=657086341]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 70)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1470,7 +1465,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@139" type="SpotLight3D" parent="Lights" unique_id=668147638]
+[node name="@SpotLight3D@139" type="SpotLight3D" parent="Lights" unique_id=666885907]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 74)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1481,7 +1476,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@140" type="SpotLight3D" parent="Lights" unique_id=1361271750]
+[node name="@SpotLight3D@140" type="SpotLight3D" parent="Lights" unique_id=112799383]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 78)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1492,7 +1487,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@141" type="SpotLight3D" parent="Lights" unique_id=859875240]
+[node name="@SpotLight3D@141" type="SpotLight3D" parent="Lights" unique_id=808024527]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 82)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1503,7 +1498,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@142" type="SpotLight3D" parent="Lights" unique_id=262648271]
+[node name="@SpotLight3D@142" type="SpotLight3D" parent="Lights" unique_id=867533561]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 86)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1514,7 +1509,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@143" type="SpotLight3D" parent="Lights" unique_id=1643223015]
+[node name="@SpotLight3D@143" type="SpotLight3D" parent="Lights" unique_id=397986397]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 90)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1525,7 +1520,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@SpotLight3D@144" type="SpotLight3D" parent="Lights" unique_id=306609878]
+[node name="@SpotLight3D@144" type="SpotLight3D" parent="Lights" unique_id=423716706]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -49, 4.54, 94)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -1536,7 +1531,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@145" type="OmniLight3D" parent="Lights" unique_id=1007416735]
+[node name="@OmniLight3D@145" type="OmniLight3D" parent="Lights" unique_id=704517088]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90, 9, -101)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1544,7 +1539,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@146" type="OmniLight3D" parent="Lights" unique_id=211205221]
+[node name="@OmniLight3D@146" type="OmniLight3D" parent="Lights" unique_id=176537799]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90, 9, -91)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1552,7 +1547,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@147" type="OmniLight3D" parent="Lights" unique_id=1643444984]
+[node name="@OmniLight3D@147" type="OmniLight3D" parent="Lights" unique_id=1928890799]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90, 9, -81)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1560,7 +1555,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@148" type="SpotLight3D" parent="Lights" unique_id=1731275469]
+[node name="@SpotLight3D@148" type="SpotLight3D" parent="Lights" unique_id=1577914075]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -78, 3.2, -91)
 light_color = Color(1, 0.9019608, 0.7607843, 1)
 light_energy = 1.5
@@ -1570,7 +1565,7 @@ spot_attenuation = 0.9
 spot_angle = 60.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@150" type="OmniLight3D" parent="Lights" unique_id=983602846]
+[node name="@OmniLight3D@150" type="OmniLight3D" parent="Lights" unique_id=1607270429]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 2.8, -97.2)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1579,7 +1574,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@151" type="SpotLight3D" parent="Lights" unique_id=1456579897]
+[node name="@SpotLight3D@151" type="SpotLight3D" parent="Lights" unique_id=1133065933]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -5, 3.05, -96.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1589,7 +1584,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@152" type="OmniLight3D" parent="Lights" unique_id=20730231]
+[node name="@OmniLight3D@152" type="OmniLight3D" parent="Lights" unique_id=292389461]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 9, -101)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1597,7 +1592,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@153" type="OmniLight3D" parent="Lights" unique_id=689050789]
+[node name="@OmniLight3D@153" type="OmniLight3D" parent="Lights" unique_id=409983686]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 9, -91)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1605,7 +1600,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@154" type="OmniLight3D" parent="Lights" unique_id=1834436010]
+[node name="@OmniLight3D@154" type="OmniLight3D" parent="Lights" unique_id=1115994604]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 9, -81)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1613,7 +1608,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@155" type="SpotLight3D" parent="Lights" unique_id=2040737242]
+[node name="@SpotLight3D@155" type="SpotLight3D" parent="Lights" unique_id=548130784]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 38, 3.2, -91)
 light_color = Color(1, 0.9019608, 0.7607843, 1)
 light_energy = 1.5
@@ -1623,7 +1618,7 @@ spot_attenuation = 0.9
 spot_angle = 60.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@157" type="OmniLight3D" parent="Lights" unique_id=1666766150]
+[node name="@OmniLight3D@157" type="OmniLight3D" parent="Lights" unique_id=181502625]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 29, 2.8, -84.8)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1632,7 +1627,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@158" type="SpotLight3D" parent="Lights" unique_id=1084214487]
+[node name="@SpotLight3D@158" type="SpotLight3D" parent="Lights" unique_id=1427369161]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, 29, 3.05, -85.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1642,7 +1637,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@159" type="OmniLight3D" parent="Lights" unique_id=225260175]
+[node name="@OmniLight3D@159" type="OmniLight3D" parent="Lights" unique_id=1995666728]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 2.8, -61)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1651,7 +1646,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@160" type="SpotLight3D" parent="Lights" unique_id=1787332845]
+[node name="@SpotLight3D@160" type="SpotLight3D" parent="Lights" unique_id=1291330266]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -10.4, 3.05, -61)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1661,7 +1656,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@161" type="OmniLight3D" parent="Lights" unique_id=67111065]
+[node name="@OmniLight3D@161" type="OmniLight3D" parent="Lights" unique_id=1861623779]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 2.8, -55)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1670,7 +1665,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@162" type="SpotLight3D" parent="Lights" unique_id=1704839974]
+[node name="@SpotLight3D@162" type="SpotLight3D" parent="Lights" unique_id=1730654566]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -10.4, 3.05, -55)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1680,7 +1675,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@163" type="OmniLight3D" parent="Lights" unique_id=1747015193]
+[node name="@OmniLight3D@163" type="OmniLight3D" parent="Lights" unique_id=1593051992]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 2.8, -46)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1689,7 +1684,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@164" type="SpotLight3D" parent="Lights" unique_id=1053969016]
+[node name="@SpotLight3D@164" type="SpotLight3D" parent="Lights" unique_id=1262255154]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -10.4, 3.05, -46)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1699,7 +1694,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@165" type="OmniLight3D" parent="Lights" unique_id=195748710]
+[node name="@OmniLight3D@165" type="OmniLight3D" parent="Lights" unique_id=830609535]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 2.8, -38)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1708,7 +1703,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@166" type="SpotLight3D" parent="Lights" unique_id=983129002]
+[node name="@SpotLight3D@166" type="SpotLight3D" parent="Lights" unique_id=407365825]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 2.4, 3.05, -38)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1718,7 +1713,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@167" type="OmniLight3D" parent="Lights" unique_id=1087099233]
+[node name="@OmniLight3D@167" type="OmniLight3D" parent="Lights" unique_id=2014413252]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 2.8, -23)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1727,7 +1722,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@168" type="SpotLight3D" parent="Lights" unique_id=94493719]
+[node name="@SpotLight3D@168" type="SpotLight3D" parent="Lights" unique_id=909004099]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 2.4, 3.05, -23)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1737,7 +1732,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@169" type="OmniLight3D" parent="Lights" unique_id=892692931]
+[node name="@OmniLight3D@169" type="OmniLight3D" parent="Lights" unique_id=1578830698]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 2.8, -6)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1746,7 +1741,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@170" type="SpotLight3D" parent="Lights" unique_id=1255110993]
+[node name="@SpotLight3D@170" type="SpotLight3D" parent="Lights" unique_id=813098804]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -10.4, 3.05, -6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1756,7 +1751,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@171" type="OmniLight3D" parent="Lights" unique_id=1152142449]
+[node name="@OmniLight3D@171" type="OmniLight3D" parent="Lights" unique_id=407283273]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 2.8, -14)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1765,7 +1760,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@172" type="SpotLight3D" parent="Lights" unique_id=459962558]
+[node name="@SpotLight3D@172" type="SpotLight3D" parent="Lights" unique_id=1589646186]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 2.4, 3.05, -14)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1775,7 +1770,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@173" type="OmniLight3D" parent="Lights" unique_id=2093903530]
+[node name="@OmniLight3D@173" type="OmniLight3D" parent="Lights" unique_id=71681056]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 2.8, 15)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1784,7 +1779,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@174" type="SpotLight3D" parent="Lights" unique_id=137216478]
+[node name="@SpotLight3D@174" type="SpotLight3D" parent="Lights" unique_id=1060779565]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -10.4, 3.05, 15)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1794,7 +1789,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@175" type="OmniLight3D" parent="Lights" unique_id=529420461]
+[node name="@OmniLight3D@175" type="OmniLight3D" parent="Lights" unique_id=1428124197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 2.8, 25)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1803,7 +1798,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@176" type="SpotLight3D" parent="Lights" unique_id=1751463829]
+[node name="@SpotLight3D@176" type="SpotLight3D" parent="Lights" unique_id=724354557]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -10.4, 3.05, 25)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1813,7 +1808,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@177" type="OmniLight3D" parent="Lights" unique_id=1711294218]
+[node name="@OmniLight3D@177" type="OmniLight3D" parent="Lights" unique_id=1246082930]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7, 2.8, -11.2)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1822,7 +1817,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@178" type="SpotLight3D" parent="Lights" unique_id=569905128]
+[node name="@SpotLight3D@178" type="SpotLight3D" parent="Lights" unique_id=1021377987]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, 7, 3.05, -10.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1832,7 +1827,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@179" type="OmniLight3D" parent="Lights" unique_id=1828001146]
+[node name="@OmniLight3D@179" type="OmniLight3D" parent="Lights" unique_id=520670779]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.2, 2.8, -8)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1841,7 +1836,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@180" type="SpotLight3D" parent="Lights" unique_id=1281169597]
+[node name="@SpotLight3D@180" type="SpotLight3D" parent="Lights" unique_id=1554871282]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 12.4, 3.05, -8)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1851,7 +1846,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@181" type="OmniLight3D" parent="Lights" unique_id=856090213]
+[node name="@OmniLight3D@181" type="OmniLight3D" parent="Lights" unique_id=135352046]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 16, 2.8, -7.2)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1860,7 +1855,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@182" type="SpotLight3D" parent="Lights" unique_id=2015531948]
+[node name="@SpotLight3D@182" type="SpotLight3D" parent="Lights" unique_id=439192675]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, 16, 3.05, -6.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1870,7 +1865,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@183" type="OmniLight3D" parent="Lights" unique_id=1672848485]
+[node name="@OmniLight3D@183" type="OmniLight3D" parent="Lights" unique_id=811792188]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 2.8, -7.2)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1879,7 +1874,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@184" type="SpotLight3D" parent="Lights" unique_id=1728325564]
+[node name="@SpotLight3D@184" type="SpotLight3D" parent="Lights" unique_id=879392755]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, 25, 3.05, -6.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1889,7 +1884,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@185" type="OmniLight3D" parent="Lights" unique_id=411412738]
+[node name="@OmniLight3D@185" type="OmniLight3D" parent="Lights" unique_id=412749706]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 9, -10)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1897,7 +1892,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@186" type="OmniLight3D" parent="Lights" unique_id=187276125]
+[node name="@OmniLight3D@186" type="OmniLight3D" parent="Lights" unique_id=1099830444]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 9, 0)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1905,7 +1900,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@187" type="OmniLight3D" parent="Lights" unique_id=1532797419]
+[node name="@OmniLight3D@187" type="OmniLight3D" parent="Lights" unique_id=1196303320]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 50, 9, 10)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -1913,7 +1908,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@188" type="SpotLight3D" parent="Lights" unique_id=841879752]
+[node name="@SpotLight3D@188" type="SpotLight3D" parent="Lights" unique_id=829778611]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 38, 3.2, 0)
 light_color = Color(1, 0.9019608, 0.7607843, 1)
 light_energy = 1.5
@@ -1923,7 +1918,7 @@ spot_attenuation = 0.9
 spot_angle = 60.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@190" type="OmniLight3D" parent="Lights" unique_id=1220166790]
+[node name="@OmniLight3D@190" type="OmniLight3D" parent="Lights" unique_id=2071117377]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 2.8, 7.2)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1932,7 +1927,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@191" type="SpotLight3D" parent="Lights" unique_id=1351903327]
+[node name="@SpotLight3D@191" type="SpotLight3D" parent="Lights" unique_id=901489338]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, 6, 3.05, 6.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1942,7 +1937,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@192" type="OmniLight3D" parent="Lights" unique_id=1698795893]
+[node name="@OmniLight3D@192" type="OmniLight3D" parent="Lights" unique_id=1191075551]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 2.8, 33)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1951,7 +1946,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@193" type="SpotLight3D" parent="Lights" unique_id=1915901147]
+[node name="@SpotLight3D@193" type="SpotLight3D" parent="Lights" unique_id=84997065]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -10.4, 3.05, 33)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1961,7 +1956,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@194" type="OmniLight3D" parent="Lights" unique_id=1530696306]
+[node name="@OmniLight3D@194" type="OmniLight3D" parent="Lights" unique_id=814875315]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 2.8, 29.2)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1970,7 +1965,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@195" type="SpotLight3D" parent="Lights" unique_id=165846752]
+[node name="@SpotLight3D@195" type="SpotLight3D" parent="Lights" unique_id=45044836]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 2.4, 3.05, 29.2)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1980,7 +1975,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@196" type="OmniLight3D" parent="Lights" unique_id=2003101430]
+[node name="@OmniLight3D@196" type="OmniLight3D" parent="Lights" unique_id=1078165940]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 2.8, 42)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -1989,7 +1984,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@197" type="SpotLight3D" parent="Lights" unique_id=1810251613]
+[node name="@SpotLight3D@197" type="SpotLight3D" parent="Lights" unique_id=1045457729]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 2.4, 3.05, 42)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -1999,7 +1994,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@198" type="OmniLight3D" parent="Lights" unique_id=2057773510]
+[node name="@OmniLight3D@198" type="OmniLight3D" parent="Lights" unique_id=472648288]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -11.2, 2.8, 42)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2008,7 +2003,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@199" type="SpotLight3D" parent="Lights" unique_id=199690414]
+[node name="@SpotLight3D@199" type="SpotLight3D" parent="Lights" unique_id=579701804]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -10.4, 3.05, 42)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2018,7 +2013,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@200" type="OmniLight3D" parent="Lights" unique_id=945010337]
+[node name="@OmniLight3D@200" type="OmniLight3D" parent="Lights" unique_id=2093020733]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -146, 2.8, 42.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2027,7 +2022,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@201" type="SpotLight3D" parent="Lights" unique_id=1620894528]
+[node name="@SpotLight3D@201" type="SpotLight3D" parent="Lights" unique_id=2043174283]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -146, 3.05, 43.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2037,7 +2032,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@202" type="OmniLight3D" parent="Lights" unique_id=703580129]
+[node name="@OmniLight3D@202" type="OmniLight3D" parent="Lights" unique_id=1773117012]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161.2, 3, 48.399998)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.9
@@ -2046,7 +2041,7 @@ omni_range = 18.0
 metadata/e_day = 0.9
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@203" type="OmniLight3D" parent="Lights" unique_id=1635333469]
+[node name="@OmniLight3D@203" type="OmniLight3D" parent="Lights" unique_id=1740932213]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161.2, 3, 56)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.9
@@ -2055,7 +2050,7 @@ omni_range = 18.0
 metadata/e_day = 0.9
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@204" type="OmniLight3D" parent="Lights" unique_id=896862323]
+[node name="@OmniLight3D@204" type="OmniLight3D" parent="Lights" unique_id=710935337]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -161.2, 3, 63.6)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.9
@@ -2064,7 +2059,7 @@ omni_range = 18.0
 metadata/e_day = 0.9
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@205" type="OmniLight3D" parent="Lights" unique_id=1484676142]
+[node name="@OmniLight3D@205" type="OmniLight3D" parent="Lights" unique_id=1264182467]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -127, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2073,7 +2068,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@206" type="SpotLight3D" parent="Lights" unique_id=342279381]
+[node name="@SpotLight3D@206" type="SpotLight3D" parent="Lights" unique_id=609680801]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -127, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2083,7 +2078,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@207" type="OmniLight3D" parent="Lights" unique_id=384534756]
+[node name="@OmniLight3D@207" type="OmniLight3D" parent="Lights" unique_id=124310197]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -116, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2092,7 +2087,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@208" type="SpotLight3D" parent="Lights" unique_id=396227724]
+[node name="@SpotLight3D@208" type="SpotLight3D" parent="Lights" unique_id=1737798803]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -116, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2102,7 +2097,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@209" type="OmniLight3D" parent="Lights" unique_id=300875498]
+[node name="@OmniLight3D@209" type="OmniLight3D" parent="Lights" unique_id=2045264193]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -106, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2111,7 +2106,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@210" type="SpotLight3D" parent="Lights" unique_id=1106280268]
+[node name="@SpotLight3D@210" type="SpotLight3D" parent="Lights" unique_id=1117017614]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -106, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2121,7 +2116,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@211" type="OmniLight3D" parent="Lights" unique_id=1909536238]
+[node name="@OmniLight3D@211" type="OmniLight3D" parent="Lights" unique_id=1642785478]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -98, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2130,7 +2125,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@212" type="SpotLight3D" parent="Lights" unique_id=1758407483]
+[node name="@SpotLight3D@212" type="SpotLight3D" parent="Lights" unique_id=1337919029]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -98, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2140,7 +2135,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@213" type="OmniLight3D" parent="Lights" unique_id=1229378061]
+[node name="@OmniLight3D@213" type="OmniLight3D" parent="Lights" unique_id=1667590806]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -90, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2149,7 +2144,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@214" type="SpotLight3D" parent="Lights" unique_id=1543750861]
+[node name="@SpotLight3D@214" type="SpotLight3D" parent="Lights" unique_id=1078109410]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -90, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2159,7 +2154,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@215" type="OmniLight3D" parent="Lights" unique_id=373379335]
+[node name="@OmniLight3D@215" type="OmniLight3D" parent="Lights" unique_id=662054621]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -83, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2168,7 +2163,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@216" type="SpotLight3D" parent="Lights" unique_id=1151744733]
+[node name="@SpotLight3D@216" type="SpotLight3D" parent="Lights" unique_id=1276826267]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -83, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2178,7 +2173,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@217" type="OmniLight3D" parent="Lights" unique_id=547288200]
+[node name="@OmniLight3D@217" type="OmniLight3D" parent="Lights" unique_id=905437040]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -65, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2187,7 +2182,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@218" type="SpotLight3D" parent="Lights" unique_id=1849450941]
+[node name="@SpotLight3D@218" type="SpotLight3D" parent="Lights" unique_id=796813785]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -65, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2197,7 +2192,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@219" type="OmniLight3D" parent="Lights" unique_id=1477128768]
+[node name="@OmniLight3D@219" type="OmniLight3D" parent="Lights" unique_id=265676740]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -56, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2206,7 +2201,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@220" type="SpotLight3D" parent="Lights" unique_id=716604729]
+[node name="@SpotLight3D@220" type="SpotLight3D" parent="Lights" unique_id=1322276775]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -56, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2216,7 +2211,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@221" type="OmniLight3D" parent="Lights" unique_id=284184692]
+[node name="@OmniLight3D@221" type="OmniLight3D" parent="Lights" unique_id=1176871876]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -45.35, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2225,7 +2220,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@222" type="SpotLight3D" parent="Lights" unique_id=1194517681]
+[node name="@SpotLight3D@222" type="SpotLight3D" parent="Lights" unique_id=1843181053]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -45.35, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2235,7 +2230,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@223" type="OmniLight3D" parent="Lights" unique_id=67433005]
+[node name="@OmniLight3D@223" type="OmniLight3D" parent="Lights" unique_id=965579882]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -29, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2244,7 +2239,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@224" type="SpotLight3D" parent="Lights" unique_id=123928569]
+[node name="@SpotLight3D@224" type="SpotLight3D" parent="Lights" unique_id=1139226733]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -29, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2254,7 +2249,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@225" type="OmniLight3D" parent="Lights" unique_id=1533674779]
+[node name="@OmniLight3D@225" type="OmniLight3D" parent="Lights" unique_id=69076355]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -23, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2263,7 +2258,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@226" type="SpotLight3D" parent="Lights" unique_id=1795673519]
+[node name="@SpotLight3D@226" type="SpotLight3D" parent="Lights" unique_id=1588303510]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -23, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2273,7 +2268,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@227" type="OmniLight3D" parent="Lights" unique_id=1963368312]
+[node name="@OmniLight3D@227" type="OmniLight3D" parent="Lights" unique_id=240799154]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15, 2.8, 46.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2282,7 +2277,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@228" type="SpotLight3D" parent="Lights" unique_id=930546973]
+[node name="@SpotLight3D@228" type="SpotLight3D" parent="Lights" unique_id=649856504]
 transform = Transform3D(-1, 0, 0, 0, 0.66896474, 0.7432942, 0, 0.7432942, -0.66896474, -15, 3.05, 47.6)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2292,7 +2287,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@229" type="OmniLight3D" parent="Lights" unique_id=1411648166]
+[node name="@OmniLight3D@229" type="OmniLight3D" parent="Lights" unique_id=1962838209]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.8, 58)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2301,7 +2296,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@230" type="SpotLight3D" parent="Lights" unique_id=1317127790]
+[node name="@SpotLight3D@230" type="SpotLight3D" parent="Lights" unique_id=681250606]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 2.4, 3.05, 58)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2311,7 +2306,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@231" type="OmniLight3D" parent="Lights" unique_id=1417822857]
+[node name="@OmniLight3D@231" type="OmniLight3D" parent="Lights" unique_id=720502905]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -127, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2320,7 +2315,7 @@ omni_range = 8.95
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@232" type="SpotLight3D" parent="Lights" unique_id=316545107]
+[node name="@SpotLight3D@232" type="SpotLight3D" parent="Lights" unique_id=131391929]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -127, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2330,7 +2325,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@233" type="OmniLight3D" parent="Lights" unique_id=1870163122]
+[node name="@OmniLight3D@233" type="OmniLight3D" parent="Lights" unique_id=567090007]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -121, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2339,7 +2334,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@234" type="SpotLight3D" parent="Lights" unique_id=1440364653]
+[node name="@SpotLight3D@234" type="SpotLight3D" parent="Lights" unique_id=30680036]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -121, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2349,7 +2344,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@235" type="OmniLight3D" parent="Lights" unique_id=58006951]
+[node name="@OmniLight3D@235" type="OmniLight3D" parent="Lights" unique_id=378454748]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -114, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2358,7 +2353,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@236" type="SpotLight3D" parent="Lights" unique_id=2418367]
+[node name="@SpotLight3D@236" type="SpotLight3D" parent="Lights" unique_id=1135150881]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -114, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2368,7 +2363,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@237" type="OmniLight3D" parent="Lights" unique_id=338796117]
+[node name="@OmniLight3D@237" type="OmniLight3D" parent="Lights" unique_id=549049129]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -98, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2377,7 +2372,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@238" type="SpotLight3D" parent="Lights" unique_id=2030667182]
+[node name="@SpotLight3D@238" type="SpotLight3D" parent="Lights" unique_id=491180629]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -98, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2387,7 +2382,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@239" type="OmniLight3D" parent="Lights" unique_id=2113187869]
+[node name="@OmniLight3D@239" type="OmniLight3D" parent="Lights" unique_id=554264477]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -79, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2396,7 +2391,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@240" type="SpotLight3D" parent="Lights" unique_id=1033129157]
+[node name="@SpotLight3D@240" type="SpotLight3D" parent="Lights" unique_id=821412547]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -79, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2406,7 +2401,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@241" type="OmniLight3D" parent="Lights" unique_id=1373604494]
+[node name="@OmniLight3D@241" type="OmniLight3D" parent="Lights" unique_id=635659842]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -72, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2415,7 +2410,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@242" type="SpotLight3D" parent="Lights" unique_id=968017531]
+[node name="@SpotLight3D@242" type="SpotLight3D" parent="Lights" unique_id=1887306446]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -72, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2425,7 +2420,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@243" type="OmniLight3D" parent="Lights" unique_id=141141856]
+[node name="@OmniLight3D@243" type="OmniLight3D" parent="Lights" unique_id=278470661]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -63, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2434,7 +2429,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@244" type="SpotLight3D" parent="Lights" unique_id=599601664]
+[node name="@SpotLight3D@244" type="SpotLight3D" parent="Lights" unique_id=1748260]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -63, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2444,7 +2439,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@245" type="OmniLight3D" parent="Lights" unique_id=733997423]
+[node name="@OmniLight3D@245" type="OmniLight3D" parent="Lights" unique_id=1245721361]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -54, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2453,7 +2448,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@246" type="SpotLight3D" parent="Lights" unique_id=874017864]
+[node name="@SpotLight3D@246" type="SpotLight3D" parent="Lights" unique_id=50483955]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -54, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2463,7 +2458,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@247" type="SpotLight3D" parent="Lights" unique_id=983098448]
+[node name="@SpotLight3D@247" type="SpotLight3D" parent="Lights" unique_id=1168119180]
 transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, -44, 2.93, 60.75)
 light_color = Color(1, 0.92, 0.8, 1)
 light_energy = 1.5
@@ -2474,7 +2469,7 @@ spot_angle = 58.0
 metadata/e_day = 1.5
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@248" type="OmniLight3D" parent="Lights" unique_id=11302572]
+[node name="@OmniLight3D@248" type="OmniLight3D" parent="Lights" unique_id=612901307]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46.6, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2483,7 +2478,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@249" type="SpotLight3D" parent="Lights" unique_id=1065913832]
+[node name="@SpotLight3D@249" type="SpotLight3D" parent="Lights" unique_id=1580107884]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -46.6, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2493,7 +2488,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@250" type="OmniLight3D" parent="Lights" unique_id=1658497106]
+[node name="@OmniLight3D@250" type="OmniLight3D" parent="Lights" unique_id=43194393]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -41.4, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2502,7 +2497,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@251" type="SpotLight3D" parent="Lights" unique_id=130435369]
+[node name="@SpotLight3D@251" type="SpotLight3D" parent="Lights" unique_id=556821004]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -41.4, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2512,7 +2507,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@252" type="OmniLight3D" parent="Lights" unique_id=591824761]
+[node name="@OmniLight3D@252" type="OmniLight3D" parent="Lights" unique_id=435786107]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -38, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2521,7 +2516,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@253" type="SpotLight3D" parent="Lights" unique_id=2125664076]
+[node name="@SpotLight3D@253" type="SpotLight3D" parent="Lights" unique_id=570453946]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -38, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2531,7 +2526,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@254" type="OmniLight3D" parent="Lights" unique_id=1241427127]
+[node name="@OmniLight3D@254" type="OmniLight3D" parent="Lights" unique_id=689036556]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -24, 2.8, 61.5)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2540,7 +2535,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@255" type="SpotLight3D" parent="Lights" unique_id=1326806150]
+[node name="@SpotLight3D@255" type="SpotLight3D" parent="Lights" unique_id=823456237]
 transform = Transform3D(1, 0, 0, 0, 0.66896474, 0.7432942, 0, -0.7432942, 0.66896474, -24, 3.05, 60.4)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2550,7 +2545,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@256" type="OmniLight3D" parent="Lights" unique_id=408993288]
+[node name="@OmniLight3D@256" type="OmniLight3D" parent="Lights" unique_id=555950981]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -21.5, 2.8, 65)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2559,7 +2554,7 @@ omni_range = 9.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@257" type="SpotLight3D" parent="Lights" unique_id=904215246]
+[node name="@SpotLight3D@257" type="SpotLight3D" parent="Lights" unique_id=1890581305]
 transform = Transform3D(0, 0.7432942, -0.66896474, 0, 0.66896474, 0.7432942, 1, 0, 0, -20.4, 3.05, 65)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2569,7 +2564,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@258" type="OmniLight3D" parent="Lights" unique_id=1171118501]
+[node name="@OmniLight3D@258" type="OmniLight3D" parent="Lights" unique_id=254261867]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.8, 70)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2578,7 +2573,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@259" type="SpotLight3D" parent="Lights" unique_id=1775705819]
+[node name="@SpotLight3D@259" type="SpotLight3D" parent="Lights" unique_id=426899016]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 2.4, 3.05, 70)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2588,7 +2583,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@260" type="OmniLight3D" parent="Lights" unique_id=990155764]
+[node name="@OmniLight3D@260" type="OmniLight3D" parent="Lights" unique_id=193019585]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -136.5, 2.5900002, 69.7)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2597,7 +2592,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@261" type="OmniLight3D" parent="Lights" unique_id=1838123971]
+[node name="@OmniLight3D@261" type="OmniLight3D" parent="Lights" unique_id=49054659]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -136.5, 2.5900002, 72.1)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2606,7 +2601,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@262" type="OmniLight3D" parent="Lights" unique_id=1062224555]
+[node name="@OmniLight3D@262" type="OmniLight3D" parent="Lights" unique_id=1250479014]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -136.5, 2.5900002, 74.5)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2615,7 +2610,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@263" type="OmniLight3D" parent="Lights" unique_id=1382027089]
+[node name="@OmniLight3D@263" type="OmniLight3D" parent="Lights" unique_id=104414252]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -136.5, 2.5900002, 76.9)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2624,7 +2619,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@264" type="OmniLight3D" parent="Lights" unique_id=465910613]
+[node name="@OmniLight3D@264" type="OmniLight3D" parent="Lights" unique_id=1093607942]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -134.1, 2.5900002, 69.7)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2633,7 +2628,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@265" type="OmniLight3D" parent="Lights" unique_id=451029270]
+[node name="@OmniLight3D@265" type="OmniLight3D" parent="Lights" unique_id=1753864904]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -134.1, 2.5900002, 72.1)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2642,7 +2637,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@266" type="OmniLight3D" parent="Lights" unique_id=457991947]
+[node name="@OmniLight3D@266" type="OmniLight3D" parent="Lights" unique_id=1292218819]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -134.1, 2.5900002, 74.5)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2651,7 +2646,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@267" type="OmniLight3D" parent="Lights" unique_id=496404877]
+[node name="@OmniLight3D@267" type="OmniLight3D" parent="Lights" unique_id=1498021995]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -134.1, 2.5900002, 76.9)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2660,7 +2655,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@268" type="OmniLight3D" parent="Lights" unique_id=1904293270]
+[node name="@OmniLight3D@268" type="OmniLight3D" parent="Lights" unique_id=1455114876]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131.7, 2.5900002, 69.7)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2669,7 +2664,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@269" type="OmniLight3D" parent="Lights" unique_id=1314100921]
+[node name="@OmniLight3D@269" type="OmniLight3D" parent="Lights" unique_id=1241401252]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131.7, 2.5900002, 72.1)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2678,7 +2673,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@270" type="OmniLight3D" parent="Lights" unique_id=1640577093]
+[node name="@OmniLight3D@270" type="OmniLight3D" parent="Lights" unique_id=653905782]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131.7, 2.5900002, 74.5)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2687,7 +2682,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@271" type="OmniLight3D" parent="Lights" unique_id=854869416]
+[node name="@OmniLight3D@271" type="OmniLight3D" parent="Lights" unique_id=115674173]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131.7, 2.5900002, 76.9)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2696,7 +2691,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@272" type="OmniLight3D" parent="Lights" unique_id=2086150725]
+[node name="@OmniLight3D@272" type="OmniLight3D" parent="Lights" unique_id=1318351213]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.3, 2.5900002, 69.7)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2705,7 +2700,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@273" type="OmniLight3D" parent="Lights" unique_id=654925606]
+[node name="@OmniLight3D@273" type="OmniLight3D" parent="Lights" unique_id=514877090]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.3, 2.5900002, 72.1)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2714,7 +2709,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@274" type="OmniLight3D" parent="Lights" unique_id=1664322029]
+[node name="@OmniLight3D@274" type="OmniLight3D" parent="Lights" unique_id=379404926]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.3, 2.5900002, 74.5)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2723,7 +2718,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@275" type="OmniLight3D" parent="Lights" unique_id=590268093]
+[node name="@OmniLight3D@275" type="OmniLight3D" parent="Lights" unique_id=1388153804]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -129.3, 2.5900002, 76.9)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.3
@@ -2732,7 +2727,7 @@ omni_range = 4.5
 metadata/e_day = 0.3
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@276" type="OmniLight3D" parent="Lights" unique_id=544552092]
+[node name="@OmniLight3D@276" type="OmniLight3D" parent="Lights" unique_id=1695620954]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -134.68, 1.45, 74.6)
 light_color = Color(1, 0.9, 0.7, 1)
 light_energy = 0.25
@@ -2741,7 +2736,7 @@ omni_range = 1.6
 metadata/e_day = 0.25
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@277" type="OmniLight3D" parent="Lights" unique_id=803525288]
+[node name="@OmniLight3D@277" type="OmniLight3D" parent="Lights" unique_id=45177596]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -134.68, 1.45, 75.9)
 light_color = Color(1, 0.9, 0.7, 1)
 light_energy = 0.25
@@ -2750,7 +2745,7 @@ omni_range = 1.6
 metadata/e_day = 0.25
 metadata/e_night = 0.4
 
-[node name="@OmniLight3D@278" type="OmniLight3D" parent="Lights" unique_id=1601779424]
+[node name="@OmniLight3D@278" type="OmniLight3D" parent="Lights" unique_id=1040576990]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -131.4, 2.5, 75.5)
 light_color = Color(1, 0.95, 0.85, 1)
 light_energy = 0.35
@@ -2758,14 +2753,14 @@ light_bake_mode = 1
 metadata/e_day = 0.35
 metadata/e_night = 0.5
 
-[node name="@ReflectionProbe@279" type="ReflectionProbe" parent="Lights" unique_id=778225320]
+[node name="@ReflectionProbe@279" type="ReflectionProbe" parent="Lights" unique_id=71253230]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -132.5, 1.45, 74)
 intensity = 0.8
 size = Vector3(11.2, 3, 11.599999)
 box_projection = true
 interior = true
 
-[node name="@SpotLight3D@280" type="SpotLight3D" parent="Lights" unique_id=1878742207]
+[node name="@SpotLight3D@280" type="SpotLight3D" parent="Lights" unique_id=241918612]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -138.5, 2.4, 74)
 light_color = Color(1, 0.97, 0.88, 1)
 light_energy = 1.2
@@ -2775,7 +2770,7 @@ spot_angle = 80.0
 metadata/e_day = 0.6
 metadata/e_night = 1.2
 
-[node name="@OmniLight3D@282" type="OmniLight3D" parent="Lights" unique_id=339831999]
+[node name="@OmniLight3D@282" type="OmniLight3D" parent="Lights" unique_id=896885676]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5, 2.8, 77)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2784,7 +2779,7 @@ omni_range = 10.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@283" type="SpotLight3D" parent="Lights" unique_id=1868773987]
+[node name="@SpotLight3D@283" type="SpotLight3D" parent="Lights" unique_id=1055052649]
 transform = Transform3D(0, -0.7432942, 0.66896474, 0, 0.66896474, 0.7432942, -1, 0, 0, 2.4, 3.05, 77)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2794,7 +2789,7 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@284" type="OmniLight3D" parent="Lights" unique_id=2034907695]
+[node name="@OmniLight3D@284" type="OmniLight3D" parent="Lights" unique_id=1643529714]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.5999994, 3, 87.2)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.9
@@ -2803,7 +2798,7 @@ omni_range = 18.0
 metadata/e_day = 0.9
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@285" type="OmniLight3D" parent="Lights" unique_id=1554544735]
+[node name="@OmniLight3D@285" type="OmniLight3D" parent="Lights" unique_id=875556750]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.9999995, 3, 87.2)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.9
@@ -2812,7 +2807,7 @@ omni_range = 18.0
 metadata/e_day = 0.9
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@286" type="OmniLight3D" parent="Lights" unique_id=383769757]
+[node name="@OmniLight3D@286" type="OmniLight3D" parent="Lights" unique_id=452671651]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.39999962, 3, 87.2)
 light_color = Color(1, 0.97, 0.9, 1)
 light_energy = 0.9
@@ -2821,7 +2816,7 @@ omni_range = 18.0
 metadata/e_day = 0.9
 metadata/e_night = 1.4
 
-[node name="@OmniLight3D@288" type="OmniLight3D" parent="Lights" unique_id=426955986]
+[node name="@OmniLight3D@288" type="OmniLight3D" parent="Lights" unique_id=177387762]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -152, 9, 102)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -2829,7 +2824,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@289" type="OmniLight3D" parent="Lights" unique_id=1514021561]
+[node name="@OmniLight3D@289" type="OmniLight3D" parent="Lights" unique_id=415885691]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 9, 102)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -2837,7 +2832,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@290" type="OmniLight3D" parent="Lights" unique_id=930069137]
+[node name="@OmniLight3D@290" type="OmniLight3D" parent="Lights" unique_id=983282544]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -132, 9, 102)
 light_color = Color(1, 0.62352943, 0.27058825, 1)
 light_energy = 4.0
@@ -2845,7 +2840,7 @@ light_bake_mode = 1
 omni_range = 25.0
 metadata/only = "night"
 
-[node name="@SpotLight3D@291" type="SpotLight3D" parent="Lights" unique_id=342429970]
+[node name="@SpotLight3D@291" type="SpotLight3D" parent="Lights" unique_id=858558500]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -142, 3.2, 90)
 light_color = Color(1, 0.9019608, 0.7607843, 1)
 light_energy = 1.5
@@ -2855,7 +2850,7 @@ spot_attenuation = 0.9
 spot_angle = 60.0
 metadata/only = "night"
 
-[node name="@OmniLight3D@293" type="OmniLight3D" parent="Lights" unique_id=1487766009]
+[node name="@OmniLight3D@293" type="OmniLight3D" parent="Lights" unique_id=1818979396]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -132.44846, 2.8, 63.551544)
 light_color = Color(1, 0.96, 0.9, 1)
 light_energy = 0.45
@@ -2864,7 +2859,7 @@ omni_range = 6.0
 metadata/e_day = 0.45
 metadata/e_night = 1.2
 
-[node name="@SpotLight3D@294" type="SpotLight3D" parent="Lights" unique_id=886790591]
+[node name="@SpotLight3D@294" type="SpotLight3D" parent="Lights" unique_id=1515587143]
 transform = Transform3D(0.70710677, -0.5255883, 0.47302958, 0, 0.66896486, 0.74329406, -0.70710677, -0.5255883, 0.47302958, -132.71716, 3.05, 63.282845)
 light_color = Color(1, 0.94509804, 0.8627451, 1)
 light_energy = 1.6
@@ -2874,56 +2869,56 @@ spot_attenuation = 0.9
 spot_angle = 55.0
 metadata/only = "night"
 
-[node name="@Label3D@149" type="Label3D" parent="." unique_id=600929496]
+[node name="@Label3D@149" type="Label3D" parent="." unique_id=2087375341]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -75.9, 3.55, -91)
 pixel_size = 0.001875
 double_sided = false
 text = "EXIT"
-font = ExtResource("1_lkctu")
+font = ExtResource("1_0rtav")
 font_size = 128
 
-[node name="@Label3D@156" type="Label3D" parent="." unique_id=1100700201]
+[node name="@Label3D@156" type="Label3D" parent="." unique_id=997980381]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 35.9, 3.55, -91)
 pixel_size = 0.001875
 double_sided = false
 text = "EXIT"
-font = ExtResource("1_lkctu")
+font = ExtResource("1_0rtav")
 font_size = 128
 
-[node name="@Label3D@189" type="Label3D" parent="." unique_id=1555956549]
+[node name="@Label3D@189" type="Label3D" parent="." unique_id=1074129882]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, 35.95, 3.75, 0)
 pixel_size = 0.00328125
 double_sided = false
 modulate = Color(0.35686275, 0.2509804, 0.1882353, 1)
 text = "Main Entrance"
-font = ExtResource("2_1cm2e")
+font = ExtResource("2_86j5a")
 font_size = 128
 
-[node name="@Label3D@281" type="Label3D" parent="." unique_id=253778660]
+[node name="@Label3D@281" type="Label3D" parent="." unique_id=364439168]
 transform = Transform3D(0, 0, -1, 0, 1, 0, 1, 0, 0, -48.06, 2.55, 73.6)
 pixel_size = 0.00171875
 double_sided = false
 text = "Women"
-font = ExtResource("1_lkctu")
+font = ExtResource("1_0rtav")
 font_size = 128
 
-[node name="@Label3D@287" type="Label3D" parent="." unique_id=526499045]
+[node name="@Label3D@287" type="Label3D" parent="." unique_id=1947002937]
 transform = Transform3D(0, 0, 1, 0, 1, 0, -1, 0, 0, -49.94, 2.55, 85.6)
 pixel_size = 0.00171875
 double_sided = false
 text = "Men"
-font = ExtResource("1_lkctu")
+font = ExtResource("1_0rtav")
 font_size = 128
 
-[node name="@Label3D@292" type="Label3D" parent="." unique_id=2042835580]
+[node name="@Label3D@292" type="Label3D" parent="." unique_id=1135504267]
 transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, -142, 3.55, 87.9)
 pixel_size = 0.001875
 double_sided = false
 text = "EXIT"
-font = ExtResource("1_lkctu")
+font = ExtResource("1_0rtav")
 font_size = 128
 
-[node name="Sun" type="DirectionalLight3D" parent="." unique_id=1532659105]
+[node name="Sun" type="DirectionalLight3D" parent="." unique_id=394341230]
 transform = Transform3D(-0.70710677, 0.6403711, -0.2998747, 0, 0.42408684, 0.9056215, 0.70710677, 0.6403711, -0.2998747, 0, 0, 0)
 light_color = Color(1, 0.95, 0.86, 1)
 light_energy = 1.1
@@ -2932,300 +2927,275 @@ light_bake_mode = 1
 shadow_enabled = true
 metadata/only = "day"
 
-[node name="Env" type="WorldEnvironment" parent="." unique_id=1354255330]
-environment = ExtResource("3_gu5k2")
+[node name="Env" type="WorldEnvironment" parent="." unique_id=924972327]
+environment = ExtResource("3_g7qsq")
 
-[node name="Static" type="Node3D" parent="." unique_id=772130040]
+[node name="Static" type="Node3D" parent="." unique_id=804085360]
 
-[node name="C1" type="MeshInstance3D" parent="Static" unique_id=1220093850]
-mesh = ExtResource("4_0qf2f")
+[node name="C1" type="MeshInstance3D" parent="Static" unique_id=2134775060]
+mesh = ExtResource("4_mr5bv")
 
-[node name="H1a" type="MeshInstance3D" parent="Static" unique_id=5766046]
-mesh = ExtResource("5_3vhgf")
+[node name="H1a" type="MeshInstance3D" parent="Static" unique_id=1829126957]
+mesh = ExtResource("5_1lolk")
 
-[node name="H1b" type="MeshInstance3D" parent="Static" unique_id=1426834031]
-mesh = ExtResource("6_npvgb")
+[node name="H1b" type="MeshInstance3D" parent="Static" unique_id=450685149]
+mesh = ExtResource("6_lkctu")
 
-[node name="H2" type="MeshInstance3D" parent="Static" unique_id=1882989531]
-mesh = ExtResource("7_qdnwt")
+[node name="H2" type="MeshInstance3D" parent="Static" unique_id=1420728470]
+mesh = ExtResource("7_1cm2e")
 
-[node name="C2" type="MeshInstance3D" parent="Static" unique_id=1323962552]
-mesh = ExtResource("8_4j3q3")
+[node name="C2" type="MeshInstance3D" parent="Static" unique_id=738519355]
+mesh = ExtResource("8_gu5k2")
 
-[node name="lanterns" type="MeshInstance3D" parent="Static" unique_id=1111588102]
-mesh = ExtResource("9_kgecs")
+[node name="lanterns" type="MeshInstance3D" parent="Static" unique_id=627191434]
+mesh = ExtResource("9_0qf2f")
 
-[node name="H3" type="MeshInstance3D" parent="Static" unique_id=245883923]
-mesh = ExtResource("10_2yhee")
+[node name="H3" type="MeshInstance3D" parent="Static" unique_id=1997783917]
+mesh = ExtResource("10_3vhgf")
 
-[node name="H4" type="MeshInstance3D" parent="Static" unique_id=719580802]
-mesh = ExtResource("11_fecpl")
+[node name="H4" type="MeshInstance3D" parent="Static" unique_id=2115576862]
+mesh = ExtResource("11_npvgb")
 
-[node name="C3" type="MeshInstance3D" parent="Static" unique_id=925525125]
-mesh = ExtResource("12_iedy7")
+[node name="C3" type="MeshInstance3D" parent="Static" unique_id=415623453]
+mesh = ExtResource("12_qdnwt")
 
-[node name="H8" type="MeshInstance3D" parent="Static" unique_id=78937515]
-mesh = ExtResource("13_n5taa")
+[node name="H8" type="MeshInstance3D" parent="Static" unique_id=315726441]
+mesh = ExtResource("13_4j3q3")
 
-[node name="H5" type="MeshInstance3D" parent="Static" unique_id=1793523045]
-mesh = ExtResource("14_cbfxa")
+[node name="H5" type="MeshInstance3D" parent="Static" unique_id=1595408507]
+mesh = ExtResource("14_kgecs")
 
-[node name="C4" type="MeshInstance3D" parent="Static" unique_id=1331542771]
-mesh = ExtResource("15_lvxno")
+[node name="C4" type="MeshInstance3D" parent="Static" unique_id=1402787302]
+mesh = ExtResource("15_2yhee")
 
-[node name="H6" type="MeshInstance3D" parent="Static" unique_id=1204921724]
-mesh = ExtResource("16_hhanj")
+[node name="H6" type="MeshInstance3D" parent="Static" unique_id=1899958760]
+mesh = ExtResource("16_fecpl")
 
-[node name="H7" type="MeshInstance3D" parent="Static" unique_id=1327461650]
-mesh = ExtResource("17_jbouw")
+[node name="H7" type="MeshInstance3D" parent="Static" unique_id=1479149209]
+mesh = ExtResource("17_iedy7")
 
-[node name="misc" type="MeshInstance3D" parent="Static" unique_id=406018576]
-mesh = ExtResource("18_yyao4")
+[node name="misc" type="MeshInstance3D" parent="Static" unique_id=58884557]
+mesh = ExtResource("18_n5taa")
 
-[node name="outside" type="MeshInstance3D" parent="Static" unique_id=1163694371]
-mesh = ExtResource("19_nabpd")
+[node name="outside" type="MeshInstance3D" parent="Static" unique_id=877870466]
+mesh = ExtResource("19_cbfxa")
 
-[node name="Dynamic" type="Node3D" parent="." unique_id=1181319210]
+[node name="Dynamic" type="Node3D" parent="." unique_id=279766646]
 
-[node name="dyn_glass_frames" type="MeshInstance3D" parent="Dynamic" unique_id=1632928847]
+[node name="dyn_glass_frames" type="MeshInstance3D" parent="Dynamic" unique_id=1106321010]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("20_mvmpa")
+mesh = ExtResource("20_lvxno")
 
-[node name="dyn_glass" type="MeshInstance3D" parent="Dynamic" unique_id=1229451067]
+[node name="dyn_glass" type="MeshInstance3D" parent="Dynamic" unique_id=298299520]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("21_6x1o5")
+mesh = ExtResource("21_hhanj")
 
-[node name="dyn_fixtures" type="MeshInstance3D" parent="Dynamic" unique_id=1912297293]
+[node name="dyn_fixtures" type="MeshInstance3D" parent="Dynamic" unique_id=1266371234]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("22_fqpae")
+mesh = ExtResource("22_jbouw")
 
-[node name="dyn_C4" type="MeshInstance3D" parent="Dynamic" unique_id=1347431987]
+[node name="dyn_C4_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=528344261]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("23_omy12")
+mesh = ExtResource("23_yyao4")
 
-[node name="dyn_C4_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=487326096]
+[node name="dyn_C4_sg26_glow" type="MeshInstance3D" parent="Dynamic" unique_id=1778955570]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("24_f27oe")
+mesh = ExtResource("24_nabpd")
 
-[node name="dyn_C4_sg26_glow" type="MeshInstance3D" parent="Dynamic" unique_id=1306167441]
+[node name="dyn_H5_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=1252437628]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("25_pkfl0")
+mesh = ExtResource("25_mvmpa")
 
-[node name="dyn_H5" type="MeshInstance3D" parent="Dynamic" unique_id=1768120509]
+[node name="dyn_H5_sg26_glow" type="MeshInstance3D" parent="Dynamic" unique_id=20892464]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("26_klqoe")
+mesh = ExtResource("26_6x1o5")
 
-[node name="dyn_H5_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=217906626]
+[node name="dyn_H5_lease" type="MeshInstance3D" parent="Dynamic" unique_id=116434655]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("27_2a01g")
+mesh = ExtResource("27_fqpae")
 
-[node name="dyn_H5_sg26_glow" type="MeshInstance3D" parent="Dynamic" unique_id=360089745]
+[node name="dyn_C3_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=46119545]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("28_5d7te")
+mesh = ExtResource("28_omy12")
 
-[node name="dyn_H5_lease" type="MeshInstance3D" parent="Dynamic" unique_id=1620521430]
+[node name="dyn_C3_sg26_glow" type="MeshInstance3D" parent="Dynamic" unique_id=285489351]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("29_ygk2p")
+mesh = ExtResource("29_f27oe")
 
-[node name="dyn_C3" type="MeshInstance3D" parent="Dynamic" unique_id=1786316084]
+[node name="dyn_C4_lease" type="MeshInstance3D" parent="Dynamic" unique_id=251597743]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("30_0rj10")
+mesh = ExtResource("30_pkfl0")
 
-[node name="dyn_C3_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=2065150001]
+[node name="dyn_H6_lease" type="MeshInstance3D" parent="Dynamic" unique_id=2112454867]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("31_ocgnf")
+mesh = ExtResource("31_klqoe")
 
-[node name="dyn_C3_sg26_glow" type="MeshInstance3D" parent="Dynamic" unique_id=472895274]
+[node name="dyn_cd7_glass" type="MeshInstance3D" parent="Dynamic" unique_id=1751539300]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("32_my7ob")
+mesh = ExtResource("32_2a01g")
 
-[node name="dyn_C4_lease" type="MeshInstance3D" parent="Dynamic" unique_id=1738154459]
+[node name="dyn_cd7_screens" type="MeshInstance3D" parent="Dynamic" unique_id=1435565536]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("33_ywppg")
+mesh = ExtResource("33_5d7te")
 
-[node name="dyn_H6_lease" type="MeshInstance3D" parent="Dynamic" unique_id=714522323]
+[node name="dyn_H6" type="MeshInstance3D" parent="Dynamic" unique_id=404756993]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("34_c384r")
+mesh = ExtResource("34_ygk2p")
 
-[node name="dyn_cd7_glass" type="MeshInstance3D" parent="Dynamic" unique_id=563893394]
+[node name="dyn_foliage" type="MeshInstance3D" parent="Dynamic" unique_id=866297626]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("35_ty2h2")
+mesh = ExtResource("35_0rj10")
 
-[node name="dyn_cd7_screens" type="MeshInstance3D" parent="Dynamic" unique_id=68999589]
+[node name="dyn_C3_lease" type="MeshInstance3D" parent="Dynamic" unique_id=687802544]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("36_7iplr")
+mesh = ExtResource("36_ocgnf")
 
-[node name="dyn_H6" type="MeshInstance3D" parent="Dynamic" unique_id=469994313]
+[node name="dyn_H8_lease" type="MeshInstance3D" parent="Dynamic" unique_id=981982678]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("37_jcw0g")
+mesh = ExtResource("37_my7ob")
 
-[node name="dyn_foliage" type="MeshInstance3D" parent="Dynamic" unique_id=1070736608]
+[node name="dyn_H8_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=1023971478]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("38_igk2w")
+mesh = ExtResource("38_ywppg")
 
-[node name="dyn_C3_lease" type="MeshInstance3D" parent="Dynamic" unique_id=918333612]
+[node name="dyn_H7_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=1459205081]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("39_kpyor")
+mesh = ExtResource("39_c384r")
 
-[node name="dyn_H8_lease" type="MeshInstance3D" parent="Dynamic" unique_id=1841325938]
+[node name="dyn_misc_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=2024224297]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("40_mgnff")
+mesh = ExtResource("40_ty2h2")
 
-[node name="dyn_H8" type="MeshInstance3D" parent="Dynamic" unique_id=545909539]
+[node name="dyn_standin" type="MeshInstance3D" parent="Dynamic" unique_id=429216597]
 cast_shadow = 0
 gi_mode = 2
-mesh = ExtResource("41_4q2i3")
+mesh = ExtResource("41_7iplr")
 
-[node name="dyn_H8_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=552153564]
-cast_shadow = 0
-gi_mode = 2
-mesh = ExtResource("42_yrpd1")
-
-[node name="dyn_H7_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=743903223]
-cast_shadow = 0
-gi_mode = 2
-mesh = ExtResource("43_jrfb6")
-
-[node name="dyn_misc" type="MeshInstance3D" parent="Dynamic" unique_id=613711897]
-cast_shadow = 0
-gi_mode = 2
-mesh = ExtResource("44_v2ad7")
-
-[node name="dyn_misc_sg26" type="MeshInstance3D" parent="Dynamic" unique_id=2112131632]
-cast_shadow = 0
-gi_mode = 2
-mesh = ExtResource("45_c22gc")
-
-[node name="dyn_standin" type="MeshInstance3D" parent="Dynamic" unique_id=396478550]
-cast_shadow = 0
-gi_mode = 2
-mesh = ExtResource("46_y677l")
-
-[node name="@ReflectionProbe@295" type="ReflectionProbe" parent="." unique_id=562153761]
+[node name="@ReflectionProbe@295" type="ReflectionProbe" parent="." unique_id=859981191]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 5, -91)
 intensity = 0.9
 size = Vector3(24.5, 10, 10.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@296" type="ReflectionProbe" parent="." unique_id=858920848]
+[node name="@ReflectionProbe@296" type="ReflectionProbe" parent="." unique_id=1192463808]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -46, 3.3, -91)
 intensity = 0.9
 size = Vector3(60.5, 6.6, 10.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@297" type="ReflectionProbe" parent="." unique_id=972676697]
+[node name="@ReflectionProbe@297" type="ReflectionProbe" parent="." unique_id=921893464]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 22, 3.3, -91)
 intensity = 0.9
 size = Vector3(28.5, 6.6, 10.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@298" type="ReflectionProbe" parent="." unique_id=1006972082]
+[node name="@ReflectionProbe@298" type="ReflectionProbe" parent="." unique_id=765669206]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.3, -48)
 intensity = 0.9
 size = Vector3(12.5, 6.6, 76.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@299" type="ReflectionProbe" parent="." unique_id=1139785084]
+[node name="@ReflectionProbe@299" type="ReflectionProbe" parent="." unique_id=2070969605]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 5, -2)
 intensity = 0.9
 size = Vector3(22.5, 10, 16.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@300" type="ReflectionProbe" parent="." unique_id=1301962995]
+[node name="@ReflectionProbe@300" type="ReflectionProbe" parent="." unique_id=1807844912]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 24, 3.3, 0)
 intensity = 0.9
 size = Vector3(24.5, 6.6, 12.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@301" type="ReflectionProbe" parent="." unique_id=783318042]
+[node name="@ReflectionProbe@301" type="ReflectionProbe" parent="." unique_id=1278039540]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.3, 27)
 intensity = 0.9
 size = Vector3(12.5, 6.6, 42.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@302" type="ReflectionProbe" parent="." unique_id=1510564186]
+[node name="@ReflectionProbe@302" type="ReflectionProbe" parent="." unique_id=698938050]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -9, 5, 61)
 intensity = 0.9
 size = Vector3(22.5, 10, 26.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@303" type="ReflectionProbe" parent="." unique_id=305296241]
+[node name="@ReflectionProbe@303" type="ReflectionProbe" parent="." unique_id=1467672653]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 3.3, 77)
 intensity = 0.9
 size = Vector3(12.5, 6.6, 6.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@304" type="ReflectionProbe" parent="." unique_id=434652853]
+[node name="@ReflectionProbe@304" type="ReflectionProbe" parent="." unique_id=245613359]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -78, 3.3, 54)
 intensity = 0.9
 size = Vector3(116.5, 6.6, 12.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@305" type="ReflectionProbe" parent="." unique_id=1141210974]
+[node name="@ReflectionProbe@305" type="ReflectionProbe" parent="." unique_id=753183067]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -145, 5, 56)
 intensity = 0.9
 size = Vector3(18.5, 10, 24.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@306" type="ReflectionProbe" parent="." unique_id=1151586170]
+[node name="@ReflectionProbe@306" type="ReflectionProbe" parent="." unique_id=1353587811]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -142, 3.3, 78)
 intensity = 0.9
 size = Vector3(8.5, 6.6, 20.5)
 box_projection = true
 interior = true
 
-[node name="@ReflectionProbe@307" type="ReflectionProbe" parent="." unique_id=583790726]
+[node name="@ReflectionProbe@307" type="ReflectionProbe" parent="." unique_id=1430743851]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -49, 3.3, 78)
 intensity = 0.9
 size = Vector3(2.5, 6.6, 36.5)
 box_projection = true
 interior = true
 
-[node name="LightmapGI" type="LightmapGI" parent="." unique_id=1170213056]
+[node name="LightmapGI" type="LightmapGI" parent="." unique_id=1722565312]
 quality = 3
 denoiser_strength = 0.25
 max_texture_size = 4096
 generate_probes_subdiv = 1
 
-[node name="Player" type="Node3D" parent="." unique_id=1684031304]
-script = ExtResource("47_n7rf8")
+[node name="Player" type="Node3D" parent="." unique_id=619770289]
+script = ExtResource("42_jcw0g")
 obstacles = [[-14.7, -94.7, 0.55], [-14.7, -87.3, 0.55], [6.7, -94.7, 0.55], [6.7, -87.3, 0.55], [-8.7, 4.7, 0.55], [10.7, -8.7, 0.55], [10.7, 4.7, 0.55], [-18.7, 49.3, 0.55], [-18.7, 72.7, 0.55], [0.7, 49.3, 0.55], [0.7, 72.7, 0.55], [-152.7, 45.3, 0.55], [-152.7, 66.7, 0.55], [-137.3, 45.3, 0.55], [-137.3, 66.7, 0.55], [-44.0, 60.8, 1.0], ["rect", -138.05, 68.0, -137.65, 70.4], ["rect", -138.05, 77.6, -137.65, 80.0], ["rect", -135.0, 68.3, -133.7, 69.55], ["rect", -133.4, 68.3, -132.1, 69.55], ["rect", -131.8, 68.3, -130.5, 69.55], ["rect", -130.2, 68.3, -128.9, 69.55], ["rect", -128.6, 68.3, -127.3, 69.55], [-133.6, 71.3, 0.85], [-131.0, 71.3, 0.85], [-128.4, 71.3, 0.85], ["rect", -135.0, 73.2, -127.0, 79.7], ["rect", -134.5, 73.0, -130.0, 73.1]]
 walk_rows = PackedStringArray()
 
-[node name="Runtime" type="Node" parent="." unique_id=1466871689]
-script = ExtResource("48_clrjt")
+[node name="Runtime" type="Node" parent="." unique_id=846598509]
+script = ExtResource("43_igk2w")
 
-[node name="Signs" type="Node" parent="." unique_id=45500797]
-script = ExtResource("49_4vaqv")
+[node name="Signs" type="Node" parent="." unique_id=499094775]
+script = ExtResource("44_kpyor")
