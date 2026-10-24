@@ -1,0 +1,19 @@
+{
+ "id": "att", "store": "AT&T",
+ "ref": "IMG_4442 contact-sheet f007 (globe + 'AT&', oblique; squared up), f008 (square-on 'AT&T', globe cut off: letter widths)",
+ "ref_img": "att_ref.png",
+ "w": 2.6, "h": 0.8,
+ "type": "channel", "depth": 0.08, "standoff": 0.0,
+ "fascia_color": "#151517",
+ "parts": [
+  {"name": "globe", "text": "o", "trace": "att_globe_mask.png", "width": 0.749, "smooth": 1.0,
+   "dx": -0.895, "dy": -0.376, "type": "channel", "depth": 0.08,
+   "face": "#1c80e8", "ret": "#141416", "trim": "#1a6cc8", "lit": 1.0, "emit": "#2a8cff",
+   "ref_box": [179, 138, 475, 433]},
+  {"name": "name", "text": "AT&T", "font": "inter_bold", "cap_h": 0.5, "track": 0.0, "stretch": 0.9, "shear": 0.0,
+   "dx": 0.437, "dy": -0.198, "type": "channel", "depth": 0.08,
+   "face": "#ffffff", "ret": "#141416", "trim": "#e8e8e8", "lit": 1.0, "emit": "#ffffff",
+   "ref_box": [523, 160, 1179, 363]}
+ ],
+ "notes": "The current AT&T mark: blue striped globe (the stripes read as dark gaps cut into its left side; traced, three visible) then 'AT&T' in white heavy geometric sans, both lit faces, on the black metal fascia band over a wide open storefront with grey slate-tile pilasters. Returns look black (they vanish into the band). Letters set in Inter Bold at 0.9 width to match the square-on f008 tile (AT&T is 3.3x its cap height there). The squared reference leans slightly (letters rise to the right); the 'T' is off its right edge. Cap height ~0.5 m from the ~1.2 m band; globe ~0.75 m."
+}

@@ -1,0 +1,45 @@
+{
+ "id": "gnc",
+ "store": "GNC",
+ "ref": "IMG_4478 photo (full res, from below-left; squared up on the steel panel's four corners, aspect 1.75:1 from the perspective); IMG_4477 (oblique, far)",
+ "ref_img": "gnc_ref.png",
+ "w": 1.5, "h": 0.88,
+ "type": "channel",
+ "depth": 0.02,
+ "standoff": 0.0,
+ "fascia_color": "#e8e6e2",
+ "backer": {
+  "shape": "box", "w": 1.5, "h": 0.876, "depth": 0.12, "dx": 0.0, "dy": 0.0,
+  "color": "#8a8b8f", "side": "#2a2b2e", "lit": 0.0, "rough": 0.32, "metal": 0.75
+ },
+ "parts": [
+  {
+   "name": "name", "text": "GNC",
+   "trace": "gnc_name_mask.png", "width": 1.26, "smooth": 1.5,
+   "dx": 0.002, "dy": -0.008,
+   "type": "channel", "depth": 0.02,
+   "face": "#e8231c", "emit": "#ff2a1e", "ret": "#b01812", "trim": "#c41e16",
+   "lit": 0.9, "rough": 0.35,
+   "ref_box": [145, 276, 986, 475]
+  },
+  {
+   "name": "rule", "text": "-",
+   "trace": "gnc_rule_mask.png", "width": 1.26, "smooth": 0.8,
+   "dx": 0.0, "dy": -0.083,
+   "type": "channel", "depth": 0.015,
+   "face": "#dcefff", "emit": "#e4f3ff", "ret": "#b8c4cc", "trim": "#c8d4dc",
+   "lit": 0.8, "rough": 0.35,
+   "ref_box": [143, 508, 984, 525]
+  },
+  {
+   "name": "tag", "text": "LiveWell.",
+   "trace": "gnc_tag_mask.png", "width": 0.72, "smooth": 1.0,
+   "dx": 0.012, "dy": -0.3,
+   "type": "channel", "depth": 0.015,
+   "face": "#dcefff", "emit": "#e4f3ff", "ret": "#b8c4cc", "trim": "#c8d4dc",
+   "lit": 0.8, "rough": 0.35,
+   "ref_box": [333, 557, 811, 669]
+  }
+ ],
+ "notes": "Brushed-stainless rectangular panel (box sign, ~12 cm deep, dark side) hung on the white fascia over the entry, set back under the bulkhead. Red lit 'GNC' logo, a thin tapering white-blue rule, and 'Live Well.' in a white serif, all lit push-through faces (read pale ice-blue in the photo: white LEDs). All three traced from the full-res photo. Panel size from the 3.0 m opening: ~1.5 x 0.88 m (+-10%); aspect of the panel from perspective, +-5%."
+}

@@ -1,0 +1,61 @@
+{
+ "id": "prints",
+ "store": "IMPRESSIVE PRINTS",
+ "ref": "IMG_4459 f014 (right-bay sign, near square-on, 'Impressive P' in frame, letters ~30 px), sheet f013 (both bays: the same sign over each glass bay)",
+ "ref_img": "prints_ref.png",
+ "w": 3.7,
+ "h": 0.6,
+ "type": "flat",
+ "depth": 0.02,
+ "standoff": 0.0,
+ "fascia_color": "#3a3530",
+ "parts": [
+  {
+   "name": "first",
+   "text": "Impressive",
+   "font": "inter_semibold",
+   "cap_h": 0.3,
+   "track": 0.0,
+   "stretch": 1.0,
+   "shear": 0.0,
+   "dx": -0.6725,
+   "dy": -0.23,
+   "type": "flat",
+   "depth": 0.02,
+   "face": "#f2f0ec",
+   "ret": "#dcdad6",
+   "lit": 0.0,
+   "rough": 0.45,
+   "ref_box": [
+    113,
+    168,
+    996,
+    326
+   ]
+  },
+  {
+   "name": "second",
+   "text": "Prints",
+   "font": "inter_semibold",
+   "cap_h": 0.3,
+   "track": 0.0,
+   "stretch": 1.0,
+   "shear": 0.0,
+   "dx": 1.19,
+   "dy": -0.15,
+   "type": "flat",
+   "depth": 0.02,
+   "face": "#f2f0ec",
+   "ret": "#dcdad6",
+   "lit": 0.0,
+   "rough": 0.45,
+   "ref_box": [
+    1093,
+    152,
+    1519,
+    274
+   ]
+  }
+ ],
+ "notes": "White mixed-case grotesque 'Impressive Prints' (Helvetica-like, semibold, large x-height) as thin flat-cut letters, unlit, on the dark taupe-brown storefront fascia band that runs over two wide glass bays; the same sign appears on both bays (left one behind the palm in f014). Set in Inter SemiBold as two words (the real word space is wide, ~0.75 cap), which matches the word width (7.2x cap for 'Impressive'). 'Prints' is cut off in the sharp frame, read from sheet f013. The game has one sign per store, so only one copy is built. Cap height ~0.3 m (letters ~1/3 of the band)."
+}

@@ -1,0 +1,82 @@
+{
+ "id": "neek",
+ "store": "NEEK & CO.",
+ "ref": "IMG_4484 f006 (fascia sign, oblique, squared up on the fascia panel's mouldings); contact-sheet f021 (same logo as window vinyl, large)",
+ "ref_img": "neek_ref.png",
+ "w": 2.03,
+ "h": 0.604,
+ "type": "flat",
+ "depth": 0.02,
+ "standoff": 0.0,
+ "fascia_color": "#ede9e1",
+ "parts": [
+  {
+   "name": "name",
+   "text": "Neek",
+   "font": "FjallaOne-Regular.ttf",
+   "cap_h": 0.5536,
+   "track": 0.0,
+   "stretch": 0.8388,
+   "shear": 0.12,
+   "face": "#2f8fd0",
+   "ret": "#1f6fa8",
+   "lit": 0.0,
+   "rough": 0.35,
+   "glow_pad": 0.02,
+   "ref_box": [
+    124,
+    159,
+    655,
+    456
+   ],
+   "dx": -0.484,
+   "dy": -0.292
+  },
+  {
+   "name": "amp",
+   "text": "&",
+   "font": "liberation_serif_bold",
+   "cap_h": 0.1188,
+   "stretch": 0.7847,
+   "shear": 0.1,
+   "depth": 0.01,
+   "face": "#b8955a",
+   "ret": "#8a6c3c",
+   "lit": 0.0,
+   "rough": 0.3,
+   "metal": 0.5,
+   "glow_pad": 0.02,
+   "ref_box": [
+    658,
+    300,
+    710,
+    361
+   ],
+   "dx": 0.105,
+   "dy": -0.102
+  },
+  {
+   "name": "co",
+   "text": "Co.",
+   "trace": "neek_co_mask.png",
+   "width": 0.836,
+   "smooth": 1.5,
+   "depth": 0.01,
+   "face": "#b8955a",
+   "ret": "#8a6c3c",
+   "lit": 0.0,
+   "rough": 0.3,
+   "metal": 0.5,
+   "glow_pad": 0.02,
+   "ref_box": [
+    720,
+    164,
+    1139,
+    461
+   ],
+   "dx": 0.596,
+   "dy": -0.302
+  }
+ ],
+ "notes": "Fascia sign over the black spiral-rod grille: 'Neek' in sky-blue flat-cut letters (bold condensed sans, leaning slightly forward; Fjalla One sheared 0.12 matches the shapes), a small gold '&' and a gold monoline script 'Co.' (thin cut metal/acrylic, gold-painted), all unlit on the white crown-moulded fascia panel. f006 is oblique and soft: squared up on the panel mouldings, horizontal scale judged from the letters (the window vinyl of the same logo in contact-sheet f021 agrees), +-15%. 'Co.' redrawn by hand as a centre-line stroke over the squared-up frame (a colour mask of the thin gold stroke was too ragged); '&' set in Liberation Serif Bold (too small to read its form). Size: ~2.0 m wide, N ~0.55 m tall, from a ~0.8 m fascia panel (guess)."
+}

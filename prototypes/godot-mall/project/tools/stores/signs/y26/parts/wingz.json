@@ -1,0 +1,20 @@
+{
+ "id": "wingz",
+ "store": "WICKED WINGZ",
+ "ref": "IMG_4441 f006 (near square-on from below, letters ~170 px); IMG_4441 f004-f005",
+ "ref_img": "wingz_ref.png",
+ "w": 2.44, "h": 1.39,
+ "type": "flat", "depth": 0.025, "standoff": 0.0,
+ "fascia_color": "#ece4d2",
+ "backer": {"shape": "box", "w": 2.44, "h": 1.394, "depth": 0.05, "dx": 0.0, "dy": 0.0,
+            "color": "#1c1c1e", "side": "#1c1c1e", "rough": 0.7},
+ "parts": [
+  {"name": "wicked", "text": "WICKED", "trace": "wingz_wicked_mask.png", "width": 1.9921, "smooth": 0.8,
+   "dx": 0.0288, "dy": -0.0627, "face": "#f5c30f", "ret": "#c99a08", "rough": 0.35, "ret_metal": 0.0,
+   "ref_box": [215, 240, 1358, 506]},
+  {"name": "wingz", "text": "WINGZ", "trace": "wingz_wingz_mask.png", "width": 1.5198, "smooth": 0.8,
+   "dx": 0.0453, "dy": -0.3521, "face": "#f5c30f", "ret": "#c99a08", "rough": 0.35, "ret_metal": 0.0,
+   "ref_box": [360, 474, 1232, 672]}
+ ],
+ "notes": "Traced. A flat matte-black panel (about 8 x 4.5 ft, a few cm thick) hung on the cream soffit over the food-court counter, with glossy yellow cut letters (unlit: no light on the panel) in the brand's spiky italic display face, two lines. Panel aspect from perspective (1.75:1, +-8%); size estimated against the counter and ceiling grid."
+}

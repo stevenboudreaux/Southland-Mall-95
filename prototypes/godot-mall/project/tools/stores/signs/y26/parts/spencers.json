@@ -1,0 +1,71 @@
+{
+ "id": "spencers",
+ "store": "SPENCER'S",
+ "ref": "IMG_4440 f001 (closest, oblique from left; squared up on the roll-shutter panel), IMG_4439 f035",
+ "ref_img": "spencers_ref.png",
+ "w": 2.3,
+ "h": 1.0,
+ "type": "vinyl",
+ "depth": 0.003,
+ "standoff": 0.0,
+ "backer": {
+  "shape": "box",
+  "w": 2.3,
+  "h": 1.0,
+  "depth": 0.06,
+  "dx": 0.0,
+  "dy": 0.0,
+  "color": "#8c5f96",
+  "side": "#8a8c90",
+  "frame": "#9a9ca0",
+  "frame_w": 0.03,
+  "lit": 0.0,
+  "rough": 0.45,
+  "metal": 0.35
+ },
+ "parts": [
+  {
+   "name": "outline",
+   "text": "Spencers",
+   "trace": "spencers_outline_mask.png",
+   "width": 1.872,
+   "smooth": 1.5,
+   "dx": -0.029,
+   "dy": -0.318,
+   "type": "vinyl",
+   "depth": 0.003,
+   "face": "#17161a",
+   "ret": "#17161a",
+   "lit": 0.0,
+   "rough": 0.5,
+   "ref_box": [
+    193,
+    273,
+    1496,
+    633
+   ]
+  },
+  {
+   "name": "fill",
+   "text": "SPENCERS",
+   "trace": "spencers_fill_mask.png",
+   "width": 1.785,
+   "smooth": 1.0,
+   "dx": -0.037,
+   "dy": -0.27,
+   "type": "vinyl",
+   "depth": 0.006,
+   "face": "#f29a48",
+   "ret": "#f29a48",
+   "lit": 0.0,
+   "rough": 0.5,
+   "ref_box": [
+    217,
+    289,
+    1460,
+    599
+   ]
+  }
+ ],
+ "notes": "Not a channel-letter sign: Spencer's 2026 front is a faux red-brick storefront with a rusty steel-angle frame; the 'sign' is a spray-painted graffiti 'Spencer's' on the half-raised black roll-down security shutter over the entry, lit only by the mall lights. Backer = the visible shutter (about 2.3 x 1.0 m, guessed from the brick courses). The shutter's background is a red/pink/blue/purple spray-paint wash with horizontal slat lines: the builder takes one backer colour, so it is the median purple (#8c5f96); a printed backer texture would be truer (the format can't take one). Letters: two traced vinyl layers, the black outline/drop-shadow silhouette (also covers the thin white rim) and the orange fill on top (deeper by 3 mm so it sits in front). Orange corrected from the warm frame. The band above is the plain cream mall wall; the piers either side are faux brick."
+}

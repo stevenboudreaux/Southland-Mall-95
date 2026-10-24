@@ -1,0 +1,116 @@
+{
+ "id": "games",
+ "store": "GAMES, INC. (POCKET CHANGE)",
+ "ref": "IMG_4443 f009 (square-on, letters ~150 px; right end cut at the period), sheet f009 (panel ends just after 'inc.')",
+ "ref_img": "games_ref.png",
+ "w": 3.0,
+ "h": 0.95,
+ "type": "channel",
+ "depth": 0.07,
+ "standoff": 0.02,
+ "fascia_color": "#c4c3b9",
+ "backer": {
+  "shape": "box",
+  "w": 2.94,
+  "h": 0.75,
+  "depth": 0.05,
+  "dx": 0.0,
+  "dy": 0.0,
+  "color": "#ece9e2",
+  "side": "#dedad2",
+  "rough": 0.6
+ },
+ "parts": [
+  {
+   "name": "name",
+   "text": "games,iinc.",
+   "trace": "games_name_mask.png",
+   "width": 2.379,
+   "smooth": 1.0,
+   "dx": 0.1813,
+   "dy": -0.2369,
+   "type": "channel",
+   "lit": 0.0,
+   "face": "#7a963f",
+   "ret": "#1f3260",
+   "trim": "#1f3260",
+   "rough": 0.45,
+   "ret_metal": 0.1,
+   "ref_box": [
+    449,
+    161,
+    1669,
+    417
+   ]
+  },
+  {
+   "name": "alien",
+   "text": "alien",
+   "trace": "games_alien_mask.png",
+   "width": 0.6025,
+   "smooth": 1.0,
+   "dx": -1.2431,
+   "dy": -0.3968,
+   "type": "channel",
+   "lit": 0.0,
+   "depth": 0.06,
+   "face": "#71883a",
+   "ret": "#1f3260",
+   "trim": "#1f3260",
+   "rough": 0.45,
+   "ret_metal": 0.1,
+   "ref_box": [
+    174,
+    28,
+    483,
+    499
+   ],
+   "glow_pad": 0.05
+  },
+  {
+   "name": "eyes",
+   "text": "ee",
+   "trace": "games_eyes_mask.png",
+   "width": 0.154,
+   "dx": -1.1827,
+   "dy": 0.3013,
+   "dz": 0.08,
+   "type": "flat",
+   "depth": 0.008,
+   "standoff": 0.0,
+   "face": "#eeeeea",
+   "ret": "#1f3260",
+   "rough": 0.5,
+   "ref_box": [
+    320,
+    70,
+    399,
+    141
+   ],
+   "glow_pad": 0.005
+  },
+  {
+   "name": "pupils",
+   "text": "pp",
+   "trace": "games_pupils_mask.png",
+   "width": 0.0585,
+   "dx": -1.1817,
+   "dy": 0.35,
+   "dz": 0.088,
+   "type": "flat",
+   "depth": 0.004,
+   "standoff": 0.0,
+   "face": "#141414",
+   "ret": "#141414",
+   "rough": 0.4,
+   "ref_box": [
+    345,
+    100,
+    375,
+    116
+   ],
+   "glow_pad": 0.005
+  }
+ ],
+ "notes": "Traced. Green-faced letters with navy returns and a navy trim line, unlit as far as the frame shows (no light on the panel), lowercase rounded 'games, inc.' plus the green alien mascot waving at left, overhanging the white panel at top and bottom. Mascot eyes/pupils are thin flat overlays on its face (dz). The real panel is a raised white panel inside a lighter grey recessed panel framed by mustard 12-in tiles (the fascia colour here is the grey panel; the ochre tile surround is not expressible). The period was cut by the frame edge and redrawn as a dot the size of the i's dot. Size from the 12-in fascia tiles (~1.95 mm/px)."
+}

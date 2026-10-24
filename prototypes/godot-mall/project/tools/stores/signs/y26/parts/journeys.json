@@ -1,0 +1,29 @@
+{
+ "id": "journeys", "store": "JOURNEYS",
+ "ref": "IMG_4440 f020 (near square-on, close; used unwarped), f016-f019 oblique",
+ "ref_img": "journeys_ref.png",
+ "w": 2.2, "h": 1.6, "mount_y": -0.2,
+ "type": "flat", "depth": 0.15, "standoff": 0.0,
+ "fascia_color": "#4b3d8f",
+ "parts": [
+  {"name": "oval", "text": "O", "trace": "journeys_oval_mask.png", "width": 2.162, "smooth": 0.0,
+   "dx": 0.0, "dy": -0.794, "type": "flat", "depth": 0.15,
+   "face": "#e4e2dc", "ret": "#1e1e22", "lit": 0.0, "rough": 0.6, "ret_rough": 0.5, "ret_metal": 0.2,
+   "ref_box": [14, 32, 1141, 859]},
+  {"name": "name", "text": "Journeys", "trace": "journeys_name_mask.png", "width": 1.348, "smooth": 1.0,
+   "dx": -0.109, "dy": -0.667, "type": "channel", "depth": 0.2,
+   "face": "#d8f6fa", "ret": "#a8dde4", "trim": "#c4eef4", "lit": 1.0, "emit": "#c8f4ff",
+   "glow": "#9fe8f4", "glow_pad": 0.08, "glow_e": 0.3,
+   "ref_box": [169, 192, 872, 793]},
+  {"name": "orange", "text": "<>", "trace": "journeys_orange_mask.png", "width": 0.966, "smooth": 0.8,
+   "dx": -0.300, "dy": -0.393, "type": "flat", "depth": 0.21,
+   "face": "#f0602a", "ret": "#d04e20", "lit": 0.0, "ref_box": [169, 369, 673, 650]},
+  {"name": "yellow", "text": "^v", "trace": "journeys_yellow_mask.png", "width": 0.150, "smooth": 0.8,
+   "dx": -0.541, "dy": -0.560, "type": "flat", "depth": 0.21,
+   "face": "#ecd31e", "ret": "#c8b018", "lit": 0.0, "ref_box": [256, 336, 335, 737]},
+  {"name": "globe", "text": "o", "trace": "journeys_globe_mask.png", "width": 0.083, "smooth": 0.8,
+   "dx": -0.544, "dy": -0.266, "type": "flat", "depth": 0.205,
+   "face": "#119a78", "ret": "#0c7a5e", "lit": 0.0, "ref_box": [272, 470, 316, 584]}
+ ],
+ "notes": "Journeys' 2020s compass logo: a big pale-grey oval panel (deckled edge, faint dashed 'route' lines printed on it, black 15 cm return) mounted TILTED about 25-30 deg (rising to the right) over the entry, on a purple fascia with a lime-green paint-splash mural. The oval's tilt is real (the letters stand upright in a near-frontal frame), and the backer can't be rotated, so the oval is a traced flat part (an ellipse fitted to its edge). 'Journeys' is hand-drawn faux-neon: pale cyan-white lit tubes (channel, lit, small cyan glow), traced from the bright cores; the overlapping strokes of O-U-R-N merge into one shape (they cross on the real sign too). Compass marks traced as their own parts: two orange chevrons (left of J, after the N), two yellow arrows (above and below the J), a green globe in the O. Dashed route lines not modelled (printed, too faint). Size: oval about 2.4 x 1.2 m (guess, from the 3 m door opening); it hangs below the fascia band (mount_y -0.2)."
+}

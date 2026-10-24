@@ -1,0 +1,15 @@
+{
+ "id": "hi5", "store": "HI-5",
+ "ref": "IMG_4440 contact-sheet f030 ('-5' close, squared up on the 5), f021 and IMG_4442 f009 (whole word, very oblique / far)",
+ "ref_img": "hi5_ref.png",
+ "w": 1.1, "h": 0.7,
+ "type": "flat", "depth": 0.03, "standoff": 0.0,
+ "fascia_color": "#d6d2ca",
+ "parts": [
+  {"name": "name", "text": "hi-5", "font": "SairaExtraCondensed-Bold.ttf", "cap_h": 0.55, "track": 0.02, "stretch": 1.0, "shear": 0.0,
+   "dx": 0.0, "dy": -0.3, "type": "flat", "depth": 0.03,
+   "face": "#92c62a", "ret": "#7aa822", "lit": 0.0, "rough": 0.35,
+   "ref_box": [-757, 102, 485, 855]}
+ ],
+ "notes": "Lowercase 'hi-5' in lime-green flat-cut acrylic (about 3 cm, glossy, unlit) on the light warm-grey fascia band of a candy/snack shop (black storefront, Red Bull and candy inside). Only the '-5' is seen close (sheet f030): a condensed squared 5 with a straight stem, square bowl and up-turned tail, matched by Saira Extra Condensed Bold; 'hi' is only seen edge-on (f021) and far (4442 f009) as two narrow uprights, so its letterforms are the font's. The check box is fitted on the 5 only (the 'hi' falls off the left of the reference). Cap height ~0.55 m guessed from the band; the word is small, about 1 m wide."
+}

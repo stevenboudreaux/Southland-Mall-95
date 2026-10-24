@@ -1,0 +1,47 @@
+{
+ "id": "firehaus",
+ "store": "FIRE HAUS 3.0",
+ "ref": "IMG_4439 f033 (near square-on, letters ~115 px; squared up on the black band's corners, aspect 6.3:1); f031-f032",
+ "ref_img": "firehaus_ref.png",
+ "w": 4.6,
+ "h": 0.73,
+ "type": "flat",
+ "depth": 0.012,
+ "standoff": 0.0,
+ "fascia_color": "#e6dccb",
+ "backer": {
+  "shape": "box",
+  "w": 4.6,
+  "h": 0.73,
+  "depth": 0.03,
+  "dx": 0.0,
+  "dy": 0.0,
+  "color": "#1b1b1e",
+  "side": "#1b1b1e",
+  "rough": 0.45
+ },
+ "parts": [
+  {
+   "name": "name",
+   "text": "FIREHAUS3.0",
+   "trace": "firehaus_name_mask.png",
+   "width": 2.1189,
+   "smooth": 1.0,
+   "dx": -0.8237,
+   "dy": -0.1754,
+   "face": "#cdb06a",
+   "ret": "#a88d4c",
+   "rough": 0.32,
+   "metal": 0.6,
+   "ret_rough": 0.4,
+   "ret_metal": 0.5,
+   "ref_box": [
+    209,
+    135,
+    946,
+    252
+   ]
+  }
+ ],
+ "notes": "Traced. Thin flat gold (brushed brass-look) cut letters in a condensed roman serif, 'FIRE HAUS 3.0', unlit, set LEFT of centre on a full-width black band (the backer) between cream travertine strips, with a black crown moulding above (not modelled). Serifs are softened by the ~110 px trace. Size from the 3.0 m opening (~2.8 mm/px): band ~4.6 x 0.73 m, caps ~0.33 m."
+}
