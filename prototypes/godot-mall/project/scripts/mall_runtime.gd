@@ -22,7 +22,7 @@ uniform float center = 0.0;    // hall centre line (across coordinate)
 uniform float half_w = 6.0;    // hall half width
 uniform int medallions = 0;
 uniform vec4 court = vec4(0.0, 0.0, 8.0, 8.0);  // cx, cz, hx, hz
-uniform int palette = 0;       // court: 0 taupe, 1 blue-grey (Shoe Dept.), 2 charcoal/salmon (Sears)
+uniform int palette = 0;       // court: 0 taupe, 1 blue-grey (Dillard's), 2 terracotta (Sears), 3 sage (Shoe Dept.), 4 terracotta straight (JCPenney)
 uniform float strength = 0.5;
 uniform float refl_clamp = 1.5;
 uniform vec2 px = vec2(0.002, 0.003);
@@ -85,14 +85,21 @@ void fragment() {
 		float bw = 0.9;
 		float d = min(h.x - abs(c.x), h.y - abs(c.y)) - m0;
 		vec3 c1 = vec3(0.914, 0.890, 0.827);
-		vec3 c2 = palette == 1 ? vec3(0.490, 0.557, 0.639) : palette == 2 ? vec3(0.30, 0.29, 0.30) : vec3(0.561, 0.486, 0.400);
-		if (d > bw) {
+		vec3 c2 = palette == 1 ? vec3(0.490, 0.557, 0.639) : palette == 2 ? vec3(0.722, 0.420, 0.322) : palette == 3 ? vec3(0.478, 0.588, 0.529) : palette == 4 ? vec3(0.690, 0.380, 0.290) : vec3(0.561, 0.486, 0.400);
+		if (d > bw && palette == 4) {
+			// JCPenney court: a straight (not diagonal) checker
+			vec2 q4 = c / 0.8;
+			vec2 w4 = fwidth(q4) + 1e-4;
+			vec2 i4 = 2.0 * (abs(fract((q4 - 0.5 * w4) * 0.5) - 0.5) - abs(fract((q4 + 0.5 * w4) * 0.5) - 0.5)) / w4;
+			a = mix(c2, c1, 0.5 - 0.5 * i4.x * i4.y);
+			a = mix(a, vec3(0.714, 0.698, 0.651), max(lines(q4.x, 0.01), lines(q4.y, 0.01)) * 0.6);
+		} else if (d > bw) {
 			float k = diag_checker(c, 0.8);
 			a = mix(c2, c1, k);
 			vec2 q = vec2(c.x + c.y, c.x - c.y) / 0.8;
 			a = mix(a, vec3(0.714, 0.698, 0.651), max(lines(q.x, 0.01), lines(q.y, 0.01)) * 0.6);
 		} else if (d > 0.0) {
-			a = palette == 2 ? vec3(0.788, 0.541, 0.451) : vec3(0.231, 0.227, 0.239);
+			a = vec3(0.231, 0.227, 0.239);
 			float along = (h.x - abs(c.x) < h.y - abs(c.y)) ? c.y : c.x;
 			float t = mod(along, 1.5) - 0.75;
 			float across2 = d - bw * 0.5;

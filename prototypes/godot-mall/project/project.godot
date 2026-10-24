@@ -17,6 +17,8 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 config/name="Houma Mall Rewind - Godot Mall"
 run/main_scene="res://wing1.tscn"
 run/main_scene.wing2="res://wing2.tscn"
+run/main_scene.w1y26="res://wing1_2026.tscn"
+run/main_scene.w2y26="res://wing2_2026.tscn"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 
 [display]

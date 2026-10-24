@@ -20,6 +20,7 @@ const SS := 2              # supersampling: rendered at twice the slot's size, t
 const SETTLE := 40         # frames before the first capture (reflection probes, shaders)
 const PER_SLOT := 3        # frames per slot before reading it back
 var wing := 2
+var year := 1995           # --year=2026: the 2026 wings (wing<n>_2026.tscn, gen/w<n>y26/, y26_from_w*)
 var mode := "night"
 var J: Dictionary
 var slots: Array = []
@@ -37,11 +38,14 @@ func _initialize() -> void:
 			wing = int(a.substr(7))
 		elif a.begins_with("--mode="):
 			mode = a.substr(7)
-	var jp := "res://gen/w%d/standin.json" % (3 - wing)
+		elif a.begins_with("--year="):
+			year = int(a.substr(7))
+	var y26 := year == 2026
+	var jp := ("res://gen/w%dy26/standin.json" if y26 else "res://gen/w%d/standin.json") % (3 - wing)
 	J = JSON.parse_string(FileAccess.get_file_as_string(jp))
 	slots = J.slots
 	print("capturing wing ", wing, " (", mode, "): ", slots.size(), " slots for ", jp)
-	scn = load("res://wing%d.tscn" % wing).instantiate()
+	scn = load(("res://wing%d_2026.tscn" if y26 else "res://wing%d.tscn") % wing).instantiate()
 	# no player: its lighting switch would put the night setup back once it starts
 	var pl0 = scn.get_node_or_null("Player")
 	if pl0:
@@ -123,6 +127,6 @@ func _process(_dt: float) -> bool:
 
 func _finish() -> void:
 	DirAccess.make_dir_recursive_absolute("res://tex/standin")
-	var out := "res://tex/standin/from_w%d_%s.png" % [wing, mode]
+	var out := ("res://tex/standin/y26_from_w%d_%s.png" if year == 2026 else "res://tex/standin/from_w%d_%s.png") % [wing, mode]
 	atlas.save_png(ProjectSettings.globalize_path(out))
 	print("wrote ", out)

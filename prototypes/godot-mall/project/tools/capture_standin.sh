@@ -5,7 +5,17 @@
 # tools/wing_hash.sh (design/godot-wings.md). The wing's lightmaps must be in the project and
 # imported (godot --headless --path . --import). Takes a few minutes per mode in software GL.
 set -e
-W=$1
+W=$1; Y=${2:-1995}
+if [ "$Y" = "2026" ]; then
+  # 2026 (tools/make_layout_2026.py): day only (the game is day-only); the night picture is a copy
+  timeout 1500 xvfb-run -a -s "-screen 0 1280x720x24" godot --path . --rendering-driver opengl3 --resolution 640x360 \
+    --script res://tools/capture_standin.gd -- --wing=$W --mode=day --year=2026 2>&1 | grep -E "capturing|wrote|ERROR|error" | grep -v "RID alloc\|resources still\|Pages in use" | head -20
+  [ -s tex/standin/y26_from_w${W}_day.png ] || { echo "capture failed: wing $W 2026"; exit 1; }
+  cp tex/standin/y26_from_w${W}_day.png tex/standin/y26_from_w${W}_night.png
+  tools/wing_hash.sh $W 2026 > tex/standin/y26_from_w$W.stamp
+  echo "stamped wing $W 2026 stand-in: $(cat tex/standin/y26_from_w$W.stamp)"
+  exit 0
+fi
 for M in night day; do
   timeout 1500 xvfb-run -a -s "-screen 0 1280x720x24" godot --path . --rendering-driver opengl3 --resolution 640x360 \
     --script res://tools/capture_standin.gd -- --wing=$W --mode=$M 2>&1 | grep -E "capturing|wrote|ERROR|error" | grep -v "RID alloc\|resources still\|Pages in use" | head -20

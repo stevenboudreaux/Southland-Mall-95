@@ -12,16 +12,23 @@
 set -e
 OUT=$(realpath -m "$1"); T=$OUT.tmp; WINGS=${2:-"1 2"}
 rm -rf "$T"; mkdir -p "$OUT" "$T"
+# YEARS: "1995 2026" (default when the 2026 wings are built: wing1_2026.tscn), or "1995".
+# 2026 (tools/make_layout_2026.py) writes w1y26.* / w2y26.* from the "Wing <n> <Kind> 2026" presets.
+YEARS=${YEARS:-$( [ -f wing1_2026.tscn ] && echo "1995 2026" || echo "1995")}
+for y in $YEARS; do
 for w in $WINGS; do
   for k in desktop mobile; do
     K=$(echo $k | sed 's/./\U&/')
-    mkdir -p "$T/$w$k"
-    timeout 600 godot --headless --path . --export-release "Wing $w $K" "$T/$w$k/index.html" > "$T/w$w-$k.log" 2>&1 || true
-    [ -s "$T/$w$k/index.pck" ] || { echo "export failed (wing $w $k), see $T/w$w-$k.log"; exit 1; }
-    cp "$T/$w$k/index.pck" "$OUT/w$w.$k.pck"
+    PRE="Wing $w $K"; NAME="w$w"
+    if [ "$y" = "2026" ]; then PRE="Wing $w $K 2026"; NAME="w${w}y26"; fi
+    mkdir -p "$T/$NAME$k"
+    timeout 600 godot --headless --path . --export-release "$PRE" "$T/$NAME$k/index.html" > "$T/$NAME-$k.log" 2>&1 || true
+    [ -s "$T/$NAME$k/index.pck" ] || { echo "export failed ($PRE), see $T/$NAME-$k.log"; exit 1; }
+    cp "$T/$NAME$k/index.pck" "$OUT/$NAME.$k.pck"
   done
 done
-F=$(echo $WINGS | cut -d' ' -f1)
+done
+F=w$(echo $WINGS | cut -d' ' -f1)
 for f in "$T/${F}desktop/"index.*; do
   b=$(basename "$f"); [ "$b" = "index.pck" ] || cp "$f" "$OUT/$b"
 done
@@ -29,7 +36,9 @@ rm -f "$OUT/index.pck" "$OUT/index.desktop.pck" "$OUT/index.mobile.pck"
 for w in 1 2; do for k in desktop mobile; do [ -s "$OUT/w$w.$k.pck" ] || { echo "missing $OUT/w$w.$k.pck"; exit 1; }; done; done
 S1D=$(stat -c %s "$OUT/w1.desktop.pck"); S1M=$(stat -c %s "$OUT/w1.mobile.pck")
 S2D=$(stat -c %s "$OUT/w2.desktop.pck"); S2M=$(stat -c %s "$OUT/w2.mobile.pck")
-sed -i "s|const PACK_SIZES = {\"w1\": {\"desktop\": 0, \"mobile\": 0}, \"w2\": {\"desktop\": 0, \"mobile\": 0}};|const PACK_SIZES = {\"w1\": {\"desktop\": $S1D, \"mobile\": $S1M}, \"w2\": {\"desktop\": $S2D, \"mobile\": $S2M}};|" "$OUT/index.html"
+sz() { [ -s "$OUT/$1.$2.pck" ] && stat -c %s "$OUT/$1.$2.pck" || echo 0; }
+Y1D=$(sz w1y26 desktop); Y1M=$(sz w1y26 mobile); Y2D=$(sz w2y26 desktop); Y2M=$(sz w2y26 mobile)
+sed -i "s|const PACK_SIZES = {\"w1\": {\"desktop\": 0, \"mobile\": 0}, \"w2\": {\"desktop\": 0, \"mobile\": 0}, \"w1y26\": {\"desktop\": 0, \"mobile\": 0}, \"w2y26\": {\"desktop\": 0, \"mobile\": 0}};|const PACK_SIZES = {\"w1\": {\"desktop\": $S1D, \"mobile\": $S1M}, \"w2\": {\"desktop\": $S2D, \"mobile\": $S2M}, \"w1y26\": {\"desktop\": $Y1D, \"mobile\": $Y1M}, \"w2y26\": {\"desktop\": $Y2D, \"mobile\": $Y2M}};|" "$OUT/index.html"
 grep -q "\"desktop\": $S1D" "$OUT/index.html" || { echo "could not write pack sizes into index.html"; exit 1; }
 rm -rf "$T"
-echo "wing1 desktop $S1D mobile $S1M  wing2 desktop $S2D mobile $S2M"
+echo "wing1 desktop $S1D mobile $S1M  wing2 desktop $S2D mobile $S2M  2026: wing1 $Y1D/$Y1M wing2 $Y2D/$Y2M"

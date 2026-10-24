@@ -51,6 +51,10 @@ var fps_t := 0.0
 var debug := false
 # wings
 var wing := 0
+## The year on show: 1995, or 2026 (the mall as Steven filmed it, Oct 23 2026: the same building,
+## today's tenants; tools/make_layout_2026.py). Set from the scene's "year" meta.
+var year := 1995
+var year_btn: Button
 var seam := []              # [x0, z, x1]: the seam line; the other wing lies on other_side
 var other_side := 1.0
 var prompt: Button
@@ -69,6 +73,7 @@ func _ready() -> void:
 	position = Vector3(33.0, 0, 0.0)
 	var gen: String = get_parent().get_meta("gen", "res://gen/") if get_parent() else "res://gen/"
 	wing = int(get_parent().get_meta("wing", 0)) if get_parent() else 0
+	year = int(get_parent().get_meta("year", 1995)) if get_parent() else 1995
 	var wj = null
 	if FileAccess.file_exists(gen + "wing.json"):
 		wj = JSON.parse_string(FileAccess.get_file_as_string(gen + "wing.json"))
@@ -140,6 +145,18 @@ func _ready() -> void:
 	_light_start.call_deferred()
 	_build_wing_ui()
 	_build_jump_ui()
+	_build_year_ui()
+	_spawn_1995_life()
+	vr = Node3D.new()
+	vr.name = "VR"
+	vr.set_script(load("res://scripts/vr.gd"))
+	add_child(vr)
+
+## The Runner, the shoppers, the shirt words, the Stockrooms and the prize counter: 1995 only (2026
+## is the building as it is today).
+func _spawn_1995_life() -> void:
+	if year != 1995:
+		return
 	# the Runner, a window mannequin come to life (scripts/runner_ai.gd; Steven, Oct 16 2026). He
 	# replaced the Rougarou (scripts/rougarou_ai.gd, kept but no longer made).
 	var rn = load("res://scripts/runner_ai.gd").new()
@@ -169,10 +186,6 @@ func _ready() -> void:
 		var pz = load("res://scripts/prizes.gd").new()
 		pz.name = "Prizes"; pz.player = self
 		get_parent().add_child.call_deferred(pz)
-	vr = Node3D.new()
-	vr.name = "VR"
-	vr.set_script(load("res://scripts/vr.gd"))
-	add_child(vr)
 
 func _build_hud() -> void:
 	var cl := CanvasLayer.new()
@@ -597,6 +610,52 @@ func _update_prompt() -> void:
 
 ## Walk across the seam: fade to black, then load the other wing at the same spot (1.3 m past the
 ## seam), facing the same way, with the same lighting and toggles.
+## The scene of wing w in the year on show.
+func _wing_scene(w: int) -> String:
+	return ("res://wing%d_2026.tscn" if year == 2026 else "res://wing%d.tscn") % w
+
+## The 1995 / 2026 switch (top right, under Jump to; key Y): the same spot in the other year. The
+## building is the same, the stores change. On the web it reloads the page with ?year= (each year's
+## wing is its own pair of game files, web/shell.html), keeping the place you stand and the view.
+func _build_year_ui() -> void:
+	year_btn = Button.new()
+	year_btn.text = "Visit 2026 (Y)" if year == 1995 else "Back to 1995 (Y)"
+	year_btn.focus_mode = Control.FOCUS_NONE
+	year_btn.add_theme_font_size_override("font_size", 14)
+	year_btn.set_anchors_and_offsets_preset(Control.PRESET_TOP_RIGHT)
+	year_btn.offset_left = -200; year_btn.offset_right = -10
+	year_btn.offset_top = 168; year_btn.offset_bottom = 200
+	year_btn.pressed.connect(_switch_year)
+	_cl.add_child(year_btn)
+
+func _switch_year() -> void:
+	if leaving:
+		return
+	var other := 2026 if year == 1995 else 1995
+	var w := wing if wing != 0 else 1
+	if not OS.has_feature("web") and not ResourceLoader.exists(("res://wing%d_2026.tscn" if other == 2026 else "res://wing%d.tscn") % w):
+		return
+	leaving = true
+	if prompt:
+		prompt.visible = false
+	var tw := create_tween()
+	tw.tween_property(fade, "modulate:a", 1.0, 0.35)
+	tw.tween_callback(func():
+		var day: bool = not buttons[2].button_pressed
+		if OS.has_feature("web"):
+			var cam_s := "%.2f,%.2f,%.1f,%.1f" % [position.x, position.z, rad_to_deg(yaw), rad_to_deg(pitch)]
+			var js := "(function(){try{sessionStorage.setItem('mall-xfer','%d')}catch(e){}var u=new URL(location.href);var p=u.searchParams;p.set('wing','%d');p.set('cam','%s');" % [w, w, cam_s]
+			js += ("p.set('year','2026');" if other == 2026 else "p.delete('year');")
+			js += "p.set('time','%s');" % ("day" if day else "night")
+			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not _refl_wanted() else "false")
+			js += "if(%s)p.set('fx','1');else p.delete('fx');" % ("true" if buttons[1].button_pressed else "false")
+			js += "console.log('switching year '+u.toString());if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
+			JavaScriptBridge.eval(js, true)
+		else:
+			Engine.set_meta("mall_xfer", {"x": position.x, "z": position.z, "yaw": yaw, "pitch": pitch})
+			Engine.set_meta("mall_arrived", true)
+			get_tree().change_scene_to_file(("res://wing%d_2026.tscn" if other == 2026 else "res://wing%d.tscn") % w))
+
 func _cross() -> void:
 	if leaving or wing == 0:
 		return
@@ -621,7 +680,7 @@ func _cross() -> void:
 		else:
 			Engine.set_meta("mall_xfer", {"x": tx, "z": tz, "yaw": yaw, "pitch": pitch})
 			Engine.set_meta("mall_arrived", true)
-			var path := "res://wing%d.tscn" % other
+			var path := _wing_scene(other)
 			if ResourceLoader.exists(path):
 				get_tree().change_scene_to_file(path)
 			else:
@@ -711,6 +770,9 @@ func _jump_input(e: InputEvent) -> bool:
 	var open := jump_panel.visible
 	if e is InputEventKey and e.pressed and not e.echo:
 		var k: int = e.physical_keycode
+		if k == KEY_Y and not open:
+			_switch_year()
+			return true
 		if k == KEY_J:
 			_jump_show(not open)
 			return true
@@ -801,7 +863,7 @@ func _jump_go(i: int) -> void:
 		else:
 			Engine.set_meta("mall_xfer", {"x": float(j[2]), "z": float(j[3]), "yaw": deg_to_rad(float(j[4])), "pitch": deg_to_rad(3.0)})
 			Engine.set_meta("mall_arrived", true)
-			var path := "res://wing%d.tscn" % tw_wing
+			var path := _wing_scene(tw_wing)
 			if ResourceLoader.exists(path):
 				get_tree().change_scene_to_file(path)
 			else:

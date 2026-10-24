@@ -76,6 +76,10 @@ const BUILT_RECTS = {"CORN DOG 7": [-138.0, 68.0, -126.0, 80.0], "POCKET CHANGE"
 var fronts_px = 64.0       # atlas pixels per 2 m tile
 # ------------------------------------------------------------------ wings
 var WING = 0               # 1 or 2: the wing being built (0: the whole mall, previews)
+## The year the build shows (--year= / MALL_YEAR): 1995, or 2026, the mall as Steven filmed it on
+## Oct 23 2026 (same building, layout_2026.json's tenants: tools/make_layout_2026.py). A 2026 wing
+## is its own scene (wing<n>_2026.tscn), meshes (gen/w<n>y26/), lightmap and stand-in pictures.
+var YEAR = 1995
 var GEN = "res://gen/"     # where this build's meshes and data go (res://gen/w1/, res://gen/w2/)
 ## The zones of Wing 2; every other zone is Wing 1.
 const WING2_ZONES = ["C3", "H8", "H5", "C4", "H6", "H7"]
@@ -131,6 +135,12 @@ func mat(name):
 			m.albedo_color = Color(1.0, 0.975, 0.92)
 		"pink_stripe":
 			m.albedo_color = Color("#e48aa0"); m.roughness = 0.6
+		"elev_door":
+			m.albedo_color = Color("#cbbfa6"); m.metallic = 0.6; m.roughness = 0.35
+		"navy_stripe":
+			m.albedo_color = Color("#22336b"); m.roughness = 0.6
+		"terracotta":
+			m.albedo_color = Color("#b4583a"); m.roughness = 0.75
 		"crystal":
 			m.albedo_color = Color("#f4f8ff"); m.metallic = 0.3; m.roughness = 0.05
 			m.emission_enabled = true; m.emission = Color("#fff6e8"); m.emission_energy_multiplier = 2.5
@@ -626,13 +636,38 @@ func build_hall(z):
 func drop_hall(z, lo, hi, hw):
 	var g = z.id
 	var y = LANE_H
-	var pts = [hall_P(z, -hw, y, lo), hall_P(z, hw, y, lo), hall_P(z, hw, y, hi), hall_P(z, -hw, y, hi)]
-	var uvs = [Vector2(-hw / 0.61, lo / 1.22), Vector2(hw / 0.61, lo / 1.22), Vector2(hw / 0.61, hi / 1.22), Vector2(-hw / 0.61, hi / 1.22)]
-	quad(g, "drop_tile", pts, Vector3.DOWN, uvs)
+	var wells = drop_wells(z)
+	# the ceiling as rectangles around the wells: full-width spans between them, side strips beside
+	var rects = []
+	var cur = lo
+	for w in wells:
+		var w0 = w[0] - w[1]; var w1 = w[0] + w[1]
+		if w0 > cur:
+			rects.append([-hw, hw, cur, w0])
+		rects.append([-hw, -w[2], w0, w1])
+		rects.append([w[2], hw, w0, w1])
+		cur = w1
+	rects.append([-hw, hw, cur, hi])
+	for rc in rects:
+		if rc[3] - rc[2] < 0.005 or rc[1] - rc[0] < 0.005:
+			continue
+		var pts = [hall_P(z, rc[0], y, rc[2]), hall_P(z, rc[1], y, rc[2]), hall_P(z, rc[1], y, rc[3]), hall_P(z, rc[0], y, rc[3])]
+		var uvs = [Vector2(rc[0] / 0.61, rc[2] / 1.22), Vector2(rc[1] / 0.61, rc[2] / 1.22), Vector2(rc[1] / 0.61, rc[3] / 1.22), Vector2(rc[0] / 0.61, rc[3] / 1.22)]
+		quad(g, "drop_tile", pts, Vector3.DOWN, uvs)
+	for w in wells:
+		drop_well(z, w)
 	var rows = [-hw * 0.42, hw * 0.42]
 	var k = 0
 	var s0 = lo + 1.83
 	while s0 + 1.22 < hi - 0.6:
+		var in_well = false
+		for w in wells:
+			if s0 + 1.22 > w[0] - w[1] - 0.3 and s0 < w[0] + w[1] + 0.3:
+				in_well = true
+		if in_well:
+			s0 += 3.66
+			k += 1
+			continue
 		for u in rows:
 			var u0 = snapped(u, 0.61) - 0.305
 			var q = [hall_P(z, u0, y - 0.006, s0), hall_P(z, u0 + 0.61, y - 0.006, s0), hall_P(z, u0 + 0.61, y - 0.006, s0 + 1.22), hall_P(z, u0, y - 0.006, s0 + 1.22)]
@@ -646,10 +681,113 @@ func drop_hall(z, lo, hi, hw):
 func notch_half(hz):
 	return 0.0 if is_drop(hz) else float(hz.vault_half)
 
-## Wing 2 keeps the vaulted Sears halls in its far-off stand-in geometry (never seen from there),
-## so its meshes and bake stay as they were.
+## Demo 42 (Steven, Oct 23 2026, after the site visit): every hall has the flat drop ceiling in
+## 1995 too; only the four courts keep their vaults. ALL_HALLS_DROP false brings back the
+## pre-Demo 42 look (vaults everywhere but the Sears halls).
+const ALL_HALLS_DROP = true
 func is_drop(z):
-	return z.id in DROP_HALLS and WING != 2
+	if z.type != "hall" or float(z.get("vault_half", 0)) <= 0.0:
+		return false
+	return ALL_HALLS_DROP or (z.id in DROP_HALLS and WING != 2)
+
+## Skylight wells cut into a drop hall's ceiling: [s_centre, s_half, u_half].
+## The map's hall skylights (props) become square wells; the Sears halls get the three crosswise
+## wells the 2026 footage shows (IMG_4414 f008, IMG_4485 f001): H1a's at the court end, H1b's
+## about 15 m in from the east doors.
+const SEARS_WELLS = {"H1a": [-19.2, -21.8, -24.4], "H1b": [18.4, 21.0, 23.6]}
+func drop_wells(z):
+	var out = []
+	for at in SEARS_WELLS.get(z.id, []):
+		out.append([float(at), 0.7, 1.9])
+	for sk in L.get("skylights", []):
+		if sk.zone == z.id:
+			out.append([float(sk.at), 1.3, 1.6])
+	out.sort_custom(func(p, q): return p[0] < q[0])
+	return out
+
+## One skylight well over a drop ceiling: splayed white sides 1.1 m up to a framed opening (real,
+## so the bake gets daylight). Crosswise wells (the Sears halls) carry a low barrel-arched top.
+func drop_well(z, w):
+	var g = z.id
+	var s = w[0]; var sh = w[1]; var uh = w[2]
+	var y0 = LANE_H
+	var y1 = LANE_H + 1.1
+	var sp = 0.25   # splay: the opening is this much smaller each side than the ceiling hole
+	var c = [[-uh, -sh], [uh, -sh], [uh, sh], [-uh, sh]]
+	for i in 4:
+		var p = c[i]; var q = c[(i + 1) % 4]
+		var pin = Vector2(p[0], p[1]) * Vector2(1.0 - sp / uh, 1.0 - sp / sh)
+		var qin = Vector2(q[0], q[1]) * Vector2(1.0 - sp / uh, 1.0 - sp / sh)
+		var a0 = hall_P(z, p[0], y0, s + p[1]); var b0 = hall_P(z, q[0], y0, s + q[1])
+		var a1 = hall_P(z, pin.x, y1, s + pin.y); var b1 = hall_P(z, qin.x, y1, s + qin.y)
+		var mid_in = hall_P(z, 0, y0, s)
+		var nn = (mid_in - (a0 + b0) * 0.5)
+		nn.y = 0.0
+		quad(g, "rib", [a0, b0, b1, a1], (nn.normalized() + Vector3.DOWN * 0.3).normalized())
+	var iu = uh - sp; var ish = sh - sp
+	var axs = hall_P(z, 0, 0, 1) - hall_P(z, 0, 0, 0)
+	var axu = hall_P(z, 1, 0, 0) - hall_P(z, 0, 0, 0)
+	box("glass_frames", "metal_dark", hall_P(z, 0, y1 + 0.02, s), abs_size(axs, ish * 2, 0.06, 0.05, axu), Transform3D.IDENTITY, [], true)
+	box("glass_frames", "metal_dark", hall_P(z, 0, y1 + 0.02, s), abs_size(axu, iu * 2, 0.06, 0.05, axs), Transform3D.IDENTITY, [], true)
+	if uh > sh * 1.5:
+		# the small barrel-arched acrylic top: ribs over the opening, running across the hall
+		for k in 5:
+			var ss = s - ish + ish * 2.0 * k / 4.0
+			var pts = arch_pts(iu, y1, 0.45, 8)
+			for j in pts.size() - 1:
+				var p2 = pts[j]; var q2 = pts[j + 1]
+				box("glass_frames", "metal_dark", (hall_P(z, p2.x, p2.y, ss) + hall_P(z, q2.x, q2.y, ss)) * 0.5,
+					abs_size(axu, abs(q2.x - p2.x) + 0.04, abs(q2.y - p2.y) + 0.04, 0.04, axs), Transform3D.IDENTITY, [], true)
+
+## The white segmental-arch soffit where a hall meets a court (2026 footage: every hall/court
+## junction, ~0.8 m deep; IMG_4484 f003, IMG_4408). Hangs below the drop ceiling at the hall's mouth.
+const MOUTH_DEPTH = 0.8
+const MOUTH_SPRING = 3.75
+func hall_mouth(z, at, into):
+	var g = z.id
+	var hw = hall_span(z)[2]
+	var rise = LANE_H - 0.12 - MOUTH_SPRING
+	var pts = arch_pts(hw, MOUTH_SPRING, rise, 20)
+	var axu = hall_P(z, 1, 0, 0) - hall_P(z, 0, 0, 0)
+	var axs = hall_P(z, 0, 0, 1) - hall_P(z, 0, 0, 0)
+	for face in [0.0, 1.0]:
+		var s = at + into * MOUTH_DEPTH * face
+		var o = PackedVector2Array()
+		o.append(Vector2(-hw, LANE_H))
+		for p in pts:
+			o.append(Vector2(p.x, p.y))
+		o.append(Vector2(hw, LANE_H))
+		var n = axs * (-into if face == 0.0 else into)
+		poly(g, "rib", o, hall_P(z, 0, 0, s), axu, Vector3.UP, n)
+	var R = arch_R(hw, rise)
+	var cy = MOUTH_SPRING + rise - R
+	for i in pts.size() - 1:
+		var a = pts[i]; var b = pts[i + 1]
+		var mid = (a + b) * 0.5
+		var nn = (hall_P(z, 0, cy, 0) - hall_P(z, mid.x, mid.y, 0)).normalized()
+		var s1 = at + into * MOUTH_DEPTH
+		quad(g, "rib", [hall_P(z, a.x, a.y, at), hall_P(z, b.x, b.y, at), hall_P(z, b.x, b.y, s1), hall_P(z, a.x, a.y, s1)], nn)
+
+## Every open hall end that meets a court gets its arch.
+func hall_mouths():
+	for cw in L.court_walls:
+		var cz = zones[cw.zone]
+		var cr = cz.rect
+		for hid in cw.halls:
+			var hz = zones[hid]
+			if not is_drop(hz):
+				continue
+			var sp = hall_span(hz)
+			var at = 0.0
+			var into = 1.0
+			match cw.side:
+				"n": at = cr[1]; into = -1.0
+				"s": at = cr[3]; into = 1.0
+				"w": at = cr[0]; into = -1.0
+				"e": at = cr[2]; into = 1.0
+			if abs(at - sp[0]) > 0.5 and abs(at - sp[1]) > 0.5:
+				continue
+			hall_mouth(hz, at, into)
 
 ## A skylight in the hall vault crown between two ribs: a short light well
 ## with a muntin frame; the opening is real, so the bake gets daylight.
@@ -725,8 +863,11 @@ func hall_end(z, at, facing, vh, rise):
 ## A court: segmental plaster vault over the shorter span, walls from lane
 ## height up to the springing with notches where hall vaults come in, a
 ## square skylight, and a clerestory on long sides no hall enters.
+## Demo 42: Dillard's court is vaulted (2026 footage: cream barrel vault, square skylight, white
+## arch beams with a navy stripe). DILLARDS_FLAT true brings back the flat ceiling from 2018's 3:34.
+const DILLARDS_FLAT = false
 func build_court(z):
-	if z.style == "dillards":
+	if z.style == "dillards" and DILLARDS_FLAT:
 		build_court_flat(z)
 		return
 	var g = z.id
@@ -737,7 +878,9 @@ func build_court(z):
 	var cx = (r[0] + r[2]) * 0.5
 	var cz = (r[1] + r[3]) * 0.5
 	var axis = "z" if sz >= sx else "x"   # vault runs along the longer side
-	if z.style == "shoe":
+	if z.style == "shoe" or z.style == "sears":
+		# Sears court (2026 footage, IMG_4408 f036, IMG_4484 f068): the vault runs north-south, the
+		# pink-striped arch over the Sears entrance is its north end, clerestories run east and west
 		axis = "z"
 	var half = (sx if axis == "z" else sz) * 0.5
 	var length = sz if axis == "z" else sx
@@ -745,6 +888,13 @@ func build_court(z):
 	var R = arch_R(half, rise)
 	var cy = COURT_SPRING + rise - R
 	var sky = clamp(min(half, length * 0.5) * 0.28, 1.2, 2.2)
+	# skylight half-sizes across (u) and along (s) the vault: square, except the Sears court's long
+	# lantern down the crown (2.5 m wide in the footage, as long as the court allows)
+	var sky_u = sky
+	var sky_s = sky
+	if z.style == "sears":
+		sky_u = 1.3
+		sky_s = min(length * 0.5 - 1.0, 7.5)
 	# frame: u across the span (from centre), s along the vault (from centre)
 	var P = func(u, y, s):
 		return Vector3(cx + u, y, cz + s) if axis == "z" else Vector3(cx + s, y, cz + u)
@@ -760,29 +910,40 @@ func build_court(z):
 		for k in steps:
 			var s0 = -length * 0.5 + length * k / steps
 			var s1 = -length * 0.5 + length * (k + 1) / steps
-			if abs(mid.x) < sky and abs((s0 + s1) * 0.5) < sky:
+			if abs(mid.x) < sky_u and abs((s0 + s1) * 0.5) < sky_s:
 				continue
 			quad(g, vmat, [P.call(a.x, a.y, s0), P.call(b.x, b.y, s0), P.call(b.x, b.y, s1), P.call(a.x, a.y, s1)], nn,
 				[Vector2(arc_a, s0) * 0.22, Vector2(arc_b, s0) * 0.22, Vector2(arc_b, s1) * 0.22, Vector2(arc_a, s1) * 0.22])
 	# skylight well
 	var top = COURT_SPRING + rise + 0.9
-	var ys = arch_y(sky, half, COURT_SPRING, rise)
+	var ys = arch_y(sky_u, half, COURT_SPRING, rise)
 	for sgn in [-1.0, 1.0]:
-		quad(g, "lane_ceiling", [P.call(sgn * sky, ys - 0.05, -sky), P.call(sgn * sky, ys - 0.05, sky), P.call(sgn * sky, top, sky), P.call(sgn * sky, top, -sky)], (P.call(-sgn, 0, 0) - P.call(0, 0, 0)).normalized())
+		quad(g, "lane_ceiling", [P.call(sgn * sky_u, ys - 0.05, -sky_s), P.call(sgn * sky_u, ys - 0.05, sky_s), P.call(sgn * sky_u, top, sky_s), P.call(sgn * sky_u, top, -sky_s)], (P.call(-sgn, 0, 0) - P.call(0, 0, 0)).normalized())
 		var o = PackedVector2Array()
 		for i in 9:
-			var u = -sky + 2.0 * sky * i / 8
+			var u = -sky_u + 2.0 * sky_u * i / 8
 			o.append(Vector2(u, arch_y(u, half, COURT_SPRING, rise) - 0.05))
-		o.append(Vector2(sky, top)); o.append(Vector2(-sky, top))
-		var org = P.call(0, 0, sgn * sky)
+		o.append(Vector2(sky_u, top)); o.append(Vector2(-sky_u, top))
+		var org = P.call(0, 0, sgn * sky_s)
 		var axu = P.call(1, 0, 0) - P.call(0, 0, 0)
 		poly(g, "lane_ceiling", o, org, axu, Vector3.UP, (P.call(0, 0, -sgn) - P.call(0, 0, 0)).normalized())
-	for i in 5:
-		var u = -sky + i * sky * 0.5
-		var c1 = P.call(u, top - 0.05, 0)
-		var c2 = P.call(0, top - 0.05, u)
-		box("glass_frames", "metal_dark", c1, abs_size((P.call(0, 0, 1) - P.call(0, 0, 0)), sky * 2, 0.1, 0.05, (P.call(1, 0, 0) - P.call(0, 0, 0))), Transform3D.IDENTITY, [], true)
-		box("glass_frames", "metal_dark", c2, abs_size((P.call(1, 0, 0) - P.call(0, 0, 0)), sky * 2, 0.1, 0.05, (P.call(0, 0, 1) - P.call(0, 0, 0))), Transform3D.IDENTITY, [], true)
+	var ax_s = P.call(0, 0, 1) - P.call(0, 0, 0)
+	var ax_u = P.call(1, 0, 0) - P.call(0, 0, 0)
+	if z.style == "sears":
+		# the lantern: white crosswise baffles about every 0.75 m down the well, glazed above
+		var nb = int(round(sky_s * 2.0 / 0.75))
+		for i in nb + 1:
+			var s2 = -sky_s + sky_s * 2.0 * i / nb
+			box(g, "rib", P.call(0, top - 0.45, s2), abs_size(ax_u, sky_u * 2.0, 0.8, 0.08, ax_s))
+		for u in [-sky_u * 0.33, sky_u * 0.33]:
+			box("glass_frames", "metal_dark", P.call(u, top - 0.04, 0), abs_size(ax_s, sky_s * 2, 0.08, 0.05, ax_u), Transform3D.IDENTITY, [], true)
+	else:
+		for i in 5:
+			var u = -sky + i * sky * 0.5
+			var c1 = P.call(u, top - 0.05, 0)
+			var c2 = P.call(0, top - 0.05, u)
+			box("glass_frames", "metal_dark", c1, abs_size(ax_s, sky * 2, 0.1, 0.05, ax_u), Transform3D.IDENTITY, [], true)
+			box("glass_frames", "metal_dark", c2, abs_size(ax_u, sky * 2, 0.1, 0.05, ax_s), Transform3D.IDENTITY, [], true)
 	tag(add_omni(P.call(0, COURT_SPRING, 0), 1.0, half * 2.5, Color(1.0, 0.95, 0.88)), "day")
 	# night: four key spots at the springing line, aimed down, so the floor
 	# gets broad overlapping pools instead of one hot centre
@@ -821,7 +982,9 @@ func build_court(z):
 			var hc = ((hr[0] + hr[2]) * 0.5 - cx) if horiz else ((hr[1] + hr[3]) * 0.5 - cz)
 			notches.append([hc, notch_half(hz)])
 		notches.sort_custom(func(p, q): return p[0] > q[0])
-		var clerestory = along_vault and halls.is_empty()
+		# with drop-ceiling halls (no notches) the Sears court keeps its clerestories over the
+		# east and west hall mouths, as in the footage
+		var clerestory = along_vault and (halls.is_empty() or (z.style == "sears" and notches.all(func(nt): return nt[1] <= 0.0)))
 		var bottom = LANE_H
 		if clerestory:
 			bottom = 6.25
@@ -872,7 +1035,17 @@ func build_court(z):
 				var ia = a + (Vector2(0, cy) - a).normalized() * 0.55
 				var ib = b + (Vector2(0, cy) - b).normalized() * 0.55
 				var off = nrm * 0.1
-				quad(g, "trim_tan", [o2 + axw * a.x + Vector3.UP * a.y + off, o2 + axw * b.x + Vector3.UP * b.y + off, o2 + axw * ib.x + Vector3.UP * ib.y + off, o2 + axw * ia.x + Vector3.UP * ia.y + off], nrm)
+				var bmat = "rib" if z.style == "sears" else "trim_tan"
+				quad(g, bmat, [o2 + axw * a.x + Vector3.UP * a.y + off, o2 + axw * b.x + Vector3.UP * b.y + off, o2 + axw * ib.x + Vector3.UP * ib.y + off, o2 + axw * ia.x + Vector3.UP * ia.y + off], nrm)
+				if z.style == "sears":
+					# the salmon stripe that follows the end arch (north arch over the Sears entrance,
+					# IMG_4408 f036; confirms the 2018 "pink stripe")
+					var ja = a + (ia - a) * 0.45
+					var jb = b + (ib - b) * 0.45
+					var ka = a + (ia - a) * 0.7
+					var kb = b + (ib - b) * 0.7
+					var off2 = nrm * 0.11
+					quad(g, "pink_stripe", [o2 + axw * ja.x + Vector3.UP * ja.y + off2, o2 + axw * jb.x + Vector3.UP * jb.y + off2, o2 + axw * kb.x + Vector3.UP * kb.y + off2, o2 + axw * ka.x + Vector3.UP * ka.y + off2], nrm)
 	# columns at the inner corners
 	var inset = 1.3
 	for qx in [r[0] + inset, r[2] - inset]:
@@ -883,15 +1056,19 @@ func build_court(z):
 			cyl(g, "stone", Vector3(qx, 0, qz), 0.4, 0.4, 0.35, 24, true)
 			cyl(g, "column", Vector3(qx, COURT_SPRING - 0.25, qz), 0.3, 0.42, 0.25, 24, true, true)
 			obst([qx, qz, 0.55])
-	if z.style == "sears":
-		# white arch beam across the court, outlined with a pink stripe (1:34),
-		# and a small crystal pendant under the crown
+	if z.style == "sears" or z.style == "dillards":
+		# Dillard's court (2026 footage, IMG_4438 f001, IMG_4474): white arch beams across the vault
+		# with a navy stripe on their faces. (Sears court: Demo 42 drops its two cross beams and the
+		# crystal pendant; the footage shows the long lantern instead and the pink stripe on the end arch.)
 		var axs = P.call(0, 0, 1) - P.call(0, 0, 0)
-		for sbeam in [-length * 0.25, length * 0.25]:
+		var beams = [-length * 0.25, length * 0.25] if z.style == "dillards" else []
+		for sbeam in beams:
 			for i in pts.size() - 1:
 				var a = pts[i]
 				var b = pts[i + 1]
 				if abs(a.x) > half - 0.05 and abs(b.x) > half - 0.05:
+					continue
+				if abs(a.x) < sky_u and abs(b.x) < sky_u and abs(sbeam) < sky_s + 0.4:
 					continue
 				var ia = a + (Vector2(0, cy) - a).normalized() * 0.45
 				var ib = b + (Vector2(0, cy) - b).normalized() * 0.45
@@ -904,22 +1081,7 @@ func build_court(z):
 					var jb = ib + (b - ib) * 0.12
 					var ka = ia + (a - ia) * 0.3
 					var kb = ib + (b - ib) * 0.3
-					quad(g, "pink_stripe", [P.call(ja.x, ja.y, sbeam + sg * 0.36), P.call(jb.x, jb.y, sbeam + sg * 0.36), P.call(kb.x, kb.y, sbeam + sg * 0.36), P.call(ka.x, ka.y, sbeam + sg * 0.36)], axs * sg)
-		var crown = COURT_SPRING + rise
-		cyl("lanterns", "brass", P.call(0, 5.9, 0), 0.012, 0.012, crown - 5.9, 6, false)
-		# small tiered crystal pendant: rings of drops around a centre drop
-		var pc = P.call(0, 5.6, 0)
-		cyl("lanterns", "brass", pc + Vector3(0, 0.25, 0), 0.32, 0.32, 0.03, 16, true, true)
-		for tier in 3:
-			var rr = 0.3 - tier * 0.09
-			var cnt = 10 - tier * 3
-			for k in cnt:
-				var a3 = TAU * k / cnt + tier * 0.3
-				var dc = pc + Vector3(cos(a3) * rr, 0.15 - tier * 0.16, sin(a3) * rr)
-				cyl("lanterns", "crystal", dc - Vector3(0, 0.08, 0), 0.0, 0.035, 0.08, 6, false)
-				cyl("lanterns", "crystal", dc, 0.035, 0.0, 0.06, 6, false)
-		cyl("lanterns", "crystal", pc - Vector3(0, 0.55, 0), 0.0, 0.07, 0.2, 8, false)
-		cyl("lanterns", "crystal", pc - Vector3(0, 0.35, 0), 0.07, 0.0, 0.12, 8, false)
+					quad(g, "navy_stripe", [P.call(ja.x, ja.y, sbeam + sg * 0.36), P.call(jb.x, jb.y, sbeam + sg * 0.36), P.call(kb.x, kb.y, sbeam + sg * 0.36), P.call(ka.x, ka.y, sbeam + sg * 0.36)], axs * sg)
 		add_omni(P.call(0, 5.5, 0), 1.0, 7.0, Color(1.0, 0.95, 0.85))
 	if z.style == "shoe":
 		fx = true
@@ -1256,10 +1418,10 @@ func standin_mat(name):
 	var other = name.substr(9).to_int()
 	var m = StandardMaterial3D.new()
 	m.resource_name = name
-	var night = "res://tex/standin/from_w%d_night.png" % other
-	var day = "res://tex/standin/from_w%d_day.png" % other
+	var night = "res://tex/standin/%s%d_night.png" % [standin_prefix(), other]
+	var day = "res://tex/standin/%s%d_day.png" % [standin_prefix(), other]
 	if FileAccess.file_exists(night):
-		m.albedo_texture = tex("standin/from_w%d_night.png" % other)
+		m.albedo_texture = tex("standin/%s%d_night.png" % [standin_prefix(), other])
 	else:
 		# not captured yet: a dim grey until tools/capture_standin.gd has run (the game loads the
 		# pictures by path at start, time_of_day.gd, so no rebuild is needed after a capture)
@@ -1329,6 +1491,72 @@ func plain_wall(g, a, b, n, top = LANE_H, wm = "cream"):
 	quad(g, wm, [a, b, b + Vector3(0, top, 0), a + Vector3(0, top, 0)], n)
 	box(g, "stone", (a + b) * 0.5 + Vector3(0, 0.3, 0) + n * 0.03, abs_size(t, a.distance_to(b), 0.6, 0.06, n))
 
+## The terracotta 8-point star on the pilaster between two stores (2026 footage: every demising
+## pier in the halls and courts, ~25 cm, two overlapping squares; IMG_4484 f016, IMG_4433). Placed
+## where two storefront edges of this wing meet in line, on the bulkhead band above the openings.
+const STAR_Y = 3.85
+func star_medallions():
+	var ends = {}
+	for e in L.edges:
+		if e.kind != "store" or not in_wing(edge_wing(e)):
+			continue
+		var sd = L.stores[e.store]
+		if sd.anchor:
+			continue
+		for p in [e.a, e.b]:
+			var key = "%d,%d|%d,%d" % [round(p[0] * 10), round(p[1] * 10), e.n[0], e.n[1]]
+			ends[key] = ends.get(key, 0) + 1
+	var cnt = 0
+	for key in ends:
+		if ends[key] < 2:
+			continue
+		var parts = key.split("|")
+		var pp = parts[0].split(","); var nn = parts[1].split(",")
+		var p = Vector3(float(pp[0]) / 10.0, 0, float(pp[1]) / 10.0)
+		var n = Vector3(float(nn[0]), 0, float(nn[1]))
+		var g = zone_at(p.x + n.x * 1.5, p.z + n.z * 1.5)
+		if g == "" or g == null:
+			g = "misc"
+		var c = p + n * 0.27 + Vector3(0, STAR_Y, 0)
+		var bas = Basis.looking_at(-n, Vector3.UP)
+		box(g, "bulkhead", Vector3.ZERO, Vector3(0.36, 0.36, 0.04), Transform3D(bas, c - n * 0.03))
+		for rot in [0.0, PI * 0.25]:
+			box(g, "terracotta", Vector3.ZERO, Vector3(0.2, 0.2, 0.03), Transform3D(bas * Basis(Vector3(0, 0, 1), rot), c))
+		cnt += 1
+	print("star medallions: ", cnt)
+
+## The elevator on the south side of the concourse (H5) between Special Tees and Naturalizer
+## (Steven, Oct 23 2026: "the elevator was always right there"; IMG_4439 f028): a recessed alcove
+## ELEV_W wide taken half from each store's frontage.
+const ELEV_X = -44.0
+const ELEV_W = 2.4
+const ELEV_STORES = {"SPECIAL TEES": "b", "NATURALIZER": "a", "BOOST MOBILE": "b", "CELL XPERT": "a"}
+func elevator(g, z0):
+	var x0 = ELEV_X - ELEV_W * 0.5
+	var x1 = ELEV_X + ELEV_W * 0.5
+	var dep = 1.5
+	var n = Vector3(0, 0, -1)
+	# side walls, back wall, the soffit and the beige doors
+	for x in [x0, x1]:
+		var nn = Vector3(1, 0, 0) if x == x0 else Vector3(-1, 0, 0)
+		quad(g, "cream", [Vector3(x, 0, z0), Vector3(x, 0, z0 + dep), Vector3(x, LANE_H, z0 + dep), Vector3(x, LANE_H, z0)], nn)
+		box(g, "stone", Vector3(x, 0.3, z0 + dep * 0.5) + nn * 0.03, Vector3(0.06, 0.6, dep))
+	quad(g, "cream", [Vector3(x0, 0, z0 + dep), Vector3(x1, 0, z0 + dep), Vector3(x1, LANE_H, z0 + dep), Vector3(x0, LANE_H, z0 + dep)], n)
+	quad(g, "lane_ceiling", [Vector3(x0, 3.0, z0), Vector3(x1, 3.0, z0), Vector3(x1, 3.0, z0 + dep), Vector3(x0, 3.0, z0 + dep)], Vector3.DOWN)
+	quad(g, "cream", [Vector3(x0, 3.0, z0), Vector3(x1, 3.0, z0), Vector3(x1, LANE_H, z0), Vector3(x0, LANE_H, z0)], n)
+	quad("misc", "floorz_left", [Vector3(x0, 0.002, z0), Vector3(x1, 0.002, z0), Vector3(x1, 0.002, z0 + dep), Vector3(x0, 0.002, z0 + dep)], Vector3.UP)
+	box(g, "elev_door", Vector3(ELEV_X, 1.06, z0 + dep - 0.03), Vector3(1.2, 2.12, 0.04))
+	box(g, "bronze", Vector3(ELEV_X, 1.06, z0 + dep - 0.06), Vector3(0.012, 2.12, 0.02))
+	box(g, "elev_door", Vector3(ELEV_X, 2.17, z0 + dep - 0.04), Vector3(1.36, 0.1, 0.06))
+	for sx in [-1.0, 1.0]:
+		box(g, "elev_door", Vector3(ELEV_X + sx * 0.66, 1.08, z0 + dep - 0.04), Vector3(0.08, 2.16, 0.06))
+	# call buttons and the floor indicator
+	box(g, "brass", Vector3(ELEV_X + 0.9, 1.1, z0 + dep - 0.02), Vector3(0.12, 0.22, 0.02))
+	box(g, "black", Vector3(ELEV_X, 2.42, z0 + dep - 0.02), Vector3(0.5, 0.14, 0.02))
+	add_downlight(Vector3(ELEV_X, 2.98, z0 + dep * 0.5))
+	disc_down(g, Vector3(ELEV_X, 2.99, z0 + dep * 0.5), 0.14)
+	obst([ELEV_X, z0 + 0.8, 1.0])
+
 func build_edge(e):
 	var eb = edge_basics(e)
 	var a = eb[0]
@@ -1336,6 +1564,17 @@ func build_edge(e):
 	var n = eb[2]
 	var t = eb[3]
 	var Ln = eb[4]
+	if e.kind == "store" and ELEV_STORES.has(L.stores[e.store].name) and abs(a.z - 60.0) < 0.01:
+		var side = ELEV_STORES[L.stores[e.store].name]
+		var gz = zone_at((a.x + b.x) * 0.5, a.z - 1.0)
+		if side == "b":
+			b = Vector3(ELEV_X - ELEV_W * 0.5, 0, b.z)
+			elevator(gz, a.z)
+		else:
+			a = Vector3(ELEV_X + ELEV_W * 0.5, 0, a.z)
+		Ln = a.distance_to(b)
+		e = e.duplicate()
+		e.a = [a.x, a.z]; e.b = [b.x, b.z]
 	var mid = (a + b) * 0.5
 	var g = zone_at(mid.x + n.x * 1.0, mid.z + n.z * 1.0)
 	match e.kind:
@@ -1384,6 +1623,15 @@ func build_edge(e):
 ## the sign, bronze-framed glass (or an open front), the lit interior behind.
 func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 	var sd = L.stores[e.store]
+	if YEAR == 2026 and not inner_call:
+		# 2026: the anchors' current fronts, Corn Dog 7 (the same shop, unchanged), and the generic
+		# front with each tenant's sign for everyone else, until they are built from the footage
+		if sd.anchor and ANCHOR_LOOK_2026.has(sd.name):
+			anchor_front(g, e, a, b, n, t, Ln, sd, ANCHOR_LOOK_2026[sd.name])
+			return
+		if sd.name != "CORN DOG 7":
+			storefront(g, e, a, b, n, t, Ln, true)
+			return
 	if sd.name == "K&B" and not inner_call:
 		# Steven (Oct 7): the front of the K&B at Prien Lake Mall (same owners), with the logo
 		# from his photos (tools/stores/signs/fronts.gd); replaces decision 6's pink wall
@@ -1398,7 +1646,7 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		kb_wall(g, a + t * (m0 + ew), b, n, t)
 		storefront(g, e, a + t * m0, a + t * (m0 + ew), n, t, ew, true)
 		return
-	if sd.anchor and ANCHOR_LOOK.has(sd.name):
+	if sd.anchor and ANCHOR_LOOK.has(sd.name) and YEAR != 2026:
 		anchor_front(g, e, a, b, n, t, Ln, sd, ANCHOR_LOOK[sd.name])
 		return
 	if sd.name == "POCKET CHANGE" and not inner_call:
@@ -1598,6 +1846,8 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 func clip_deep(a, b, n, deep):
 	var into = -n
 	for nm in BUILT_RECTS:
+		if YEAR == 2026 and nm != "CORN DOG 7":
+			continue
 		var r = BUILT_RECTS[nm]
 		# the strip from the frontage a..b running `deep` metres along `into`
 		var lo_x = min(a.x, b.x); var hi_x = max(a.x, b.x)
@@ -1932,7 +2182,7 @@ func lit_ring(g, c):
 	for k in 3:
 		var a = TAU * k / 3.0
 		var p = c + Vector3(cos(a), 0, sin(a)) * R + Vector3(0, y + 0.14, 0)
-		cyl(g, "metal_dark", p, 0.008, 0.008, 6.5 - p.y, 4, false)
+		cyl(g, "metal_dark", p, 0.008, 0.008, LANE_H - p.y, 4, false)
 	for k in 6:
 		var a = TAU * k / 6.0 + 0.3
 		box(g, "black", c + Vector3(cos(a), 0, sin(a)) * R + Vector3(0, y - 0.22, 0), Vector3(0.12, 0.16, 0.12))
@@ -1940,6 +2190,14 @@ func lit_ring(g, c):
 
 ## Anchor fronts, as the current game draws them from Steven's photos:
 ## a wide open mouth onto the sales floor under a store-specific fascia.
+## The anchors' mall fronts in 2026 (IMG_4408, IMG_4438, IMG_4457): Lynn's Interiors in the Sears
+## box (white tile portal, black script), Dillard's (white serif on light oak), JCPenney (red
+## letters on rosso marble).
+const ANCHOR_LOOK_2026 = {
+	"LYNN'S INTERIORS": {"wall": "cream", "fascia": "rib", "frame": "", "cols": "", "text": "Lynn's Interiors", "font": "script", "fg": "#151515", "halo": false, "soffit": "lane_ceiling"},
+	"JCPENNEY": {"wall": "cream", "fascia": "brown_stone", "frame": "", "cols": "metal_dark", "text": "JCPenney", "font": "sans", "fg": "#d0102e", "halo": false, "soffit": "lane_ceiling", "lit": true},
+	"DILLARD'S": {"wall": "cream", "fascia": "wood_diag", "frame": "", "cols": "", "text": "Dillard's", "font": "serif", "fg": "#ffffff", "halo": false, "soffit": "cream", "lit": true},
+}
 const ANCHOR_LOOK = {
 	"SEARS": {"wall": "buff_tile", "fascia": "buff_tile", "frame": "grey_tile", "cols": "", "text": "SEARS", "font": "sans_italic", "fg": "#1f3f8f", "halo": true, "soffit": "lane_ceiling"},
 	"JCPENNEY": {"wall": "cream", "fascia": "wood_diag", "frame": "", "cols": "metal_dark", "text": "JCPenney", "font": "sans", "fg": "#ffffff", "halo": false, "soffit": "lane_ceiling"},
@@ -1976,7 +2234,8 @@ func anchor_front(g, e, a, b, n, t, Ln, sd, lk):
 		box(g, "halo", sc - n * 0.005, abs_size(t, min(Ln * 0.42, 9.0), 1.15, 0.01, n))
 	var lab = label(lk.text, lk.font, lk.fg, sc + n * 0.02, n, min(Ln * 0.38, 8.0), 1.2)
 	if lk.get("lit", false):
-		lab.modulate = Color(1.3, 1.3, 1.3)
+		var lc = Color(lk.fg)
+		lab.modulate = Color(lc.r * 1.3, lc.g * 1.3, lc.b * 1.3)
 	# the sales floor behind the open mouth
 	var p0 = a + t * 0.6
 	var p1 = b - t * 0.6
@@ -2212,7 +2471,10 @@ func floor_zone(z):
 			meta = {"pattern": 0}
 	else:
 		meta = {"pattern": 2, "cx": (r[0] + r[2]) * 0.5, "cz": (r[1] + r[3]) * 0.5, "hx": (r[2] - r[0]) * 0.5, "hz": (r[3] - r[1]) * 0.5,
-			"palette": {"shoe": 1, "sears": 2}.get(z.style, 0)}
+			# Demo 42, from the 2026 footage: Dillard's court blue-grey (Steven, Oct 23: "it's blue"),
+			# Sears court terracotta and white, Shoe Dept. court sage green, JCPenney court a straight
+			# terracotta-and-white checker
+			"palette": {"dillards": 1, "sears": 2, "shoe": 3, "penney": 4}.get(z.style, 0)}
 	m.set_meta("floor", meta)
 	quad(z.id, mname, [Vector3(r[0], 0, r[1]), Vector3(r[2], 0, r[1]), Vector3(r[2], 0, r[3]), Vector3(r[0], 0, r[3])], Vector3.UP)
 
@@ -2262,16 +2524,32 @@ func _parse_wing():
 	for a in OS.get_cmdline_user_args():
 		if a.begins_with("--wing="):
 			WING = int(a.substr(7))
+		if a.begins_with("--year="):
+			YEAR = int(a.substr(7))
 	if OS.get_environment("MALL_WING") != "":
 		WING = int(OS.get_environment("MALL_WING"))
+	if OS.get_environment("MALL_YEAR") != "":
+		YEAR = int(OS.get_environment("MALL_YEAR"))
 	if WING != 0:
 		GEN = "res://gen/w%d/" % WING
+		if YEAR == 2026:
+			GEN = "res://gen/w%dy26/" % WING
+
+## The layout file, the scene and the stand-in picture prefix for this build's year.
+func layout_path():
+	return "res://layout_2026.json" if YEAR == 2026 else "res://layout_mall.json"
+func scene_path():
+	if WING == 0:
+		return "res://main.tscn"
+	return ("res://wing%d_2026.tscn" if YEAR == 2026 else "res://wing%d.tscn") % WING
+func standin_prefix():
+	return "y26_from_w" if YEAR == 2026 else "from_w"
 
 func build():
 	seed(1995)
 	_parse_wing()
-	print("building wing ", WING, " into ", GEN)
-	L = JSON.parse_string(FileAccess.get_file_as_string("res://layout_mall.json"))
+	print("building wing ", WING, " year ", YEAR, " into ", GEN)
+	L = JSON.parse_string(FileAccess.get_file_as_string(layout_path()))
 	if USE_FRONT_ART and FileAccess.file_exists("res://fronts.json"):
 		var fj = JSON.parse_string(FileAccess.get_file_as_string("res://fronts.json"))
 		fronts_px = float(fj.atlas.px_per_tile)
@@ -2320,13 +2598,17 @@ func build():
 			build_edge(e)
 		else:
 			standin_edge(e)
+	hall_mouths()
+	star_medallions()
 	if WING != 0:
 		print("stand-in: ", standin_slots.size(), " storefront slots at ", pack_standin(), " px/m")
 		standin_quads()
-	var avoid = kiosks()
+	var avoid = kiosks() if YEAR != 2026 else []
 	place_fixtures(avoid)
-	# framed Courier ads on the bare walls (Steven, Oct 14: tools/stores/posters/posters.gd)
-	load("res://tools/stores/posters/posters.gd").build(self)
+	# framed Courier ads on the bare walls (Steven, Oct 14: tools/stores/posters/posters.gd); 1990s ads,
+	# so not in 2026
+	if YEAR != 2026:
+		load("res://tools/stores/posters/posters.gd").build(self)
 	# K&B's mall-facing wall: pink with plum stripes instead of a full storefront
 	# is a per-store look we add in Phase 2 (decision 6); its storefront is generic for now.
 
@@ -2443,6 +2725,7 @@ func build():
 	cf.store_string(JSON.stringify({"static": obstacles, "fixtures": fx_obstacles}))
 	cf.close()
 	mall.set_meta("wing", WING)
+	mall.set_meta("year", YEAR)
 	mall.set_meta("gen", GEN)
 	if WING != 0:
 		# the wing's walk grid, its seam and where a fresh start stands (scripts/player.gd)
@@ -2473,9 +2756,9 @@ func build():
 
 	var ps = PackedScene.new()
 	ps.pack(mall)
-	var scene_path = "res://main.tscn" if WING == 0 else "res://wing%d.tscn" % WING
-	ResourceSaver.save(ps, scene_path)
-	print("saved ", scene_path)
+	var sp_out = scene_path()
+	ResourceSaver.save(ps, sp_out)
+	print("saved ", sp_out)
 	var lights = light_root.get_child_count()
 	print("BUILD OK static groups=", acc.size(), " dynamic=", dyn_acc.size(), " lights=", lights, " labels=", mall.get_children().filter(func(c): return c is Label3D).size())
 

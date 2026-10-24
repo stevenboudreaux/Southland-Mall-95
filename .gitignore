@@ -37,6 +37,8 @@ prototypes/godot-mall/project/main_*.lmbake
 # lightmaps and the stand-in pictures live on godot-build too (play/, lightmaps/, standin/)
 prototypes/godot-mall/play/w1.*
 prototypes/godot-mall/play/w2.*
+prototypes/godot-mall/play/w1y26.*
+prototypes/godot-mall/play/w2y26.*
 prototypes/godot-mall/project/wing*_night.*
 prototypes/godot-mall/project/wing*_day.*
 prototypes/godot-mall/project/tex/standin/*.png

@@ -706,7 +706,9 @@ const GODOT_THREADS_ENABLED = $GODOT_THREADS_ENABLED;
 // Dillard's court, the Concourse, JCPenney). ?wing=1|2 picks the wing; the game sets it when you
 // cross the seam. While you walk one wing, the other wing's file is fetched into this browser's
 // cache (Cache Storage), so crossing over does not download it again.
-const PACK_SIZES = {"w1": {"desktop": 0, "mobile": 0}, "w2": {"desktop": 0, "mobile": 0}}; // PACK_SIZES
+// ?year=2026: the mall as it is today (same building, today's stores), its own pair of files per
+// wing: w1y26.* / w2y26.* (scripts/player.gd's 1995 / 2026 switch sets it).
+const PACK_SIZES = {"w1": {"desktop": 0, "mobile": 0}, "w2": {"desktop": 0, "mobile": 0}, "w1y26": {"desktop": 0, "mobile": 0}, "w2y26": {"desktop": 0, "mobile": 0}}; // PACK_SIZES
 function mallPackKind() {
 	try { const q = new URLSearchParams(location.search).get('pack'); if (q === 'desktop' || q === 'mobile') { return q; } } catch (e) { /* ignore */ }
 	try { const s = localStorage.getItem('southland-pack'); if (s === 'desktop' || s === 'mobile') { return s; } } catch (e) { /* ignore */ }
@@ -729,19 +731,23 @@ window.__mallWing = (function () {
 	try { const w = new URLSearchParams(location.search).get('wing'); if (w === '2') { return 2; } } catch (e) { /* ignore */ }
 	return 1;
 }());
-const MALL_PACK = (w) => 'w' + w + '.' + window.__mallPack + '.pck';
+window.__mallYear = (function () {
+	try { if (new URLSearchParams(location.search).get('year') === '2026') { return 'y26'; } } catch (e) { /* ignore */ }
+	return '';
+}());
+const MALL_PACK = (w) => 'w' + w + window.__mallYear + '.' + window.__mallPack + '.pck';
 GODOT_CONFIG['mainPack'] = MALL_PACK(window.__mallWing);
 GODOT_CONFIG['fileSizes'] = GODOT_CONFIG['fileSizes'] || {};
-const mallSize = (w) => (PACK_SIZES['w' + w] || {})[window.__mallPack] || 0;
+const mallSize = (w) => (PACK_SIZES['w' + w + window.__mallYear] || {})[window.__mallPack] || 0;
 if (mallSize(window.__mallWing)) { GODOT_CONFIG['fileSizes'][GODOT_CONFIG['mainPack']] = mallSize(window.__mallWing); }
 // one cache per build (the pack sizes change with every export), older ones are removed
-const MALL_CACHE = 'mall-wings-' + [mallSize(1), mallSize(2)].join('-');
+const MALL_CACHE = 'mall-wings-' + window.__mallYear + [mallSize(1), mallSize(2)].join('-');
 const mallPackUrl = (w) => new URL(MALL_PACK(w), location.href).toString();
 if ('caches' in window) {
 	const netFetch = window.fetch.bind(window);
 	window.fetch = function (input, init) {
 		const url = typeof input === 'string' ? input : (input && input.url) || '';
-		if (/w[12]\.(desktop|mobile)\.pck(\?|$)/.test(url)) {
+		if (/w[12](y26)?\.(desktop|mobile)\.pck(\?|$)/.test(url)) {
 			const abs = new URL(url, location.href).toString();
 			return caches.open(MALL_CACHE).then((c) => c.match(abs)).then((r) => r || netFetch(input, init)).catch(() => netFetch(input, init));
 		}
@@ -762,7 +768,7 @@ let mallXfer = '';
 try { mallXfer = sessionStorage.getItem('mall-xfer') || ''; } catch (e) { /* ignore */ }
 if (mallXfer) {
 	document.body.classList.add('xfer');
-	document.getElementById('load-title').textContent = window.__mallWing === 2 ? 'Wing 2' : 'Wing 1';
+	document.getElementById('load-title').textContent = (window.__mallWing === 2 ? 'Wing 2' : 'Wing 1') + (window.__mallYear ? ' \u00b7 2026' : '');
 	document.getElementById('load-sub').textContent = window.__mallWing === 2 ? "Dillard's & JCPenney" : 'Sears & the main entrance';
 }
 // Fun facts on the load screen (first open and every wing crossing): one at random, then a

@@ -1,0 +1,4291 @@
+{
+ "scale": 2.0,
+ "origin": [
+  148.0,
+  100.0
+ ],
+ "zones": [
+  {
+   "id": "C1",
+   "type": "court",
+   "name": "Sears court",
+   "rect": [
+    -16.0,
+    -96.0,
+    8.0,
+    -86.0
+   ],
+   "style": "sears"
+  },
+  {
+   "id": "H1a",
+   "type": "hall",
+   "name": "Sears hall west",
+   "rect": [
+    -76.0,
+    -96.0,
+    -16.0,
+    -86.0
+   ],
+   "axis": "x",
+   "width": 10.0,
+   "vault_half": 2.5
+  },
+  {
+   "id": "H1b",
+   "type": "hall",
+   "name": "Sears hall east",
+   "rect": [
+    8.0,
+    -96.0,
+    36.0,
+    -86.0
+   ],
+   "axis": "x",
+   "width": 10.0,
+   "vault_half": 2.5
+  },
+  {
+   "id": "H2",
+   "type": "hall",
+   "name": "East hall north",
+   "rect": [
+    -10.0,
+    -86.0,
+    2.0,
+    -10.0
+   ],
+   "axis": "z",
+   "width": 12.0,
+   "vault_half": 3.0
+  },
+  {
+   "id": "C2",
+   "type": "court",
+   "name": "Shoe Dept. court",
+   "rect": [
+    -10.0,
+    -10.0,
+    12.0,
+    6.0
+   ],
+   "style": "shoe"
+  },
+  {
+   "id": "H3",
+   "type": "hall",
+   "name": "Main entrance hall",
+   "rect": [
+    12.0,
+    -6.0,
+    36.0,
+    6.0
+   ],
+   "axis": "x",
+   "width": 12.0,
+   "vault_half": 3.0
+  },
+  {
+   "id": "H4",
+   "type": "hall",
+   "name": "East hall south",
+   "rect": [
+    -10.0,
+    6.0,
+    2.0,
+    48.0
+   ],
+   "axis": "z",
+   "width": 12.0,
+   "vault_half": 3.0
+  },
+  {
+   "id": "C3",
+   "type": "court",
+   "name": "Dillard's court",
+   "rect": [
+    -20.0,
+    48.0,
+    2.0,
+    74.0
+   ],
+   "style": "dillards"
+  },
+  {
+   "id": "H8",
+   "type": "hall",
+   "name": "Dillard's entry",
+   "rect": [
+    -10.0,
+    74.0,
+    2.0,
+    80.0
+   ],
+   "axis": "z",
+   "width": 12.0,
+   "vault_half": 3.0
+  },
+  {
+   "id": "H5",
+   "type": "hall",
+   "name": "Concourse",
+   "rect": [
+    -136.0,
+    48.0,
+    -20.0,
+    60.0
+   ],
+   "axis": "x",
+   "width": 12.0,
+   "vault_half": 3.0
+  },
+  {
+   "id": "C4",
+   "type": "court",
+   "name": "JCPenney court",
+   "rect": [
+    -154.0,
+    44.0,
+    -136.0,
+    68.0
+   ],
+   "style": "penney"
+  },
+  {
+   "id": "H6",
+   "type": "hall",
+   "name": "South exit hall",
+   "rect": [
+    -146.0,
+    68.0,
+    -138.0,
+    88.0
+   ],
+   "axis": "z",
+   "width": 8.0,
+   "vault_half": 2.0
+  },
+  {
+   "id": "H7",
+   "type": "hall",
+   "name": "Restroom hall",
+   "rect": [
+    -50.0,
+    60.0,
+    -48.0,
+    96.0
+   ],
+   "axis": "z",
+   "width": 2.0,
+   "vault_half": 0
+  }
+ ],
+ "leftovers": [],
+ "court_walls": [
+  {
+   "zone": "C1",
+   "side": "n",
+   "halls": []
+  },
+  {
+   "zone": "C1",
+   "side": "s",
+   "halls": [
+    "H2"
+   ]
+  },
+  {
+   "zone": "C1",
+   "side": "w",
+   "halls": [
+    "H1a"
+   ]
+  },
+  {
+   "zone": "C1",
+   "side": "e",
+   "halls": [
+    "H1b"
+   ]
+  },
+  {
+   "zone": "C2",
+   "side": "n",
+   "halls": [
+    "H2"
+   ]
+  },
+  {
+   "zone": "C2",
+   "side": "s",
+   "halls": [
+    "H4"
+   ]
+  },
+  {
+   "zone": "C2",
+   "side": "w",
+   "halls": []
+  },
+  {
+   "zone": "C2",
+   "side": "e",
+   "halls": [
+    "H3"
+   ]
+  },
+  {
+   "zone": "C3",
+   "side": "n",
+   "halls": [
+    "H4"
+   ]
+  },
+  {
+   "zone": "C3",
+   "side": "s",
+   "halls": [
+    "H8"
+   ]
+  },
+  {
+   "zone": "C3",
+   "side": "w",
+   "halls": [
+    "H5"
+   ]
+  },
+  {
+   "zone": "C3",
+   "side": "e",
+   "halls": []
+  },
+  {
+   "zone": "C4",
+   "side": "n",
+   "halls": []
+  },
+  {
+   "zone": "C4",
+   "side": "s",
+   "halls": [
+    "H6"
+   ]
+  },
+  {
+   "zone": "C4",
+   "side": "w",
+   "halls": []
+  },
+  {
+   "zone": "C4",
+   "side": "e",
+   "halls": [
+    "H5"
+   ]
+  }
+ ],
+ "hall_ends": [
+  {
+   "zone": "H1a",
+   "end": "lo",
+   "closed": true
+  },
+  {
+   "zone": "H1a",
+   "end": "hi",
+   "closed": false
+  },
+  {
+   "zone": "H1b",
+   "end": "lo",
+   "closed": false
+  },
+  {
+   "zone": "H1b",
+   "end": "hi",
+   "closed": true
+  },
+  {
+   "zone": "H2",
+   "end": "lo",
+   "closed": false
+  },
+  {
+   "zone": "H2",
+   "end": "hi",
+   "closed": false
+  },
+  {
+   "zone": "H3",
+   "end": "lo",
+   "closed": false
+  },
+  {
+   "zone": "H3",
+   "end": "hi",
+   "closed": true
+  },
+  {
+   "zone": "H4",
+   "end": "lo",
+   "closed": false
+  },
+  {
+   "zone": "H4",
+   "end": "hi",
+   "closed": false
+  },
+  {
+   "zone": "H8",
+   "end": "lo",
+   "closed": false
+  },
+  {
+   "zone": "H8",
+   "end": "hi",
+   "closed": true
+  },
+  {
+   "zone": "H5",
+   "end": "lo",
+   "closed": false
+  },
+  {
+   "zone": "H5",
+   "end": "hi",
+   "closed": false
+  },
+  {
+   "zone": "H6",
+   "end": "lo",
+   "closed": false
+  },
+  {
+   "zone": "H6",
+   "end": "hi",
+   "closed": true
+  },
+  {
+   "zone": "H7",
+   "end": "lo",
+   "closed": false
+  },
+  {
+   "zone": "H7",
+   "end": "hi",
+   "closed": true
+  }
+ ],
+ "edges": [
+  {
+   "a": [
+    -76.0,
+    -96.0
+   ],
+   "b": [
+    -40.0,
+    -96.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    30.0,
+    -96.0
+   ],
+   "b": [
+    36.0,
+    -96.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -76.0,
+    -96.0
+   ],
+   "b": [
+    -76.0,
+    -86.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "exit",
+   "store": "s41",
+   "depth": 4.0
+  },
+  {
+   "a": [
+    -40.0,
+    -96.0
+   ],
+   "b": [
+    30.0,
+    -96.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s1",
+   "depth": 38.0
+  },
+  {
+   "a": [
+    36.0,
+    -96.0
+   ],
+   "b": [
+    36.0,
+    -86.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "exit",
+   "store": "s43",
+   "depth": 4.0
+  },
+  {
+   "a": [
+    -76.0,
+    -86.0
+   ],
+   "b": [
+    -70.0,
+    -86.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -36.0,
+    -86.0
+   ],
+   "b": [
+    -10.0,
+    -86.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    2.0,
+    -86.0
+   ],
+   "b": [
+    22.0,
+    -86.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -70.0,
+    -86.0
+   ],
+   "b": [
+    -46.0,
+    -86.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s40",
+   "depth": 22.0
+  },
+  {
+   "a": [
+    -46.0,
+    -86.0
+   ],
+   "b": [
+    -36.0,
+    -86.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s29ab",
+   "depth": 14.0
+  },
+  {
+   "a": [
+    22.0,
+    -86.0
+   ],
+   "b": [
+    36.0,
+    -86.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s42",
+   "depth": 32.0
+  },
+  {
+   "a": [
+    -10.0,
+    -86.0
+   ],
+   "b": [
+    -10.0,
+    -80.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "n8",
+   "depth": 26.0
+  },
+  {
+   "a": [
+    2.0,
+    -86.0
+   ],
+   "b": [
+    2.0,
+    -80.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s28",
+   "depth": 20.0
+  },
+  {
+   "a": [
+    -10.0,
+    -80.0
+   ],
+   "b": [
+    -10.0,
+    -64.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "n9",
+   "depth": 26.0
+  },
+  {
+   "a": [
+    2.0,
+    -80.0
+   ],
+   "b": [
+    2.0,
+    -72.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s27",
+   "depth": 20.0
+  },
+  {
+   "a": [
+    2.0,
+    -72.0
+   ],
+   "b": [
+    2.0,
+    -66.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s26",
+   "depth": 20.0
+  },
+  {
+   "a": [
+    2.0,
+    -66.0
+   ],
+   "b": [
+    2.0,
+    -62.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "n62",
+   "depth": 20.0
+  },
+  {
+   "a": [
+    -10.0,
+    -64.0
+   ],
+   "b": [
+    -10.0,
+    -58.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s19",
+   "depth": 52.0
+  },
+  {
+   "a": [
+    2.0,
+    -62.0
+   ],
+   "b": [
+    2.0,
+    -54.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "n63",
+   "depth": 20.0
+  },
+  {
+   "a": [
+    -10.0,
+    -58.0
+   ],
+   "b": [
+    -10.0,
+    -52.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s18",
+   "depth": 52.0
+  },
+  {
+   "a": [
+    2.0,
+    -54.0
+   ],
+   "b": [
+    2.0,
+    -48.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s24",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -10.0,
+    -52.0
+   ],
+   "b": [
+    -10.0,
+    -40.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s17",
+   "depth": 42.0
+  },
+  {
+   "a": [
+    2.0,
+    -48.0
+   ],
+   "b": [
+    2.0,
+    -28.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s25",
+   "depth": 42.0
+  },
+  {
+   "a": [
+    -10.0,
+    -40.0
+   ],
+   "b": [
+    -10.0,
+    -22.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s16",
+   "depth": 42.0
+  },
+  {
+   "a": [
+    2.0,
+    -28.0
+   ],
+   "b": [
+    2.0,
+    -18.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s25b",
+   "depth": 16.0
+  },
+  {
+   "a": [
+    -10.0,
+    -22.0
+   ],
+   "b": [
+    -10.0,
+    10.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s13",
+   "depth": 64.0
+  },
+  {
+   "a": [
+    2.0,
+    -18.0
+   ],
+   "b": [
+    2.0,
+    -10.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s29",
+   "depth": 18.0
+  },
+  {
+   "a": [
+    -10.0,
+    10.0
+   ],
+   "b": [
+    -10.0,
+    20.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s10a",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -10.0,
+    20.0
+   ],
+   "b": [
+    -10.0,
+    30.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s10",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    2.0,
+    -10.0
+   ],
+   "b": [
+    12.0,
+    -10.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s29",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    12.0,
+    -10.0
+   ],
+   "b": [
+    12.0,
+    -6.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s29",
+   "depth": 18.0
+  },
+  {
+   "a": [
+    12.0,
+    -6.0
+   ],
+   "b": [
+    20.0,
+    -6.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s29",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    20.0,
+    -6.0
+   ],
+   "b": [
+    30.0,
+    -6.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s31",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    30.0,
+    -6.0
+   ],
+   "b": [
+    36.0,
+    -6.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s32b",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    36.0,
+    -6.0
+   ],
+   "b": [
+    36.0,
+    6.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "entrance",
+   "store": "s39",
+   "depth": 8.0
+  },
+  {
+   "a": [
+    16.0,
+    6.0
+   ],
+   "b": [
+    22.0,
+    6.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s35",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    22.0,
+    6.0
+   ],
+   "b": [
+    30.0,
+    6.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s36",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    30.0,
+    6.0
+   ],
+   "b": [
+    36.0,
+    6.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s38",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    2.0,
+    6.0
+   ],
+   "b": [
+    10.0,
+    6.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s33",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    10.0,
+    6.0
+   ],
+   "b": [
+    16.0,
+    6.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s34",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    2.0,
+    16.0
+   ],
+   "b": [
+    2.0,
+    26.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s21",
+   "depth": 42.0
+  },
+  {
+   "a": [
+    -10.0,
+    30.0
+   ],
+   "b": [
+    -10.0,
+    36.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s10b",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    2.0,
+    26.0
+   ],
+   "b": [
+    2.0,
+    32.4
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s21d",
+   "depth": 42.0
+  },
+  {
+   "a": [
+    2.0,
+    34.0
+   ],
+   "b": [
+    2.0,
+    50.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s21d",
+   "depth": 42.0
+  },
+  {
+   "a": [
+    -10.0,
+    36.0
+   ],
+   "b": [
+    -10.0,
+    48.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s8",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    -154.0,
+    44.0
+   ],
+   "b": [
+    -138.0,
+    44.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s51",
+   "depth": 24.0
+  },
+  {
+   "a": [
+    -154.0,
+    44.0
+   ],
+   "b": [
+    -154.0,
+    68.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s6",
+   "depth": 48.0
+  },
+  {
+   "a": [
+    -132.0,
+    48.0
+   ],
+   "b": [
+    -122.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s50",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -122.0,
+    48.0
+   ],
+   "b": [
+    -110.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s49",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -110.0,
+    48.0
+   ],
+   "b": [
+    -102.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s48",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -102.0,
+    48.0
+   ],
+   "b": [
+    -94.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s47",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -94.0,
+    48.0
+   ],
+   "b": [
+    -86.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s46",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -86.0,
+    48.0
+   ],
+   "b": [
+    -80.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s45",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -80.0,
+    48.0
+   ],
+   "b": [
+    -74.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "n33",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -74.0,
+    48.0
+   ],
+   "b": [
+    -68.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "n33b",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -68.0,
+    48.0
+   ],
+   "b": [
+    -62.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "n34",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -62.0,
+    48.0
+   ],
+   "b": [
+    -50.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "n35",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -50.0,
+    48.0
+   ],
+   "b": [
+    -40.7,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "n36",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -37.0,
+    48.0
+   ],
+   "b": [
+    -32.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s44",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -32.0,
+    48.0
+   ],
+   "b": [
+    -26.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "smuopv1vy0",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -26.0,
+    48.0
+   ],
+   "b": [
+    -20.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s8b",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -20.0,
+    48.0
+   ],
+   "b": [
+    -10.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "store",
+   "store": "s8",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    2.0,
+    50.0
+   ],
+   "b": [
+    2.0,
+    66.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s4",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -130.0,
+    60.0
+   ],
+   "b": [
+    -124.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "n39",
+   "depth": 8.0
+  },
+  {
+   "a": [
+    -124.0,
+    60.0
+   ],
+   "b": [
+    -118.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "n42",
+   "depth": 32.0
+  },
+  {
+   "a": [
+    -118.0,
+    60.0
+   ],
+   "b": [
+    -110.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s52",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -110.0,
+    60.0
+   ],
+   "b": [
+    -102.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s52b",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -102.0,
+    60.0
+   ],
+   "b": [
+    -94.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s64",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -94.0,
+    60.0
+   ],
+   "b": [
+    -86.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "n46",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -86.0,
+    60.0
+   ],
+   "b": [
+    -82.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s63",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -82.0,
+    60.0
+   ],
+   "b": [
+    -76.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s63b",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -76.0,
+    60.0
+   ],
+   "b": [
+    -68.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s62",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -68.0,
+    60.0
+   ],
+   "b": [
+    -58.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s61",
+   "depth": 40.0
+  },
+  {
+   "a": [
+    -58.0,
+    60.0
+   ],
+   "b": [
+    -50.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s60",
+   "depth": 24.0
+  },
+  {
+   "a": [
+    -48.0,
+    60.0
+   ],
+   "b": [
+    -44.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s59",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -44.0,
+    60.0
+   ],
+   "b": [
+    -40.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s58",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -40.0,
+    60.0
+   ],
+   "b": [
+    -36.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "n56",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -36.0,
+    60.0
+   ],
+   "b": [
+    -28.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s57v",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    -28.0,
+    60.0
+   ],
+   "b": [
+    -20.0,
+    60.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s57",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    -50.0,
+    60.0
+   ],
+   "b": [
+    -50.0,
+    84.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -48.0,
+    60.0
+   ],
+   "b": [
+    -48.0,
+    72.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -20.0,
+    60.0
+   ],
+   "b": [
+    -20.0,
+    70.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s57",
+   "depth": 8.0
+  },
+  {
+   "a": [
+    -154.0,
+    68.0
+   ],
+   "b": [
+    -146.0,
+    68.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s7",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    -138.0,
+    68.0
+   ],
+   "b": [
+    -136.0,
+    68.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    2.0,
+    66.0
+   ],
+   "b": [
+    2.0,
+    74.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s20",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -146.0,
+    68.0
+   ],
+   "b": [
+    -146.0,
+    78.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s7",
+   "depth": 8.0
+  },
+  {
+   "a": [
+    -138.0,
+    68.0
+   ],
+   "b": [
+    -138.0,
+    80.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s54",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -20.0,
+    70.0
+   ],
+   "b": [
+    -20.0,
+    74.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -48.0,
+    72.0
+   ],
+   "b": [
+    -48.0,
+    96.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "restroom",
+   "store": "s66",
+   "depth": 6.0
+  },
+  {
+   "a": [
+    -20.0,
+    74.0
+   ],
+   "b": [
+    -10.0,
+    74.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s57b",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    -10.0,
+    74.0
+   ],
+   "b": [
+    -10.0,
+    80.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s57b",
+   "depth": 10.0
+  },
+  {
+   "a": [
+    2.0,
+    74.0
+   ],
+   "b": [
+    2.0,
+    80.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s3",
+   "depth": 28.0
+  },
+  {
+   "a": [
+    -146.0,
+    78.0
+   ],
+   "b": [
+    -146.0,
+    88.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "store",
+   "store": "s7b",
+   "depth": 8.0
+  },
+  {
+   "a": [
+    -10.0,
+    80.0
+   ],
+   "b": [
+    2.0,
+    80.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "store",
+   "store": "s2",
+   "depth": 38.0
+  },
+  {
+   "a": [
+    -138.0,
+    80.0
+   ],
+   "b": [
+    -138.0,
+    88.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "store",
+   "store": "s56",
+   "depth": 12.0
+  },
+  {
+   "a": [
+    -50.0,
+    84.0
+   ],
+   "b": [
+    -50.0,
+    96.0
+   ],
+   "n": [
+    1,
+    0
+   ],
+   "kind": "restroom",
+   "store": "s65",
+   "depth": 8.0
+  },
+  {
+   "a": [
+    -146.0,
+    88.0
+   ],
+   "b": [
+    -138.0,
+    88.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "exit",
+   "store": "s55",
+   "depth": 4.0
+  },
+  {
+   "a": [
+    -50.0,
+    96.0
+   ],
+   "b": [
+    -48.0,
+    96.0
+   ],
+   "n": [
+    0,
+    -1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -40.7,
+    48.0
+   ],
+   "b": [
+    -37.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    2.0,
+    32.4
+   ],
+   "b": [
+    2.0,
+    34.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    2.0,
+    6.0
+   ],
+   "b": [
+    2.0,
+    16.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -136.0,
+    48.0
+   ],
+   "b": [
+    -132.0,
+    48.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -136.0,
+    44.0
+   ],
+   "b": [
+    -136.0,
+    48.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -138.0,
+    44.0
+   ],
+   "b": [
+    -136.0,
+    44.0
+   ],
+   "n": [
+    0,
+    1
+   ],
+   "kind": "wall"
+  },
+  {
+   "a": [
+    -136.0,
+    66.0
+   ],
+   "b": [
+    -130.0,
+    60.0
+   ],
+   "n": [
+    -0.707107,
+    -0.707107
+   ],
+   "kind": "store",
+   "store": "n39",
+   "depth": 14.0
+  },
+  {
+   "a": [
+    -136.0,
+    66.0
+   ],
+   "b": [
+    -136.0,
+    68.0
+   ],
+   "n": [
+    -1,
+    0
+   ],
+   "kind": "wall"
+  }
+ ],
+ "stores": {
+  "s1": {
+   "name": "LYNN'S INTERIORS",
+   "sign": "Lynn's Interiors",
+   "bg": "#ffffff",
+   "fg": "#111111",
+   "merch": [
+    "#c8202c",
+    "#ffffff",
+    "#1f4e9c",
+    "#f2c94c"
+   ],
+   "anchor": true,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "serif",
+   "has_front_image": false
+  },
+  "s6": {
+   "name": "JCPENNEY",
+   "sign": "JCPenney",
+   "bg": "#cc0000",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#c8102e",
+    "#2b4a8a"
+   ],
+   "anchor": true,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n2": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": true,
+   "noSign": true,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s2": {
+   "name": "DILLARD'S",
+   "sign": "Dillard's",
+   "bg": "#c9a66b",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#e5c96b",
+    "#ffffff",
+    "#2b4a8a"
+   ],
+   "anchor": true,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": 4,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "serif",
+   "has_front_image": false
+  },
+  "s41": {
+   "name": "EXIT",
+   "sign": "Exit",
+   "bg": "#2e7d4f",
+   "fg": "#ffffff",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s43": {
+   "name": "EAST ENTRANCE",
+   "sign": "East Entrance",
+   "bg": "#2e7d4f",
+   "fg": "#ffffff",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s40": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s42": {
+   "name": "THE RED SEAL PIZZERIA & BAR",
+   "sign": "The Red Seal",
+   "bg": "#ffffff",
+   "fg": "#c8202c",
+   "merch": [
+    "#c8202c",
+    "#2e7d4f",
+    "#f2c94c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": true,
+   "awningColor": "#c8202c",
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n8": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s29ab": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n9": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s19": {
+   "name": "SOLA CENTER FOR THE ARTS",
+   "sign": "Sola",
+   "bg": "#111111",
+   "fg": "#e14fa0",
+   "merch": [
+    "#f2c94c",
+    "#243a6b",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s18": {
+   "name": "PRIME TIME FITNESS",
+   "sign": "Prime Time Fitness",
+   "bg": "#ffffff",
+   "fg": "#111111",
+   "merch": [
+    "#ffffff",
+    "#c8202c",
+    "#f2c94c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s17": {
+   "name": "INSPIRED 2 DANCE",
+   "sign": "Inspired 2 Dance",
+   "bg": "#2a9d9f",
+   "fg": "#ffffff",
+   "merch": [
+    "#f6e7b8",
+    "#6e3b1f",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s16": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s13": {
+   "name": "THE BILLIARD ROOM",
+   "sign": "The Billiard Room",
+   "bg": "#111111",
+   "fg": "#d4af37",
+   "merch": [
+    "#ffffff",
+    "#f6d25a",
+    "#2b4a8a",
+    "#d23c3c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "serif",
+   "has_front_image": false
+  },
+  "s10": {
+   "name": "RAINBOW",
+   "sign": "Rainbow",
+   "bg": "#ffffff",
+   "fg": "#1f6fd1",
+   "merch": [
+    "#ffffff",
+    "#6e2a38",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "script",
+   "has_front_image": false
+  },
+  "s10a": {
+   "name": "A\u00c9ROPOSTALE",
+   "sign": "A\u00e9ropostale",
+   "bg": "#111111",
+   "fg": "#e3211c",
+   "merch": [
+    "#ffffff",
+    "#6e2a38",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s10b": {
+   "name": "GNC",
+   "sign": "Gnc",
+   "bg": "#ffffff",
+   "fg": "#111111",
+   "merch": [
+    "#ffffff",
+    "#6e2a38",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s44": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "smuopv1vy0": {
+   "name": "GREAT AMERICAN COOKIES",
+   "sign": "Great American Cookies",
+   "bg": "#ffffff",
+   "fg": "#c8202c",
+   "merch": [
+    "#c9932c",
+    "#ffffff",
+    "#6e2a38"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": true,
+   "awningColor": "#5b2a86",
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s8b": {
+   "name": "LIDS",
+   "sign": "Lids",
+   "bg": "#1b2a5e",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#2451c4",
+    "#c8202c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s8": {
+   "name": "DJS JEWELERS",
+   "sign": "Djs Jewelers",
+   "bg": "#111111",
+   "fg": "#d4af37",
+   "merch": [
+    "#d23c3c",
+    "#f2c744",
+    "#2451c4",
+    "#9acb3c",
+    "#e9a6b8"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": true,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": "#c9a5b3",
+   "font": "serif",
+   "has_front_image": false
+  },
+  "s51": {
+   "name": "IMPRESSIVE PRINTS",
+   "sign": "Impressive Prints",
+   "bg": "#6b5b4e",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#222222",
+    "#d23c3c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s50": {
+   "name": "LOLA LABELLE BRIDAL",
+   "sign": "Lola LaBelle",
+   "bg": "#111111",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#1d1d24",
+    "#c9a5b3",
+    "#8fa9c9"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "script",
+   "has_front_image": false
+  },
+  "s49": {
+   "name": "HOUSE OF FADEZ BARBERSHOP",
+   "sign": "House of Fadez",
+   "bg": "#1f4e9c",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#243a6b",
+    "#c8202c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s48": {
+   "name": "AT&T",
+   "sign": "At&t",
+   "bg": "#111111",
+   "fg": "#ffffff",
+   "merch": [
+    "#d23c3c",
+    "#243a6b",
+    "#f2c744",
+    "#ffffff",
+    "#2e7d4f"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s47": {
+   "name": "AVANT-GARDE",
+   "sign": "Avant-garde",
+   "bg": "#7a4a2a",
+   "fg": "#ffffff",
+   "merch": [
+    "#f2c94c",
+    "#7a1f5c",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s46": {
+   "name": "HI-5",
+   "sign": "hi-5",
+   "bg": "#c8c8c8",
+   "fg": "#2e8b3a",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": 7,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s45": {
+   "name": "JOURNEYS",
+   "sign": "Journeys",
+   "bg": "#5b2d8e",
+   "fg": "#b5e61d",
+   "merch": [
+    "#e9a6b8",
+    "#1d1d24",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n33": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n33b": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n34": {
+   "name": "FOOT LOCKER",
+   "sign": "Foot Locker",
+   "bg": "#9a9a9a",
+   "fg": "#c8202c",
+   "merch": [
+    "#ffffff",
+    "#111111",
+    "#d23c3c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n35": {
+   "name": "SPENCER'S",
+   "sign": "Spencer's",
+   "bg": "#5a2a1a",
+   "fg": "#ffffff",
+   "merch": [
+    "#e57b2b",
+    "#2451c4",
+    "#f2c744",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n36": {
+   "name": "MAURICES",
+   "sign": "maurices",
+   "bg": "#ffffff",
+   "fg": "#1a9c9c",
+   "merch": [
+    "#5a3218",
+    "#f2c744",
+    "#a8672f",
+    "#8fb7d6"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "script",
+   "has_front_image": false
+  },
+  "s7": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": true,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": "#243a6b",
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s7b": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n39": {
+   "name": "CAKELICIOUS",
+   "sign": "Cakelicious",
+   "bg": "#f4a09a",
+   "fg": "#f6d25a",
+   "merch": [
+    "#e5c96b",
+    "#1d1d24",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "script",
+   "has_front_image": false
+  },
+  "s54": {
+   "name": "CORN DOG 7",
+   "sign": "Corn Dog 7",
+   "bg": "#f2c744",
+   "fg": "#c8202c",
+   "merch": [
+    "#c8202c",
+    "#f2c744",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": true,
+   "awningColor": "#2f8f86",
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s56": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n42": {
+   "name": "FOOD COURT",
+   "sign": "Feelin' Hungry?",
+   "bg": "#1f6fd1",
+   "fg": "#ffffff",
+   "merch": [
+    "#f6e7b8",
+    "#2e7d4f",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n43": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s52": {
+   "name": "GAMES, INC. (POCKET CHANGE)",
+   "sign": "games, inc.",
+   "bg": "#ffffff",
+   "fg": "#2e8b3a",
+   "merch": [
+    "#7fd3e6",
+    "#1d1d24",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s52b": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s64": {
+   "name": "WICKED WINGZ",
+   "sign": "Wicked Wingz",
+   "bg": "#111111",
+   "fg": "#f6d25a",
+   "merch": [
+    "#ffffff",
+    "#c8102e",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n46": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s63": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": 77,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s63b": {
+   "name": "TREASURE ISLAND PUTT PUTT GOLF",
+   "sign": "Treasure Island Putt Putt",
+   "bg": "#4aa3df",
+   "fg": "#ffffff",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s62": {
+   "name": "BATH & BODY WORKS",
+   "sign": "Bath & Body Works",
+   "bg": "#1f4e9c",
+   "fg": "#ffffff",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s61": {
+   "name": "RHEA LANA'S",
+   "sign": "Rhea Lana's",
+   "bg": "#4aa3df",
+   "fg": "#ffffff",
+   "merch": [
+    "#f6e7c0",
+    "#3b2230",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "script",
+   "has_front_image": false
+  },
+  "s60": {
+   "name": "FIRE HAUS 3.0",
+   "sign": "Fire Haus 3.0",
+   "bg": "#111111",
+   "fg": "#d4af37",
+   "merch": [
+    "#6a3d99",
+    "#2a9d8f",
+    "#d23c3c",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "serif",
+   "has_front_image": false
+  },
+  "s65": {
+   "name": "MEN",
+   "sign": "Men",
+   "bg": "#2f8f86",
+   "fg": "#ffffff",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": true,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s66": {
+   "name": "WOMEN",
+   "sign": "Women",
+   "bg": "#2f8f86",
+   "fg": "#ffffff",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": true,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s59": {
+   "name": "BOOST MOBILE",
+   "sign": "boost",
+   "bg": "#ffffff",
+   "fg": "#f26522",
+   "merch": [
+    "#f2c94c",
+    "#2f8f86",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s58": {
+   "name": "CELL XPERT",
+   "sign": "Cell Xpert",
+   "bg": "#ffffff",
+   "fg": "#1f6fd1",
+   "merch": [
+    "#f6e7b8",
+    "#5a3218",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n56": {
+   "name": "AUNTIE ANNE'S",
+   "sign": "Auntie Anne's",
+   "bg": "#1b2a5e",
+   "fg": "#ffffff",
+   "merch": [
+    "#5b2a86",
+    "#e9a6b8",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s57": {
+   "name": "CINNAMONSTER",
+   "sign": "Cinnamonster",
+   "bg": "#5c1a2a",
+   "fg": "#f6d25a",
+   "merch": [
+    "#f2c744",
+    "#ffffff",
+    "#f2c744"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": true,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": "#8c1e2a",
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s57v": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": true,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": "#8c1e2a",
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s57b": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": 4,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s55": {
+   "name": "EXIT",
+   "sign": "Exit",
+   "bg": "#2e7d4f",
+   "fg": "#ffffff",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s28": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s27": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s26": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n62": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "n63": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": 42,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s24": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s25": {
+   "name": "HYPERVELOCITY RACE TRACK",
+   "sign": "Hypervelocity Race Track",
+   "bg": "#c8102e",
+   "fg": "#e8e8e8",
+   "merch": [
+    "#5b2a86",
+    "#ffffff",
+    "#f2c744",
+    "#c8202c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s25b": {
+   "name": "NEEK & CO.",
+   "sign": "Neek & Co.",
+   "bg": "#ffffff",
+   "fg": "#1f6fd1",
+   "merch": [
+    "#5b2a86",
+    "#ffffff",
+    "#f2c744",
+    "#c8202c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s29": {
+   "name": "CLAIRE'S",
+   "sign": "claire's",
+   "bg": "#ffffff",
+   "fg": "#7b2cbf",
+   "merch": [
+    "#d4af37",
+    "#ffffff",
+    "#d4af37"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": true,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": "#6e2a38",
+   "font": "script",
+   "has_front_image": false
+  },
+  "s31": {
+   "name": "WAX UTOPIA",
+   "sign": "Wax Utopia",
+   "bg": "#111111",
+   "fg": "#d4af37",
+   "merch": [
+    "#ffffff",
+    "#1d1d24",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s32b": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s39": {
+   "name": "MAIN ENTRANCE",
+   "sign": "Main Entrance",
+   "bg": "#2e7d4f",
+   "fg": "#ffffff",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s33": {
+   "name": "ZALES",
+   "sign": "Zales",
+   "bg": "#f5efe6",
+   "fg": "#111111",
+   "merch": [
+    "#c8202c",
+    "#ffffff",
+    "#f2c744"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": true,
+   "awningColor": "#2f8f86",
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "serif",
+   "has_front_image": false
+  },
+  "s34": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": true,
+   "awningColor": "#2f8f86",
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s35": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": true,
+   "awningColor": "#5b2a86",
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s36": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s38": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s38b": {
+   "name": "T-MOBILE",
+   "sign": "T-Mobile",
+   "bg": "#ffffff",
+   "fg": "#e20074",
+   "merch": [
+    "#8fb7d6",
+    "#f2c744",
+    "#7fd06a",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s21": {
+   "name": "",
+   "sign": "",
+   "bg": "#8d8a80",
+   "fg": "#d8d4c8",
+   "merch": [
+    "#cccccc"
+   ],
+   "anchor": false,
+   "vacant": true,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s21d": {
+   "name": "SHOE DEPT. ENCORE",
+   "sign": "Shoe Dept. Encore",
+   "bg": "#ffffff",
+   "fg": "#111111",
+   "merch": [
+    "#f6e7c0",
+    "#5b2a86",
+    "#ffffff"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s4": {
+   "name": "VICTORIA'S SECRET",
+   "sign": "Victoria's Secret",
+   "bg": "#f2c4cf",
+   "fg": "#ffffff",
+   "merch": [
+    "#ffffff",
+    "#f28c28",
+    "#c8202c"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s20": {
+   "name": "PINK",
+   "sign": "Pink",
+   "bg": "#f5efe6",
+   "fg": "#e4007c",
+   "merch": [
+    "#2b4a8a",
+    "#8fa9c9",
+    "#ffffff",
+    "#f2c744"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  },
+  "s3": {
+   "name": "PROIMAGE SPORTS",
+   "sign": "Proimage Sports",
+   "bg": "#f5efe6",
+   "fg": "#111111",
+   "merch": [
+    "#ffffff",
+    "#1d1d24",
+    "#2e7d4f"
+   ],
+   "anchor": false,
+   "vacant": false,
+   "unit": null,
+   "open": false,
+   "awning": false,
+   "awningColor": null,
+   "entry": null,
+   "plain": false,
+   "noSign": false,
+   "carpet": null,
+   "font": "sans",
+   "has_front_image": false
+  }
+ },
+ "walk": [
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111100000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111100000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111100000000000000000000000000000000000000000000000000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111111111111111111111111111111111111111111111111111111111111111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111100000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111111000000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000001111111110000000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111111100000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111111100000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111111100000000000000000000000000000000000000000100000000000000111111111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111111000000000000000000000000000000000000000000100000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111111000000000000000000000000000000000000000000100000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111111000000000000000000000000000000000000000000100000000000000000001111110000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000111100000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+  "000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
+ ],
+ "era": "2026",
+ "skylights": [
+  {
+   "zone": "H2",
+   "at": -75.0
+  },
+  {
+   "zone": "H2",
+   "at": -63.0
+  },
+  {
+   "zone": "H2",
+   "at": -51.0
+  },
+  {
+   "zone": "H2",
+   "at": -39.0
+  },
+  {
+   "zone": "H2",
+   "at": -27.0
+  },
+  {
+   "zone": "H2",
+   "at": -15.0
+  },
+  {
+   "zone": "H4",
+   "at": 21.0
+  },
+  {
+   "zone": "H4",
+   "at": 33.0
+  },
+  {
+   "zone": "H4",
+   "at": 45.0
+  },
+  {
+   "zone": "H5",
+   "at": -129.0
+  },
+  {
+   "zone": "H5",
+   "at": -115.0
+  },
+  {
+   "zone": "H5",
+   "at": -101.0
+  },
+  {
+   "zone": "H5",
+   "at": -87.0
+  },
+  {
+   "zone": "H5",
+   "at": -73.0
+  },
+  {
+   "zone": "H5",
+   "at": -59.0
+  },
+  {
+   "zone": "H5",
+   "at": -45.0
+  },
+  {
+   "zone": "H5",
+   "at": -31.0
+  }
+ ],
+ "interiors_open": [
+  "s54"
+ ],
+ "leftover_tris": [
+  [
+   [
+    -136.0,
+    60.0
+   ],
+   [
+    -130.0,
+    60.0
+   ],
+   [
+    -136.0,
+    66.0
+   ]
+  ]
+ ]
+}

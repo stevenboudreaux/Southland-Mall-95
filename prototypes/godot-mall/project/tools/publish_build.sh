@@ -18,13 +18,26 @@ for w in 1 2; do
   [ "$H" = "$S" ] || { echo "wing $w changed since its stand-in pictures were taken (stamp $S, now $H): run tools/capture_standin.sh $w, export, publish"; exit 1; }
   for k in desktop mobile; do [ "$SRC/w$((3-w)).$k.pck" -nt tex/standin/from_w${w}_night.png ] || { echo "the export is older than wing $w's stand-in pictures: export again"; exit 1; }; done
 done
+# the 2026 wings (tools/make_layout_2026.py), when the export has them: the same stand-in checks
+if [ -s "$SRC/w1y26.desktop.pck" ]; then
+  for w in 1 2; do
+    for k in desktop mobile; do [ -s "$SRC/w${w}y26.$k.pck" ] || { echo "2026 export incomplete: no w${w}y26.$k.pck"; exit 1; }; done
+    [ -s wing${w}_2026_day.lmbake ] || { echo "missing wing${w}_2026_day.lmbake"; exit 1; }
+    [ -s tex/standin/y26_from_w${w}_day.png ] || { echo "no 2026 stand-in pictures of wing $w: run tools/capture_standin.sh $w 2026"; exit 1; }
+    H=$(tools/wing_hash.sh $w 2026); S=$(cat tex/standin/y26_from_w$w.stamp 2>/dev/null || echo none)
+    [ "$H" = "$S" ] || { echo "2026 wing $w changed since its stand-in pictures were taken (stamp $S, now $H): run tools/capture_standin.sh $w 2026, export, publish"; exit 1; }
+    for k in desktop mobile; do [ "$SRC/w$((3-w))y26.$k.pck" -nt tex/standin/y26_from_w${w}_day.png ] || { echo "the export is older than 2026 wing $w's stand-in pictures: export again"; exit 1; }; done
+  done
+fi
 REPO=$(git rev-parse --show-toplevel)
 W=$(mktemp -d)
 git -C "$REPO" fetch -q origin godot-build
 git -C "$REPO" archive origin/godot-build README.md .github | tar -x -C "$W"
 mkdir -p "$W/play" "$W/lightmaps" "$W/standin"
 cp "$SRC"/index.* "$SRC"/w1.*.pck "$SRC"/w2.*.pck "$W/play/"
+cp "$SRC"/w1y26.*.pck "$SRC"/w2y26.*.pck "$W/play/" 2>/dev/null || true
 cp wing1_night.* wing1_day.* wing2_night.* wing2_day.* "$W/lightmaps/"
+cp wing1_2026_day.* wing2_2026_day.* "$W/lightmaps/" 2>/dev/null || true
 cp tex/standin/*.png tex/standin/*.stamp "$W/standin/"
 cd "$W"
 git init -q -b godot-build
