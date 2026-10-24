@@ -1868,7 +1868,9 @@ func sign_2026(g, name, mid, n, t, Ln):
 	if s.has("fascia_color"):
 		# the band the sign is on, painted as filmed
 		cur_color = Color(s.fascia_color)
-		box(g, "vcolor_matte", mid + Vector3(0, OPEN_H + band * 0.5, 0) + n * 0.165, abs_size(t, Ln - 0.02, band, 0.01, n), Transform3D.IDENTITY, [], true)
+		# static, so it takes the bake's warm bounce like the bulkhead it covers (as a dynamic
+		# mesh, lit only by the probes, a cream band read blue-grey)
+		box(g, "vcolor_matte", mid + Vector3(0, OPEN_H + band * 0.5, 0) + n * 0.165, abs_size(t, Ln - 0.02, band, 0.01, n))
 		cur_color = Color.WHITE
 	if s.get("mount", "fascia") == "glass":
 		# lettering on the storefront glass (Wax Utopia, SOLA): just proud of the glass, about
