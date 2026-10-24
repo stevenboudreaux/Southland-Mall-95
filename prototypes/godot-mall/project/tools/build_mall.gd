@@ -1622,7 +1622,7 @@ func build_edge(e):
 				# Demo 43: the deco fan and RESTROOMS lettering over the restroom hall (IMG_4439 f030)
 				var S26 = load("res://tools/stores/signs/sign_2026.gd")
 				if S26.for_store("MEN") != null:
-					S26.build(self, g + "_sg26", "MEN", a + t * (Ln * 0.5) + Vector3(0, 3.35, 0) + n * 0.03, n, min(Ln - 0.4, 2.6), 1.0)
+					S26.build(self, g + "_sg26", "MEN", a + t * (Ln * 0.5) + Vector3(0, 2.8, 0) + n * 0.03, n, min(Ln - 0.4, 2.6), 1.0)
 
 ## A storefront along one frontage: pilasters with a stone base, bulkhead with
 ## the sign, bronze-framed glass (or an open front), the lit interior behind.

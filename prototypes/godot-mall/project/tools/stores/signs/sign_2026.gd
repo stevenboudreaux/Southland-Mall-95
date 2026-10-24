@@ -241,8 +241,11 @@ static func fill_mat(m, key, b):
 		"face":
 			m.albedo_color = Color(face)
 			m.roughness = float(p.get("rough", 0.3 if typ != "flat" else 0.4))
-			m.metallic = float(p.get("metal", 0.0))
-			m.metallic_specular = 0.5
+			# metal faces (chrome, brass, nickel) capped: with only the baked light and the hall's
+			# probes, a fully metallic face reads near-black from most angles
+			m.metallic = min(float(p.get("metal", 0.0)), 0.45)
+			m.roughness = max(m.roughness, 0.28)
+			m.metallic_specular = 0.5 if m.metallic < 0.1 else 0.7
 			if lit > 0.0:
 				var tx = b.tex("sg/y26/%s_%s_face.png" % [s.id, pid])
 				if tx != null:
@@ -258,7 +261,7 @@ static func fill_mat(m, key, b):
 		"ret":
 			m.albedo_color = Color(p.get("ret", "#1e1e1e" if typ != "flat" else face))
 			m.roughness = float(p.get("ret_rough", 0.45))
-			m.metallic = float(p.get("ret_metal", 0.3))
+			m.metallic = min(float(p.get("ret_metal", 0.3)), 0.5)
 		"trim":
 			m.albedo_color = Color(p.get("trim", "#222222"))
 			m.roughness = 0.35
