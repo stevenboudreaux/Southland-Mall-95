@@ -10,12 +10,12 @@ caps, the frame's colours, lit the way the frame shows them.
   `src/fonts/` for any extra OFL font used (with its licence file).
 - `<id>_<part>_logo.json`, `../../../tex/sg/y26/<id>_<part>_{face,glow}.png`: generated, don't edit.
 - `signs_2026.json`: generated (all parts merged); the game reads it.
-- `check/<id>.png`: reference | reference with the letters' outlines | letters alone, to look at.
+- `check/<id>.jpg`: reference | reference with the letters' outlines | letters alone, to look at.
 
 ## Commands (from `prototypes/godot-mall/project`)
 ```
 python3 tools/stores/signs/make_signs_2026.py <id> [...]     # letters + textures from parts/<id>.json
-python3 tools/stores/signs/check_sign_2026.py <id> [...]     # writes check/<id>.png
+python3 tools/stores/signs/check_sign_2026.py <id> [...]     # writes check/<id>.jpg
 python3 tools/stores/signs/photo_trace.py quad --photo P --pts "x,y;x,y;x,y;x,y" --aspect W:H --width 1600 --margin 0.08 --out src/<id>_ref.png
 ```
 `photo_trace.py` also has `front` (register a sharp oblique view onto a soft square-on one), `level`,

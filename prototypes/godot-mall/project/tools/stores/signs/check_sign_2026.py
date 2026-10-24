@@ -4,7 +4,7 @@ For each part with a "ref_box" ([x0, y0, x1, y1], pixels in the sign's "ref_img"
 y26/src/ squared up with photo_trace.py), draws the part's generated outlines (y26/<id>_<part>_logo.json)
 fitted into that box: the reference on the left, the reference with the outlines over it (yellow)
 in the middle, the outlines alone filled in the spec's face colours on the right.
-Writes y26/check/<id>.png.
+Writes y26/check/<id>.jpg.
 
   python3 tools/stores/signs/check_sign_2026.py <id> [...]   (from the project folder; after make_signs_2026.py)
 """
@@ -51,8 +51,11 @@ def check(sid):
         flat[m > 0] = col
     out = np.hstack([ref, over, flat])
     os.makedirs(os.path.join(Y26, "check"), exist_ok=True)
-    cv2.imwrite(os.path.join(Y26, "check", sid + ".png"), out)
-    print("y26/check/%s.png" % sid)
+    if out.shape[1] > 2400:
+        k = 2400.0 / out.shape[1]
+        out = cv2.resize(out, None, fx=k, fy=k, interpolation=cv2.INTER_AREA)
+    cv2.imwrite(os.path.join(Y26, "check", sid + ".jpg"), out, [cv2.IMWRITE_JPEG_QUALITY, 82])
+    print("y26/check/%s.jpg" % sid)
 
 
 if __name__ == "__main__":

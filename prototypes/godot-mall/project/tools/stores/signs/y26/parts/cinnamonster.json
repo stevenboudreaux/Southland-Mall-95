@@ -41,7 +41,7 @@
    "dx": 0.0235,
    "dy": -0.0676,
    "type": "vinyl",
-   "dz": 0.12,
+   "dz": 0.1,
    "face": "#f2ece2",
    "rough": 0.4,
    "lit": 0.0,
@@ -61,9 +61,8 @@
    "dx": 0.0206,
    "dy": -0.4165,
    "type": "flat",
-   "dz": 0.12,
    "standoff": 0.0,
-   "depth": 0.12,
+   "depth": 0.24,
    "face": "#1f1d1b",
    "ret": "#141210",
    "rough": 0.35,
@@ -84,7 +83,7 @@
    "dx": 0.0206,
    "dy": -0.3479,
    "type": "vinyl",
-   "dz": 0.26,
+   "dz": 0.24,
    "face": "#b89a86",
    "rough": 0.5,
    "lit": 0.0,
@@ -104,7 +103,7 @@
    "dx": 0.0157,
    "dy": -0.4028,
    "type": "vinyl",
-   "dz": 0.264,
+   "dz": 0.243,
    "face": "#f1eee6",
    "rough": 0.45,
    "lit": 0.0,
@@ -116,5 +115,5 @@
    ]
   }
  ],
- "notes": "Dimensional logo plaque (two or three identical ones round the kiosk, on the gold/tan bulkhead above a burgundy-and-cream checker band): an arched burgundy banner box (~10 cm deep, black sides) with 'cinnamonster(R)' in cream serif lowercase, and a deep round black disc in front of its lower middle (~12 cm can) with a tan field, a cream ring line, cream ring text 'MONSTER CINNAMON ROLLS' / 'GOURMET' and the cream cartoon monster holding a cinnamon roll (printed: vinyl layers). Unlit. All traced from the full-res photo; the banner outline is a spline through its visible edges (its bottom is hidden behind the disc). Size guessed: disc ~0.6 m across, banner ~1.5 m. Not built: the Community Coffee wood panel inside, the hanging banner, and the second/third copies of the plaque (format has one sign per store)."
+ "notes": "Dimensional logo plaque (two or three identical ones round the kiosk, on the gold/tan bulkhead above a burgundy-and-cream checker band): an arched burgundy banner box (~10 cm deep, black sides) with 'cinnamonster(R)' in cream serif lowercase, and a deep round black disc in front of its lower middle (~24 cm can, wall-mounted, deeper than the banner) with a tan field, a cream ring line, cream ring text 'MONSTER CINNAMON ROLLS' / 'GOURMET' and the cream cartoon monster holding a cinnamon roll (printed: vinyl layers). Unlit. All traced from the full-res photo; the banner outline is a spline through its visible edges (its bottom is hidden behind the disc). Size guessed: disc ~0.6 m across, banner ~1.5 m. Not built: the Community Coffee wood panel inside, the hanging banner, and the second/third copies of the plaque (format has one sign per store)."
 }

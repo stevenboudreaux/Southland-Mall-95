@@ -15,7 +15,7 @@
  "parts": [
   {
    "name": "name", "text": "GNC",
-   "trace": "gnc_name_mask.png", "width": 1.26, "smooth": 1.5,
+   "trace": "gnc_name_mask.png", "width": 1.26, "smooth": 4.0,
    "dx": 0.002, "dy": -0.008,
    "type": "channel", "depth": 0.02,
    "face": "#e8231c", "emit": "#ff2a1e", "ret": "#b01812", "trim": "#c41e16",
@@ -33,7 +33,7 @@
   },
   {
    "name": "tag", "text": "LiveWell.",
-   "trace": "gnc_tag_mask.png", "width": 0.72, "smooth": 1.0,
+   "trace": "gnc_tag_mask.png", "width": 0.72, "smooth": 2.0,
    "dx": 0.012, "dy": -0.3,
    "type": "channel", "depth": 0.015,
    "face": "#dcefff", "emit": "#e4f3ff", "ret": "#b8c4cc", "trim": "#c8d4dc",
