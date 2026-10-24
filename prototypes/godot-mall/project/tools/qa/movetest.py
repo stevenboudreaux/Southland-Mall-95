@@ -25,7 +25,7 @@ with sync_playwright() as p:
         ctx = b.new_context(viewport={"width": 1280, "height": 720})
         pg = ctx.new_page(); logs = []
         pg.on("console", lambda m: logs.append(m.text))
-        pg.goto(f"http://127.0.0.1:8765/{path}?cam={cam}")
+        pg.goto(f"http://127.0.0.1:8765/{path}{'&' if '?' in path else '?'}cam={cam}")
         took = wait_ready(pg, logs)
         time.sleep(12)
         pg.screenshot(path=f"{out}-{name}.png", timeout=int(os.environ.get("SHOT_TIMEOUT", "120000")))
@@ -36,7 +36,7 @@ with sync_playwright() as p:
     ctx = b.new_context(viewport={"width": 844, "height": 390}, has_touch=True, is_mobile=True)
     pg = ctx.new_page(); logs = []
     pg.on("console", lambda m: logs.append(m.text))
-    pg.goto(f"http://127.0.0.1:8765/{path}?cam=0,14,0,0&debug=1")
+    pg.goto(f"http://127.0.0.1:8765/{path}{'&' if '?' in path else '?'}cam=0,14,0,0&debug=1")
     wait_ready(pg, logs); time.sleep(10)
     cdp = ctx.new_cdp_session(pg)
     def touch(t, x, y):

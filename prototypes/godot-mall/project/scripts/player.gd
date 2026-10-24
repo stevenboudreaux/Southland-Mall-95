@@ -482,7 +482,7 @@ func _process(dt: float) -> void:
 	fps_t += dt
 	if fps_t > 0.5:
 		fps_t = 0.0
-		hud.text = "Houma Mall Rewind · Godot mall (1995)   %d fps" % Engine.get_frames_per_second()
+		hud.text = "Houma Mall Rewind · Godot mall (%d)   %d fps" % [year, Engine.get_frames_per_second()]
 		if debug:
 			print("DBG pos=", position, " touch=", move_touch, " vec=", move_vec, " iv=", iv, " free_here=", _free(position.x, position.z), " rows=", walk_rows.size())
 
