@@ -5,7 +5,6 @@
  "ref_img": "wax_ref.png",
  "w": 1.506,
  "h": 0.72,
- "mount_y": -1.9,
  "type": "vinyl",
  "depth": 0.003,
  "standoff": 0.0,
@@ -97,5 +96,7 @@
    "dy": -0.0657
   }
  ],
- "notes": "Wax Utopia has NO fascia sign (the cream stucco band above is blank). Its sign is printed vinyl on the inside of the smoked black glass of the angled display window, about 1.5 m wide, centred roughly 2 m above the floor: 'Wax' in a high-contrast display serif (W and a dusky blue, x bright teal), 'Utopia' below in pale gold with swash U and looped p, a teal swoosh by the i. A round gold-ring 'W/U' monogram (~0.45 m) is on the entry door glass to the right (not modelled). Traced from the IMG_4433 photo squared up on the glass panel; reflections of people and a ceiling-light streak cross the letters, so the hairlines (W thins, a's loop, o and p bowls, U's tail) are hand-drawn over the frame and approximate. The builder can't put it on the recessed, angled glass: mount_y -1.9 drops it to window height on the fascia plane; better to place it on the storefront glass by hand (or render nothing on the fascia). Width guessed from the ~2.6 m glass panel (+-15%)."
+ "notes": "Wax Utopia has NO fascia sign (the cream stucco band above is blank). Its sign is printed vinyl on the inside of the smoked black glass of the angled display window, about 1.5 m wide, centred roughly 2 m above the floor: 'Wax' in a high-contrast display serif (W and a dusky blue, x bright teal), 'Utopia' below in pale gold with swash U and looped p, a teal swoosh by the i. A round gold-ring 'W/U' monogram (~0.45 m) is on the entry door glass to the right (not modelled). Traced from the IMG_4433 photo squared up on the glass panel; reflections of people and a ceiling-light streak cross the letters, so the hairlines (W thins, a's loop, o and p bowls, U's tail) are hand-drawn over the frame and approximate. The builder can't put it on the recessed, angled glass: mount_y -1.9 drops it to window height on the fascia plane; better to place it on the storefront glass by hand (or render nothing on the fascia). Width guessed from the ~2.6 m glass panel (+-15%).",
+ "mount": "glass",
+ "glass_y": 0.0
 }

@@ -1,0 +1,26 @@
+{
+ "id": "i2d",
+ "store": "INSPIRED 2 DANCE",
+ "unseen": true,
+ "ref": "IMG_4484 contact-sheet f047/f048 (fascia and window, oblique, small); signs/i2d_IMG_4484_f049, f051 (neighbours, no lettering)",
+ "ref_img": "i2d_ref.png",
+ "w": 6.0,
+ "h": 0.3,
+ "type": "vinyl",
+ "depth": 0.003,
+ "standoff": 0.0,
+ "fascia_color": "#3fc4a0",
+ "backer": {
+  "shape": "box",
+  "w": 6.0,
+  "h": 0.3,
+  "depth": 0.02,
+  "dx": 0.0,
+  "dy": 0.0,
+  "color": "#3fc4a0",
+  "side": "#3fc4a0",
+  "rough": 0.55
+ },
+ "parts": [],
+ "notes": "No name sign in the footage. The unit (s17, west of Prime Time Fitness) shows only a plain mint/teal painted fascia band over a glass front, a big white ballerina-silhouette vinyl on the glass, trophies inside, and a white/grey striped pier. The name 'Inspired 2 Dance' comes from a banner seen reflected/through Hypervelocity's windows (notes_C), not from this front. Modelled as no letters: just the teal band (backer). If a name sign is wanted, the likely look is white vinyl lettering on the teal band, but that is not what the mall shows. The dancer decal (~1.2 m tall, white vinyl on the glass) would be worth adding as a window graphic."
+}

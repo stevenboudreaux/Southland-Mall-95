@@ -1865,6 +1865,11 @@ func sign_2026(g, name, mid, n, t, Ln):
 		cur_color = Color(s.fascia_color)
 		box(g, "vcolor_matte", mid + Vector3(0, OPEN_H + band * 0.5, 0) + n * 0.165, abs_size(t, Ln - 0.02, band, 0.01, n), Transform3D.IDENTITY, [], true)
 		cur_color = Color.WHITE
+	if s.get("mount", "fascia") == "glass":
+		# lettering on the storefront glass (Wax Utopia, SOLA): just proud of the glass, about
+		# head height, within the glazing
+		var cg = mid + Vector3(0, 1.9 + float(s.get("glass_y", 0.0)), 0) + n * 0.012
+		return S.build(self, g + "_sg26", name, cg, n, max(1.0, Ln - 1.4), OPEN_H - 1.0, s)
 	var c = mid + Vector3(0, OPEN_H + band * 0.5 + float(s.get("mount_y", 0.0)), 0) + n * 0.17
 	return S.build(self, g + "_sg26", name, c, n, max(1.0, Ln - 0.9), band - 0.12, s)
 

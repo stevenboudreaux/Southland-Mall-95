@@ -30,6 +30,8 @@ python3 tools/stores/signs/photo_trace.py quad --photo P --pts "x,y;x,y;x,y;x,y"
   "ref_img": "lynns_ref.png",          // the squared-up reference in src/
   "w": 4.2, "h": 1.3,                  // the whole sign's real size, metres (estimated from the frame)
   "mount_y": 0.0,                      // optional: the sign's centre above the fascia band's centre, metres
+  "mount": "fascia",                   // or "glass": lettering on the storefront glass, centred 1.9 m + "glass_y" up
+  "unseen": false,                     // true: no sign in the footage (only "fascia_color"/"backer" are built)
   "type": "flat",                      // default letter type for the parts (see below)
   "depth": 0.08,                       // default can depth (returns), metres
   "standoff": 0.03,                    // gap between the wall and the back of the cans, metres
@@ -54,6 +56,7 @@ python3 tools/stores/signs/photo_trace.py quad --photo P --pts "x,y;x,y;x,y;x,y"
       // OR a traced mask (white = letters) in src/:
       "trace": "lynns_script_mask.png", "width": 2.4, "smooth": 1.0,
       "dx": -0.3, "dy": 0.05,          // the part's bottom-centre in the sign frame, metres (y up)
+      "dz": 0.0,                       // pushes the part forward (a layer over another part), metres
       "type": "flat",                  // channel | flat | halo | neon | vinyl  (see below)
       "depth": 0.06,                   // overrides the sign's
       "face": "#121212", "ret": "#121212", "trim": "#2a2a2a",   // colours; trim only for channel letters

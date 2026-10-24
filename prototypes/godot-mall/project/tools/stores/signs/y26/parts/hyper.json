@@ -40,8 +40,8 @@
    "track": 0.08,
    "stretch": 0.7033,
    "depth": 0.015,
-   "face": "#d4d4d8",
-   "ret": "#a8a8ae",
+   "face": "#4a0e12",
+   "ret": "#2a0608",
    "lit": 0.0,
    "rough": 0.12,
    "metal": 0.9,
@@ -56,5 +56,5 @@
    "dy": -0.3265
   }
  ],
- "notes": "Mall-side sign: polished chrome/silver flat-cut letters (mirror faces: they show the ceiling lights' streaks; the small 'RACE TRACK' reads dark only because it mirrors the dark windows opposite) on the matte red painted band (~1.5 m tall) that runs the whole front, unlit. 'HYPERVELOCITY' traced from f022 squared up on the band's top and bottom edges (the horizontal scale of that squaring is judged from the letter shapes, +-10%); the last Y is off the frame edge in every close frame, so it is a copy of the Y in HYPER placed at the same letter spacing (f019/f020 confirm the word ends in Y). 'RACE TRACK' set in Krona One (wide geometric sans, condensed to fit), centred. Size from the 1.5 m band: word ~4.26 m wide, caps ~0.39 m. The exterior signs (cream channel letters, red RACE TRACK) are a different sign, not this spec."
+ "notes": "Mall-side sign: polished chrome/silver flat-cut letters (mirror faces: they show the ceiling lights' streaks; the small 'RACE TRACK' reads dark only because it mirrors the dark windows opposite) on the matte red painted band (~1.5 m tall) that runs the whole front, unlit. 'HYPERVELOCITY' traced from f022 squared up on the band's top and bottom edges (the horizontal scale of that squaring is judged from the letter shapes, +-10%); the last Y is off the frame edge in every close frame, so it is a copy of the Y in HYPER placed at the same letter spacing (f019/f020 confirm the word ends in Y). 'RACE TRACK' set in Krona One (wide geometric sans, condensed to fit), centred. Size from the 1.5 m band: word ~4.26 m wide, caps ~0.39 m. The exterior signs (cream channel letters, red RACE TRACK) are a different sign, not this spec. RACE TRACK set dark maroon as in IMG_4484 f022 (was chrome)."
 }

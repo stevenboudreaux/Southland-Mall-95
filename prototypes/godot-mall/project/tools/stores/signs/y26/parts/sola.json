@@ -5,7 +5,6 @@
  "ref_img": "sola_ref.png",
  "w": 1.55,
  "h": 1.361,
- "mount_y": -1.6,
  "type": "vinyl",
  "depth": 0.003,
  "standoff": 0.0,
@@ -212,5 +211,7 @@
    "dy": -0.6805
   }
  ],
- "notes": "SOLA (South Louisiana Center for the Arts) has NO fascia lettering: the curved black textured-stucco band above (the old Sound Shop front) is blank. Its sign is a multicolour vinyl decal on the black glass vestibule panel: a white contour backing with 'S' lime, 'O' a magenta disc with white comedy/tragedy masks, 'L' blue, 'A' orange with a white treble clef, then 'SOUTH LOUISIANA' and 'CENTER FOR THE ARTS' in white heavy sans (Lilita One, condensed). Traced from the contact-sheet tile (the only frame with the whole logo; soft, so edges are smoothed and the mask faces are blobs); the right edge of the white backing is clipped by the squared-up frame by a few cm. The builder can't put it on the glass: mount_y -1.6 drops it from the fascia toward window height; better placed on the storefront glass by hand. Size a guess (~1.6 m wide) from the ~2.5 m glass panel. An older projecting black panel sign (round orange/yellow logo) is glimpsed far away in IMG_4419 only; not modelled."
+ "notes": "SOLA (South Louisiana Center for the Arts) has NO fascia lettering: the curved black textured-stucco band above (the old Sound Shop front) is blank. Its sign is a multicolour vinyl decal on the black glass vestibule panel: a white contour backing with 'S' lime, 'O' a magenta disc with white comedy/tragedy masks, 'L' blue, 'A' orange with a white treble clef, then 'SOUTH LOUISIANA' and 'CENTER FOR THE ARTS' in white heavy sans (Lilita One, condensed). Traced from the contact-sheet tile (the only frame with the whole logo; soft, so edges are smoothed and the mask faces are blobs); the right edge of the white backing is clipped by the squared-up frame by a few cm. The builder can't put it on the glass: mount_y -1.6 drops it from the fascia toward window height; better placed on the storefront glass by hand. Size a guess (~1.6 m wide) from the ~2.5 m glass panel. An older projecting black panel sign (round orange/yellow logo) is glimpsed far away in IMG_4419 only; not modelled.",
+ "mount": "glass",
+ "glass_y": 0.2
 }

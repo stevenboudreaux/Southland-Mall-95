@@ -266,6 +266,110 @@
    "notes": "Traced from the lit faces (they threshold cleanly). White internally lit channel letters, the brand's current sans wordmark 'Bath & Body Works', mounted straight on the store's blue/white gingham-check tile surround (navy, mid blue, pale grey-blue and white 6-7 in checks round the whole opening). The builder has no patterned fascia, so the fascia is the gingham's average blue; a gingham texture would be needed to match. Size from the checks (~2.6 mm/px): cap height ~0.32 m, 3.67 m long. A small duplicate 'Bath & Body Works' sign sits on the return wall (f012) and a blade sign down the hall; not modelled here."
   },
   {
+   "id": "billiard",
+   "store": "THE BILLIARD ROOM",
+   "ref": "IMG_4492 f020 (square-on, sharp; squared up on the sign panel's corners), IMG_4434 photo and IMG_4484 f015 (confirm)",
+   "ref_img": "billiard_ref.png",
+   "w": 2.499,
+   "h": 1.02,
+   "type": "flat",
+   "depth": 0.008,
+   "standoff": 0.0,
+   "fascia_color": "#121214",
+   "backer": {
+    "shape": "box",
+    "w": 2.499,
+    "h": 1.02,
+    "depth": 0.08,
+    "dx": 0.0,
+    "dy": 0.0,
+    "color": "#1f1d1c",
+    "side": "#161515",
+    "rough": 0.75,
+    "ref_box": [
+     30,
+     30,
+     1500,
+     630
+    ]
+   },
+   "parts": [
+    {
+     "name": "the",
+     "text": "-THE-",
+     "trace": "billiard_the_mask.png",
+     "width": 1.054,
+     "smooth": 1.0,
+     "type": "flat",
+     "depth": 0.008,
+     "face": "#c9a45e",
+     "ret": "#a8843f",
+     "lit": 0.0,
+     "rough": 0.35,
+     "metal": 0.55,
+     "ret_metal": 0.5,
+     "glow_pad": 0.02,
+     "ref_box": [
+      473,
+      113,
+      1094,
+      179
+     ],
+     "dx": 0.0314,
+     "dy": 0.2567
+    },
+    {
+     "name": "name",
+     "text": "BILLIARD",
+     "trace": "billiard_name_mask.png",
+     "width": 2.1131,
+     "smooth": 1.0,
+     "type": "flat",
+     "depth": 0.008,
+     "face": "#c9a45e",
+     "ret": "#a8843f",
+     "lit": 0.0,
+     "rough": 0.35,
+     "metal": 0.55,
+     "ret_metal": 0.5,
+     "glow_pad": 0.02,
+     "ref_box": [
+      154,
+      197,
+      1398,
+      453
+     ],
+     "dx": 0.0187,
+     "dy": -0.2091
+    },
+    {
+     "name": "room",
+     "text": "-ROOM-",
+     "trace": "billiard_room_mask.png",
+     "width": 1.4807,
+     "smooth": 1.0,
+     "type": "flat",
+     "depth": 0.008,
+     "face": "#c9a45e",
+     "ret": "#a8843f",
+     "lit": 0.0,
+     "rough": 0.35,
+     "metal": 0.55,
+     "ret_metal": 0.5,
+     "glow_pad": 0.02,
+     "ref_box": [
+      367,
+      476,
+      1239,
+      562
+     ],
+     "dx": 0.0646,
+     "dy": -0.3944
+    }
+   ],
+   "notes": "Matte black rectangular sign box (~8 cm deep) on the glossy black fascia band of the ex-Woolworth unit, with thin flat-cut gold/brass lettering (unlit, a little metallic): small 'THE' between two tapered rules, big condensed flared-serif 'BILLIARD', and letter-spaced 'ROOM' between two tapered rules. All traced from 4492 f020 squared up on the panel corners (panel aspect ~2.45:1 from the IMG_4434 photo). Size: panel ~2.5 x 1.0 m (guess from the ~4 m open front below), BILLIARD caps ~0.42 m."
+  },
+  {
    "id": "boost",
    "store": "BOOST MOBILE",
    "ref": "IMG_4439 f029 (oblique from the right, squared up on the fascia panel, aspect 3.4:1); f028, f030",
@@ -1648,6 +1752,32 @@
    "notes": "Mall-side sign: polished chrome/silver flat-cut letters (mirror faces: they show the ceiling lights' streaks; the small 'RACE TRACK' reads dark only because it mirrors the dark windows opposite) on the matte red painted band (~1.5 m tall) that runs the whole front, unlit. 'HYPERVELOCITY' traced from f022 squared up on the band's top and bottom edges (the horizontal scale of that squaring is judged from the letter shapes, +-10%); the last Y is off the frame edge in every close frame, so it is a copy of the Y in HYPER placed at the same letter spacing (f019/f020 confirm the word ends in Y). 'RACE TRACK' set in Krona One (wide geometric sans, condensed to fit), centred. Size from the 1.5 m band: word ~4.26 m wide, caps ~0.39 m. The exterior signs (cream channel letters, red RACE TRACK) are a different sign, not this spec."
   },
   {
+   "id": "i2d",
+   "store": "INSPIRED 2 DANCE",
+   "unseen": true,
+   "ref": "IMG_4484 contact-sheet f047/f048 (fascia and window, oblique, small); signs/i2d_IMG_4484_f049, f051 (neighbours, no lettering)",
+   "ref_img": "i2d_ref.png",
+   "w": 6.0,
+   "h": 0.3,
+   "type": "vinyl",
+   "depth": 0.003,
+   "standoff": 0.0,
+   "fascia_color": "#3fc4a0",
+   "backer": {
+    "shape": "box",
+    "w": 6.0,
+    "h": 0.3,
+    "depth": 0.02,
+    "dx": 0.0,
+    "dy": 0.0,
+    "color": "#3fc4a0",
+    "side": "#3fc4a0",
+    "rough": 0.55
+   },
+   "parts": [],
+   "notes": "No name sign in the footage. The unit (s17, west of Prime Time Fitness) shows only a plain mint/teal painted fascia band over a glass front, a big white ballerina-silhouette vinyl on the glass, trophies inside, and a white/grey striped pier. The name 'Inspired 2 Dance' comes from a banner seen reflected/through Hypervelocity's windows (notes_C), not from this front. Modelled as no letters: just the teal band (backer). If a name sign is wanted, the likely look is white vinyl lettering on the teal band, but that is not what the mall shows. The dancer decal (~1.2 m tall, white vinyl on the glass) would be worth adding as a window graphic."
+  },
+  {
    "id": "jcp",
    "store": "JCPENNEY",
    "ref": "IMG_4457 f003 (mall entrance, near square-on; squared up on the marble band between its top and the door heads), f002; IMG_4458 f001",
@@ -2232,6 +2362,63 @@
     }
    ],
    "notes": "Raspberry-pink rectangular panel over the entry (in the cream classical panelled facade, which is the storefront, not the sign). Collegiate slab 'PINK': lit hot-pink faces with a thin white edge (trim) sitting on a gold mirror-finish outline layer (flat part under the faces, dz); a faint pink glow round the letters. 'life is' / 'is life' in a white single-line script (vinyl), tiny 'VICTORIA'S SECRET' (vinyl, Cinzel) under PINK. PINK, outline and script traced from the full-res photo; tagline is a font. Size from the shutter opening below (~2.7 m tall): panel ~3.4 x 0.59 m, +-12%. Not built: a second smaller pink panel with the white PINK dog to the right (over the poster box)."
+  },
+  {
+   "id": "primetime",
+   "store": "PRIME TIME FITNESS",
+   "ref": "IMG_4484 f046 (near square-on; squared up on the black band's edge and the 4-in tile grid)",
+   "ref_img": "primetime_ref.png",
+   "w": 2.901,
+   "h": 0.668,
+   "type": "vinyl",
+   "depth": 0.003,
+   "standoff": 0.0,
+   "fascia_color": "#eeece6",
+   "parts": [
+    {
+     "name": "name",
+     "text": "PrimeTimeFitness",
+     "trace": "primetime_name_mask.png",
+     "width": 2.8974,
+     "smooth": 1.2,
+     "type": "vinyl",
+     "face": "#161616",
+     "ret": "#161616",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "ref_box": [
+      147,
+      80,
+      1905,
+      305
+     ],
+     "dx": 0.0,
+     "dy": -0.0371
+    },
+    {
+     "name": "stars",
+     "text": "****",
+     "trace": "primetime_stars_mask.png",
+     "width": 1.0098,
+     "smooth": 0.0,
+     "type": "vinyl",
+     "face": "#161616",
+     "ret": "#161616",
+     "lit": 0.0,
+     "rough": 0.4,
+     "glow_pad": 0.02,
+     "ref_box": [
+      658,
+      337,
+      1271,
+      485
+     ],
+     "dx": -0.1015,
+     "dy": -0.3341
+    }
+   ],
+   "notes": "Black brush-script 'Prime Time Fitness' with four black five-point stars centred below, flat vinyl (or painted) on the glossy white 4-in square-tile sign band whose lower edge is cut in an S-wave over the grille; a black fascia band above. Unlit. Script traced from f046 (squared up on the band edge and tile grid); the stars redrawn as regular stars at the traced centres (the first one has a reflection across it). The wavy tile band itself is storefront architecture, not part of this spec. Size from the tile grid: script ~2.9 m wide, caps ~0.4 m."
   },
   {
    "id": "prints",
