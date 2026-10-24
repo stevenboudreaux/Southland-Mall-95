@@ -161,6 +161,7 @@ def main(only=()):
             n += 1
         except (SystemExit, Exception) as ex:
             print("FAILED %s: %s" % (sign["id"], ex))
+            sign["failed"] = str(ex)
     print("%d signs" % n)
 
 

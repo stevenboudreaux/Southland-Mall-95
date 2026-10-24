@@ -40,7 +40,8 @@ static func by_id(id):
 
 static func logo(path):
 	if not _logo_cache.has(path):
-		_logo_cache[path] = JSON.parse_string(FileAccess.get_file_as_string(path))
+		# null when the part's letters haven't been generated (make_signs_2026.py failed on it)
+		_logo_cache[path] = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
 	return _logo_cache[path]
 
 ## The sign's frame in metres: [x0, y0, x1, y1] round all its parts (part dx/dy are the bottom
@@ -52,6 +53,8 @@ static func frame(s):
 	var y1 = -INF
 	for p in s.parts:
 		var J = logo("res://tools/stores/signs/y26/%s_%s_logo.json" % [s.id, p.name])
+		if J == null:
+			continue
 		var w = float(J.width)
 		var h = float(J.cap_h)
 		var dx = float(p.get("dx", 0.0))
@@ -60,7 +63,7 @@ static func frame(s):
 		x1 = max(x1, dx + w * 0.5)
 		y0 = min(y0, dy)
 		y1 = max(y1, dy + h)
-	if s.parts.is_empty():
+	if x0 == INF:
 		# no letters (a sign that isn't there in 2026, or only its panel): the frame is the panel's
 		x0 = 0.0; x1 = 0.0; y0 = 0.0; y1 = 0.0
 	if s.has("backer"):
@@ -125,6 +128,9 @@ static func build(b, g, name, c, nn, max_w, max_h, sign = null):
 		zoff += bd
 	for p in s.parts:
 		var J = logo("res://tools/stores/signs/y26/%s_%s_logo.json" % [s.id, p.name])
+		if J == null:
+			push_warning("sign_2026: no letters for %s/%s" % [s.id, p.name])
+			continue
 		var h = float(J.cap_h)
 		var dx = float(p.get("dx", 0.0)) * k
 		var dy = float(p.get("dy", -h * 0.5)) * k
