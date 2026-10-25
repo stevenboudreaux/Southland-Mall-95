@@ -34,7 +34,7 @@ with sync_playwright() as p:
             pg.goto(f"http://127.0.0.1:8765/{path}?wing=1&cam={start}&debug=1")
         print("leg", leg, "ready_s", ready(pg))
         time.sleep(8)
-        pg.screenshot(path=f"{out}-{leg}-prompt.png")
+        pg.screenshot(path=f"{out}-{leg}-prompt.png", timeout=180000)
         pg.focus("#canvas")
         pg.keyboard.down("e"); time.sleep(1.5); pg.keyboard.up("e")
         t0 = time.time(); cur = ""
@@ -51,7 +51,7 @@ with sync_playwright() as p:
             ok = False
             break
     print("arrived ready_s", ready(pg)); time.sleep(8)
-    pg.screenshot(path=f"{out}-back.png")
+    pg.screenshot(path=f"{out}-back.png", timeout=180000)
     print("\n".join([l for l in logs if "crossing" in l or "ERR" in l.upper()][:12]))
     errs = [l for l in logs if "ERROR" in l.upper()]
     print("errors", len(errs), errs[:3])
