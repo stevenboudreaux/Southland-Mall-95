@@ -93,6 +93,7 @@ const SEAM = [-20.0, 48.0, 2.0]
 const STANDIN_ATLAS = Vector2i(4096, 2048)
 const STANDIN_OUT = 1.25   # the capture camera stands this far out from the front, in the hall
 var zone_wing = {}
+var outside = {}           # wing 3: what tools/exterior/exterior.gd returns (spawn, walk, doors)
 var standin_slots = []     # [{key, a, t, n, s0, s1, rect}], written to GEN/standin.json
 var standin_pxm = 0.0
 var facade_levels = {}     # store id -> accuracy level 0..4 (facade_records.json)
@@ -400,6 +401,10 @@ func mat(name):
 			elif name.begins_with("floorz_"):
 				# bake-time stand-in; the runtime swaps in the procedural floor shader
 				m.albedo_color = Color("#d4c4aa"); m.roughness = 0.14; m.metallic_specular = 0.6
+			elif name.begins_with("ex_"):
+				# the outside (wing 3, tools/exterior/exterior.gd): brick, concrete, stucco, the lot
+				if not load("res://tools/exterior/exterior.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
 			else:
 				push_error("unknown material " + name)
 	mats[name] = m
@@ -2630,6 +2635,11 @@ func build():
 	light_root = Node3D.new(); light_root.name = "Lights"
 	mall.add_child(light_root); light_root.owner = mall
 
+	if WING == 3:
+		# the outside (design/godot-exterior.md): the lot and the building's shell, from exterior.json
+		outside = load("res://tools/exterior/exterior.gd").build(self)
+		finish()
+		return
 	for z in L.zones:
 		floor_zone(z)
 		if z.type == "hall":
@@ -2667,7 +2677,11 @@ func build():
 		load("res://tools/stores/posters/posters.gd").build(self)
 	# K&B's mall-facing wall: pink with plum stripes instead of a full storefront
 	# is a per-store look we add in Phase 2 (decision 6); its storefront is generic for now.
+	finish()
 
+## The part of the build every wing shares: the sun, the environments, the meshes and their
+## lightmap unwrap, the probes, the LightmapGI, the data files, the player and the scene file.
+func finish():
 	var sun = DirectionalLight3D.new()
 	sun.name = "Sun"
 	sun.light_bake_mode = Light3D.BAKE_STATIC
@@ -2706,6 +2720,13 @@ func build():
 			texel = TEXEL * 0.6
 		elif gname == "outside":
 			texel = TEXEL * 4.0
+		elif gname == "ex_ground":
+			# the lot: 400 m across; a coarse texel keeps its lightmap to one layer
+			texel = TEXEL * 10.0
+		elif gname == "ex_far":
+			texel = TEXEL * 6.0
+		elif gname.begins_with("ex_"):
+			texel = TEXEL * 2.5
 		elif zones.has(gname) and not in_wing(zone_wing[gname]):
 			# the other wing's halls and courts (the stand-in): seen from across the seam only
 			texel = TEXEL * 2.5
@@ -2736,7 +2757,7 @@ func build():
 		mi.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		dyn_root.add_child(mi); mi.owner = mall
 
-	for z in L.zones:
+	for z in (L.zones if WING != 3 else []):
 		var r = z.rect
 		var rp = ReflectionProbe.new()
 		var hgt = 10.0 if z.type == "court" else 6.6
@@ -2783,8 +2804,15 @@ func build():
 	mall.set_meta("wing", WING)
 	mall.set_meta("year", YEAR)
 	mall.set_meta("gen", GEN)
-	if WING != 0:
-		# the wing's walk grid, its seam and where a fresh start stands (scripts/player.gd)
+	if WING == 3:
+		# the outside: its walk grid is the lot (exterior.json), its doors lead into wings 1 and 2
+		var wf = FileAccess.open(GEN + "wing.json", FileAccess.WRITE)
+		wf.store_string(JSON.stringify({"wing": WING, "seam": [], "spawn": outside.spawn, "walk": outside.walk, "doors": outside.doors}))
+		wf.close()
+	elif WING != 0:
+		# the wing's walk grid, its seam and where a fresh start stands (scripts/player.gd). The
+		# exterior doors (they lead outside, wing 3) come from exterior.json itself, so adding the
+		# outside changed nothing in gen/w1 and gen/w2 (the stand-in stamps stay valid)
 		var wf = FileAccess.open(GEN + "wing.json", FileAccess.WRITE)
 		wf.store_string(JSON.stringify({"wing": WING, "seam": SEAM, "other_side": 1.0 if WING == 1 else -1.0,
 			"spawn": [33.0, 0.0, 90.0, 3.0] if WING == 1 else [-9.0, 61.0, 90.0, 3.0], "walk": wing_walk()}))

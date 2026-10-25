@@ -2,7 +2,8 @@
 # usage: tools/publish_build.sh <builddir> "<commit message>"   (run from the project folder)
 # Replaces the godot-build branch with this build and the project's current lightmaps, as one
 # commit, and force-pushes it. Its workflow then asks main's Pages workflow to redeploy.
-# <builddir> is an export from tools/export_web.sh (w1/w2 .desktop.pck and .mobile.pck, ...).
+# <builddir> is an export from tools/export_web.sh (w1/w2/w3 .desktop.pck and .mobile.pck, ...;
+# w3 is the outside, design/godot-exterior.md: its own day lightmap, no stand-in pictures).
 # Old builds never pile up: see design/godot-build-hosting.md.
 # Refuses to publish when either wing's stand-in pictures (tex/standin/from_w<n>_*.png) were not
 # captured from that wing as it is now (tools/wing_hash.sh; design/godot-wings.md): run
@@ -36,6 +37,12 @@ git -C "$REPO" archive origin/godot-build README.md .github | tar -x -C "$W"
 mkdir -p "$W/play" "$W/lightmaps" "$W/standin"
 cp "$SRC"/index.* "$SRC"/w1.*.pck "$SRC"/w2.*.pck "$W/play/"
 cp "$SRC"/w1y26.*.pck "$SRC"/w2y26.*.pck "$W/play/" 2>/dev/null || true
+if [ -s "$SRC/w3.desktop.pck" ]; then
+  [ -s "$SRC/w3.mobile.pck" ] || { echo "outside export incomplete: no w3.mobile.pck"; exit 1; }
+  [ -s wing3_day.lmbake ] || { echo "missing wing3_day.lmbake (bake the outside)"; exit 1; }
+  cp "$SRC"/w3.*.pck "$W/play/"
+  cp wing3_day.* "$W/lightmaps/"
+fi
 cp wing1_night.* wing1_day.* wing2_night.* wing2_day.* "$W/lightmaps/"
 cp wing1_2026_day.* wing2_2026_day.* "$W/lightmaps/" 2>/dev/null || true
 cp tex/standin/*.png tex/standin/*.stamp "$W/standin/"
