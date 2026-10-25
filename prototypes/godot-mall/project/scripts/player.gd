@@ -37,7 +37,8 @@ const JUMPS := [
 	["Sears", 1, -4.0, -90.0, 180.0],
 	["Mall entrance", 1, 31.0, 0.0, 90.0],
 	["Dillard's", 2, -4.0, 75.5, 0.0],
-	["JCPenney", 2, -148.0, 56.0, -90.0]]
+	["JCPenney", 2, -148.0, 56.0, -90.0],
+	["Outside", 3, 52.0, 0.0, 90.0]]
 var jump_panel: PanelContainer
 var jump_btns: Array = []
 var jump_sel := 0
@@ -67,7 +68,15 @@ var input_kind := "kb"      # "kb", "pad" or "touch": which glyph the prompt sho
 var vr: Node3D
 var vr_on := false
 const SEAM_NEAR := 2.6      # metres from the seam at which the prompt shows
-const WING_NAMES := {1: "Wing 1 · Sears & the main entrance", 2: "Wing 2 · Dillard's & JCPenney"}
+const WING_NAMES := {1: "Wing 1 · Sears & the main entrance", 2: "Wing 2 · Dillard's & JCPenney", 3: "Outside · the parking lot"}
+## The doors between inside and outside (design/godot-exterior.md, exterior.json via gen/w<n>/wing.json):
+## in wings 1 and 2 the mall's exits and main entrance offer "Go outside" (wing 3, the lot); outside,
+## each door offers the way back in. Each: store, kind, wing (the inside wing), out, inside (the
+## spots either side), yaw_in / yaw_out (the facing, degrees).
+var doors: Array = []
+var door_near = null        # the door whose prompt shows, or null
+const DOOR_NEAR := 2.8
+const DOOR_NAMES := {"s39": "the main entrance", "s43": "the Sears hall entrance", "s41": "the cinema-side exit", "s55": "the south entrance"}
 
 func _ready() -> void:
 	position = Vector3(33.0, 0, 0.0)
@@ -89,6 +98,14 @@ func _ready() -> void:
 		walk_rows = PackedStringArray(wj.get("walk", walk_rows))
 		seam = wj.get("seam", [])
 		other_side = float(wj.get("other_side", 1.0))
+	# the doors between inside and outside (exterior.json, tools/make_exterior.py): in a mall wing,
+	# the ones that open from this wing; outside, all of them
+	if FileAccess.file_exists("res://exterior.json"):
+		var ex = JSON.parse_string(FileAccess.get_file_as_string("res://exterior.json"))
+		if ex is Dictionary:
+			for d in ex.get("doors", []):
+				if wing == 3 or int(d.get("wing", 0)) == wing:
+					doors.append(d)
 		var sp: Array = wj.get("spawn", [])
 		if sp.size() >= 4:
 			position = Vector3(float(sp[0]), 0, float(sp[1]))
@@ -103,7 +120,7 @@ func _ready() -> void:
 	cam.position = Vector3(0, EYE, 0)
 	cam.fov = 70.0
 	cam.near = 0.05
-	cam.far = 200.0
+	cam.far = 600.0 if wing == 3 else 200.0   # outside, the water tower and the roads are far off
 	add_child(cam)
 	cam.current = true
 	_build_hud()
@@ -534,7 +551,7 @@ func _build_wing_ui() -> void:
 	var top := CanvasLayer.new()
 	top.layer = 20
 	add_child(top)
-	if wing == 0 or seam.size() < 3:
+	if wing == 0 or (seam.size() < 3 and doors.is_empty()):
 		if arriving:
 			top.add_child(fade)
 			create_tween().tween_property(fade, "modulate:a", 0.0, 0.6).set_delay(0.25)
@@ -596,17 +613,33 @@ func _seam_dist() -> float:
 	var d := (z - position.z) * other_side
 	return d if d >= -0.2 else 1e9
 
+## The door beside the player: in the mall, by its inside spot; outside, by its outside spot.
+func _door_here():
+	for d in doors:
+		var sp: Array = d.get("out" if wing == 3 else "inside", [])
+		if sp.size() < 2:
+			continue
+		if Vector2(position.x, position.z).distance_to(Vector2(float(sp[0]), float(sp[1]))) < DOOR_NEAR:
+			return d
+	return null
+
 func _update_prompt() -> void:
 	if prompt == null:
 		return
-	var near := _seam_dist() < SEAM_NEAR and not leaving
+	door_near = _door_here() if not leaving else null
+	var near := (door_near != null or _seam_dist() < SEAM_NEAR) and not leaving
 	if near != prompt.visible:
 		prompt.visible = near
 	if near:
-		var other := 3 - wing
 		prompt_key.text = {"pad": "A", "touch": "Tap", "kb": "E"}[input_kind]
 		prompt_key.custom_minimum_size.x = 50 if input_kind == "touch" else 38
-		prompt_text.text = "Enter " + WING_NAMES[other]
+		if door_near != null:
+			if wing == 3:
+				prompt_text.text = "Enter the mall · " + DOOR_NAMES.get(str(door_near.get("store", "")), "the doors")
+			else:
+				prompt_text.text = "Go outside · " + DOOR_NAMES.get(str(door_near.get("store", "")), "the doors")
+		else:
+			prompt_text.text = "Enter " + WING_NAMES[3 - wing]
 
 ## Walk across the seam: fade to black, then load the other wing at the same spot (1.3 m past the
 ## seam), facing the same way, with the same lighting and toggles.
@@ -626,10 +659,11 @@ func _build_year_ui() -> void:
 	year_btn.offset_left = -200; year_btn.offset_right = -10
 	year_btn.offset_top = 168; year_btn.offset_bottom = 200
 	year_btn.pressed.connect(_switch_year)
+	year_btn.visible = wing != 3   # the outside has no 2026 build yet
 	_cl.add_child(year_btn)
 
 func _switch_year() -> void:
-	if leaving:
+	if leaving or wing == 3:
 		return
 	var other := 2026 if year == 1995 else 1995
 	var w := wing if wing != 0 else 1
@@ -659,28 +693,47 @@ func _switch_year() -> void:
 func _cross() -> void:
 	if leaving or wing == 0:
 		return
-	leaving = true
-	print("crossing to wing ", 3 - wing)
-	prompt.visible = false
+	if door_near != null:
+		# through a door: into the lot, or back into the wing the door belongs to
+		var d = door_near
+		if wing == 3:
+			var sp: Array = d.inside
+			_go_to_wing(int(d.wing), float(sp[0]), float(sp[1]), deg_to_rad(float(d.yaw_in)), deg_to_rad(2.0))
+		else:
+			var sp: Array = d.out
+			_go_to_wing(3, float(sp[0]), float(sp[1]), deg_to_rad(float(d.yaw_out)), deg_to_rad(2.0))
+		return
+	if seam.size() < 3:
+		return
 	var other := 3 - wing
 	var tz := float(seam[1]) + other_side * 1.3
 	var tx := clampf(position.x, float(seam[0]) + 0.5, float(seam[2]) - 0.5)
+	_go_to_wing(other, tx, tz, yaw, pitch)
+
+## Fade to black, then load wing w at (x, z) facing yaw: on the web by reloading the page into
+## that wing's file (web/shell.html) with the lighting and the toggles kept; in the editor or a
+## test by changing the scene.
+func _go_to_wing(w: int, x: float, z: float, yaw_to: float, pitch_to: float) -> void:
+	leaving = true
+	print("crossing to wing ", w)
+	if prompt:
+		prompt.visible = false
 	var tw := create_tween()
 	tw.tween_property(fade, "modulate:a", 1.0, 0.35)
 	tw.tween_callback(func():
 		var day: bool = not buttons[2].button_pressed
 		if OS.has_feature("web"):
-			var cam_s := "%.2f,%.2f,%.1f,%.1f" % [tx, tz, rad_to_deg(yaw), rad_to_deg(pitch)]
-			var js := "(function(){try{sessionStorage.setItem('mall-xfer','%d')}catch(e){}var u=new URL(location.href);var p=u.searchParams;p.set('wing','%d');p.set('cam','%s');" % [other, other, cam_s]
+			var cam_s := "%.2f,%.2f,%.1f,%.1f" % [x, z, rad_to_deg(yaw_to), rad_to_deg(pitch_to)]
+			var js := "(function(){try{sessionStorage.setItem('mall-xfer','%d')}catch(e){}var u=new URL(location.href);var p=u.searchParams;p.set('wing','%d');p.set('cam','%s');" % [w, w, cam_s]
 			js += "p.set('time','%s');" % ("day" if day else "night")
 			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not _refl_wanted() else "false")
 			js += "if(%s)p.set('fx','1');else p.delete('fx');" % ("true" if buttons[1].button_pressed else "false")
 			js += "console.log('crossing to '+u.toString());if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
 			JavaScriptBridge.eval(js, true)
 		else:
-			Engine.set_meta("mall_xfer", {"x": tx, "z": tz, "yaw": yaw, "pitch": pitch})
+			Engine.set_meta("mall_xfer", {"x": x, "z": z, "yaw": yaw_to, "pitch": pitch_to})
 			Engine.set_meta("mall_arrived", true)
-			var path := _wing_scene(other)
+			var path := _wing_scene(w)
 			if ResourceLoader.exists(path):
 				get_tree().change_scene_to_file(path)
 			else:
@@ -845,27 +898,4 @@ func _jump_go(i: int) -> void:
 		if vr_on:
 			vr.recentre()
 		return
-	leaving = true
-	if prompt:
-		prompt.visible = false
-	var tw := create_tween()
-	tw.tween_property(fade, "modulate:a", 1.0, 0.35)
-	tw.tween_callback(func():
-		var day: bool = not buttons[2].button_pressed
-		if OS.has_feature("web"):
-			var cam_s := "%.2f,%.2f,%.1f,%.1f" % [float(j[2]), float(j[3]), float(j[4]), 3.0]
-			var js := "(function(){try{sessionStorage.setItem('mall-xfer','%d')}catch(e){}var u=new URL(location.href);var p=u.searchParams;p.set('wing','%d');p.set('cam','%s');" % [tw_wing, tw_wing, cam_s]
-			js += "p.set('time','%s');" % ("day" if day else "night")
-			js += "if(%s)p.set('refl','0');else p.delete('refl');" % ("true" if not _refl_wanted() else "false")
-			js += "if(%s)p.set('fx','1');else p.delete('fx');" % ("true" if buttons[1].button_pressed else "false")
-			js += "console.log('jumping to '+u.toString());if(window.mallGoWing){window.mallGoWing(u.toString())}else{location.replace(u.toString())}})()"
-			JavaScriptBridge.eval(js, true)
-		else:
-			Engine.set_meta("mall_xfer", {"x": float(j[2]), "z": float(j[3]), "yaw": deg_to_rad(float(j[4])), "pitch": deg_to_rad(3.0)})
-			Engine.set_meta("mall_arrived", true)
-			var path := _wing_scene(tw_wing)
-			if ResourceLoader.exists(path):
-				get_tree().change_scene_to_file(path)
-			else:
-				leaving = false
-				fade.modulate.a = 0.0)
+	_go_to_wing(tw_wing, float(j[2]), float(j[3]), deg_to_rad(float(j[4])), deg_to_rad(3.0))

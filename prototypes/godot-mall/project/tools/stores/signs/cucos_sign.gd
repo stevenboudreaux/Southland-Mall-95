@@ -29,10 +29,11 @@ const WPOOL = Color(0.10, 0.11, 0.16)     # the white tubes' light on the blue f
 
 ## Builds the sign with the middle of the bar's bottom edge at c (on the fascia's face), facing nn.
 ## g: the dynamic mesh group; g + "_glow" takes the added light.
-static func build(b, g, path, c, nn):
+## k scales the whole sign (the east entrance's outdoor copy, tools/exterior/exterior.gd, is 2.2x)
+static func build(b, g, path, c, nn, k = 1.0):
 	var J = JSON.parse_string(FileAccess.get_file_as_string(path))
 	var rv = (-nn).cross(UP)
-	var X = func(p, z): return c + rv * p.x + UP * p.y + nn * z
+	var X = func(p, z): return c + rv * p.x * k + UP * p.y * k + nn * z * k
 	var s_red = b.st(g, "sg_cu2_red", true)
 	var s_blk = b.st(g, "sg_cu2_black", true)
 	var s_tube = b.st(g, "sg_cu2_tube", true)
