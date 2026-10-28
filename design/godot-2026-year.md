@@ -57,6 +57,14 @@ with returns and trim caps, lit faces, halo glow, backer panels, cabinets, racew
 - Not built (one sign per store for now): Shoe Dept. Encore's blade, VS's return-wall sign,
   PINK's dog panel, Cinnamonster's extra plaques, the directory kiosk, exterior signs.
 - Evidence: `production/qa/evidence/d43-signs-*.jpg` (frame | baked game), `d43-web-*`.
+- **Oct 28 (Demo 45): AT&T and Journeys re-done** from sharp 1080p frames re-cut from the MOVs
+  (`2026 Mall/_derived/full/<id>/`), because the Demo 43 traces came from 960 px contact-sheet
+  tiles: the AT&T globe had been a blob, and "Journeys"' strokes had merged into one shape. The
+  AT&T globe is now built geometrically (a disc cut by four tapering latitude gaps, the 2016 mark);
+  Journeys' oval is an ellipse fitted to the panel's edge and the script is traced at 2x with light
+  smoothing so every stroke stays separate. Method for the rest of the weak signs: re-cut the frame
+  at full resolution with ffmpeg on the Mac (`-vf fps=2 -q:v 2`), pick the square-on one, then
+  `photo_trace.py quad` → masks → spec. Evidence `d45-signs-att-journeys.jpg`.
 - Bake lesson: `addons/autobake` now bakes only the job's own scene (after the import scan the
   editor could be left on wing1.tscn, and a wing1_2026 job baked wing1). After copying a bake
   back, delete `.godot/imported/<scene>_day.exr-*` before `--import`, or the old texture stays.

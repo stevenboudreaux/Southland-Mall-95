@@ -60,9 +60,13 @@ and must stay current as facades change.
   toggles.
   - The shell shows a dark "Wing 2" loading card instead of the cream one.
   - The game fades in from black.
-- **Speed:** six seconds after a wing starts, `web/shell.html` fetches the other wing's file into
-  Cache Storage (`mall-wings-<pack sizes>`; older caches are deleted). The crossing then loads it
-  from there instead of the network.
+- **Speed:** six seconds after a wing starts, `web/shell.html` fetches the files you are likely to
+  need next into Cache Storage, one after another: the other wing, then this wing in the other
+  year, then the other wing in the other year (`mallPrefetchOther`). The crossing, and the Y key's
+  year switch, then load from there instead of the network. One cache per build for both years
+  (`mall-wings-<the five pack sizes>`; older caches are deleted). Until Oct 28 the cache was per
+  year and switching years emptied it, so every 1995 ↔ 2026 switch downloaded its wing again. A
+  line the browser marks "save data" only gets the other wing.
 - **Memory:** only one wing is ever in memory, which matters on the iPhone.
 - **Test:** `tools/qa/seamtest.py <build>/index.html <out>` crosses 1 → 2 by key and 2 → 1 by
   clicking the prompt.

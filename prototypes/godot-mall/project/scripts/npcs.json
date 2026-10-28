@@ -62,7 +62,8 @@
 	},
 	"exclude": [
 		"Ch36",
-		"Ch17"
+		"Ch17",
+		"Ch06"
 	],
 	"self_light_day": 0.0,
 	"self_light_night": 0.3,
@@ -343,7 +344,7 @@
 	],
 	"arcade_ids": [
 		"Ch01",
-		"Ch06",
+		"Ch28",
 		"Ch08",
 		"Ch42",
 		"Ch38"

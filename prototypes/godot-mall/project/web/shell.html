@@ -741,9 +741,12 @@ GODOT_CONFIG['mainPack'] = MALL_PACK(window.__mallWing);
 GODOT_CONFIG['fileSizes'] = GODOT_CONFIG['fileSizes'] || {};
 const mallSize = (w) => (PACK_SIZES['w' + w + window.__mallYear] || {})[window.__mallPack] || 0;
 if (mallSize(window.__mallWing)) { GODOT_CONFIG['fileSizes'][GODOT_CONFIG['mainPack']] = mallSize(window.__mallWing); }
-// one cache per build (the pack sizes change with every export), older ones are removed
-const MALL_CACHE = 'mall-wings-' + window.__mallYear + [mallSize(1), mallSize(2), mallSize(3)].join('-');
-const mallPackUrl = (w) => new URL(MALL_PACK(w), location.href).toString();
+// one cache per build (the pack sizes change with every export), older ones are removed. Both
+// years share it: until Oct 28 the cache was per year and switching years threw the other year's
+// files away, so every 1995 <-> 2026 switch downloaded its wing again (a minute on a slow line).
+const mallSizeOf = (name) => (PACK_SIZES[name] || {})[window.__mallPack] || 0;
+const MALL_CACHE = 'mall-wings-' + ['w1', 'w2', 'w3', 'w1y26', 'w2y26'].map(mallSizeOf).join('-');
+const mallPackUrl = (w, year) => new URL('w' + w + (year === undefined ? window.__mallYear : year) + '.' + window.__mallPack + '.pck', location.href).toString();
 if ('caches' in window) {
 	const netFetch = window.fetch.bind(window);
 	window.fetch = function (input, init) {
@@ -757,12 +760,21 @@ if ('caches' in window) {
 }
 window.mallPrefetchOther = function () {
 	if (!('caches' in window)) { return; }
-	// the other inside wing; outside (wing 3), wing 1, where most doors lead
+	// While you walk, the files you are likely to need next are fetched into the cache, one after
+	// another, most likely first: the other inside wing (outside, wing 1, where most doors lead);
+	// then this wing in the other year (the Y key / "Visit 2026" button reloads the page with the
+	// other year's file); then the other wing in the other year. Wing 3 (outside) is 1995 only.
+	// A line the browser marks as metered or "save data" only gets the other wing.
 	const other = window.__mallWing === 3 ? 1 : 3 - window.__mallWing;
+	const here = window.__mallWing === 3 ? 1 : window.__mallWing;
+	const otherYear = window.__mallYear ? '' : 'y26';
+	let wanted = [mallPackUrl(other)];
+	const conn = navigator.connection || {};
+	if (!conn.saveData && mallSizeOf('w1y26')) { wanted = wanted.concat([mallPackUrl(here, otherYear), mallPackUrl(3 - here, otherYear)]); }
 	caches.keys().then((ks) => Promise.all(ks.filter((k) => k.indexOf('mall-wings-') === 0 && k !== MALL_CACHE).map((k) => caches.delete(k))))
 		.then(() => caches.open(MALL_CACHE))
-		.then((c) => c.match(mallPackUrl(other)).then((r) => (r ? null : c.add(mallPackUrl(other)))))
-		.catch((e) => console.warn('could not keep the other wing for later:', e));
+		.then((c) => wanted.reduce((p, u) => p.then(() => c.match(u)).then((r) => (r ? null : c.add(u))), Promise.resolve()))
+		.catch((e) => console.warn('could not keep the next files for later:', e));
 };
 // the game calls this when you cross the seam (scripts/player.gd _cross)
 window.mallGoWing = function (url) { if (window.mallVR.inSession) { window.mallVR.remember(true); } location.replace(url); };
