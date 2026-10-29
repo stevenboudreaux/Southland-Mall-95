@@ -326,6 +326,10 @@ func mat(name):
 				# the clothing stores (JW, 5-7-9, County Seat): tools/stores/apparel/kit.gd's fill_mat
 				if not load("res://tools/stores/apparel/kit.gd").fill_mat(m, name.substr(3), self):
 					push_error("unknown material " + name)
+			elif name.begins_with("gi_"):
+				# games, inc. (2026 arcade): tools/stores/games_inc/store.gd's fill_mat(m, key, b)
+				if not load("res://tools/stores/games_inc/store.gd").fill_mat(m, name.substr(3), self):
+					push_error("unknown material " + name)
 			elif name.begins_with("gb_"):
 				# Gumballs: tools/stores/gumballs/store.gd's fill_mat(m, key, b)
 				if not load("res://tools/stores/gumballs/store.gd").fill_mat(m, name.substr(3), self):
@@ -1638,6 +1642,11 @@ func storefront(g, e, a, b, n, t, Ln, inner_call = false):
 		# front with each tenant's sign for everyone else, until they are built from the footage
 		if sd.anchor and ANCHOR_LOOK_2026.has(sd.name):
 			anchor_front(g, e, a, b, n, t, Ln, sd, ANCHOR_LOOK_2026[sd.name])
+			return
+		if sd.name == "GAMES, INC. (POCKET CHANGE)":
+			# Demo 46 (Oct 28): the arcade in the old Blockbuster Music box, built from the Oct 23
+			# footage with Pocket Change's machine modules (tools/stores/games_inc/store.gd)
+			load("res://tools/stores/games_inc/store.gd").build(self, g, e, a, b, n, t, Ln, sd)
 			return
 		if sd.name != "CORN DOG 7":
 			storefront(g, e, a, b, n, t, Ln, true)

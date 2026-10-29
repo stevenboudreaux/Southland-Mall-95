@@ -23,7 +23,7 @@ S = 2.0
 L = json.load(open(os.path.join(PROJ, "layout_mall.json")))
 OX, OY = L["origin"]
 ST26 = json.load(open(os.path.join(PROJ, "data", "eras_2026.json")))
-KEEP_OPEN = {"s54"}   # Corn Dog 7: the same shop in 2026, its 3D build and walkable queue stay
+KEEP_OPEN = {"s54", "s52"}   # Corn Dog 7 (the same shop in 2026) and games, inc. (s52, built Oct 28): their interiors stay walkable
 
 
 def tile(x, z):
